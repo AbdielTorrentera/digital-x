@@ -312,7 +312,7 @@ Hay 4 cosas que guardar antes de cerrar WordPress y varias correcciones que conv
 - [x] Descargar los 28 archivos de la tabla de recursos (o toda la carpeta `wp-content/uploads` desde el hosting).
 - [x] Anotar colores, tipografías, encabezado y pie de página desde el Personalizador de Astra.
 - [x] Revisar qué hay en el pie de página (redes sociales, enlaces) porque no viene en la exportación.
-- [ ] Mantener las mismas URLs en el sitio nuevo o preparar redirecciones 301.
+- [x] Mantener las mismas URLs en el sitio nuevo o preparar redirecciones 301.
 
 **Inconsistencias en el contenido**
 

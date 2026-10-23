@@ -1,0 +1,18 @@
+---
+import { negocio } from '../lib/negocio';
+
+// JSON-LD del negocio (reglas-seo sección 12).
+// PROHIBIDO: address, streetAddress y geo. El negocio opera sin dirección pública.
+const datos: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${negocio.url}/#negocio`,
+  name: negocio.nombre,
+  url: `${negocio.url}/`,
+  telephone: negocio.telefono.tel,
+  areaServed: negocio.zonas.map((z) => ({ '@type': 'City', name: z })),
+};
+if (negocio.correo) datos.email = negocio.correo;
+if (negocio.redes.length > 0) datos.sameAs = negocio.redes.map((r) => r.url);
+---
+<script type="application/ld+json" set:html={JSON.stringify(datos)} />

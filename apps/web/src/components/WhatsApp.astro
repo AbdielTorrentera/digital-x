@@ -1,0 +1,60 @@
+---
+import Icon from './Icon.astro';
+import { textoBotonWhatsApp, waUrl } from '../lib/negocio';
+
+// Botón flotante de WhatsApp (reglas-seo sección 11). El mensaje prellenado cambia por página.
+// En móvil se reduce a un ícono al hacer scroll (scripts/whatsapp.ts); el aria-label conserva el texto completo.
+interface Props { mensaje?: string }
+const { mensaje } = Astro.props;
+---
+<a
+  class="wa"
+  href={waUrl(mensaje)}
+  target="_blank"
+  rel="noopener"
+  aria-label={`${textoBotonWhatsApp}, por WhatsApp (se abre en una pestaña nueva)`}
+  data-wa
+>
+  <Icon name="whatsapp" size={28} />
+  <span class="wa__texto">{textoBotonWhatsApp}</span>
+</a>
+<style>
+  .wa {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 56px;
+    max-width: calc(100vw - 32px);
+    padding: 0 20px 0 14px;
+    border-radius: 28px;
+    background: rgb(15, 122, 64);
+    color: var(--white);
+    font-family: var(--font-sans);
+    font-size: var(--body);
+    font-weight: 500;
+    line-height: 1.1;
+    box-shadow: 0 4px 16px rgba(20, 27, 52, 0.28);
+    transition: padding 0.25s var(--ease-inout), gap 0.25s var(--ease-inout), background-color 0.2s ease;
+  }
+  .wa:hover { background: rgb(12, 100, 52); }
+  .wa:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+  .wa__texto {
+    display: block;
+    max-width: 260px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.25s var(--ease-inout), opacity 0.2s ease;
+  }
+  /* Móvil: tras hacer scroll queda solo el ícono para no tapar contenido. */
+  @media (max-width: 809.98px) {
+    .wa.is-compact { gap: 0; padding: 0 14px; }
+    .wa.is-compact .wa__texto { max-width: 0; opacity: 0; }
+  }
+  @media (min-width: 810px) {
+    .wa { right: 24px; bottom: 24px; }
+  }
+</style>

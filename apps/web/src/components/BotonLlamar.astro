@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+import { negocio, telUrl } from '../lib/negocio';
+
+// Botón de llamada (reglas-seo sección 10): tel: y área táctil de al menos 48 px.
+// Móvil: ícono + "Llamar". Escritorio (≥1024 px): ícono + número.
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<a class:list={['llamar', cls]} href={telUrl} aria-label={`Llamar a ${negocio.nombre}: ${negocio.telefono.pantalla}`}>
+  <Icon name="phone" size={20} />
+  <span class="llamar__corto">Llamar</span>
+  <span class="llamar__numero">{negocio.telefono.pantalla}</span>
+</a>
+<style>
+  .llamar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding-inline: 12px;
+    border-radius: 8px;
+    color: var(--ink-900);
+    font-size: var(--body);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+  .llamar:hover { background: var(--ink-50); }
+  .llamar__numero { display: none; }
+  @media (min-width: 1024px) {
+    .llamar__corto { display: none; }
+    .llamar__numero { display: inline; }
+  }
+</style>

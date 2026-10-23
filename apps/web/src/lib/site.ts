@@ -7,6 +7,6 @@ export async function site<T = any>(id: string): Promise<T> {
   return entry.data as T;
 }
 
-/** "Apr 28, 2026", the medium date style the design uses. */
+/** "28 abr 2026", fecha corta en español de México. */
 export const formatDate = (d: Date) =>
-  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  d.toLocaleDateString('es-MX', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });

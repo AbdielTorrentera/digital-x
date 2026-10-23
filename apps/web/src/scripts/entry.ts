@@ -1,21 +1,15 @@
 import { initSmooth } from './smooth';
 import { initAppear } from './appear';
 import { initNav } from './nav';
+import { initWhatsApp } from './whatsapp';
 import { initAccordions } from './accordion';
-import { initTestimonials } from './testimonials';
-import { initFilters } from './filter';
 import { initJumpLinks } from './jumplinks';
-import { initGallery } from './gallery';
-import { initForms } from './form';
 import { initDeferredVideos } from './video';
 
 initSmooth();
 initAppear();
 initNav();
+initWhatsApp();
 initAccordions();
-initTestimonials();
-initFilters();
 initJumpLinks();
-initGallery();
-initForms();
 initDeferredVideos();

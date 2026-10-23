@@ -5,10 +5,12 @@ import check from '../icons/check.svg?raw';
 import plus from '../icons/plus.svg?raw';
 import pin from '../icons/pin.svg?raw';
 import search from '../icons/search.svg?raw';
+import whatsapp from '../icons/whatsapp.svg?raw';
+import phone from '../icons/phone.svg?raw';
 
 const close =
   '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg>';
-const icons = { menu, arrow, check, plus, pin, search, close };
+const icons = { menu, arrow, check, plus, pin, search, close, whatsapp, phone };
 
 interface Props { name: keyof typeof icons; size?: number; class?: string }
 const { name, size = 16, class: cls } = Astro.props;

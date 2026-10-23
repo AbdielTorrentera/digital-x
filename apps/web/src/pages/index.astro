@@ -1,24 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
-import Hero from '../components/sections/Hero.astro';
-import HomeAbout from '../components/sections/HomeAbout.astro';
-import Services from '../components/sections/Services.astro';
-import Listings from '../components/sections/Listings.astro';
-import Testimonials from '../components/sections/Testimonials.astro';
-import Features from '../components/sections/Features.astro';
-import Team from '../components/sections/Team.astro';
-import Faq from '../components/sections/Faq.astro';
+import { mensajesWhatsApp } from '../lib/negocio';
 ---
+<!-- Metadatos y H1 definidos en docs/reglas-seo-digitalx.md sección 1. -->
 <Base
-  title="Marby — Luxury Real Estate"
-  description="Discover luxury properties and find your dream home with Marby's expert real estate team. Marby is a real estate template built with Astro."
+  title="Audio, video y tecnología en Atlixco, Puebla | Digital X"
+  description="Renta de sonido, video de eventos, streaming y software a la medida en Atlixco, Puebla. Cobertura en un radio de 50 km. Cotiza con Digital X."
+  whatsapp={mensajesWhatsApp.general}
 >
-  <Hero />
-  <HomeAbout />
-  <Services />
-  <Listings />
-  <Testimonials />
-  <Features />
-  <Team />
-  <Faq />
+  <section class="container inicio">
+    <h1 class="t-h1">Audio, video y tecnología para tus eventos y tu negocio en Atlixco</h1>
+    <p class="t-body">[PENDIENTE: contenido del Inicio]</p>
+  </section>
 </Base>
+<style>
+  .inicio { padding-block: 40px; display: flex; flex-direction: column; gap: 20px; max-width: 760px; margin-inline: 0; }
+  @media (min-width: 1200px) {
+    .inicio { padding-block: 80px; margin-inline: auto; max-width: var(--container); }
+    .inicio > * { max-width: 760px; }
+  }
+</style>

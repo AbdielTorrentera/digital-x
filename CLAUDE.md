@@ -40,6 +40,11 @@ Las reglas viven en `docs/`, un archivo por tema. **Son obligatorias.** Antes de
 4. **Antes de cambiar código, muestra un plan corto** con los archivos que vas a tocar y espera aprobación.
 5. **Al terminar cada tarea,** entrega un reporte con lo que hiciste, cómo se verificó (build, revisión en navegador) y la lista de `[PENDIENTE: ...]` que quedan.
 
+6. **Mobile first.** Todo se diseña y se prueba primero a 375 px de ancho y
+   después se adapta a pantallas grandes. Nada se da por terminado sin
+   revisarlo en móvil: sin scroll horizontal, texto legible sin zoom y
+   áreas táctiles de al menos 48 px. (Detalle en reglas-seo, sección 10.)
+
 ## Stack y estructura del repo
 
 Monorepo con pnpm workspaces:

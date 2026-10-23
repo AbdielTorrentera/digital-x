@@ -1,33 +1,42 @@
 ---
 import Base from '../layouts/Base.astro';
-import Btn from '../components/Btn.astro';
-import { site } from '../lib/site';
-const nf = await site('notFound');
+import { enlacesDe404 } from '../lib/paginas';
+
+// Enlaces de regreso a Inicio y Servicios (reglas-seo sección 9). Solo aparecen los que ya existen:
+// [PENDIENTE: enlace a /servicios/ cuando esa página esté construida; se agrega solo al marcarla en paginas.ts]
+const textos: Record<string, string> = { '/': 'Ir al inicio de Digital X', '/servicios/': 'Ver los servicios de Digital X' };
 ---
-<Base title="Page Not Found | Marby" description="The page you're looking for doesn't exist or has been moved." withForm={false} noindex>
-  <section class="nf" data-dark>
-    <img class="nf__bg" src={nf.image} alt="" />
-    <div class="scrim" aria-hidden="true"></div>
-    <div class="container nf__inner">
-      <h1 class="nf__title" data-appear="mount">{nf.title}</h1>
-      <div class="nf__side">
-        <p class="t-caption2 c-200" data-appear="mount" style="--appear-delay:0.1s">{nf.text}</p>
-        <div data-appear="mount" style="--appear-delay:0.2s"><Btn label={nf.cta.label} href={nf.cta.href} variant="secondary" /></div>
-      </div>
-    </div>
+<Base
+  title="Página no encontrada | Digital X"
+  description="La página que buscas no existe o cambió de dirección. Vuelve al inicio de Digital X para ver audio, video y tecnología en Atlixco."
+  noindex
+>
+  <section class="container nf">
+    <p class="t-caption2 c-500">Error 404</p>
+    <h1 class="t-h1">Esta página no existe</h1>
+    <p class="t-body">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar.</p>
+    <ul class="nf__enlaces">
+      {enlacesDe404.map((p) => (
+        <li><a class="nf__enlace" href={p.url}>{textos[p.url] ?? p.titulo}</a></li>
+      ))}
+    </ul>
   </section>
 </Base>
 <style>
-  .nf { position: relative; height: 100vh; min-height: 700px; overflow: clip; display: flex; align-items: flex-end; justify-content: center; }
-  .nf__bg { position: absolute; left: -10%; top: 0; width: 120%; max-width: none; height: 100%; object-fit: cover; }
-  .nf__inner { position: relative; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; padding-bottom: 20px; }
-  .nf__title { width: 1158px; max-width: 100%; font-size: 280px; font-weight: 500; line-height: 1.2; color: var(--ink-50); }
-  .nf__side { width: 460px; max-width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
-  @media (max-width: 1199.98px) { .nf__title { width: 100%; } .nf__side { width: 335px; } }
-  @media (max-width: 809.98px) {
-    .nf { height: 700px; min-height: 0; }
-    .nf__bg { left: 0; top: 50%; width: 100%; height: 844px; transform: translateY(-50%); }
-    .nf__title { font-size: 140px; }
-    .nf__side { width: 100%; }
+  .nf { padding-block: 56px; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: 760px; margin-inline: 0; }
+  .nf__enlaces { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 360px; margin-top: 8px; }
+  .nf__enlace {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 0 20px;
+    border-radius: 8px;
+    background: var(--ink-900);
+    color: var(--white);
+    font-weight: 500;
+  }
+  @media (min-width: 1200px) {
+    .nf { padding-block: 96px; margin-inline: auto; max-width: var(--container); }
+    .nf > * { max-width: 760px; }
   }
 </style>

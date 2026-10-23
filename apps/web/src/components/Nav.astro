@@ -1,178 +1,240 @@
 ---
-import Btn from './Btn.astro';
 import Icon from './Icon.astro';
-import { site } from '../lib/site';
+import BotonLlamar from './BotonLlamar.astro';
+import { negocio, telUrl } from '../lib/negocio';
+import { menu } from '../lib/paginas';
 
-const s = await site('settings');
+const actual = Astro.url.pathname;
 ---
 <!--
-  Sticky bar, 68px, transparent. Clicking anywhere on it except the caption
-  link and the consultation button opens the menu, as in the original.
-  The caption flips light/dark depending on what is underneath (nav.ts).
+  Móvil (<1024 px): barra con marca, "Llamar" y "Menú". El menú abre a pantalla completa
+  con los enlaces pegados abajo (alcance del pulgar) y botones de 56 px.
+  Escritorio: barra horizontal; "Servicios" es un desplegable de tres columnas.
+  Sin JavaScript el menú queda como lista visible debajo de la barra.
 -->
 <header class="nav" data-nav>
   <div class="nav__bar">
-    <div class="nav__col nav__col--menu">
-      <button class="chip" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu" data-menu-open>
-        <Icon name="menu" />
-      </button>
+    <a class="nav__marca" href="/" aria-label={`${negocio.nombre}, ir al inicio`}>{negocio.nombre}</a>
+
+    <div class="menu" id="menu" data-menu>
+      <nav class="menu__nav" aria-label="Principal">
+        <ul class="menu__lista">
+          {menu.map((item) => (
+            <li class:list={['menu__item', item.grupos && item.grupos.length > 0 && 'has-sub']}>
+              {item.grupos && item.grupos.length > 0 ? (
+                <>
+                  <button class="menu__enlace menu__sub-btn" type="button" aria-expanded="false" aria-controls="sub-servicios" data-sub-toggle>
+                    <span>{item.titulo}</span>
+                    <Icon name="plus" size={20} class="menu__mas" />
+                  </button>
+                  <div class="sub" id="sub-servicios">
+                    {item.url && <a class="sub__todos" href={item.url}>Todos los servicios</a>}
+                    <div class="sub__grupos">
+                      {item.grupos.map((g) => (
+                        <div class="sub__grupo">
+                          {g.hub ? <a class="sub__titulo" href={g.hub.url}>{g.titulo}</a> : <p class="sub__titulo">{g.titulo}</p>}
+                          <ul>
+                            {g.servicios.map((s) => (
+                              <li><a class="sub__enlace" href={s.url} aria-current={actual === s.url ? 'page' : undefined}>{s.titulo}</a></li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <a class="menu__enlace" href={item.url} aria-current={actual === item.url ? 'page' : undefined}>{item.titulo}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="menu__movil">
+        <a class="menu__btn" href={telUrl}><Icon name="phone" size={20} /> Llamar</a>
+        <button class="menu__btn menu__btn--cerrar" type="button" data-menu-close><Icon name="close" size={20} /> Cerrar</button>
+      </div>
     </div>
-    <a class="nav__col nav__col--tag" href="/" data-stop>
-      <span class="nav__tag t-caption2" data-invert>{s.tagline}</span>
-    </a>
-    <div class="nav__col nav__col--cta" data-stop>
-      <Btn label={s.consultation.label} href={s.consultation.href} />
+
+    <div class="nav__acciones">
+      <BotonLlamar />
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-open>
+        <Icon name="menu" size={20} />
+        <span>Menú</span>
+      </button>
     </div>
   </div>
 </header>
 
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu>
-  <div class="menu__top">
-    <div class="menu__brand">
-      <button class="chip" type="button" aria-label="Close menu" data-menu-close>
-        <Icon name="close" />
-      </button>
-      <span class="t-h5">{s.brand}</span>
-    </div>
-    <div class="menu__top-cta"><Btn label={s.consultation.label} href={s.consultation.href} /></div>
-  </div>
-  <nav class="menu__list" aria-label="Main">
-    {s.menu.map((item: any, i: number) => (
-      <a class="menu__item t-h2" href={item.href} style={`--d:${[0.15, 0.15, 0.25, 0.35, 0.45][i] ?? 0.45}s`}>{item.label}</a>
-    ))}
-    <div class="menu__socials" style="--d:0.55s">
-      {s.socials.map((x: any) => (
-        <a class="menu__social t-caption2" href={x.href} target="_blank" rel="noreferrer">{x.label}</a>
-      ))}
-    </div>
-    <div class="menu__bottom-cta"><Btn label={s.consultation.label} href={s.consultation.href} /></div>
-  </nav>
-</div>
-
 <style>
-  .nav { position: sticky; top: 0; z-index: 5; cursor: pointer; }
+  .nav {
+    position: sticky;
+    top: 0;
+    /* Por encima del botón de WhatsApp (z 20) para que el menú abierto lo cubra. */
+    z-index: 40;
+    background: var(--white);
+    border-bottom: 1px solid var(--ink-200);
+  }
   .nav__bar {
     max-width: var(--container);
     margin-inline: auto;
-    padding: 20px;
+    padding: 8px 8px 8px var(--gutter);
+    min-height: 64px;
     display: flex;
-    align-items: flex-start;
-    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
-  .nav__col { flex: 1 1 0; display: flex; }
-  .nav__col--tag { justify-content: center; }
-  .nav__col--cta { justify-content: flex-end; }
-  .nav__tag {
-    width: 162px;
-    text-align: center;
-    color: rgb(20, 20, 20);
-    transition: color 0.2s ease;
+  .nav__marca {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    font-size: var(--h4);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ink-900);
   }
-  .nav__tag.is-light { color: var(--ink-50); }
-
-  .chip {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 28px;
-    padding: 4px 8px;
-    border-radius: 4px;
+  .nav__acciones { display: flex; align-items: center; gap: 4px; }
+  .nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding-inline: 14px;
+    border-radius: 8px;
     background: var(--ink-900);
     color: var(--white);
-    cursor: pointer;
+    font-size: var(--body);
+    font-weight: 500;
+    line-height: 1;
   }
+  :global(html:not(.js)) .nav__toggle { display: none; }
 
-  @media (max-width: 809.98px) {
-    .nav__bar { align-items: center; justify-content: space-between; }
-    .nav__col--menu { order: 2; justify-content: flex-end; }
-    .nav__col--tag { order: 1; justify-content: flex-start; }
-    .nav__tag { width: 100%; text-align: left; }
-    .nav__col--cta { display: none; }
-  }
-
-  /* ---------- overlay menu ---------- */
-  .menu {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    background: var(--ink-50);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .menu[hidden] { display: none; }
-  .menu__top {
-    position: absolute;
-    inset: 0 0 auto 0;
-    max-width: 1160px;
-    margin-inline: auto;
-    padding: 20px;
+  /* ---------- menú ---------- */
+  .menu__lista { display: flex; flex-direction: column; }
+  .menu__enlace {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 20px;
-  }
-  .menu__brand { display: flex; align-items: flex-start; gap: 10px; }
-  .menu__list {
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding-block: 90px;
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  .menu.is-open .menu__list {
-    opacity: 1;
-    transform: none;
-    transition: opacity var(--spring-05-dur) var(--spring-05), transform var(--spring-05-dur) var(--spring-05);
-  }
-  .menu__item {
-    display: flex;
-    align-items: center;
-    padding: 0;
+    width: 100%;
+    min-height: 56px;
+    padding: 0 4px;
+    font-size: var(--h4);
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
     color: var(--ink-900);
-    border-bottom: 1px solid transparent;
-    transition: padding var(--spring-04-dur) var(--spring-04), color var(--spring-04-dur) var(--spring-04), border-color var(--spring-04-dur) var(--spring-04);
+    border-top: 1px solid var(--ink-200);
   }
-  .menu__item,
-  .menu__socials {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .menu__socials { transform: translateY(10px); }
-  .menu.is-open .menu__item,
-  .menu.is-open .menu__socials {
-    opacity: 1;
-    transform: none;
-    transition:
-      opacity var(--spring-055-dur) var(--spring-055) var(--d),
-      transform var(--spring-055-dur) var(--spring-055) var(--d),
-      padding var(--spring-04-dur) var(--spring-04),
-      color var(--spring-04-dur) var(--spring-04),
-      border-color var(--spring-04-dur) var(--spring-04);
-  }
-  @media (hover: hover) and (min-width: 810px) {
-    .menu__item:hover { padding-left: 12px; color: var(--ink-600); border-color: var(--ink-600); }
-  }
-  .menu__socials {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding-top: 20px;
-  }
-  .menu__social { color: var(--ink-900); transition: color var(--spring-04-dur) var(--spring-04); }
-  .menu__social:hover { color: var(--ink-500); }
-  .menu__bottom-cta { display: none; }
+  .menu__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: 6px; }
+  .menu__mas { transition: transform 0.2s var(--ease-inout); }
+  .menu__sub-btn[aria-expanded='true'] .menu__mas { transform: rotate(45deg); }
 
-  @media (max-width: 809.98px) {
-    .menu__top { padding: 16px; }
-    .menu__brand { flex: 1; flex-direction: row-reverse; justify-content: space-between; align-items: center; }
-    .menu__top-cta { display: none; }
-    .menu__list { padding-left: 20px; }
-    .menu__bottom-cta { display: flex; }
+  .sub { padding-bottom: 12px; }
+  :global(html.js) .sub:not(.is-open) { display: none; }
+  .sub__todos,
+  .sub__enlace,
+  .sub__titulo {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 4px 0 16px;
+    font-size: var(--body);
+    color: var(--ink-600);
+  }
+  .sub__todos { color: var(--ink-900); font-weight: 500; }
+  .sub__titulo { color: var(--ink-900); font-weight: 500; }
+  .sub__enlace[aria-current='page'] { color: var(--ink-950); text-decoration: underline; text-underline-offset: 4px; }
+
+  .menu__movil { display: none; }
+
+  /* ---------- móvil: panel a pantalla completa ---------- */
+  @media (max-width: 1023.98px) {
+    .nav__bar { flex-wrap: wrap; }
+    .menu { flex: 1 0 100%; order: 3; }
+    :global(html.js) .menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px 16px max(16px, env(safe-area-inset-bottom));
+      background: var(--ink-50);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    /* margin-top:auto pega los enlaces abajo sin perder el scroll cuando el contenido es más alto que la pantalla. */
+    :global(html.js) .menu__nav { margin-top: auto; }
+    :global(html.js) .menu.is-open { display: flex; animation: menu-in 0.25s var(--ease-appear); }
+    /* Llamar y Cerrar quedan siempre a la vista, aunque el panel tenga que hacer scroll. */
+    :global(html.js) .menu__movil {
+      display: flex;
+      gap: 12px;
+      position: sticky;
+      bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
+      margin-bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
+      padding-block: 12px max(16px, env(safe-area-inset-bottom));
+      background: var(--ink-50);
+    }
+    .menu__btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 56px;
+      border-radius: 8px;
+      background: var(--ink-200);
+      color: var(--ink-900);
+      font-size: var(--body);
+      font-weight: 500;
+    }
+    .menu__btn--cerrar { background: var(--ink-900); color: var(--white); }
+  }
+  @keyframes menu-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---------- escritorio ---------- */
+  @media (min-width: 1024px) {
+    .nav__bar { min-height: 72px; padding: 8px var(--gutter); gap: 24px; }
+    .nav__toggle { display: none; }
+    .menu { flex: 1; display: flex; justify-content: center; }
+    .menu__lista { flex-direction: row; gap: 4px; }
+    .menu__item { position: relative; }
+    .menu__enlace {
+      width: auto;
+      gap: 8px;
+      padding: 0 16px;
+      border-top: 0;
+      border-radius: 8px;
+      font-size: var(--body);
+      transition: background-color 0.2s ease;
+    }
+    .menu__enlace:hover,
+    .menu__sub-btn[aria-expanded='true'] { background: var(--ink-50); }
+    .menu__mas { width: 16px; height: 16px; }
+    .sub {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: max-content;
+      max-width: min(760px, calc(100vw - 2 * var(--gutter)));
+      padding: 20px 24px 24px;
+      background: var(--white);
+      border: 1px solid var(--ink-200);
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(20, 27, 52, 0.12);
+    }
+    .sub__grupos { display: grid; grid-template-columns: repeat(3, minmax(190px, 1fr)); gap: 24px; }
+    .sub__todos,
+    .sub__enlace,
+    .sub__titulo { padding: 0 8px; border-radius: 6px; }
+    .sub__todos { margin-bottom: 8px; }
+    .sub__enlace:hover,
+    .sub__todos:hover,
+    a.sub__titulo:hover { background: var(--ink-50); color: var(--ink-900); }
   }
 </style>

@@ -1,0 +1,34 @@
+---
+import { negocio } from '../lib/negocio';
+import { esProduccion } from '../lib/entorno';
+
+// Único sistema de metadatos del sitio (reglas-seo sección 9): no duplicar estas etiquetas en otro lado.
+interface Props {
+  title: string;
+  description: string;
+  /** Ruta absoluta o URL de la imagen para Open Graph. Sin imagen, no se emite og:image. */
+  image?: string | null;
+  noindex?: boolean;
+}
+const { title, description, image = negocio.imagenOg, noindex = false } = Astro.props;
+
+// Canónico autorreferenciado, siempre en https://digitalx.mx y con barra final.
+const canonical = new URL(Astro.url.pathname, negocio.url).href;
+const ogImage = image ? new URL(image, negocio.url).href : null;
+const bloquear = noindex || !esProduccion;
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{bloquear && <meta name="robots" content="noindex, nofollow" />}
+<meta property="og:locale" content="es_MX" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={negocio.nombre} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}

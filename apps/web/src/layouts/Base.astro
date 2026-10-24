@@ -1,9 +1,8 @@
 ---
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
-import '@fontsource/urbanist/400.css';
-import '@fontsource/urbanist/500.css';
+import '@fontsource/archivo/800.css';
 import '@fontsource/onest/400.css';
-import '@fontsource/onest/500.css';
+import '@fontsource/onest/600.css';
 import '../styles/global.css';
 import Seo from '../components/Seo.astro';
 import SchemaNegocio from '../components/SchemaNegocio.astro';
@@ -30,7 +29,10 @@ const analytics = import.meta.env.PUBLIC_VERCEL_ANALYTICS === 'true';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <Seo title={title} description={description} image={image} noindex={noindex} />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <SchemaNegocio />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>

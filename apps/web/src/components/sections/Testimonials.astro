@@ -22,7 +22,7 @@ const n = testimonials.items.length;
               <blockquote class="t-h5 review__quote">{r.quote}</blockquote>
               <div class="review__who">
                 <p class="t-body-lg">{r.name}</p>
-                <p class="review__loc t-caption"><Icon name="pin" class="c-600" />{r.location}</p>
+                <p class="review__loc t-caption"><Icon name="pin" class="c-negro" />{r.location}</p>
               </div>
             </div>
           </article>
@@ -40,7 +40,7 @@ const n = testimonials.items.length;
   </div>
 </section>
 <style>
-  .reviews { background: var(--white); padding-block: 80px; }
+  .reviews { background: var(--dx-blanco); padding-block: 80px; }
   .reviews__inner { display: flex; flex-direction: column; gap: 40px; overflow: clip; }
   .reviews__slider { width: 100%; max-width: 1160px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
   .reviews__slides { display: grid; }
@@ -59,9 +59,9 @@ const n = testimonials.items.length;
   .reviews__progress { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
   .reviews__bars { width: 100%; display: flex; gap: 4px; }
   .reviews__bar { flex: 1; padding: 8px 0; cursor: pointer; }
-  .reviews__bar span { display: block; height: 1px; background: var(--ink-200); }
-  .reviews__bar.is-active span { background: var(--ink-900); }
-  .reviews__count { font-family: var(--font-caption); font-size: 14px; line-height: 1.2; color: var(--ink-500); }
+  .reviews__bar span { display: block; height: 1px; background: var(--dx-gris-claro); }
+  .reviews__bar.is-active span { background: var(--dx-negro); }
+  .reviews__count { font-family: var(--font-texto); font-weight: 600; font-size: 14px; line-height: 1.2; color: var(--dx-negro); }
   @media (max-width: 1199.98px) { .reviews { padding-block: 40px; } }
   @media (max-width: 809.98px) {
     .review { flex-direction: column; align-items: stretch; }

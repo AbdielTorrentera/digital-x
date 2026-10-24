@@ -31,17 +31,18 @@ const { mensaje } = Astro.props;
     max-width: calc(100vw - 32px);
     padding: 0 20px 0 14px;
     border-radius: 28px;
-    background: rgb(15, 122, 64);
-    color: var(--white);
-    font-family: var(--font-sans);
+    /* Verde oficial de WhatsApp con ícono y texto negros: el blanco no cumple contraste (identidad sección 2). */
+    background: var(--dx-whatsapp);
+    color: var(--dx-negro);
+    font-family: var(--font-texto);
     font-size: var(--body);
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.1;
-    box-shadow: 0 4px 16px rgba(20, 27, 52, 0.28);
-    transition: padding 0.25s var(--ease-inout), gap 0.25s var(--ease-inout), background-color 0.2s ease;
+    box-shadow: 0 4px 16px var(--dx-sombra);
+    transition: padding 0.25s var(--ease-inout), gap 0.25s var(--ease-inout), box-shadow 0.2s ease;
   }
-  .wa:hover { background: rgb(12, 100, 52); }
-  .wa:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 3px; }
+  .wa:hover { box-shadow: 0 6px 20px var(--dx-sombra); }
+  .wa:focus-visible { outline: 2px solid var(--dx-negro); outline-offset: 3px; }
   .wa__texto {
     display: block;
     max-width: 260px;

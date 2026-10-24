@@ -20,7 +20,7 @@ const id = `tile-${n}`;
     height: 362px;
     padding: 20px;
     border-radius: 8px;
-    background: var(--ink-50);
+    background: var(--dx-gris-claro);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -38,15 +38,15 @@ const id = `tile-${n}`;
     width: 36px;
     height: 28px;
     border-radius: 4px;
-    background: var(--ink-200);
-    color: var(--ink-900);
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
   }
   .qtile__btn :global(.icon) { transition: transform var(--spring-04-dur) var(--spring-04); }
   .qtile__body { display: flex; flex-direction: column; gap: 8px; }
-  .qtile__a { display: none; color: var(--ink-200); }
-  .qtile.is-open { background: var(--ink-900); }
-  .qtile.is-open .qtile__n { color: var(--ink-50); }
-  .qtile.is-open .qtile__q { color: var(--ink-200); }
+  .qtile__a { display: none; color: var(--dx-blanco); }
+  .qtile.is-open { background: var(--dx-negro); }
+  .qtile.is-open .qtile__n { color: var(--dx-blanco); }
+  .qtile.is-open .qtile__q { color: var(--dx-blanco); }
   .qtile.is-open .qtile__a { display: block; }
   .qtile.is-open .qtile__btn :global(.icon) { transform: rotate(45deg); }
 </style>

@@ -1,4 +1,5 @@
 ---
+import Logo from './Logo.astro';
 import { negocio, telUrl, waUrl } from '../lib/negocio';
 import { enlacesInformacion, gruposDeServicios } from '../lib/paginas';
 
@@ -7,12 +8,12 @@ import { enlacesInformacion, gruposDeServicios } from '../lib/paginas';
 // El texto de cobertura es fijo, en texto plano y sin enlaces por ciudad.
 const anio = new Date().getFullYear();
 ---
-<footer class="footer">
+<footer class="footer sobre-negro">
   <div class="container footer__inner">
     <div class="footer__top">
       <div class="footer__marca">
-        <p class="footer__nombre">{negocio.nombre}</p>
-        <p class="t-body-sm c-200 footer__cobertura">{negocio.textoCobertura}</p>
+        <a class="footer__logo" href="/"><Logo width={160} /></a>
+        <p class="t-body-sm footer__cobertura">{negocio.textoCobertura}</p>
       </div>
 
       <div class="footer__cols">
@@ -52,32 +53,33 @@ const anio = new Date().getFullYear();
       </div>
     </div>
 
-    <p class="t-caption c-200 footer__copy">© {anio} {negocio.nombre}</p>
+    <p class="t-caption footer__copy">© {anio} {negocio.nombre}</p>
   </div>
 </footer>
 
 <style>
   /* padding-bottom de 96 px: deja libre el final de la página para que el botón flotante de WhatsApp no tape texto. */
-  .footer { background: var(--ink-950); padding: 40px 0 96px; }
+  /* .sobre-negro (tokens.css) pone fondo negro, texto blanco y texto secundario en gris medio. */
+  .footer { padding: 40px 0 96px; }
   .footer__inner { display: flex; flex-direction: column; gap: 32px; }
   .footer__top { display: flex; flex-direction: column; gap: 32px; }
   .footer__marca { display: flex; flex-direction: column; gap: 12px; max-width: 360px; }
-  .footer__nombre { font-size: var(--h4); font-weight: 500; line-height: 1.2; color: var(--ink-50); }
-  .footer__cobertura { line-height: 1.4; }
+  .footer__logo { display: inline-flex; align-items: center; align-self: flex-start; min-height: 48px; color: var(--dx-blanco); }
+  .footer__cobertura { line-height: 1.4; color: var(--texto-sec); }
   .footer__cols { display: grid; grid-template-columns: 1fr; gap: 24px; }
   .footer__col ul { display: flex; flex-direction: column; }
-  .footer__titulo { font-size: var(--body); font-weight: 500; line-height: 1.2; color: var(--ink-50); margin-bottom: 4px; }
+  .footer__titulo { font-family: var(--font-titulos); font-size: var(--body); font-weight: 800; line-height: 1.2; color: var(--dx-blanco); margin-bottom: 4px; }
   .footer__enlace {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    min-height: 48px;
     font-size: var(--body-sm);
     line-height: 1.2;
-    color: var(--ink-200);
+    color: var(--dx-blanco);
     transition: color 0.2s ease;
   }
-  .footer__enlace:hover { color: var(--white); }
-  .footer__copy { line-height: 1.4; }
+  .footer__enlace:hover { color: var(--dx-amarillo); }
+  .footer__copy { line-height: 1.4; color: var(--texto-sec); }
 
   @media (min-width: 810px) {
     .footer { padding-top: 56px; }

@@ -16,8 +16,9 @@ export const negocio = {
   zonas: ['Atlixco', 'Izúcar de Matamoros'],
   textoCobertura:
     'Servicios de audio, video y tecnología en Atlixco, Izúcar de Matamoros y alrededores, Puebla.',
-  // [PENDIENTE: SEO de las páginas, ver reglas-seo sección 1] [PENDIENTE: imagen para Open Graph]
-  imagenOg: null as string | null,
+  // [PENDIENTE: SEO de las páginas, ver reglas-seo sección 1]
+  // Imagen genérica de marca (1200x630) para compartir enlaces; cada página puede pasar la suya.
+  imagenOg: '/og-digitalx-1200x630.png' as string | null,
 } as const;
 
 export const textoBotonWhatsApp = 'Cotiza tu evento o proyecto aquí';

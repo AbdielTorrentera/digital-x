@@ -1,7 +1,8 @@
 ---
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 import BotonLlamar from './BotonLlamar.astro';
-import { negocio, telUrl } from '../lib/negocio';
+import { telUrl } from '../lib/negocio';
 import { menu } from '../lib/paginas';
 
 const actual = Astro.url.pathname;
@@ -14,7 +15,7 @@ const actual = Astro.url.pathname;
 -->
 <header class="nav" data-nav>
   <div class="nav__bar">
-    <a class="nav__marca" href="/" aria-label={`${negocio.nombre}, ir al inicio`}>{negocio.nombre}</a>
+    <a class="nav__marca" href="/"><Logo width={132} /></a>
 
     <div class="menu" id="menu" data-menu>
       <nav class="menu__nav" aria-label="Principal">
@@ -72,8 +73,9 @@ const actual = Astro.url.pathname;
     top: 0;
     /* Por encima del botón de WhatsApp (z 20) para que el menú abierto lo cubra. */
     z-index: 40;
-    background: var(--white);
-    border-bottom: 1px solid var(--ink-200);
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
+    border-bottom: 1px solid var(--dx-gris-claro);
   }
   .nav__bar {
     max-width: var(--container);
@@ -89,10 +91,7 @@ const actual = Astro.url.pathname;
     display: inline-flex;
     align-items: center;
     min-height: 48px;
-    font-size: var(--h4);
-    font-weight: 500;
-    line-height: 1;
-    color: var(--ink-900);
+    color: var(--dx-negro);
   }
   .nav__acciones { display: flex; align-items: center; gap: 4px; }
   .nav__toggle {
@@ -102,10 +101,10 @@ const actual = Astro.url.pathname;
     min-height: 48px;
     padding-inline: 14px;
     border-radius: 8px;
-    background: var(--ink-900);
-    color: var(--white);
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
     font-size: var(--body);
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1;
   }
   :global(html:not(.js)) .nav__toggle { display: none; }
@@ -119,12 +118,13 @@ const actual = Astro.url.pathname;
     width: 100%;
     min-height: 56px;
     padding: 0 4px;
+    font-family: var(--font-titulos);
     font-size: var(--h4);
-    font-weight: 500;
+    font-weight: 800;
     line-height: 1.2;
     text-align: left;
-    color: var(--ink-900);
-    border-top: 1px solid var(--ink-200);
+    color: var(--dx-negro);
+    border-top: 1px solid var(--dx-gris-medio);
   }
   .menu__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: 6px; }
   .menu__mas { transition: transform 0.2s var(--ease-inout); }
@@ -140,11 +140,11 @@ const actual = Astro.url.pathname;
     min-height: 48px;
     padding: 0 4px 0 16px;
     font-size: var(--body);
-    color: var(--ink-600);
+    color: var(--dx-negro);
   }
-  .sub__todos { color: var(--ink-900); font-weight: 500; }
-  .sub__titulo { color: var(--ink-900); font-weight: 500; }
-  .sub__enlace[aria-current='page'] { color: var(--ink-950); text-decoration: underline; text-underline-offset: 4px; }
+  .sub__todos { color: var(--dx-negro); font-weight: 600; }
+  .sub__titulo { color: var(--dx-negro); font-weight: 600; }
+  .sub__enlace[aria-current='page'] { color: var(--dx-negro); text-decoration: underline; text-underline-offset: 4px; }
 
   .menu__movil { display: none; }
 
@@ -160,7 +160,7 @@ const actual = Astro.url.pathname;
       flex-direction: column;
       gap: 16px;
       padding: 16px 16px max(16px, env(safe-area-inset-bottom));
-      background: var(--ink-50);
+      background: var(--dx-gris-claro);
       overflow-y: auto;
       overscroll-behavior: contain;
     }
@@ -175,7 +175,7 @@ const actual = Astro.url.pathname;
       bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
       margin-bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
       padding-block: 12px max(16px, env(safe-area-inset-bottom));
-      background: var(--ink-50);
+      background: var(--dx-gris-claro);
     }
     .menu__btn {
       flex: 1;
@@ -185,12 +185,12 @@ const actual = Astro.url.pathname;
       gap: 8px;
       min-height: 56px;
       border-radius: 8px;
-      background: var(--ink-200);
-      color: var(--ink-900);
+      background: var(--dx-blanco);
+      color: var(--dx-negro);
       font-size: var(--body);
-      font-weight: 500;
+      font-weight: 600;
     }
-    .menu__btn--cerrar { background: var(--ink-900); color: var(--white); }
+    .menu__btn--cerrar { background: var(--dx-negro); color: var(--dx-blanco); }
   }
   @keyframes menu-in {
     from { opacity: 0; transform: translateY(16px); }
@@ -214,7 +214,7 @@ const actual = Astro.url.pathname;
       transition: background-color 0.2s ease;
     }
     .menu__enlace:hover,
-    .menu__sub-btn[aria-expanded='true'] { background: var(--ink-50); }
+    .menu__sub-btn[aria-expanded='true'] { background: var(--dx-gris-claro); }
     .menu__mas { width: 16px; height: 16px; }
     .sub {
       position: absolute;
@@ -223,10 +223,10 @@ const actual = Astro.url.pathname;
       width: max-content;
       max-width: min(760px, calc(100vw - 2 * var(--gutter)));
       padding: 20px 24px 24px;
-      background: var(--white);
-      border: 1px solid var(--ink-200);
+      background: var(--dx-blanco);
+      border: 1px solid var(--dx-gris-claro);
       border-radius: 12px;
-      box-shadow: 0 12px 32px rgba(20, 27, 52, 0.12);
+      box-shadow: 0 12px 32px var(--dx-sombra);
     }
     .sub__grupos { display: grid; grid-template-columns: repeat(3, minmax(190px, 1fr)); gap: 24px; }
     .sub__todos,
@@ -235,6 +235,6 @@ const actual = Astro.url.pathname;
     .sub__todos { margin-bottom: 8px; }
     .sub__enlace:hover,
     .sub__todos:hover,
-    a.sub__titulo:hover { background: var(--ink-50); color: var(--ink-900); }
+    a.sub__titulo:hover { background: var(--dx-gris-claro); color: var(--dx-negro); }
   }
 </style>

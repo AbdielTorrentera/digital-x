@@ -17,21 +17,21 @@ const n = contact.offices.length;
             <div class="ocard__bars">
               {Array.from({ length: n }, (_, k) => <span class:list={{ 'is-active': k === i }}></span>)}
             </div>
-            <p class="t-body c-50">{o.counter}</p>
+            <p class="t-body c-blanco">{o.counter}</p>
           </div>
           <div class="ocard__name">
-            <p class="t-caption2 c-200">{o.label}</p>
-            <h2 class="t-h3 c-50">{o.city}</h2>
+            <p class="t-caption2 c-blanco">{o.label}</p>
+            <h2 class="t-h3 c-blanco">{o.city}</h2>
           </div>
           <div class="ocard__details">
-            <p class="t-body-sm c-200 ocard__text">{o.text}</p>
+            <p class="t-body-sm c-blanco ocard__text">{o.text}</p>
             <div class="ocard__pair">
-              <div><p class="t-caption2 c-300">{contact.labels.address}</p><p class="t-body-sm c-50">{o.address[0]}<br />{o.address[1]}</p></div>
-              <div><p class="t-caption2 c-300">{contact.labels.hours}</p><div class="ocard__hours">{o.hours.map((h: string) => <p class="t-body-sm c-50">{h}</p>)}</div></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.address}</p><p class="t-body-sm c-blanco">{o.address[0]}<br />{o.address[1]}</p></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.hours}</p><div class="ocard__hours">{o.hours.map((h: string) => <p class="t-body-sm c-blanco">{h}</p>)}</div></div>
             </div>
             <div class="ocard__pair">
-              <div><p class="t-caption2 c-300">{contact.labels.phone}</p><a class="t-body-sm c-50" href={`tel:${o.tel}`}>{o.phone}</a></div>
-              <div><p class="t-caption2 c-300">{contact.labels.email}</p><a class="t-body-sm c-50" href={`mailto:${o.email}`}>{o.email}</a></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.phone}</p><a class="t-body-sm c-blanco" href={`tel:${o.tel}`}>{o.phone}</a></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.email}</p><a class="t-body-sm c-blanco" href={`mailto:${o.email}`}>{o.email}</a></div>
             </div>
           </div>
           <Btn label={contact.cta.label} href={contact.cta.href} variant="secondary" />
@@ -51,7 +51,7 @@ const n = contact.offices.length;
     align-items: center;
     justify-content: center;
   }
-  .office__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .office__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
   .office__inner { position: relative; width: 100%; max-width: var(--container); padding: 20px; display: flex; align-items: center; }
   .ocard {
     width: 440px;
@@ -64,17 +64,17 @@ const n = contact.offices.length;
     justify-content: space-between;
     align-items: flex-start;
     gap: 40px;
-    background: var(--ink-950-15);
+    background: var(--dx-capa-oscura);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
   .ocard__progress { width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
   .ocard__bars { width: 100%; display: flex; gap: 4px; }
-  .ocard__bars span { flex: 1; height: 1px; background: var(--ink-400); }
-  .ocard__bars span.is-active { background: var(--white); }
+  .ocard__bars span { flex: 1; height: 1px; background: var(--dx-linea-sobre-foto); }
+  .ocard__bars span.is-active { background: var(--dx-blanco); }
   .ocard__name { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .ocard__details { width: 100%; display: flex; flex-direction: column; gap: 12px; }
-  .ocard__text { padding-bottom: 20px; box-shadow: inset 0 -1px 0 var(--ink-300); }
+  .ocard__text { padding-bottom: 20px; box-shadow: inset 0 -1px 0 var(--dx-linea-sobre-foto); }
   .ocard__pair { display: flex; gap: 20px; }
   .ocard__hours { display: flex; flex-direction: column; gap: 20px; }
   .ocard__pair > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }

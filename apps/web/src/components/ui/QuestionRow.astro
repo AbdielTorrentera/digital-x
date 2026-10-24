@@ -16,7 +16,7 @@ const id = `faq-${n}-${q.length}`;
   <button class="qrow__btn" type="button" aria-expanded="false" aria-controls={id} aria-label={q}><Icon name="plus" /></button>
 </div>
 <style>
-  .qrow { display: flex; align-items: flex-start; gap: 20px; padding-bottom: 20px; box-shadow: inset 0 -1px 0 var(--ink-200); cursor: pointer; }
+  .qrow { display: flex; align-items: flex-start; gap: 20px; padding-bottom: 20px; box-shadow: inset 0 -1px 0 var(--dx-gris-medio); cursor: pointer; }
   .qrow__n { flex: none; }
   .qrow__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
   .qrow__btn {
@@ -27,8 +27,8 @@ const id = `faq-${n}-${q.length}`;
     height: 28px;
     padding: 4px 8px;
     border-radius: 4px;
-    background: var(--ink-200);
-    color: var(--ink-900);
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
   }
   .qrow__btn :global(.icon) { transition: transform 0.4s var(--ease-accordion); }
   .qrow.is-open .qrow__btn :global(.icon) { transform: rotate(45deg); }

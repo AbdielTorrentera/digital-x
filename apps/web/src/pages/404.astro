@@ -12,7 +12,7 @@ const textos: Record<string, string> = { '/': 'Ir al inicio de Digital X', '/ser
   noindex
 >
   <section class="container nf">
-    <p class="t-caption2 c-500">Error 404</p>
+    <p class="t-caption2">Error 404</p>
     <h1 class="t-h1">Esta página no existe</h1>
     <p class="t-body">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar.</p>
     <ul class="nf__enlaces">
@@ -31,9 +31,13 @@ const textos: Record<string, string> = { '/': 'Ir al inicio de Digital X', '/ser
     min-height: 56px;
     padding: 0 20px;
     border-radius: 8px;
-    background: var(--ink-900);
-    color: var(--white);
-    font-weight: 500;
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--btn-borde);
+    font-weight: 600;
+  }
+  @media (hover: hover) {
+    .nf__enlace:hover { background: var(--btn-fondo-hover); color: var(--btn-texto-hover); }
   }
   @media (min-width: 1200px) {
     .nf { padding-block: 96px; margin-inline: auto; max-width: var(--container); }

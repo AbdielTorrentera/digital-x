@@ -1,33 +1,42 @@
 /*
- * Marby design tokens.
- * Colours, easings and the type scale, read from the original design's
- * colour styles and text presets. Breakpoints: desktop >= 1200px,
- * tablet 810-1199px, phone < 810px.
+ * Design tokens de Digital X (colores de la marca; easings y escala tipográfica de Marby).
+ * Breakpoints: desktop >= 1200px, tablet 810-1199px, phone < 810px.
  */
 :root {
-  /* colour */
-  --ink-950: rgb(20, 27, 52);
-  --ink-900: rgb(27, 27, 40);
-  --ink-800: rgb(37, 37, 48);
-  --ink-700: rgb(56, 56, 68);
-  --ink-600: rgb(81, 81, 95);
-  --ink-500: rgb(110, 110, 126);
-  --ink-400: rgb(146, 146, 160);
-  --ink-300: rgb(180, 180, 191);
-  --ink-200: rgb(213, 213, 219);
-  --ink-50: rgb(245, 245, 246);
-  --white: rgb(255, 255, 255);
-  --ink-950-15: rgba(20, 27, 52, 0.15);
-  --ink-50-20: rgba(245, 245, 246, 0.2);
-  --error: rgb(251, 56, 88);
+  /* colour: paleta de docs/identidad-marca-digitalx.md sección 2. Único archivo con HEX. */
+  --dx-amarillo: #f2e205;
+  --dx-amarillo-dorado: #f2cb05;
+  --dx-negro: #000000;
+  --dx-gris-medio: #999999;
+  --dx-gris-claro: #dbdbdb;
+  --dx-blanco: #ffffff;
+  /* Única excepción a la paleta: verde oficial de WhatsApp (identidad sección 2). */
+  --dx-whatsapp: #25d366;
 
-  /* glass panels (feature cards, team cards, form, offices) */
-  --glass-cool: linear-gradient(180deg, rgba(20, 27, 52, 0) 0%, rgba(20, 27, 52, 0.15) 100%);
-  --glass-warm: linear-gradient(180deg, rgba(27, 27, 40, 0) 0%, rgba(27, 27, 40, 0.15) 100%);
+  /* Derivados del negro (sin colores nuevos): capa para texto sobre fotos y sombras. */
+  --dx-capa-oscura: color-mix(in srgb, var(--dx-negro) 60%, transparent);
+  --dx-sombra: color-mix(in srgb, var(--dx-negro) 25%, transparent);
+  /* Fotos de fondo bajo texto blanco: 60 % negro (= brightness 0.4) da >= 5.7:1 aun con fotos blancas. */
+  --dx-brillo-sobre-foto: 0.4;
+  --dx-linea-sobre-foto: color-mix(in srgb, var(--dx-blanco) 25%, transparent);
+
+  /* Colores por contexto. Fondo claro por defecto; .sobre-negro los invierte.
+     Contraste (identidad sección 3): amarillo y gris medio solo existen sobre negro. */
+  --fondo: var(--dx-blanco);
+  --fondo-suave: var(--dx-gris-claro);
+  --texto: var(--dx-negro);
+  --texto-sec: var(--dx-negro);
+  --borde: var(--dx-gris-claro);
+  --foco: var(--dx-negro);
+  --btn-fondo: var(--dx-negro);
+  --btn-texto: var(--dx-blanco);
+  --btn-fondo-hover: var(--dx-blanco);
+  --btn-texto-hover: var(--dx-negro);
+  --btn-borde: var(--dx-negro);
 
   /* fonts */
-  --font-sans: 'Urbanist', system-ui, sans-serif;
-  --font-caption: 'Onest', system-ui, sans-serif;
+  --font-titulos: 'Archivo', system-ui, sans-serif;
+  --font-texto: 'Onest', system-ui, sans-serif;
 
   /* easing */
   --ease-appear: cubic-bezier(0.12, 0.23, 0.5, 1);
@@ -93,4 +102,21 @@
     --caption2: 12px;
     --wordmark: 280px;
   }
+}
+
+/* Secciones y pie sobre fondo negro: aquí sí pueden usarse amarillo y gris medio. */
+.sobre-negro {
+  --fondo: var(--dx-negro);
+  --fondo-suave: var(--dx-negro);
+  --texto: var(--dx-blanco);
+  --texto-sec: var(--dx-gris-medio);
+  --borde: var(--dx-gris-medio);
+  --foco: var(--dx-amarillo);
+  --btn-fondo: var(--dx-amarillo);
+  --btn-texto: var(--dx-negro);
+  --btn-fondo-hover: var(--dx-amarillo-dorado);
+  --btn-texto-hover: var(--dx-negro);
+  --btn-borde: var(--dx-amarillo);
+  background: var(--fondo);
+  color: var(--texto);
 }

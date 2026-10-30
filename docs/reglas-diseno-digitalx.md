@@ -8,7 +8,7 @@ Versión: borrador de trabajo · 2026-10-30
 
 ## 0. Instrucciones para el agente (leer primero)
 
-1. **Mobile first, siempre.** Cada componente se diseña, se construye y se revisa primero a 375 px y después se amplía. Nada se da por terminado sin revisarlo en móvil.
+1. **Mobile first, siempre.** Cada componente se diseña, se construye y se revisa primero a 360 px y después se amplía. Nada se da por terminado sin revisarlo en móvil.
 2. Usa **solo** los valores de este archivo (escala de espaciado, escala tipográfica, anchos, radios, duraciones). Si necesitas un valor que no existe, **detente y pregunta**; no inventes uno "a ojo".
 3. Los valores se declaran como **variables (tokens)** en `src/styles/tokens.css` y se usan por nombre. Prohibidos los números sueltos en componentes (`margin: 22px`, `font-size: 15px`).
 4. Colores, logos y tipografías salen de `identidad-marca-digitalx.md`; aquí solo se dice cómo usarlos. Si chocan, manda el archivo de marca.

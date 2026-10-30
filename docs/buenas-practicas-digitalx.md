@@ -94,7 +94,7 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 | Enlaces internos sin 404 | Script de revisión sobre `dist/` | Cada *pull request* |
 | Registro de páginas coherente con las rutas | Protección en el build (ya existe) | Cada build |
 | Esquemas de Sanity válidos | Validaciones del esquema y `sanity schema validate` | Al cambiar esquemas |
-| Pantallas a 375 y 1440 px, sin scroll horizontal | Playwright (capturas y comprobaciones básicas) | Al cambiar componentes o páginas |
+| Pantallas a 360 y 1440 px, sin scroll horizontal | Playwright (capturas y comprobaciones básicas) | Al cambiar componentes o páginas |
 | Accesibilidad automática | axe con Playwright | Al cambiar componentes o páginas |
 | Rendimiento | Lighthouse o PageSpeed | Antes de lanzar y al agregar páginas |
 
@@ -150,7 +150,7 @@ Una tarea está terminada cuando:
 
 - [ ] Cumple las reglas de todos los archivos de `docs/` que aplican.
 - [ ] Pasan las verificaciones de §5 que le corresponden, y se ejecutaron (no solo "deberían pasar").
-- [ ] Se revisó a 375 px y en escritorio.
+- [ ] Se revisó a 360 px y en escritorio.
 - [ ] No quedó código muerto, comentarios obsoletos ni dependencias sin usar.
 - [ ] El reporte incluye qué se hizo, cómo se verificó y los `[PENDIENTE: …]` que quedan.
 - [ ] El dueño revisó la vista previa.
@@ -159,7 +159,8 @@ Una tarea está terminada cuando:
 
 ## 11. Pendientes
 
-- [ ] Configurar Prettier con `prettier-plugin-astro` en el monorepo.
-- [ ] Crear el flujo de GitHub Actions de §7.
-- [ ] Proteger la rama `main` en GitHub.
+- [x] Configurar Prettier con `prettier-plugin-astro` en el monorepo.
+- [x] Crear el flujo de GitHub Actions de §7.
+- [x] Proteger la rama `main` en GitHub.
+- [x] `tsc` del Studio en las verificaciones.
 - [ ] Decidir si se agrega ESLint.

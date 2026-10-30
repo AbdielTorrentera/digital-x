@@ -27,6 +27,7 @@ Las reglas viven en `docs/`, un archivo por tema. **Son obligatorias.** Antes de
 | `docs/estructura-sitio-digitalx.md` | Datos del negocio, páginas permitidas, URLs, navegación, redirecciones y estados de publicación |
 | `docs/reglas-seo-digitalx.md` | Metadatos, encabezados, enlazado, contenido, imágenes, SEO técnico, rendimiento, WhatsApp, datos estructurados |
 | `docs/reglas-seguridad-digitalx.md` | Secretos, contenido de Sanity, encabezados HTTP, dependencias, cuentas y datos personales. Tiene la prioridad más alta |
+| `docs/identidad-marca-digitalx.md` | Logos, colores, contraste, tipografías y tono de voz |
 | `docs/reglas-diseno-digitalx.md` | Retícula, espaciado, tipografía en pantalla, jerarquía, componentes, movimiento y accesibilidad |
 | `docs/buenas-practicas-digitalx.md` | Organización del código, estilo, pruebas, Git, CI/CD y definición de terminado |
 
@@ -40,10 +41,11 @@ Las reglas viven en `docs/`, un archivo por tema. **Son obligatorias.** Antes de
 4. **Antes de cambiar código, muestra un plan corto** con los archivos que vas a tocar y espera aprobación.
 5. **Al terminar cada tarea,** entrega un reporte con lo que hiciste, cómo se verificó (build, revisión en navegador) y la lista de `[PENDIENTE: ...]` que quedan.
 
-6. **Mobile first.** Todo se diseña y se prueba primero a 375 px de ancho y
-   después se adapta a pantallas grandes. Nada se da por terminado sin
-   revisarlo en móvil: sin scroll horizontal, texto legible sin zoom y
-   áreas táctiles de al menos 48 px. (Detalle en reglas-seo, sección 10.)
+6. **Mobile first.** Todo se diseña y se prueba primero a 360 px y después en
+   pantallas grandes (detalle en reglas-diseno).
+7. **Cero costos.** Prohibido usar, activar o recomendar cualquier servicio,
+   plan, función o complemento de pago, o que pida tarjeta. Si algo solo
+   existe de pago, se reporta y se busca una alternativa gratuita.
 
 ## Stack y estructura del repo
 
@@ -55,6 +57,9 @@ Monorepo con pnpm workspaces:
 
 Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstruye solo cuando cambia su carpeta), **Sanity** (plan gratuito, dataset `production`), **Mux** para videos (plan gratuito, máximo 10). El sitio es estático; un webhook de Sanity dispara el rebuild en Vercel.
 
+- `brand/` es la fuente única de logos e íconos; lo copiado en `apps/web` se actualiza desde ahí, nunca al revés.
+- Mux en plan gratuito: se acepta su marca en el reproductor; no proponer quitarla.
+
 **Qué va en Sanity:** proyectos, artículos del blog, preguntas frecuentes, testimonios (solo con permiso), servicios, datos de contacto y SEO de proyectos y artículos. **Qué va en código:** diseño, layout, navegación, páginas legales y SEO de las páginas fijas.
 
 ## Comandos
@@ -63,6 +68,7 @@ Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstr
 - Desarrollo: `pnpm dev` dentro de cada app (web en :4321, studio en :3333).
 - Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`.
 - Antes de dar por terminada una tarea en `apps/web`: `pnpm build` sin errores.
+- Verificaciones: `pnpm format` / `pnpm format:check` (raíz); `pnpm check`, `pnpm test`, `pnpm build` y `pnpm check:enlaces` (en `apps/web`); `pnpm check` (en `apps/studio`).
 
 ## Adaptar Marby: lo que hay que cambiar
 

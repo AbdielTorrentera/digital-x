@@ -1,5 +1,6 @@
 # Actualizaciones automáticas (seguridad §6.7). Dependabot solo abre pull requests: ninguna se fusiona sola,
 # el dueño revisa cada una. Es gratis en repositorios públicos.
+# Una sola persona mantiene el proyecto: una pasada al mes y máximo 2 PR abiertos por ecosistema.
 version: 2
 
 updates:
@@ -10,14 +11,13 @@ updates:
       - /apps/web
       - /apps/studio
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: America/Mexico_City
     # pnpm exige 3 días de antigüedad (minimumReleaseAge); con 4 queda margen para que el CI no rechace el PR.
     cooldown:
       default-days: 4
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     commit-message:
       prefix: chore
     groups:
@@ -30,13 +30,12 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: America/Mexico_City
     cooldown:
       default-days: 4
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     commit-message:
       prefix: ci
     groups:

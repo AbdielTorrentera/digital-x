@@ -1,0 +1,6 @@
+# Los edita el dueño a mano.
+docs/
+CLAUDE.md
+
+pnpm-lock.yaml
+apps/web/public/

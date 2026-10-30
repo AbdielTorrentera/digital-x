@@ -46,7 +46,7 @@ export const paginas: Pagina[] = [
   { url: '/politica-de-privacidad/', titulo: 'Política de privacidad', estado: 'lanzamiento', construida: false },
 ];
 
-const visible = (p: Pagina) => p.estado === 'lanzamiento' && p.construida;
+export const visible = (p: Pagina) => p.estado === 'lanzamiento' && p.construida;
 const porUrl = (url: string) => paginas.find((p) => p.url === url && visible(p));
 
 /** Rutas relativas a src/pages/ que debe tener una página para estar construida. */

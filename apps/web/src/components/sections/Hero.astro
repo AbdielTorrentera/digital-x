@@ -2,13 +2,27 @@
 import { site } from '../../lib/site';
 const { hero } = await site('home');
 ---
+
 <section class="hero sobre-negro" data-dark>
   <link rel="preload" as="image" href={hero.poster} fetchpriority="high" />
-  <video class="hero__video" data-src={hero.video} poster={hero.poster} muted loop playsinline preload="none" aria-hidden="true"></video>
+  <video
+    class="hero__video"
+    data-src={hero.video}
+    poster={hero.poster}
+    muted
+    loop
+    playsinline
+    preload="none"
+    aria-hidden="true"
+  ></video>
   <div class="scrim" aria-hidden="true"></div>
   <div class="container hero__inner">
-    <h1 class="hero__title" data-appear="mount">{hero.title}</h1>
-    <p class="hero__text t-caption2 c-blanco" data-appear="mount">{hero.text}</p>
+    <h1 class="hero__title" data-appear="mount">
+      {hero.title}
+    </h1>
+    <p class="hero__text t-caption2 c-blanco" data-appear="mount">
+      {hero.text}
+    </p>
   </div>
 </section>
 <style>
@@ -46,7 +60,11 @@ const { hero } = await site('home');
     color: var(--dx-blanco);
   }
   @media (min-width: 1024px) {
-    .hero { min-height: 95vh; }
-    .hero__inner { align-items: flex-end; }
+    .hero {
+      min-height: 95vh;
+    }
+    .hero__inner {
+      align-items: flex-end;
+    }
   }
 </style>

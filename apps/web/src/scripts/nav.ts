@@ -66,7 +66,10 @@ export function initNav() {
       if (estaAbierto()) cerrarMenu();
       else {
         const abierto = subs.find((b) => b.getAttribute('aria-expanded') === 'true');
-        if (abierto) { cerrarSubs(); abierto.focus(); }
+        if (abierto) {
+          cerrarSubs();
+          abierto.focus();
+        }
       }
       return;
     }
@@ -75,8 +78,13 @@ export function initNav() {
       if (!lista.length) return;
       const primero = lista[0];
       const ultimo = lista[lista.length - 1];
-      if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
-      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+      if (e.shiftKey && document.activeElement === primero) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primero.focus();
+      }
     }
   });
 

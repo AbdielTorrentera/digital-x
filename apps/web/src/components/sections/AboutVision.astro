@@ -2,6 +2,7 @@
 import { site } from '../../lib/site';
 const { vision } = await site('about');
 ---
+
 <section class="vision sobre-negro" data-dark data-appear="mount">
   <img class="vision__bg" src={vision.image} alt="" />
   <div class="container vision__inner">
@@ -17,7 +18,9 @@ const { vision } = await site('about');
         <div class:list={['vision__box', i === 0 ? 'vision__box--a' : 'vision__box--b']}>
           <div class="vcard">
             <h3 class="t-h3 c-blanco">{c.title}</h3>
-            <div class="vcard__text"><p class="t-body c-blanco">{c.text}</p></div>
+            <div class="vcard__text">
+              <p class="t-body c-blanco">{c.text}</p>
+            </div>
           </div>
         </div>
       ))}
@@ -25,12 +28,43 @@ const { vision } = await site('about');
   </div>
 </section>
 <style>
-  .vision { position: relative; padding-block: var(--esp-8); overflow: clip; display: flex; align-items: center; }
-  .vision__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
-  .vision__inner { position: relative; display: flex; flex-direction: column; gap: var(--esp-7); }
-  .vision__head { display: flex; flex-direction: column; gap: var(--esp-5); }
-  .vision__title { flex: 1; display: flex; flex-direction: column; gap: var(--esp-3); }
-  .vision__cards { display: flex; flex-direction: column; gap: var(--esp-5); }
+  .vision {
+    position: relative;
+    padding-block: var(--esp-8);
+    overflow: clip;
+    display: flex;
+    align-items: center;
+  }
+  .vision__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--dx-brillo-sobre-foto));
+  }
+  .vision__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .vision__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .vision__title {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .vision__cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
   .vcard {
     padding: var(--esp-4);
     border-radius: var(--radio);
@@ -42,15 +76,38 @@ const { vision } = await site('about');
     -webkit-backdrop-filter: blur(var(--desenfoque));
     backdrop-filter: blur(var(--desenfoque));
   }
-  .vcard__text { flex: 1; display: flex; align-items: flex-end; }
+  .vcard__text {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+  }
   @media (min-width: 1024px) {
-    .vision { padding-block: var(--esp-9); }
-    .vision__head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
-    .vision__cards { flex-direction: row; align-items: center; gap: var(--esp-6); }
-    .vision__box { flex: 1 1 0; min-width: 0; }
+    .vision {
+      padding-block: var(--esp-9);
+    }
+    .vision__head {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .vision__cards {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--esp-6);
+    }
+    .vision__box {
+      flex: 1 1 0;
+      min-width: 0;
+    }
     /* Las dos tarjetas quedan escalonadas, una más alta y otra más baja. */
-    .vision__box--a { padding-top: var(--esp-8); }
-    .vision__box--b { padding-bottom: var(--esp-8); }
-    .vcard { padding: var(--esp-5); }
+    .vision__box--a {
+      padding-top: var(--esp-8);
+    }
+    .vision__box--b {
+      padding-bottom: var(--esp-8);
+    }
+    .vcard {
+      padding: var(--esp-5);
+    }
   }
 </style>

@@ -4,9 +4,12 @@ import { textoBotonWhatsApp, waUrl } from '../lib/negocio';
 
 // Botón flotante de WhatsApp (reglas-seo sección 11). El mensaje prellenado cambia por página.
 // En móvil se reduce a un ícono al hacer scroll (scripts/whatsapp.ts); el aria-label conserva el texto completo.
-interface Props { mensaje?: string }
+interface Props {
+  mensaje?: string;
+}
 const { mensaje } = Astro.props;
 ---
+
 <a
   class="wa"
   href={waUrl(mensaje)}
@@ -40,15 +43,33 @@ const { mensaje } = Astro.props;
     line-height: var(--lh-etiqueta);
     box-shadow: var(--sombra-flotante);
   }
-  .wa:active { transform: translateY(var(--linea)); }
+  .wa:active {
+    transform: translateY(var(--linea));
+  }
   /* Sobre el pie negro el contorno negro no se ve: un halo blanco en la separación de 2 px lo marca. */
-  .wa:focus-visible { outline-color: var(--dx-negro); box-shadow: 0 0 0 var(--foco) var(--dx-blanco), var(--sombra-flotante); }
+  .wa:focus-visible {
+    outline-color: var(--dx-negro);
+    box-shadow:
+      0 0 0 var(--foco) var(--dx-blanco),
+      var(--sombra-flotante);
+  }
   /* Móvil: tras hacer scroll queda solo el ícono para no tapar contenido. El texto sigue en el aria-label. */
-  .wa.is-compact { padding-inline: var(--esp-3); }
-  .wa.is-compact .wa__texto { display: none; }
+  .wa.is-compact {
+    padding-inline: var(--esp-3);
+  }
+  .wa.is-compact .wa__texto {
+    display: none;
+  }
   @media (min-width: 768px) {
-    .wa { right: var(--esp-5); bottom: var(--esp-5); }
-    .wa.is-compact { padding-inline: var(--esp-4) var(--esp-5); }
-    .wa.is-compact .wa__texto { display: block; }
+    .wa {
+      right: var(--esp-5);
+      bottom: var(--esp-5);
+    }
+    .wa.is-compact {
+      padding-inline: var(--esp-4) var(--esp-5);
+    }
+    .wa.is-compact .wa__texto {
+      display: block;
+    }
   }
 </style>

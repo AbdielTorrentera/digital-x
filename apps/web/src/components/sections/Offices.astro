@@ -4,18 +4,26 @@ import { site } from '../../lib/site';
 const contact = await site('contact');
 const n = contact.offices.length;
 ---
+
 <section class="offices" data-appear="mount">
   {contact.offices.map((o: any, i: number) => (
     <div class="office sobre-negro" data-dark>
       <picture>
         {o.imagePhone && <source media="(min-width: 768px)" srcset={o.image} />}
-        <img class="office__bg" src={o.imagePhone ?? o.image} alt={contact.labels.image} loading={i === 0 ? 'eager' : 'lazy'} />
+        <img
+          class="office__bg"
+          src={o.imagePhone ?? o.image}
+          alt={contact.labels.image}
+          loading={i === 0 ? 'eager' : 'lazy'}
+        />
       </picture>
       <div class="container office__inner">
         <div class="ocard">
           <div class="ocard__progress">
             <div class="ocard__bars">
-              {Array.from({ length: n }, (_, k) => <span class:list={{ 'is-active': k === i }}></span>)}
+              {Array.from({ length: n }, (_, k) => (
+                <span class:list={{ 'is-active': k === i }}></span>
+              ))}
             </div>
             <p class="t-body c-blanco">{o.counter}</p>
           </div>
@@ -26,12 +34,36 @@ const n = contact.offices.length;
           <div class="ocard__details">
             <p class="t-body c-blanco ocard__text">{o.text}</p>
             <div class="ocard__pair">
-              <div><p class="t-caption2 c-blanco">{contact.labels.address}</p><p class="t-body c-blanco">{o.address[0]}<br />{o.address[1]}</p></div>
-              <div><p class="t-caption2 c-blanco">{contact.labels.hours}</p><div class="ocard__hours">{o.hours.map((h: string) => <p class="t-body c-blanco">{h}</p>)}</div></div>
+              <div>
+                <p class="t-caption2 c-blanco">{contact.labels.address}</p>
+                <p class="t-body c-blanco">
+                  {o.address[0]}
+                  <br />
+                  {o.address[1]}
+                </p>
+              </div>
+              <div>
+                <p class="t-caption2 c-blanco">{contact.labels.hours}</p>
+                <div class="ocard__hours">
+                  {o.hours.map((h: string) => (
+                    <p class="t-body c-blanco">{h}</p>
+                  ))}
+                </div>
+              </div>
             </div>
             <div class="ocard__pair">
-              <div><p class="t-caption2 c-blanco">{contact.labels.phone}</p><a class="t-body c-blanco" href={`tel:${o.tel}`}>{o.phone}</a></div>
-              <div><p class="t-caption2 c-blanco">{contact.labels.email}</p><a class="t-body c-blanco" href={`mailto:${o.email}`}>{o.email}</a></div>
+              <div>
+                <p class="t-caption2 c-blanco">{contact.labels.phone}</p>
+                <a class="t-body c-blanco" href={`tel:${o.tel}`}>
+                  {o.phone}
+                </a>
+              </div>
+              <div>
+                <p class="t-caption2 c-blanco">{contact.labels.email}</p>
+                <a class="t-body c-blanco" href={`mailto:${o.email}`}>
+                  {o.email}
+                </a>
+              </div>
             </div>
           </div>
           <Btn label={contact.cta.label} href={contact.cta.href} variant="secondary" />
@@ -41,7 +73,11 @@ const n = contact.offices.length;
   ))}
 </section>
 <style>
-  .offices { overflow: clip; display: flex; flex-direction: column; }
+  .offices {
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+  }
   .office {
     position: relative;
     z-index: 1;
@@ -51,9 +87,22 @@ const n = contact.offices.length;
     align-items: center;
     justify-content: center;
   }
-  .office__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
+  .office__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--dx-brillo-sobre-foto));
+  }
   /* Retícula del diseño §1: 4 columnas en móvil, 8 en tableta y 12 en escritorio. */
-  .office__inner { position: relative; padding-block: var(--esp-5); display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--medianil); }
+  .office__inner {
+    position: relative;
+    padding-block: var(--esp-5);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--medianil);
+  }
   .ocard {
     grid-column: 1 / -1;
     padding: var(--esp-4);
@@ -66,25 +115,84 @@ const n = contact.offices.length;
     -webkit-backdrop-filter: blur(var(--desenfoque));
     backdrop-filter: blur(var(--desenfoque));
   }
-  .ocard__progress { width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: var(--esp-2); }
-  .ocard__bars { width: 100%; display: flex; gap: var(--esp-1); }
-  .ocard__bars span { flex: 1; height: var(--linea); background: var(--dx-linea-sobre-foto); }
-  .ocard__bars span.is-active { background: var(--dx-blanco); }
-  .ocard__name { width: 100%; display: flex; flex-direction: column; gap: var(--esp-2); }
-  .ocard__details { width: 100%; display: flex; flex-direction: column; gap: var(--esp-3); }
-  .ocard__text { padding-bottom: var(--esp-4); box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-linea-sobre-foto); }
-  .ocard__pair { display: flex; gap: var(--esp-4); }
-  .ocard__pair a { overflow-wrap: anywhere; display: inline-flex; align-items: center; min-height: var(--tactil); }
-  .ocard__hours { display: flex; flex-direction: column; gap: var(--esp-2); }
-  .ocard__pair > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--esp-2); }
+  .ocard__progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--esp-2);
+  }
+  .ocard__bars {
+    width: 100%;
+    display: flex;
+    gap: var(--esp-1);
+  }
+  .ocard__bars span {
+    flex: 1;
+    height: var(--linea);
+    background: var(--dx-linea-sobre-foto);
+  }
+  .ocard__bars span.is-active {
+    background: var(--dx-blanco);
+  }
+  .ocard__name {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .ocard__details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .ocard__text {
+    padding-bottom: var(--esp-4);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-linea-sobre-foto);
+  }
+  .ocard__pair {
+    display: flex;
+    gap: var(--esp-4);
+  }
+  .ocard__pair a {
+    overflow-wrap: anywhere;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tactil);
+  }
+  .ocard__hours {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .ocard__pair > div {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
   @media (min-width: 768px) {
-    .office__inner { grid-template-columns: repeat(8, 1fr); }
-    .ocard { grid-column: span 5; }
+    .office__inner {
+      grid-template-columns: repeat(8, 1fr);
+    }
+    .ocard {
+      grid-column: span 5;
+    }
   }
   /* Escritorio: cada oficina se queda fija y la siguiente la cubre al bajar. */
   @media (min-width: 1024px) {
-    .office { position: sticky; top: var(--alto-header); }
-    .office__inner { grid-template-columns: repeat(12, 1fr); }
-    .ocard { grid-column: span 5; padding: var(--esp-5); }
+    .office {
+      position: sticky;
+      top: var(--alto-header);
+    }
+    .office__inner {
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .ocard {
+      grid-column: span 5;
+      padding: var(--esp-5);
+    }
   }
 </style>

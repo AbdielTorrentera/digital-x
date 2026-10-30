@@ -17,6 +17,7 @@ const canonical = new URL(Astro.url.pathname, negocio.url).href;
 const ogImage = image ? new URL(image, negocio.url).href : null;
 const bloquear = noindex || !esProduccion;
 ---
+
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
@@ -30,7 +31,9 @@ const bloquear = noindex || !esProduccion;
 {ogImage && <meta property="og:image" content={ogImage} />}
 {ogImage && image === negocio.imagenOg && <meta property="og:image:width" content="1200" />}
 {ogImage && image === negocio.imagenOg && <meta property="og:image:height" content="630" />}
-{ogImage && image === negocio.imagenOg && <meta property="og:image:alt" content="Digital X: audio, video y tecnología en Atlixco, Puebla" />}
+{ogImage && image === negocio.imagenOg && (
+  <meta property="og:image:alt" content="Digital X: audio, video y tecnología en Atlixco, Puebla" />
+)}
 <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />

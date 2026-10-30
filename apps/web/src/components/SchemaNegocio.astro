@@ -15,4 +15,5 @@ const datos: Record<string, unknown> = {
 if (negocio.correo) datos.email = negocio.correo;
 if (negocio.redes.length > 0) datos.sameAs = negocio.redes.map((r) => r.url);
 ---
+
 <script type="application/ld+json" set:html={JSON.stringify(datos)} />

@@ -3,14 +3,21 @@ import Icon from '../Icon.astro';
 import { site } from '../../lib/site';
 const team = await site('team');
 ---
+
 <section class="team sobre-negro" data-dark>
   <img class="team__bg" src={team.image} alt="" loading="lazy" />
   <div class="container team__inner">
     <div class="team__head">
-      <p class="t-caption2 c-blanco team__label" data-appear>{team.label}</p>
+      <p class="t-caption2 c-blanco team__label" data-appear>
+        {team.label}
+      </p>
       <div class="team__text">
-        <h2 class="t-h2 c-blanco" data-appear>{team.title}</h2>
-        <p class="t-body c-blanco" data-appear>{team.text}</p>
+        <h2 class="t-h2 c-blanco" data-appear>
+          {team.title}
+        </h2>
+        <p class="t-body c-blanco" data-appear>
+          {team.text}
+        </p>
       </div>
     </div>
     <!-- Fila que se desplaza con el dedo o el teclado. No avanza sola: un carrusel automático sin pausa no está permitido (diseño §8). -->
@@ -27,7 +34,10 @@ const team = await site('team');
               </div>
               <div class="member__meta">
                 <p class="t-caption c-blanco">{m.post}</p>
-                <p class="t-caption c-blanco member__city"><Icon name="pin" size="boton" />{m.city}</p>
+                <p class="t-caption c-blanco member__city">
+                  <Icon name="pin" size="boton" />
+                  {m.city}
+                </p>
               </div>
             </div>
           </article>
@@ -37,13 +47,45 @@ const team = await site('team');
   </div>
 </section>
 <style>
-  .team { position: relative; overflow: clip; padding-block: var(--esp-8); }
-  .team__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
-  .team__inner { position: relative; display: flex; flex-direction: column; gap: var(--esp-7); overflow: hidden; }
-  .team__head { display: flex; flex-direction: column; gap: var(--esp-5); }
-  .team__text { display: flex; flex-direction: column; gap: var(--esp-4); }
-  .ticker { overflow-x: auto; scroll-snap-type: x mandatory; border-radius: var(--radio); }
-  .ticker__track { display: flex; gap: var(--esp-5); }
+  .team {
+    position: relative;
+    overflow: clip;
+    padding-block: var(--esp-8);
+  }
+  .team__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--dx-brillo-sobre-foto));
+  }
+  .team__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+    overflow: hidden;
+  }
+  .team__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .team__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+  .ticker {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    border-radius: var(--radio);
+  }
+  .ticker__track {
+    display: flex;
+    gap: var(--esp-5);
+  }
 
   .member {
     position: relative;
@@ -57,29 +99,83 @@ const team = await site('team');
     -webkit-backdrop-filter: blur(var(--desenfoque));
     backdrop-filter: blur(var(--desenfoque));
   }
-  .member__photo, .member__blur { position: absolute; }
-  .member__photo { inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .member__blur { inset: auto 0 0; height: var(--esp-8); background: var(--dx-capa-oscura); }
-  .member__body { position: absolute; inset: var(--esp-4); display: flex; flex-direction: column; justify-content: space-between; }
-  .member__name { display: flex; flex-direction: column; gap: var(--esp-2); }
-  .member__meta { display: flex; align-items: flex-start; gap: var(--esp-2); }
-  .member__meta > :first-child { flex: 1; }
-  .member__city { display: flex; align-items: center; gap: var(--esp-1); }
+  .member__photo,
+  .member__blur {
+    position: absolute;
+  }
+  .member__photo {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .member__blur {
+    inset: auto 0 0;
+    height: var(--esp-8);
+    background: var(--dx-capa-oscura);
+  }
+  .member__body {
+    position: absolute;
+    inset: var(--esp-4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .member__name {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .member__meta {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--esp-2);
+  }
+  .member__meta > :first-child {
+    flex: 1;
+  }
+  .member__city {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-1);
+  }
   @media (min-width: 768px) {
-    .member { flex-basis: calc((100% - var(--esp-5)) / 2); }
+    .member {
+      flex-basis: calc((100% - var(--esp-5)) / 2);
+    }
   }
   @media (min-width: 1024px) {
-    .team { padding-block: var(--esp-9); }
-    .team__head { flex-direction: row; align-items: flex-start; justify-content: space-between; }
-    .team__label { flex: 1; }
-    .team__text { flex: 1; }
-    .ticker__track { gap: var(--esp-6); }
-    .member { flex-basis: calc((100% - 3 * var(--esp-6)) / 4); }
+    .team {
+      padding-block: var(--esp-9);
+    }
+    .team__head {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .team__label {
+      flex: 1;
+    }
+    .team__text {
+      flex: 1;
+    }
+    .ticker__track {
+      gap: var(--esp-6);
+    }
+    .member {
+      flex-basis: calc((100% - 3 * var(--esp-6)) / 4);
+    }
   }
   /* Escritorio con cursor: la foto aparece al pasar sobre la tarjeta. */
   @media (min-width: 1024px) and (hover: hover) {
-    .member__photo, .member__blur { opacity: 0; transition: opacity var(--dur-rapida) var(--ease); }
+    .member__photo,
+    .member__blur {
+      opacity: 0;
+      transition: opacity var(--dur-rapida) var(--ease);
+    }
     .member:hover .member__photo,
-    .member:hover .member__blur { opacity: 1; }
+    .member:hover .member__blur {
+      opacity: 1;
+    }
   }
 </style>

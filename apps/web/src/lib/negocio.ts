@@ -14,8 +14,7 @@ export const negocio = {
   redes: [] as { nombre: string; url: string }[],
   // Solo zonas confirmadas. [PENDIENTE: confirmar Puebla (capital), Amozoc, Tepeaca]
   zonas: ['Atlixco', 'Izúcar de Matamoros'],
-  textoCobertura:
-    'Servicios de audio, video y tecnología en Atlixco, Izúcar de Matamoros y alrededores, Puebla.',
+  textoCobertura: 'Servicios de audio, video y tecnología en Atlixco, Izúcar de Matamoros y alrededores, Puebla.',
   // [PENDIENTE: SEO de las páginas, ver reglas-seo sección 1]
   // Imagen genérica de marca (1200x630) para compartir enlaces; cada página puede pasar la suya.
   imagenOg: '/og-digitalx-1200x630.png' as string | null,

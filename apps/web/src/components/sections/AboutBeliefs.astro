@@ -2,11 +2,16 @@
 import { site } from '../../lib/site';
 const { beliefs } = await site('about');
 ---
+
 <section class="beliefs">
   <div class="container beliefs__inner">
     <div class="beliefs__head">
-      <p class="t-caption2" data-appear>{beliefs.label}</p>
-      <h2 class="t-h2" data-appear>{beliefs.title}</h2>
+      <p class="t-caption2" data-appear>
+        {beliefs.label}
+      </p>
+      <h2 class="t-h2" data-appear>
+        {beliefs.title}
+      </h2>
     </div>
     <div class="beliefs__body" data-appear>
       <div class="beliefs__sticky">
@@ -17,7 +22,9 @@ const { beliefs } = await site('about');
           <div class="scard">
             <p class="t-caption">{b.label}</p>
             <h3 class="t-h4">{b.title}</h3>
-            <div class="scard__text"><p class="t-body">{b.text}</p></div>
+            <div class="scard__text">
+              <p class="t-body">{b.text}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -25,12 +32,36 @@ const { beliefs } = await site('about');
   </div>
 </section>
 <style>
-  .beliefs { background: var(--dx-blanco); padding-block: var(--esp-8); }
-  .beliefs__inner { display: flex; flex-direction: column; gap: var(--esp-7); }
-  .beliefs__head { display: flex; flex-direction: column; gap: var(--esp-3); }
-  .beliefs__body { display: flex; flex-direction: column; gap: var(--esp-5); }
-  .beliefs__sticky img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radio); }
-  .beliefs__cards { display: flex; flex-direction: column; gap: var(--esp-5); }
+  .beliefs {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-8);
+  }
+  .beliefs__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .beliefs__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .beliefs__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .beliefs__sticky img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radio);
+  }
+  .beliefs__cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
   .scard {
     padding: var(--esp-4);
     border-radius: var(--radio);
@@ -39,12 +70,33 @@ const { beliefs } = await site('about');
     flex-direction: column;
     gap: var(--esp-7);
   }
-  .scard__text { flex: 1; display: flex; align-items: flex-end; }
+  .scard__text {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+  }
   @media (min-width: 1024px) {
-    .beliefs { padding-block: var(--esp-9); }
-    .beliefs__body { flex-direction: row; align-items: flex-start; gap: var(--esp-6); }
-    .beliefs__sticky { flex: 1 1 0; min-width: 0; position: sticky; top: calc(var(--alto-header) + var(--esp-5)); }
-    .beliefs__cards { flex: 1 1 0; min-width: 0; gap: var(--esp-6); }
-    .scard { padding: var(--esp-5); }
+    .beliefs {
+      padding-block: var(--esp-9);
+    }
+    .beliefs__body {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--esp-6);
+    }
+    .beliefs__sticky {
+      flex: 1 1 0;
+      min-width: 0;
+      position: sticky;
+      top: calc(var(--alto-header) + var(--esp-5));
+    }
+    .beliefs__cards {
+      flex: 1 1 0;
+      min-width: 0;
+      gap: var(--esp-6);
+    }
+    .scard {
+      padding: var(--esp-5);
+    }
   }
 </style>

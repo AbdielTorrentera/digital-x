@@ -7,6 +7,7 @@ import { menu } from '../lib/paginas';
 
 const actual = Astro.url.pathname;
 ---
+
 <!--
   Móvil (<1024 px): barra de 64 px con marca, "Llamar" y "Menú". El menú abre a pantalla completa
   con los enlaces pegados abajo (alcance del pulgar) y botones de 48 px.
@@ -15,7 +16,9 @@ const actual = Astro.url.pathname;
 -->
 <header class="nav" data-nav>
   <div class="nav__bar">
-    <a class="nav__marca" href="/"><Logo /></a>
+    <a class="nav__marca" href="/">
+      <Logo />
+    </a>
 
     <div class="menu" id="menu" data-menu>
       <nav class="menu__nav" aria-label="Principal">
@@ -24,19 +27,43 @@ const actual = Astro.url.pathname;
             <li class:list={['menu__item', item.grupos && item.grupos.length > 0 && 'has-sub']}>
               {item.grupos && item.grupos.length > 0 ? (
                 <>
-                  <button class="menu__enlace menu__sub-btn" type="button" aria-expanded="false" aria-controls="sub-servicios" data-sub-toggle>
+                  <button
+                    class="menu__enlace menu__sub-btn"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="sub-servicios"
+                    data-sub-toggle
+                  >
                     <span>{item.titulo}</span>
                     <Icon name="plus" size="boton" class="menu__mas" />
                   </button>
                   <div class="sub" id="sub-servicios">
-                    {item.url && <a class="sub__todos" href={item.url}>Todos los servicios</a>}
+                    {item.url && (
+                      <a class="sub__todos" href={item.url}>
+                        Todos los servicios
+                      </a>
+                    )}
                     <div class="sub__grupos">
                       {item.grupos.map((g) => (
                         <div class="sub__grupo">
-                          {g.hub ? <a class="sub__titulo" href={g.hub.url}>{g.titulo}</a> : <p class="sub__titulo">{g.titulo}</p>}
+                          {g.hub ? (
+                            <a class="sub__titulo" href={g.hub.url}>
+                              {g.titulo}
+                            </a>
+                          ) : (
+                            <p class="sub__titulo">{g.titulo}</p>
+                          )}
                           <ul>
                             {g.servicios.map((s) => (
-                              <li><a class="sub__enlace" href={s.url} aria-current={actual === s.url ? 'page' : undefined}>{s.titulo}</a></li>
+                              <li>
+                                <a
+                                  class="sub__enlace"
+                                  href={s.url}
+                                  aria-current={actual === s.url ? 'page' : undefined}
+                                >
+                                  {s.titulo}
+                                </a>
+                              </li>
                             ))}
                           </ul>
                         </div>
@@ -45,15 +72,21 @@ const actual = Astro.url.pathname;
                   </div>
                 </>
               ) : (
-                <a class="menu__enlace" href={item.url} aria-current={actual === item.url ? 'page' : undefined}>{item.titulo}</a>
+                <a class="menu__enlace" href={item.url} aria-current={actual === item.url ? 'page' : undefined}>
+                  {item.titulo}
+                </a>
               )}
             </li>
           ))}
         </ul>
       </nav>
       <div class="menu__movil">
-        <a class="menu__btn" href={telUrl}><Icon name="phone" size="boton" /> Llamar</a>
-        <button class="menu__btn menu__btn--cerrar" type="button" data-menu-close><Icon name="close" size="boton" /> Cerrar</button>
+        <a class="menu__btn" href={telUrl}>
+          <Icon name="phone" size="boton" /> Llamar
+        </a>
+        <button class="menu__btn menu__btn--cerrar" type="button" data-menu-close>
+          <Icon name="close" size="boton" /> Cerrar
+        </button>
       </div>
     </div>
 
@@ -96,7 +129,11 @@ const actual = Astro.url.pathname;
     min-height: var(--tactil);
     color: var(--dx-negro);
   }
-  .nav__acciones { display: flex; align-items: center; gap: var(--esp-2); }
+  .nav__acciones {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-2);
+  }
   .nav__toggle {
     display: inline-flex;
     align-items: center;
@@ -110,11 +147,20 @@ const actual = Astro.url.pathname;
     font-weight: 600;
     line-height: var(--lh-etiqueta);
   }
-  :global(html:not(.js)) .nav__toggle { display: none; }
+  :global(html:not(.js)) .nav__toggle {
+    display: none;
+  }
 
   /* ---------- menú: panel a pantalla completa en móvil ---------- */
-  .menu { flex: 1 0 100%; order: 3; }
-  .menu__lista { display: flex; flex-direction: column; gap: var(--esp-2); }
+  .menu {
+    flex: 1 0 100%;
+    order: 3;
+  }
+  .menu__lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
   .menu__enlace {
     display: flex;
     align-items: center;
@@ -130,14 +176,33 @@ const actual = Astro.url.pathname;
     color: var(--dx-negro);
     border-top: var(--linea) solid var(--dx-gris-medio);
   }
-  .menu__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: var(--esp-2); }
-  .menu__mas { transition: transform var(--dur-media) var(--ease); }
-  .menu__sub-btn[aria-expanded='true'] .menu__mas { transform: rotate(45deg); }
+  .menu__enlace[aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-2);
+  }
+  .menu__mas {
+    transition: transform var(--dur-media) var(--ease);
+  }
+  .menu__sub-btn[aria-expanded='true'] .menu__mas {
+    transform: rotate(45deg);
+  }
 
-  .sub { padding-bottom: var(--esp-3); }
-  .sub ul { display: flex; flex-direction: column; gap: var(--esp-2); }
-  .sub__grupos { display: flex; flex-direction: column; gap: var(--esp-2); }
-  :global(html.js) .sub:not(.is-open) { display: none; }
+  .sub {
+    padding-bottom: var(--esp-3);
+  }
+  .sub ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .sub__grupos {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  :global(html.js) .sub:not(.is-open) {
+    display: none;
+  }
   .sub__todos,
   .sub__enlace,
   .sub__titulo {
@@ -148,12 +213,21 @@ const actual = Astro.url.pathname;
     font-size: var(--txt-cuerpo);
     color: var(--dx-negro);
   }
-  .sub__todos { margin-bottom: var(--esp-2); }
+  .sub__todos {
+    margin-bottom: var(--esp-2);
+  }
   .sub__todos,
-  .sub__titulo { font-weight: 600; }
-  .sub__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: var(--esp-1); }
+  .sub__titulo {
+    font-weight: 600;
+  }
+  .sub__enlace[aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
 
-  .menu__movil { display: none; }
+  .menu__movil {
+    display: none;
+  }
 
   :global(html.js) .menu {
     display: none;
@@ -168,8 +242,13 @@ const actual = Astro.url.pathname;
     overscroll-behavior: contain;
   }
   /* margin-top:auto pega los enlaces abajo sin perder el scroll cuando el contenido es más alto que la pantalla. */
-  :global(html.js) .menu__nav { margin-top: auto; }
-  :global(html.js) .menu.is-open { display: flex; animation: menu-in var(--dur-media) var(--ease); }
+  :global(html.js) .menu__nav {
+    margin-top: auto;
+  }
+  :global(html.js) .menu.is-open {
+    display: flex;
+    animation: menu-in var(--dur-media) var(--ease);
+  }
   /* Llamar y Cerrar quedan siempre a la vista, aunque el panel tenga que hacer scroll. */
   :global(html.js) .menu__movil {
     display: flex;
@@ -193,17 +272,36 @@ const actual = Astro.url.pathname;
     font-size: var(--txt-cuerpo);
     font-weight: 600;
   }
-  .menu__btn--cerrar { background: var(--dx-negro); color: var(--dx-blanco); }
+  .menu__btn--cerrar {
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
+  }
   @keyframes menu-in {
-    from { opacity: 0; transform: translateY(var(--esp-4)); }
-    to { opacity: 1; transform: none; }
+    from {
+      opacity: 0;
+      transform: translateY(var(--esp-4));
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   /* ---------- escritorio ---------- */
   @media (min-width: 1024px) {
-    .nav__bar { flex-wrap: nowrap; gap: var(--esp-5); }
-    .nav__toggle { display: none; }
-    .menu { flex: 1; order: 0; display: flex; justify-content: center; }
+    .nav__bar {
+      flex-wrap: nowrap;
+      gap: var(--esp-5);
+    }
+    .nav__toggle {
+      display: none;
+    }
+    .menu {
+      flex: 1;
+      order: 0;
+      display: flex;
+      justify-content: center;
+    }
     /* Deshace el panel a pantalla completa de móvil (esas reglas llevan html.js y ganarían por especificidad). */
     :global(html.js) .menu {
       display: flex;
@@ -215,11 +313,22 @@ const actual = Astro.url.pathname;
       background: none;
       overflow: visible;
     }
-    :global(html.js) .menu.is-open { animation: none; }
-    :global(html.js) .menu__nav { margin-top: 0; }
-    :global(html.js) .menu__movil { display: none; }
-    .menu__lista { flex-direction: row; gap: var(--esp-2); }
-    .menu__item { position: relative; }
+    :global(html.js) .menu.is-open {
+      animation: none;
+    }
+    :global(html.js) .menu__nav {
+      margin-top: 0;
+    }
+    :global(html.js) .menu__movil {
+      display: none;
+    }
+    .menu__lista {
+      flex-direction: row;
+      gap: var(--esp-2);
+    }
+    .menu__item {
+      position: relative;
+    }
     .menu__enlace {
       width: auto;
       gap: var(--esp-2);
@@ -230,8 +339,13 @@ const actual = Astro.url.pathname;
       line-height: var(--lh-etiqueta);
     }
     .menu__enlace:hover,
-    .menu__sub-btn[aria-expanded='true'] { background: var(--dx-gris-claro); }
-    .menu__mas { width: var(--icono-boton); height: var(--icono-boton); }
+    .menu__sub-btn[aria-expanded='true'] {
+      background: var(--dx-gris-claro);
+    }
+    .menu__mas {
+      width: var(--icono-boton);
+      height: var(--icono-boton);
+    }
     .sub {
       position: absolute;
       top: calc(100% + var(--esp-2));
@@ -244,12 +358,22 @@ const actual = Astro.url.pathname;
       border-radius: var(--radio);
       box-shadow: var(--sombra-flotante);
     }
-    .sub__grupos { display: grid; grid-template-columns: repeat(3, max-content); gap: var(--esp-5); }
+    .sub__grupos {
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      gap: var(--esp-5);
+    }
     .sub__todos,
     .sub__enlace,
-    .sub__titulo { padding: 0 var(--esp-2); border-radius: var(--radio-chico); }
+    .sub__titulo {
+      padding: 0 var(--esp-2);
+      border-radius: var(--radio-chico);
+    }
     .sub__enlace:hover,
     .sub__todos:hover,
-    a.sub__titulo:hover { background: var(--dx-gris-claro); color: var(--dx-negro); }
+    a.sub__titulo:hover {
+      background: var(--dx-gris-claro);
+      color: var(--dx-negro);
+    }
   }
 </style>

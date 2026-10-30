@@ -22,31 +22,105 @@ export const paginas: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
   { url: '/servicios/', titulo: 'Servicios', estado: 'lanzamiento', construida: false },
 
-  { url: '/servicios-de-audio/', titulo: 'Audio', estado: 'lanzamiento', construida: false, categoria: 'audio', hub: true },
-  { url: '/servicios-de-audio/renta-de-sonido/', titulo: 'Renta de sonido', estado: 'lanzamiento', construida: false, categoria: 'audio' },
-  { url: '/servicios-de-audio/instalacion-de-audio/', titulo: 'Instalación de audio', estado: 'lanzamiento', construida: false, categoria: 'audio' },
+  {
+    url: '/servicios-de-audio/',
+    titulo: 'Audio',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'audio',
+    hub: true,
+  },
+  {
+    url: '/servicios-de-audio/renta-de-sonido/',
+    titulo: 'Renta de sonido',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'audio',
+  },
+  {
+    url: '/servicios-de-audio/instalacion-de-audio/',
+    titulo: 'Instalación de audio',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'audio',
+  },
 
-  { url: '/servicios-de-video/', titulo: 'Video', estado: 'lanzamiento', construida: false, categoria: 'video', hub: true },
-  { url: '/servicios-de-video/grabacion-de-eventos/', titulo: 'Grabación de eventos', estado: 'lanzamiento', construida: false, categoria: 'video' },
-  { url: '/servicios-de-video/video-para-redes/', titulo: 'Video para redes', estado: 'lanzamiento', construida: false, categoria: 'video' },
-  { url: '/servicios-de-video/streaming/', titulo: 'Streaming', estado: 'lanzamiento', construida: false, categoria: 'video' },
+  {
+    url: '/servicios-de-video/',
+    titulo: 'Video',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'video',
+    hub: true,
+  },
+  {
+    url: '/servicios-de-video/grabacion-de-eventos/',
+    titulo: 'Grabación de eventos',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'video',
+  },
+  {
+    url: '/servicios-de-video/video-para-redes/',
+    titulo: 'Video para redes',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'video',
+  },
+  {
+    url: '/servicios-de-video/streaming/',
+    titulo: 'Streaming',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'video',
+  },
   { url: '/servicios-de-video/dron/', titulo: 'Dron', estado: 'pendiente', construida: false, categoria: 'video' },
 
-  { url: '/servicios-de-tecnologia/', titulo: 'Tecnología', estado: 'lanzamiento', construida: false, categoria: 'tecnologia', hub: true },
-  { url: '/servicios-de-tecnologia/software-a-la-medida/', titulo: 'Software a la medida', estado: 'lanzamiento', construida: false, categoria: 'tecnologia' },
-  { url: '/servicios-de-tecnologia/sitios-web/', titulo: 'Sitios web', estado: 'lanzamiento', construida: false, categoria: 'tecnologia' },
-  { url: '/servicios-de-tecnologia/tienda-en-linea/', titulo: 'Tienda en línea', estado: 'pendiente', construida: false, categoria: 'tecnologia' },
+  {
+    url: '/servicios-de-tecnologia/',
+    titulo: 'Tecnología',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'tecnologia',
+    hub: true,
+  },
+  {
+    url: '/servicios-de-tecnologia/software-a-la-medida/',
+    titulo: 'Software a la medida',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'tecnologia',
+  },
+  {
+    url: '/servicios-de-tecnologia/sitios-web/',
+    titulo: 'Sitios web',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'tecnologia',
+  },
+  {
+    url: '/servicios-de-tecnologia/tienda-en-linea/',
+    titulo: 'Tienda en línea',
+    estado: 'pendiente',
+    construida: false,
+    categoria: 'tecnologia',
+  },
 
   { url: '/proyectos/', titulo: 'Proyectos', estado: 'lanzamiento', construida: false },
   // [PENDIENTE: número mínimo de artículos para publicar el blog]
   { url: '/blog/', titulo: 'Blog', estado: 'pendiente', construida: false },
   { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: false },
   { url: '/contacto/', titulo: 'Contacto', estado: 'lanzamiento', construida: false },
-  { url: '/condiciones-de-contratacion/', titulo: 'Condiciones de contratación', estado: 'lanzamiento', construida: false },
+  {
+    url: '/condiciones-de-contratacion/',
+    titulo: 'Condiciones de contratación',
+    estado: 'lanzamiento',
+    construida: false,
+  },
   { url: '/politica-de-privacidad/', titulo: 'Política de privacidad', estado: 'lanzamiento', construida: false },
 ];
 
-const visible = (p: Pagina) => p.estado === 'lanzamiento' && p.construida;
+export const visible = (p: Pagina) => p.estado === 'lanzamiento' && p.construida;
 const porUrl = (url: string) => paginas.find((p) => p.url === url && visible(p));
 
 /** Rutas relativas a src/pages/ que debe tener una página para estar construida. */

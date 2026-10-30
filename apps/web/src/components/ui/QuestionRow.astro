@@ -1,24 +1,47 @@
 ---
 import Icon from '../Icon.astro';
-interface Props { n: number; q: string; a: string }
+interface Props {
+  n: number;
+  q: string;
+  a: string;
+}
 const { n, q, a } = Astro.props;
 const id = `faq-${n}-${q.length}`;
 ---
+
 <!-- Toda la fila abre y cierra; el botón + es el control accesible (48 × 48 px). -->
 <div class="qrow" data-acc-item data-acc-trigger data-appear>
   <span class="t-h5 qrow__n">{String(n).padStart(2, '0')}</span>
   <div class="qrow__body">
     <h3 class="qrow__q t-h6">{q}</h3>
     <div class="qrow__panel" id={id} data-acc-panel>
-      <div><p class="t-body qrow__a">{a}</p></div>
+      <div>
+        <p class="t-body qrow__a">{a}</p>
+      </div>
     </div>
   </div>
-  <button class="qrow__btn" type="button" aria-expanded="false" aria-controls={id} aria-label={q}><Icon name="plus" size="boton" /></button>
+  <button class="qrow__btn" type="button" aria-expanded="false" aria-controls={id} aria-label={q}>
+    <Icon name="plus" size="boton" />
+  </button>
 </div>
 <style>
-  .qrow { display: flex; align-items: flex-start; gap: var(--esp-4); padding-bottom: var(--esp-4); box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio); cursor: pointer; }
-  .qrow__n { flex: none; }
-  .qrow__body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .qrow {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--esp-4);
+    padding-bottom: var(--esp-4);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+    cursor: pointer;
+  }
+  .qrow__n {
+    flex: none;
+  }
+  .qrow__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
   .qrow__btn {
     flex: none;
     display: grid;
@@ -29,11 +52,26 @@ const id = `faq-${n}-${q.length}`;
     background: var(--dx-negro);
     color: var(--dx-blanco);
   }
-  .qrow__btn :global(.icon) { transition: transform var(--dur-media) var(--ease); }
-  .qrow.is-open .qrow__btn :global(.icon) { transform: rotate(45deg); }
+  .qrow__btn :global(.icon) {
+    transition: transform var(--dur-media) var(--ease);
+  }
+  .qrow.is-open .qrow__btn :global(.icon) {
+    transform: rotate(45deg);
+  }
   /* Sin JavaScript la respuesta queda visible. Con JS se muestra al abrir, con un fundido (no se anima la altura). */
-  :global(html.js) .qrow__panel { display: none; }
-  :global(html.js) .qrow.is-open .qrow__panel { display: block; animation: qrow-in var(--dur-media) var(--ease); }
-  .qrow__a { padding-top: var(--esp-2); }
-  @keyframes qrow-in { from { opacity: 0; } }
+  :global(html.js) .qrow__panel {
+    display: none;
+  }
+  :global(html.js) .qrow.is-open .qrow__panel {
+    display: block;
+    animation: qrow-in var(--dur-media) var(--ease);
+  }
+  .qrow__a {
+    padding-top: var(--esp-2);
+  }
+  @keyframes qrow-in {
+    from {
+      opacity: 0;
+    }
+  }
 </style>

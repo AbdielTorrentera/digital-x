@@ -1,5 +1,4 @@
 ---
-import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 import '@fontsource/archivo/800.css';
 import '@fontsource/onest/400.css';
 import '@fontsource/onest/600.css';
@@ -23,6 +22,7 @@ interface Props {
 const { title, description, image, whatsapp, noindex = false } = Astro.props;
 const analytics = import.meta.env.PUBLIC_VERCEL_ANALYTICS === 'true';
 ---
+
 <!doctype html>
 <html lang="es-MX">
   <head>
@@ -34,10 +34,14 @@ const analytics = import.meta.env.PUBLIC_VERCEL_ANALYTICS === 'true';
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <SchemaNegocio />
+    {/* El hash de este script está en la CSP de vercel.json: va en una sola línea y Prettier no debe reformatearlo. */}
+    <!-- prettier-ignore -->
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
-    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <a class="skip-link" href="#contenido">
+      Saltar al contenido
+    </a>
     <Nav />
     <main id="contenido" tabindex="-1">
       <slot />
@@ -49,6 +53,5 @@ const analytics = import.meta.env.PUBLIC_VERCEL_ANALYTICS === 'true';
     </script>
     {analytics && <Analytics />}
     {analytics && <SpeedInsights />}
-    <GoogleAnalytics />
   </body>
 </html>

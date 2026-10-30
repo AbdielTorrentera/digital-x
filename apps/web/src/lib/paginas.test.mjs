@@ -36,10 +36,14 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
 
 test('menú, pie y 404 solo enlazan páginas publicadas', () => {
   const publicadas = new Set(urlsPublicadas);
-  const deMenu = menu.flatMap((i) => [i.url, ...(i.grupos ?? []).flatMap((g) => [g.hub?.url, ...g.servicios.map((s) => s.url)])]);
+  const deMenu = menu.flatMap((i) => [
+    i.url,
+    ...(i.grupos ?? []).flatMap((g) => [g.hub?.url, ...g.servicios.map((s) => s.url)]),
+  ]);
   const deGrupos = gruposDeServicios.flatMap((g) => [g.hub?.url, ...g.servicios.map((s) => s.url)]);
   const todas = [...deMenu, ...deGrupos, ...enlacesInformacion.map((p) => p.url), ...enlacesDe404.map((p) => p.url)];
-  for (const url of todas.filter(Boolean)) assert.ok(publicadas.has(url), `${url} aparece en la navegación sin estar publicada`);
+  for (const url of todas.filter(Boolean))
+    assert.ok(publicadas.has(url), `${url} aparece en la navegación sin estar publicada`);
 });
 
 test('archivosDe da las rutas posibles del archivo de cada página', () => {

@@ -2,11 +2,16 @@
 import { site } from '../../lib/site';
 const { years } = await site('about');
 ---
+
 <section class="years">
   <div class="container years__inner">
     <div class="years__head">
-      <p class="t-caption2 years__label" data-appear>{years.label}</p>
-      <p class="t-body years__text" data-appear>{years.text}</p>
+      <p class="t-caption2 years__label" data-appear>
+        {years.label}
+      </p>
+      <p class="t-body years__text" data-appear>
+        {years.text}
+      </p>
     </div>
     <div class="years__row">
       {years.milestones.map((m: any) => (
@@ -20,10 +25,25 @@ const { years } = await site('about');
   </div>
 </section>
 <style>
-  .years { background: var(--dx-blanco); padding-block: var(--esp-8); }
-  .years__inner { display: flex; flex-direction: column; gap: var(--esp-7); }
-  .years__head { display: flex; flex-direction: column; gap: var(--esp-3); }
-  .years__row { display: flex; flex-direction: column; gap: var(--esp-5); }
+  .years {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-8);
+  }
+  .years__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .years__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .years__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
   .mcard {
     min-width: 0;
     padding: var(--esp-4);
@@ -35,28 +55,69 @@ const { years } = await site('about');
     gap: var(--esp-7);
     overflow: hidden;
   }
-  .mcard__title { display: none; }
-  .mcard > .t-h2 { margin-top: auto; }
-  @keyframes mcard-in { from { opacity: 0; } }
+  .mcard__title {
+    display: none;
+  }
+  .mcard > .t-h2 {
+    margin-top: auto;
+  }
+  @keyframes mcard-in {
+    from {
+      opacity: 0;
+    }
+  }
   @media (min-width: 768px) {
-    .years__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .years__head { flex-direction: row; justify-content: space-between; }
-    .years__label, .years__text { flex: 1; }
+    .years__row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .years__head {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .years__label,
+    .years__text {
+      flex: 1;
+    }
   }
   /* Escritorio: cada hito muestra su título y, al pasar el cursor, su texto. */
   @media (min-width: 1024px) {
-    .years { padding-block: var(--esp-9); }
-    .years__row { display: flex; flex-direction: row; gap: var(--esp-6); }
-    .mcard { flex: 1 1 0; padding: var(--esp-5); }
-    .mcard__title { display: block; padding-bottom: var(--esp-4); box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio); }
-    .mcard__text { display: none; }
+    .years {
+      padding-block: var(--esp-9);
+    }
+    .years__row {
+      display: flex;
+      flex-direction: row;
+      gap: var(--esp-6);
+    }
+    .mcard {
+      flex: 1 1 0;
+      padding: var(--esp-5);
+    }
+    .mcard__title {
+      display: block;
+      padding-bottom: var(--esp-4);
+      box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+    }
+    .mcard__text {
+      display: none;
+    }
   }
   @media (min-width: 1024px) and (hover: hover) {
-    .mcard:hover .mcard__title { display: none; }
-    .mcard:hover .mcard__text { display: block; animation: mcard-in var(--dur-media) var(--ease); }
+    .mcard:hover .mcard__title {
+      display: none;
+    }
+    .mcard:hover .mcard__text {
+      display: block;
+      animation: mcard-in var(--dur-media) var(--ease);
+    }
   }
   @media (min-width: 1024px) and (hover: none) {
-    .mcard__title { display: none; }
-    .mcard__text { display: block; }
+    .mcard__title {
+      display: none;
+    }
+    .mcard__text {
+      display: block;
+    }
   }
 </style>

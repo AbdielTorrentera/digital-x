@@ -8,11 +8,14 @@ import { enlacesInformacion, gruposDeServicios } from '../lib/paginas';
 // El texto de cobertura es fijo, en texto plano y sin enlaces por ciudad.
 const anio = new Date().getFullYear();
 ---
+
 <footer class="footer sobre-negro">
   <div class="container footer__inner">
     <div class="footer__top">
       <div class="footer__marca">
-        <a class="footer__logo" href="/"><Logo /></a>
+        <a class="footer__logo" href="/">
+          <Logo />
+        </a>
         <p class="t-body footer__cobertura">{negocio.textoCobertura}</p>
       </div>
 
@@ -23,9 +26,15 @@ const anio = new Date().getFullYear();
             <ul>
               {gruposDeServicios.map((g) => (
                 <li>
-                  {g.hub
-                    ? <a class="footer__enlace" href={g.hub.url}>{`Servicios de ${g.titulo.toLowerCase()}`}</a>
-                    : g.servicios[0] && <a class="footer__enlace" href={g.servicios[0].url}>{g.servicios[0].titulo}</a>}
+                  {g.hub ? (
+                    <a class="footer__enlace" href={g.hub.url}>{`Servicios de ${g.titulo.toLowerCase()}`}</a>
+                  ) : (
+                    g.servicios[0] && (
+                      <a class="footer__enlace" href={g.servicios[0].url}>
+                        {g.servicios[0].titulo}
+                      </a>
+                    )
+                  )}
                 </li>
               ))}
             </ul>
@@ -36,7 +45,13 @@ const anio = new Date().getFullYear();
           <div class="footer__col">
             <p class="footer__titulo">Información</p>
             <ul>
-              {enlacesInformacion.map((p) => <li><a class="footer__enlace" href={p.url}>{p.titulo}</a></li>)}
+              {enlacesInformacion.map((p) => (
+                <li>
+                  <a class="footer__enlace" href={p.url}>
+                    {p.titulo}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         )}
@@ -44,31 +59,90 @@ const anio = new Date().getFullYear();
         <div class="footer__col">
           <p class="footer__titulo">Contacto</p>
           <ul>
-            <li><a class="footer__enlace" href={telUrl}>{negocio.telefono.pantalla}</a></li>
-            <li><a class="footer__enlace" href={waUrl()} target="_blank" rel="noopener">Escríbenos por WhatsApp</a></li>
-            {negocio.correo && <li><a class="footer__enlace" href={`mailto:${negocio.correo}`}>{negocio.correo}</a></li>}
-            {negocio.redes.map((r) => <li><a class="footer__enlace" href={r.url} target="_blank" rel="noopener">{r.nombre}</a></li>)}
+            <li>
+              <a class="footer__enlace" href={telUrl}>
+                {negocio.telefono.pantalla}
+              </a>
+            </li>
+            <li>
+              <a class="footer__enlace" href={waUrl()} target="_blank" rel="noopener">
+                Escríbenos por WhatsApp
+              </a>
+            </li>
+            {negocio.correo && (
+              <li>
+                <a class="footer__enlace" href={`mailto:${negocio.correo}`}>
+                  {negocio.correo}
+                </a>
+              </li>
+            )}
+            {negocio.redes.map((r) => (
+              <li>
+                <a class="footer__enlace" href={r.url} target="_blank" rel="noopener">
+                  {r.nombre}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
     </div>
 
-    <p class="t-caption footer__copy">© {anio} {negocio.nombre}</p>
+    <p class="t-caption footer__copy">
+      © {anio} {negocio.nombre}
+    </p>
   </div>
 </footer>
 
 <style>
   /* El relleno inferior (--esp-9) deja libre el final de la página para que el botón flotante de WhatsApp no tape texto. */
   /* .sobre-negro (tokens.css) pone fondo negro, texto blanco, texto secundario en gris medio y foco amarillo. */
-  .footer { padding: var(--esp-8) 0 var(--esp-9); }
-  .footer__inner { display: flex; flex-direction: column; gap: var(--esp-6); }
-  .footer__top { display: flex; flex-direction: column; gap: var(--esp-6); }
-  .footer__marca { display: flex; flex-direction: column; gap: var(--esp-3); }
-  .footer__logo { display: inline-flex; align-items: center; align-self: flex-start; min-height: var(--tactil); color: var(--dx-blanco); }
-  .footer__cobertura { color: var(--texto-sec); }
-  .footer__cols { display: grid; grid-template-columns: 1fr; gap: var(--esp-5); }
-  .footer__col ul { display: flex; flex-direction: column; gap: var(--esp-2); }
-  .footer__titulo { font-family: var(--font-titulos); font-size: var(--txt-cuerpo); font-weight: 800; line-height: var(--lh-etiqueta); color: var(--dx-blanco); margin-bottom: var(--esp-2); }
+  .footer {
+    padding: var(--esp-8) 0 var(--esp-9);
+  }
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-6);
+  }
+  .footer__top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-6);
+  }
+  .footer__marca {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .footer__logo {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    min-height: var(--tactil);
+    color: var(--dx-blanco);
+  }
+  .footer__cobertura {
+    color: var(--texto-sec);
+  }
+  .footer__cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--esp-5);
+  }
+  .footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+  }
+  .footer__titulo {
+    font-family: var(--font-titulos);
+    font-size: var(--txt-cuerpo);
+    font-weight: 800;
+    line-height: var(--lh-etiqueta);
+    color: var(--dx-blanco);
+    margin-bottom: var(--esp-2);
+  }
   .footer__enlace {
     display: inline-flex;
     align-items: center;
@@ -77,17 +151,34 @@ const anio = new Date().getFullYear();
     line-height: var(--lh-etiqueta);
     color: var(--dx-blanco);
   }
-  .footer__enlace:hover { color: var(--dx-amarillo); }
-  .footer__copy { color: var(--texto-sec); }
+  .footer__enlace:hover {
+    color: var(--dx-amarillo);
+  }
+  .footer__copy {
+    color: var(--texto-sec);
+  }
 
   @media (min-width: 768px) {
-    .footer__cols { grid-template-columns: repeat(3, 1fr); gap: var(--medianil); }
+    .footer__cols {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--medianil);
+    }
   }
   /* Escritorio: retícula de 12 columnas; la marca ocupa 4 y los enlaces 8. */
   @media (min-width: 1024px) {
-    .footer { padding-top: var(--esp-9); }
-    .footer__top { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--medianil); }
-    .footer__marca { grid-column: span 4; }
-    .footer__cols { grid-column: span 8; }
+    .footer {
+      padding-top: var(--esp-9);
+    }
+    .footer__top {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--medianil);
+    }
+    .footer__marca {
+      grid-column: span 4;
+    }
+    .footer__cols {
+      grid-column: span 8;
+    }
   }
 </style>

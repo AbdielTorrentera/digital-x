@@ -373,10 +373,7 @@
     "id": "about",
     "header": {
       "label": "[ About us ]",
-      "title": [
-        "a practice,",
-        "not a platform"
-      ]
+      "title": ["a practice,", "not a platform"]
     },
     "vision": {
       "image": "/assets/site/VsRe3CktSOqm10Cg3qnL6mzAo.webp",
@@ -463,14 +460,8 @@
         "image": "/assets/site/SNFoaRFEV2OUSoyhXGiZgC3hGDI.webp",
         "imagePhone": "/assets/site/rn8l7GjeUxSbYWi5KAQfXT7Irh4.webp",
         "text": "A three-floor walk-up above what used to be a tailor's shop. Sixteen years on, the door still opens onto the same quiet street and the kettle is still on.",
-        "address": [
-          "123 Example Street, Floor 3",
-          "Tribeca, New York"
-        ],
-        "hours": [
-          "Mon — Fri · 9:00 — 18:00",
-          "Sat by appointment · Sun closed"
-        ],
+        "address": ["123 Example Street, Floor 3", "Tribeca, New York"],
+        "hours": ["Mon — Fri · 9:00 — 18:00", "Sat by appointment · Sun closed"],
         "phone": "+1 (212) 555 — 0182",
         "tel": "+12125550182",
         "email": "ny@example.com"
@@ -481,14 +472,8 @@
         "city": "London",
         "image": "/assets/site/bfL7Ao45wBC4ZwjZrjbdi17M3k.webp",
         "text": "A charming two-story flat nestled above a quaint bookshop. After a decade, the entrance still leads to the same side street, where the aroma of freshly brewed tea fills the air.",
-        "address": [
-          "45 Example Street, 2nd Floor",
-          "Marylebone, London"
-        ],
-        "hours": [
-          "Mon — Fri · 9:00 — 18:00",
-          "Sat by appointment · Sun closed"
-        ],
+        "address": ["45 Example Street, 2nd Floor", "Marylebone, London"],
+        "hours": ["Mon — Fri · 9:00 — 18:00", "Sat by appointment · Sun closed"],
         "phone": "+44 20 7946 0958",
         "tel": "+442079460958",
         "email": "london@example.com"
@@ -499,14 +484,8 @@
         "city": "San Francisco",
         "image": "/assets/site/aKHyia7GDbqGBjpIt8DrrX3Ty0.webp",
         "text": "A restored carriage house set behind a courtyard of Japanese maples. Theo Marchetti opens the door most mornings before the coffee shop next door.",
-        "address": [
-          "210 Example Street",
-          "Pacific Heights, San Francisco"
-        ],
-        "hours": [
-          "Mon — Fri · 9:00 — 18:00",
-          "Sat by appointment · Sun closed"
-        ],
+        "address": ["210 Example Street", "Pacific Heights, San Francisco"],
+        "hours": ["Mon — Fri · 9:00 — 18:00", "Sat by appointment · Sun closed"],
         "phone": "+1 (415) 555 — 0214",
         "tel": "+14155550214",
         "email": "sf@example.com"
@@ -577,11 +556,7 @@
       "label": "[ Blog ]",
       "title": "our newsroom"
     },
-    "categories": [
-      "Buyer's Guide",
-      "Interior & Renovation",
-      "Buying & Selling"
-    ],
+    "categories": ["Buyer's Guide", "Interior & Renovation", "Buying & Selling"],
     "empty": "No items",
     "related": {
       "label": "[ BLOG ]",
@@ -609,9 +584,7 @@
       },
       {
         "title": "3. Use of the Platform",
-        "body": [
-          "You agree to:"
-        ],
+        "body": ["You agree to:"],
         "list": [
           "Use Marby only for lawful purposes.",
           "Provide accurate information when contacting agents or creating an account.",

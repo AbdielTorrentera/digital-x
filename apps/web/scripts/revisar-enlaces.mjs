@@ -50,7 +50,11 @@ const resuelve = (rutaUrl) => {
 const rotos = [];
 let revisados = 0;
 for (const archivo of htmlDe(dist)) {
-  const paginaUrl = '/' + relative(dist, archivo).replace(/index\.html$/, '').replace(/\\/g, '/');
+  const paginaUrl =
+    '/' +
+    relative(dist, archivo)
+      .replace(/index\.html$/, '')
+      .replace(/\\/g, '/');
   for (const enlace of enlacesDe(readFileSync(archivo, 'utf8'))) {
     if (!esInterno(enlace)) continue;
     const sinHash = enlace.split('#')[0].split('?')[0];

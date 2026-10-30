@@ -7,16 +7,21 @@ export function initJumpLinks() {
     const update = () => {
       const line = (scroller ? scroller.getBoundingClientRect().top : 0) + (Number(bar.dataset.jumpOffset) || 140);
       let current = 0;
-      targets.forEach((t, k) => { if (t.getBoundingClientRect().top <= line) current = k; });
+      targets.forEach((t, k) => {
+        if (t.getBoundingClientRect().top <= line) current = k;
+      });
       links.forEach((a, k) => a.classList.toggle('is-active', k === current));
     };
-    links.forEach((a) => a.addEventListener('click', (e) => {
-      const t = document.getElementById(a.hash.slice(1));
-      if (!t) return;
-      e.preventDefault();
-      if (scroller) scroller.scrollTo({ top: t.offsetTop - (Number(bar.dataset.jumpOffset) || 0), behavior: 'smooth' });
-      else t.scrollIntoView({ behavior: 'smooth' });
-    }));
+    links.forEach((a) =>
+      a.addEventListener('click', (e) => {
+        const t = document.getElementById(a.hash.slice(1));
+        if (!t) return;
+        e.preventDefault();
+        if (scroller)
+          scroller.scrollTo({ top: t.offsetTop - (Number(bar.dataset.jumpOffset) || 0), behavior: 'smooth' });
+        else t.scrollIntoView({ behavior: 'smooth' });
+      }),
+    );
     (scroller ?? window).addEventListener('scroll', update, { passive: true });
     update();
   });

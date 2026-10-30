@@ -3,10 +3,7 @@ import assert from 'node:assert/strict';
 import { mensajesWhatsApp, negocio, telUrl, waUrl } from './negocio.ts';
 
 test('waUrl usa el número del negocio y el mensaje general por defecto', () => {
-  assert.equal(
-    waUrl(),
-    `https://wa.me/${negocio.whatsapp}?text=${encodeURIComponent(mensajesWhatsApp.general)}`,
-  );
+  assert.equal(waUrl(), `https://wa.me/${negocio.whatsapp}?text=${encodeURIComponent(mensajesWhatsApp.general)}`);
 });
 
 test('waUrl codifica espacios, acentos y signos que romperían la URL', () => {

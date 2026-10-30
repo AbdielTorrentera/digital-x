@@ -5,8 +5,12 @@ import { enlacesDe404 } from '../lib/paginas';
 
 // Enlaces de regreso a Inicio y Servicios (reglas-seo sección 9). Solo aparecen los que ya existen:
 // [PENDIENTE: enlace a /servicios/ cuando esa página esté construida; se agrega solo al marcarla en paginas.ts]
-const textos: Record<string, string> = { '/': 'Ir al inicio de Digital X', '/servicios/': 'Ver los servicios de Digital X' };
+const textos: Record<string, string> = {
+  '/': 'Ir al inicio de Digital X',
+  '/servicios/': 'Ver los servicios de Digital X',
+};
 ---
+
 <Base
   title="Página no encontrada | Digital X"
   description="La página que buscas no existe o cambió de dirección. Vuelve al inicio de Digital X para ver audio, video y tecnología en Atlixco."
@@ -18,18 +22,39 @@ const textos: Record<string, string> = { '/': 'Ir al inicio de Digital X', '/ser
     <p class="t-body">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar.</p>
     <ul class="nf__enlaces">
       {enlacesDe404.map((p, i) => (
-        <li><Btn label={textos[p.url] ?? p.titulo} href={p.url} variant={i === 0 ? 'primary' : 'secondary'} /></li>
+        <li>
+          <Btn label={textos[p.url] ?? p.titulo} href={p.url} variant={i === 0 ? 'primary' : 'secondary'} />
+        </li>
       ))}
     </ul>
   </section>
 </Base>
 <style>
-  .nf { padding-block: var(--esp-8); display: flex; flex-direction: column; align-items: flex-start; gap: var(--esp-4); }
-  .nf__enlaces { display: flex; flex-direction: column; align-items: stretch; gap: var(--esp-3); width: 100%; margin-top: var(--esp-2); }
+  .nf {
+    padding-block: var(--esp-8);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-4);
+  }
+  .nf__enlaces {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--esp-3);
+    width: 100%;
+    margin-top: var(--esp-2);
+  }
   @media (min-width: 768px) {
-    .nf__enlaces { flex-direction: row; flex-wrap: wrap; width: auto; }
+    .nf__enlaces {
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: auto;
+    }
   }
   @media (min-width: 1024px) {
-    .nf { padding-block: var(--esp-9); }
+    .nf {
+      padding-block: var(--esp-9);
+    }
   }
 </style>

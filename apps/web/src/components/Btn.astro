@@ -13,7 +13,10 @@ interface Props {
 const { label, href, variant = 'primary', class: cls, ...rest } = Astro.props;
 const Tag = href ? 'a' : 'span';
 ---
+
 <Tag href={href} class:list={['btn', `btn--${variant}`, cls]} {...rest}>
   {variant !== 'icon' && <span>{label}</span>}
-  <span class="btn__icon"><Icon name="arrow" size="boton" /></span>
+  <span class="btn__icon">
+    <Icon name="arrow" size="boton" />
+  </span>
 </Tag>

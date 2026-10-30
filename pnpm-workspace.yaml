@@ -1,3 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# Seguridad §6: no instalar versiones publicadas hace menos de 3 días (4320 min).
+# [PENDIENTE: confirmar valor, provisional]
+minimumReleaseAge: 4320

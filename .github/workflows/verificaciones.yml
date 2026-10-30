@@ -1,0 +1,36 @@
+# Verificaciones de cada pull request (buenas prácticas §7). Deben pasar para fusionar a main.
+name: Verificaciones
+
+on: pull_request
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verificaciones-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # Las acciones van fijadas por SHA de commit (seguridad §6); el comentario dice la versión.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Sin `version`: lee devEngines.packageManager de package.json, para no tener la versión de pnpm en dos lugares.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm --filter ./apps/web check
+      - run: pnpm --filter ./apps/web test
+      - run: pnpm --filter ./apps/web build
+      - run: pnpm --filter ./apps/web check:enlaces

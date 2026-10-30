@@ -26,7 +26,7 @@ Las reglas viven en `docs/`, un archivo por tema. **Son obligatorias.** Antes de
 | --- | --- |
 | `docs/estructura-sitio-digitalx.md` | Datos del negocio, páginas permitidas, URLs, navegación, redirecciones y estados de publicación |
 | `docs/reglas-seo-digitalx.md` | Metadatos, encabezados, enlazado, contenido, imágenes, SEO técnico, rendimiento, WhatsApp, datos estructurados |
-| `docs/reglas-seguridad-digitalx.md` | *(pendiente de crear)* |
+| `docs/reglas-seguridad-digitalx.md` | Secretos, contenido de Sanity, encabezados HTTP, dependencias, cuentas y datos personales. Tiene la prioridad más alta |
 | `docs/reglas-diseno-digitalx.md` | Retícula, espaciado, tipografía en pantalla, jerarquía, componentes, movimiento y accesibilidad |
 | `docs/buenas-practicas-digitalx.md` | *(pendiente de crear)* |
 

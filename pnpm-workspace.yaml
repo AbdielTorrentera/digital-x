@@ -9,3 +9,11 @@ minimumReleaseAge: 4320
 # Seguridad §6.4: los scripts de instalación de las dependencias están bloqueados y hoy ningún paquete tiene uno aprobado.
 # Si una instalación exige alguno, se revisa y se agrega a allowBuilds; strictDepBuilds hace que la instalación falle mientras tanto.
 strictDepBuilds: true
+
+# Seguridad §6.6: hallazgos altos de pnpm audit en herramientas del Studio (CLI y build, no van al navegador).
+# Estos paquetes fijan la versión vulnerable exacta, también en su última versión, así que subir sanity no lo corrige.
+# Cada selector es la versión que piden; se quitan cuando el paquete padre publique una corrección.
+overrides:
+  'undici@7.29.1': 7.30.1 # @module-federation/dts-plugin (vía sanity)
+  'js-yaml@3.13.1': 3.15.2 # @vercel/frameworks (vía @sanity/cli)
+  'smol-toml@1.5.2': 1.9.1 # @vercel/frameworks (vía @sanity/cli)

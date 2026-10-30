@@ -3,12 +3,12 @@ import Icon from './Icon.astro';
 import { negocio, telUrl } from '../lib/negocio';
 
 // Botón de llamada (reglas-seo sección 10): tel: y área táctil de al menos 48 px.
-// Móvil: ícono + "Llamar". Escritorio (≥1024 px): ícono + número.
+// <390 px: solo ícono. 390–1023 px: ícono + "Llamar". Escritorio (≥1024 px): ícono + número.
 interface Props { class?: string }
 const { class: cls } = Astro.props;
 ---
 <a class:list={['llamar', cls]} href={telUrl} aria-label={`Llamar a ${negocio.nombre}: ${negocio.telefono.pantalla}`}>
-  <Icon name="phone" size={20} />
+  <Icon name="phone" size="boton" />
   <span class="llamar__corto">Llamar</span>
   <span class="llamar__numero">{negocio.telefono.pantalla}</span>
 </a>
@@ -16,19 +16,24 @@ const { class: cls } = Astro.props;
   .llamar {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-height: 48px;
-    padding-inline: 12px;
-    border-radius: 8px;
+    gap: var(--esp-2);
+    min-height: var(--tactil);
+    padding-inline: var(--esp-3);
+    border-radius: var(--radio);
     color: var(--dx-negro);
-    font-size: var(--body);
+    font-size: var(--txt-cuerpo);
     font-weight: 600;
-    line-height: 1;
+    line-height: var(--lh-etiqueta);
     white-space: nowrap;
-    transition: background-color 0.2s ease;
   }
   .llamar:hover { background: var(--dx-gris-claro); }
+  /* Por debajo de 390 px (Android de 360 px) el botón es solo el ícono, de 48 × 48 px; el aria-label lleva el texto. */
+  .llamar { justify-content: center; min-width: var(--tactil); }
+  .llamar__corto,
   .llamar__numero { display: none; }
+  @media (min-width: 390px) {
+    .llamar__corto { display: inline; }
+  }
   @media (min-width: 1024px) {
     .llamar__corto { display: none; }
     .llamar__numero { display: inline; }

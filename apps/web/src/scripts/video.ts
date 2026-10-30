@@ -1,9 +1,11 @@
+import { reduced } from './motion';
+
 /**
- * Background videos marked with data-src show their poster first and start
- * once the page has finished loading, so the film never competes with the
- * first paint for bandwidth.
+ * Los videos de fondo con data-src muestran primero su póster y arrancan al terminar de cargar la página,
+ * para que no compitan con el primer pintado. Con movimiento reducido se queda el póster (diseño §8).
  */
 export function initDeferredVideos(root: ParentNode = document) {
+  if (reduced) return;
   const videos = [...root.querySelectorAll<HTMLVideoElement>('video[data-src]')];
   if (!videos.length) return;
   const start = () => {

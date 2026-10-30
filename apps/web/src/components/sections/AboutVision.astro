@@ -2,7 +2,7 @@
 import { site } from '../../lib/site';
 const { vision } = await site('about');
 ---
-<section class="vision" data-dark data-appear="mount" style="--appear-delay:0.6s">
+<section class="vision sobre-negro" data-dark data-appear="mount">
   <img class="vision__bg" src={vision.image} alt="" />
   <div class="container vision__inner">
     <div class="vision__head">
@@ -10,14 +10,14 @@ const { vision } = await site('about');
         <p class="t-caption2 c-blanco">{vision.label}</p>
         <h2 class="t-h2 c-blanco">{vision.title}</h2>
       </div>
-      <p class="t-body-sm c-blanco balance vision__text">{vision.text}</p>
+      <p class="t-body c-blanco balance">{vision.text}</p>
     </div>
     <div class="vision__cards">
       {vision.cards.map((c: any, i: number) => (
         <div class:list={['vision__box', i === 0 ? 'vision__box--a' : 'vision__box--b']}>
           <div class="vcard">
             <h3 class="t-h3 c-blanco">{c.title}</h3>
-            <div class="vcard__text"><p class="t-body-sm c-blanco">{c.text}</p></div>
+            <div class="vcard__text"><p class="t-body c-blanco">{c.text}</p></div>
           </div>
         </div>
       ))}
@@ -25,42 +25,32 @@ const { vision } = await site('about');
   </div>
 </section>
 <style>
-  .vision { position: relative; height: 700px; padding-block: 80px; overflow: clip; display: flex; align-items: center; }
+  .vision { position: relative; padding-block: var(--esp-8); overflow: clip; display: flex; align-items: center; }
   .vision__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
-  .vision__inner { position: relative; display: flex; flex-direction: column; gap: 40px; }
-  .vision__head { display: flex; align-items: flex-end; gap: 20px; }
-  .vision__title { flex: 1; display: flex; flex-direction: column; gap: 12px; }
-  .vision__title h2 { max-width: 460px; }
-  .vision__text { width: 460px; }
-  .vision__cards { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
-  .vision__box { overflow: clip; }
-  .vision__box--a { padding: 80px 20px 0 0; }
-  .vision__box--b { padding: 0 0 80px 20px; }
+  .vision__inner { position: relative; display: flex; flex-direction: column; gap: var(--esp-7); }
+  .vision__head { display: flex; flex-direction: column; gap: var(--esp-5); }
+  .vision__title { flex: 1; display: flex; flex-direction: column; gap: var(--esp-3); }
+  .vision__cards { display: flex; flex-direction: column; gap: var(--esp-5); }
   .vcard {
-    width: 535px;
-    max-width: 100%;
-    height: 248px;
-    padding: 20px;
-    border-radius: 8px;
-    overflow: hidden;
+    padding: var(--esp-4);
+    border-radius: var(--radio);
     display: flex;
     flex-direction: column;
+    gap: var(--esp-7);
     background: var(--dx-capa-oscura);
-    box-shadow: inset 0 0 0 1px var(--dx-linea-sobre-foto);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 0 var(--linea) var(--dx-linea-sobre-foto);
+    -webkit-backdrop-filter: blur(var(--desenfoque));
+    backdrop-filter: blur(var(--desenfoque));
   }
   .vcard__text { flex: 1; display: flex; align-items: flex-end; }
-  @media (max-width: 1199.98px) {
+  @media (min-width: 1024px) {
+    .vision { padding-block: var(--esp-9); }
+    .vision__head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    .vision__cards { flex-direction: row; align-items: center; gap: var(--esp-6); }
     .vision__box { flex: 1 1 0; min-width: 0; }
-    .vcard { width: 100%; }
-  }
-  @media (max-width: 809.98px) {
-    .vision { height: auto; }
-    .vision__head, .vision__cards { flex-direction: column; align-items: stretch; }
-    .vision__text { width: 100%; }
-    .vision__cards { gap: 0; }
-    .vision__box--a { padding: 0 20px 40px 0; }
-    .vision__box--b { padding: 0 0 40px 20px; }
+    /* Las dos tarjetas quedan escalonadas, una más alta y otra más baja. */
+    .vision__box--a { padding-top: var(--esp-8); }
+    .vision__box--b { padding-bottom: var(--esp-8); }
+    .vcard { padding: var(--esp-5); }
   }
 </style>

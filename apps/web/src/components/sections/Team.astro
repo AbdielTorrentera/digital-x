@@ -2,89 +2,84 @@
 import Icon from '../Icon.astro';
 import { site } from '../../lib/site';
 const team = await site('team');
-// Ticker speed: 50px per second, as in the original.
-const loop = team.members.length * (278 + 20);
 ---
-<section class="team" data-dark>
+<section class="team sobre-negro" data-dark>
   <img class="team__bg" src={team.image} alt="" loading="lazy" />
-  <div class="container team__inner" data-appear style="--appear-y:0px">
+  <div class="container team__inner">
     <div class="team__head">
       <p class="t-caption2 c-blanco team__label" data-appear>{team.label}</p>
       <div class="team__text">
-        <h2 class="t-h2 c-blanco" data-appear style="--appear-delay:0.1s">{team.title}</h2>
-        <p class="t-body-sm c-blanco" data-appear style="--appear-delay:0.2s">{team.text}</p>
+        <h2 class="t-h2 c-blanco" data-appear>{team.title}</h2>
+        <p class="t-body c-blanco" data-appear>{team.text}</p>
       </div>
     </div>
-    <div class="ticker" data-appear style={`--appear-delay:0.3s;--loop:${loop}px;--dur:${loop / 50}s`}>
+    <!-- Fila que se desplaza con el dedo o el teclado. No avanza sola: un carrusel automático sin pausa no está permitido (diseño §8). -->
+    <div class="ticker" role="region" aria-label="Equipo" tabindex="0" data-appear>
       <div class="ticker__track">
-        {[0, 1].map((copy) => (
-          <div class="ticker__set" aria-hidden={copy === 1 ? 'true' : undefined}>
-            {team.members.map((m: any) => (
-              <article class="member">
-                <img class="member__photo" src={m.image} alt={copy === 0 ? m.alt : ''} loading="lazy" />
-                <div class="member__blur" aria-hidden="true"></div>
-                <div class="member__body">
-                  <div class="member__name">
-                    <p class="t-caption c-blanco">{m.number}</p>
-                    <h3 class="t-h4 c-blanco">{m.name}</h3>
-                  </div>
-                  <div class="member__meta">
-                    <p class="t-caption c-blanco">{m.post}</p>
-                    <p class="t-caption c-blanco member__city"><Icon name="pin" size={14} />{m.city}</p>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+        {team.members.map((m: any) => (
+          <article class="member">
+            <img class="member__photo" src={m.image} alt={m.alt} loading="lazy" />
+            <div class="member__blur" aria-hidden="true"></div>
+            <div class="member__body">
+              <div class="member__name">
+                <p class="t-caption c-blanco">{m.number}</p>
+                <h3 class="t-h4 c-blanco">{m.name}</h3>
+              </div>
+              <div class="member__meta">
+                <p class="t-caption c-blanco">{m.post}</p>
+                <p class="t-caption c-blanco member__city"><Icon name="pin" size="boton" />{m.city}</p>
+              </div>
+            </div>
+          </article>
         ))}
       </div>
     </div>
   </div>
 </section>
 <style>
-  .team { position: relative; overflow: clip; padding-block: 80px; }
+  .team { position: relative; overflow: clip; padding-block: var(--esp-8); }
   .team__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
-  .team__inner { position: relative; display: flex; flex-direction: column; gap: 40px; overflow: hidden; }
-  .team__head { display: flex; align-items: flex-start; gap: 20px; }
-  .team__label { flex: 1; }
-  .team__text { width: 460px; display: flex; flex-direction: column; gap: 20px; }
-  .ticker { overflow: clip; border-radius: 10px; }
-  .ticker__track { display: flex; width: max-content; animation: ticker var(--dur) linear infinite; }
-  .ticker__set { display: flex; gap: 20px; padding-right: 20px; }
-  @keyframes ticker { to { transform: translateX(calc(-1 * var(--loop))); } }
-  @media (prefers-reduced-motion: reduce) { .ticker__track { animation: none; } }
+  .team__inner { position: relative; display: flex; flex-direction: column; gap: var(--esp-7); overflow: hidden; }
+  .team__head { display: flex; flex-direction: column; gap: var(--esp-5); }
+  .team__text { display: flex; flex-direction: column; gap: var(--esp-4); }
+  .ticker { overflow-x: auto; scroll-snap-type: x mandatory; border-radius: var(--radio); }
+  .ticker__track { display: flex; gap: var(--esp-5); }
 
   .member {
     position: relative;
-    width: 278px;
-    height: 352px;
-    flex: none;
-    border-radius: 8px;
+    flex: 0 0 80%;
+    aspect-ratio: 4 / 5;
+    scroll-snap-align: start;
+    border-radius: var(--radio);
     overflow: clip;
-    border: 1px solid var(--dx-linea-sobre-foto);
+    border: var(--linea) solid var(--dx-linea-sobre-foto);
     background: var(--dx-capa-oscura);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(var(--desenfoque));
+    backdrop-filter: blur(var(--desenfoque));
   }
-  .member__photo, .member__blur { position: absolute; opacity: 0; transition: opacity 0.4s var(--ease-inout); }
+  .member__photo, .member__blur { position: absolute; }
   .member__photo { inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .member__blur {
-    inset: auto 0 0;
-    height: 54px;
-    background: var(--dx-capa-oscura);
-  }
-  .member:hover .member__photo,
-  .member:hover .member__blur { opacity: 1; }
-  .member__body { position: absolute; inset: 20px; display: flex; flex-direction: column; justify-content: space-between; }
-  .member__name { display: flex; flex-direction: column; gap: 8px; }
-  .member__meta { display: flex; align-items: flex-start; gap: 8px; }
+  .member__blur { inset: auto 0 0; height: var(--esp-8); background: var(--dx-capa-oscura); }
+  .member__body { position: absolute; inset: var(--esp-4); display: flex; flex-direction: column; justify-content: space-between; }
+  .member__name { display: flex; flex-direction: column; gap: var(--esp-2); }
+  .member__meta { display: flex; align-items: flex-start; gap: var(--esp-2); }
   .member__meta > :first-child { flex: 1; }
-  .member__city { display: flex; align-items: center; gap: 4px; }
-  @media (max-width: 1199.98px) {
-    .member__photo, .member__blur { opacity: 1; }
+  .member__city { display: flex; align-items: center; gap: var(--esp-1); }
+  @media (min-width: 768px) {
+    .member { flex-basis: calc((100% - var(--esp-5)) / 2); }
   }
-  @media (max-width: 809.98px) {
-    .team__head { flex-direction: column; }
-    .team__text { width: 100%; }
+  @media (min-width: 1024px) {
+    .team { padding-block: var(--esp-9); }
+    .team__head { flex-direction: row; align-items: flex-start; justify-content: space-between; }
+    .team__label { flex: 1; }
+    .team__text { flex: 1; }
+    .ticker__track { gap: var(--esp-6); }
+    .member { flex-basis: calc((100% - 3 * var(--esp-6)) / 4); }
+  }
+  /* Escritorio con cursor: la foto aparece al pasar sobre la tarjeta. */
+  @media (min-width: 1024px) and (hover: hover) {
+    .member__photo, .member__blur { opacity: 0; transition: opacity var(--dur-rapida) var(--ease); }
+    .member:hover .member__photo,
+    .member:hover .member__blur { opacity: 1; }
   }
 </style>

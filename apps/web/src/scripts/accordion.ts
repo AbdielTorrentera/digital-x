@@ -1,6 +1,7 @@
 /**
- * FAQ accordions. One open at a time per group, as the original's shared store.
- * [data-accordion] wraps [data-acc-item] > [data-acc-trigger] + [data-acc-panel].
+ * Acordeones de preguntas frecuentes. Uno abierto a la vez por grupo.
+ * [data-accordion] envuelve [data-acc-item] > [data-acc-trigger] + [data-acc-panel].
+ * Solo alterna .is-open: el panel se muestra u oculta por CSS (sin animar su altura, diseño §8).
  */
 export function initAccordions() {
   document.querySelectorAll<HTMLElement>('[data-accordion]').forEach((group) => {
@@ -8,8 +9,6 @@ export function initAccordions() {
     const set = (item: HTMLElement, open: boolean) => {
       item.classList.toggle('is-open', open);
       item.querySelector('button')?.setAttribute('aria-expanded', String(open));
-      const panel = item.querySelector<HTMLElement>('[data-acc-panel]');
-      if (panel) panel.style.gridTemplateRows = open ? '1fr' : '0fr';
     };
     items.forEach((item) => {
       const trigger = item.matches('[data-acc-trigger]') ? item : item.querySelector('[data-acc-trigger]');

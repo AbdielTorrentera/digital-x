@@ -40,33 +40,30 @@ const n = testimonials.items.length;
   </div>
 </section>
 <style>
-  .reviews { background: var(--dx-blanco); padding-block: 80px; }
-  .reviews__inner { display: flex; flex-direction: column; gap: 40px; overflow: clip; }
-  .reviews__slider { width: 100%; max-width: 1160px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+  .reviews { background: var(--dx-blanco); padding-block: var(--esp-8); }
+  .reviews__inner { display: flex; flex-direction: column; gap: var(--esp-7); overflow: clip; }
+  .reviews__slider { width: 100%; display: flex; flex-direction: column; gap: var(--esp-4); }
   .reviews__slides { display: grid; }
-  .review { grid-area: 1 / 1; display: flex; align-items: center; gap: 20px; visibility: hidden; }
+  .review { grid-area: 1 / 1; display: flex; flex-direction: column; gap: var(--esp-5); visibility: hidden; }
   .review.is-active { visibility: visible; }
-  .review__images { flex: 1 1 0; min-width: 0; height: 345px; display: flex; gap: 10px; overflow: clip; }
-  .review__stack { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-  .review__img { width: 100%; object-fit: cover; border-radius: 8px; min-height: 0; }
-  .review__img--grow { flex: 1 1 0; }
-  .review__img--small { height: 180px; flex: none; }
+  .review__images { display: flex; gap: var(--esp-2); aspect-ratio: 4 / 3; overflow: clip; }
+  .review__stack { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--esp-2); }
+  .review__img { width: 100%; object-fit: cover; border-radius: var(--radio); min-height: 0; }
+  .review__img--grow, .review__img--small { flex: 1 1 0; }
   .review__img--tall { flex: 1 1 0; min-width: 0; height: 100%; }
-  .review__content { flex: 1 1 0; min-width: 0; height: 346px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
-  .review__quote { margin: 0; }
-  .review__who { min-height: 82px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
-  .review__loc { display: flex; align-items: center; gap: 4px; }
-  .reviews__progress { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
-  .reviews__bars { width: 100%; display: flex; gap: 4px; }
-  .reviews__bar { flex: 1; padding: 8px 0; cursor: pointer; }
-  .reviews__bar span { display: block; height: 1px; background: var(--dx-gris-claro); }
+  .review__content { display: flex; flex-direction: column; justify-content: space-between; gap: var(--esp-5); }
+  .review__who { display: flex; flex-direction: column; justify-content: flex-end; gap: var(--esp-2); }
+  .review__loc { display: flex; align-items: center; gap: var(--esp-1); }
+  .reviews__progress { display: flex; flex-direction: column; align-items: flex-end; gap: var(--esp-2); }
+  .reviews__bars { width: 100%; display: flex; gap: var(--esp-2); }
+  /* El botón mide 48 px de alto (área táctil); solo se ve la línea del centro. */
+  .reviews__bar { flex: 1; padding-block: calc((var(--tactil) - var(--linea)) / 2); cursor: pointer; }
+  .reviews__bar span { display: block; height: var(--linea); background: var(--dx-gris-claro); }
   .reviews__bar.is-active span { background: var(--dx-negro); }
-  .reviews__count { font-family: var(--font-texto); font-weight: 600; font-size: 14px; line-height: 1.2; color: var(--dx-negro); }
-  @media (max-width: 1199.98px) { .reviews { padding-block: 40px; } }
-  @media (max-width: 809.98px) {
-    .review { flex-direction: column; align-items: stretch; }
-    .review__images { flex: none; height: 368px; }
-    .review__content { flex: none; gap: 20px; }
-    .review__quote { padding-bottom: 20px; }
+  .reviews__count { font-family: var(--font-texto); font-weight: 600; font-size: var(--txt-chico); line-height: var(--lh-etiqueta); color: var(--dx-negro); }
+  @media (min-width: 768px) {
+    .review { flex-direction: row; align-items: center; gap: var(--medianil); }
+    .review__images, .review__content { flex: 1 1 0; min-width: 0; }
   }
+  @media (min-width: 1024px) { .reviews { padding-block: var(--esp-9); } }
 </style>

@@ -1,9 +1,8 @@
 ---
 import Icon from './Icon.astro';
 
-// The design's Buttons component: 28px tall, caption label, arrow icon that
-// turns 45 degrees on hover. `href` omitted renders a <span> so the button can
-// sit inside a card that is itself a link.
+// Botón de diseño §6: mínimo 48 px de alto, etiqueta de verbo + objeto y flecha que gira 45° al pasar el cursor.
+// Sin `href` se dibuja un <span>, para poder ponerlo dentro de una tarjeta que ya es un enlace.
 interface Props {
   label?: string;
   href?: string;
@@ -15,6 +14,6 @@ const { label, href, variant = 'primary', class: cls, ...rest } = Astro.props;
 const Tag = href ? 'a' : 'span';
 ---
 <Tag href={href} class:list={['btn', `btn--${variant}`, cls]} {...rest}>
-  {variant !== 'icon' && <span class="btn__label">{label}</span>}
-  <span class="btn__icon"><Icon name="arrow" /></span>
+  {variant !== 'icon' && <span>{label}</span>}
+  <span class="btn__icon"><Icon name="arrow" size="boton" /></span>
 </Tag>

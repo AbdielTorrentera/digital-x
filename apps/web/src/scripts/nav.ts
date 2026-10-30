@@ -1,6 +1,8 @@
 import { lockScroll } from './smooth';
 
-const movil = window.matchMedia('(max-width: 1023.98px)');
+// Móvil = todo lo que no llega al corte de escritorio (1024 px), igual que los estilos de Nav.astro.
+const escritorio = window.matchMedia('(min-width: 1024px)');
+const esMovil = () => !escritorio.matches;
 const enfocables = 'a[href], button:not([disabled])';
 
 /**
@@ -52,11 +54,11 @@ export function initNav() {
   abrir.addEventListener('click', abrirMenu);
   menu.querySelector('[data-menu-close]')?.addEventListener('click', () => cerrarMenu());
   menu.addEventListener('click', (e) => {
-    if (movil.matches && (e.target as Element).closest('a')) cerrarMenu(false);
+    if (esMovil() && (e.target as Element).closest('a')) cerrarMenu(false);
   });
 
   document.addEventListener('click', (e) => {
-    if (!movil.matches && !(e.target as Element).closest('.has-sub')) cerrarSubs();
+    if (!esMovil() && !(e.target as Element).closest('.has-sub')) cerrarSubs();
   });
 
   document.addEventListener('keydown', (e) => {
@@ -68,7 +70,7 @@ export function initNav() {
       }
       return;
     }
-    if (e.key === 'Tab' && estaAbierto() && movil.matches) {
+    if (e.key === 'Tab' && estaAbierto() && esMovil()) {
       const lista = [...menu.querySelectorAll<HTMLElement>(enfocables)].filter((el) => el.getClientRects().length > 0);
       if (!lista.length) return;
       const primero = lista[0];
@@ -79,8 +81,8 @@ export function initNav() {
   });
 
   // Al pasar a escritorio con el panel abierto, se cierra y se libera el scroll.
-  movil.addEventListener('change', (e) => {
-    if (!e.matches) cerrarMenu(false);
+  escritorio.addEventListener('change', (e) => {
+    if (e.matches) cerrarMenu(false);
     cerrarSubs();
   });
 }

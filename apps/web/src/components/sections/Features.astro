@@ -3,24 +3,24 @@ import Btn from '../Btn.astro';
 import { site } from '../../lib/site';
 const { features } = await site('home');
 ---
-<section class="features" data-dark>
+<section class="features sobre-negro" data-dark>
   <img class="features__bg" src={features.image} alt="" loading="lazy" data-appear />
   <div class="container features__inner">
     <div class="features__head">
       <div class="features__title">
         <p class="t-caption2 c-blanco" data-appear>{features.label}</p>
-        <h2 class="t-h2 c-blanco" data-appear style="--appear-delay:0.1s">{features.title}</h2>
+        <h2 class="t-h2 c-blanco" data-appear>{features.title}</h2>
       </div>
       <div class="features__side">
-        <p class="t-body-sm c-blanco balance features__text" data-appear style="--appear-delay:0.2s">{features.text}</p>
-        <div data-appear style="--appear-delay:0.3s"><Btn label={features.cta.label} href={features.cta.href} variant="secondary" /></div>
+        <p class="t-body c-blanco balance" data-appear>{features.text}</p>
+        <div data-appear><Btn label={features.cta.label} href={features.cta.href} variant="secondary" /></div>
       </div>
     </div>
-    <div class="features__grid" data-appear style="--appear-delay:0.4s">
+    <div class="features__grid" data-appear>
       {features.items.map((f: any) => (
         <div class="fcard">
           <h3 class="t-h5 c-blanco">{f.title}</h3>
-          <p class="t-body-sm c-blanco fcard__text">{f.text}</p>
+          <p class="t-body c-blanco fcard__text">{f.text}</p>
           <p class="t-caption c-blanco fcard__num">{f.number}</p>
         </div>
       ))}
@@ -28,44 +28,42 @@ const { features } = await site('home');
   </div>
 </section>
 <style>
-  .features { position: relative; overflow: clip; padding-block: 80px; }
-  .features__bg { position: absolute; inset: 1px 0 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
-  .features__inner { position: relative; display: flex; flex-direction: column; gap: 40px; }
-  .features__head { display: flex; align-items: flex-end; gap: 20px; }
-  .features__title { flex: 1 1 0; display: flex; flex-direction: column; gap: 12px; }
-  .features__title h2 { max-width: 460px; }
-  .features__side { flex: 1 1 0; max-width: 460px; display: flex; flex-direction: column; align-items: flex-end; gap: 20px; }
-  .features__text { text-align: right; }
-  .features__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .features { position: relative; overflow: clip; padding-block: var(--esp-8); }
+  .features__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
+  .features__inner { position: relative; display: flex; flex-direction: column; gap: var(--esp-7); }
+  .features__head { display: flex; flex-direction: column; align-items: flex-start; gap: var(--esp-5); }
+  .features__title { display: flex; flex-direction: column; gap: var(--esp-3); }
+  .features__side { display: flex; flex-direction: column; align-items: flex-start; gap: var(--esp-4); }
+  .features__grid { display: grid; grid-template-columns: 1fr; gap: var(--esp-5); }
   .fcard {
     position: relative;
-    height: 213px;
-    padding: 20px;
-    border-radius: 8px;
+    padding: var(--esp-4);
+    border-radius: var(--radio);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: 1px solid var(--dx-linea-sobre-foto);
+    gap: var(--esp-7);
+    border: var(--linea) solid var(--dx-linea-sobre-foto);
     background: var(--dx-capa-oscura);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    transition: background-color var(--spring-04-dur) var(--spring-04);
+    -webkit-backdrop-filter: blur(var(--desenfoque));
+    backdrop-filter: blur(var(--desenfoque));
   }
-  .fcard__text { display: none; }
   .fcard__num { text-align: right; }
-  @media (hover: hover) and (min-width: 1200px) {
+  @media (min-width: 768px) {
+    .features__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1024px) {
+    .features { padding-block: var(--esp-9); }
+    .features__head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    .features__title, .features__side { flex: 1 1 0; }
+    .features__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--esp-6); }
+    .fcard { padding: var(--esp-5); }
+  }
+  /* Escritorio con cursor: el texto aparece al pasar sobre la tarjeta. */
+  @media (min-width: 1024px) and (hover: hover) {
+    .fcard__text { display: none; }
     .fcard:hover { background: var(--dx-negro); }
     .fcard:hover .fcard__text { display: block; }
-  }
-  @media (max-width: 1199.98px) {
-    .features__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .fcard { gap: 40px; }
-    .fcard__text { display: block; }
-  }
-  @media (max-width: 809.98px) {
-    .features__head { flex-direction: column; align-items: flex-start; }
-    .features__title, .features__side { width: 100%; max-width: none; }
-    .features__grid { grid-template-columns: 1fr; }
   }
 </style>

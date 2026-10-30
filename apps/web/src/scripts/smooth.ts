@@ -1,11 +1,15 @@
-import Lenis from 'lenis';
+import type LenisType from 'lenis';
 import { reduced } from './motion';
 
-/** Smooth scrolling, as the design's Smooth Scroll component. Off under reduced motion. */
-export let lenis: Lenis | null = null;
+/** Desplazamiento suave (Lenis). Solo con puntero fino y sin reducción de movimiento (diseño §8). */
+export let lenis: LenisType | null = null;
 
-export function initSmooth() {
-  if (reduced) return;
+// En pantallas táctiles el desplazamiento es el nativo del sistema: ahí Lenis ni siquiera se descarga.
+const punteroFino = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+export async function initSmooth() {
+  if (reduced || !punteroFino.matches) return;
+  const { default: Lenis } = await import('lenis');
   lenis = new Lenis({ lerp: 0.1, autoRaf: true, anchors: { offset: 0 } });
 }
 

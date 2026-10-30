@@ -1,0 +1,43 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' 'sha256-s4xg1CIIhSTmqsUADKxPd+nugAVJySZ4N1U+h8U5VdI=' 'sha256-nhTFmLZz4ZZ+xsrUOFHKQ4AMnxaS5/MIQBsyg6sPhYQ=' https://core.sanity-cdn.com https://sanity-cdn.com; style-src 'self' 'unsafe-inline' https://studio-static.sanity.io; img-src 'self' data: blob: https://cdn.sanity.io; font-src 'self' https://studio-static.sanity.io; connect-src 'self' https://z037bu0t.api.sanity.io https://z037bu0t.apicdn.sanity.io wss://z037bu0t.api.sanity.io https://api.sanity.io https://core.sanity-cdn.com https://sanity-cdn.com; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

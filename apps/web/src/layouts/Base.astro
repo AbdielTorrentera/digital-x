@@ -33,6 +33,8 @@ const analytics = import.meta.env.PUBLIC_VERCEL_ANALYTICS === 'true';
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <SchemaNegocio />
+    {/* El hash de este script está en la CSP de vercel.json: va en una sola línea y Prettier no debe reformatearlo. */}
+    <!-- prettier-ignore -->
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>

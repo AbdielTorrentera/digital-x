@@ -1,6 +1,7 @@
 /*
- * Design tokens de Digital X (colores de la marca; easings y escala tipográfica de Marby).
- * Breakpoints: desktop >= 1200px, tablet 810-1199px, phone < 810px.
+ * Design tokens de Digital X. Fuente: docs/reglas-diseno-digitalx.md (escalas) e identidad-marca-digitalx.md (colores).
+ * Único archivo con valores numéricos y HEX: los componentes usan estos tokens por nombre.
+ * Breakpoints (mobile first, solo min-width): 768 tableta · 1024 escritorio · 1280 ancho.
  */
 :root {
   /* colour: paleta de docs/identidad-marca-digitalx.md sección 2. Único archivo con HEX. */
@@ -27,80 +28,84 @@
   --texto: var(--dx-negro);
   --texto-sec: var(--dx-negro);
   --borde: var(--dx-gris-claro);
-  --foco: var(--dx-negro);
+  --foco-color: var(--dx-negro);
   --btn-fondo: var(--dx-negro);
   --btn-texto: var(--dx-blanco);
   --btn-fondo-hover: var(--dx-blanco);
   --btn-texto-hover: var(--dx-negro);
   --btn-borde: var(--dx-negro);
 
-  /* fonts */
+  /* espaciado: escala de 8 puntos (diseño §2) */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 24px;
+  --esp-6: 32px;
+  --esp-7: 48px;
+  --esp-8: 64px;
+  --esp-9: 96px;
+  --esp-10: 128px;
+
+  /* tipografía (diseño §3): fluida de 375 a 1024 px, siempre en rem.
+     clamp(móvil, b + m·100vw, escritorio) con m = (máx − mín) / 649 y b = mín − m · 375. */
+  --txt-display: clamp(2.4375rem, 1.7875rem + 2.7735vw, 3.5625rem); /* 39 → 57 px */
+  --txt-h1: clamp(1.9375rem, 1.5041rem + 1.8491vw, 2.6875rem); /* 31 → 43 px */
+  --txt-h2: clamp(1.5625rem, 1.3097rem + 1.0786vw, 2rem); /* 25 → 32 px */
+  --txt-h3: clamp(1.25rem, 1.1056rem + 0.6163vw, 1.5rem); /* 20 → 24 px */
+  --txt-cuerpo: clamp(1rem, 0.9278rem + 0.3082vw, 1.125rem); /* 16 → 18 px */
+  --txt-chico: 0.875rem; /* 14 px, nunca en párrafos */
+  --lh-titulo: 1.1;
+  --lh-h3: 1.25;
+  --lh-cuerpo: 1.5;
+  --lh-etiqueta: 1.2;
+  --ls-titulo: -0.02em;
+  --ls-etiqueta: 0.06em;
+  --medida: 68ch;
+
+  /* fuentes */
   --font-titulos: 'Archivo', system-ui, sans-serif;
   --font-texto: 'Onest', system-ui, sans-serif;
 
-  /* easing */
-  --ease-appear: cubic-bezier(0.12, 0.23, 0.5, 1);
-  --ease-inout: cubic-bezier(0.44, 0, 0.56, 1);
-  --ease-accordion: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-badge: cubic-bezier(0.77, 0, 0.17, 1);
-  --ease-overlay: cubic-bezier(0.5, 0, 0.88, 0.77);
-  /* springs, solved from duration + bounce and sampled into linear() */
-  --spring-04: linear(0, 0.015, 0.055, 0.112, 0.18, 0.254, 0.332, 0.409, 0.483, 0.554, 0.619, 0.679, 0.733, 0.781, 0.823, 0.86, 0.891, 0.918, 0.94, 0.958, 0.973, 0.985, 0.994, 1.001, 1.007, 1.01, 1.013, 1.014, 1.015, 1.015, 1.015, 1.014, 1.013, 1.012, 1.011, 1.01, 1.009, 1.007, 1.006, 1.005, 1);
-  --spring-04-dur: 0.325s;
-  --spring-05: linear(0, 0.014, 0.053, 0.108, 0.177, 0.253, 0.332, 0.413, 0.492, 0.568, 0.639, 0.705, 0.764, 0.817, 0.863, 0.903, 0.937, 0.965, 0.988, 1.006, 1.02, 1.031, 1.038, 1.043, 1.045, 1.046, 1.045, 1.043, 1.041, 1.038, 1.034, 1.031, 1.027, 1.023, 1.02, 1.016, 1.013, 1.011, 1.008, 1.006, 1);
-  --spring-05-dur: 0.358s;
-  --spring-055: linear(0, 0.015, 0.055, 0.112, 0.181, 0.257, 0.337, 0.416, 0.493, 0.567, 0.635, 0.698, 0.754, 0.804, 0.848, 0.885, 0.917, 0.944, 0.966, 0.984, 0.998, 1.008, 1.016, 1.022, 1.026, 1.028, 1.028, 1.028, 1.027, 1.026, 1.024, 1.022, 1.019, 1.017, 1.015, 1.013, 1.011, 1.009, 1.007, 1.006, 1);
-  --spring-055-dur: 0.425s;
+  /* radios y líneas (diseño §6) */
+  --radio-chico: 4px;
+  --radio: 8px;
+  --radio-pildora: 999px;
+  --linea: 1px;
+  --desenfoque: var(--esp-3); /* vidrio sobre fotos */
+  /* sombra: solo para lo que flota sobre el contenido (menú abierto, botón de WhatsApp) */
+  --sombra-flotante: 0 var(--esp-2) var(--esp-5) var(--dx-sombra);
 
-  /* layout */
-  --container: 1240px;
-  --gutter: 20px;
-  --section-y: 40px;
-  --nav-h: 68px;
+  /* movimiento (diseño §8): solo transform y opacity */
+  --dur-rapida: 150ms; /* hover, botones */
+  --dur-media: 250ms; /* menús, acordeones */
+  --dur-entrada: 400ms; /* entradas de sección */
+  --ease: cubic-bezier(0.44, 0, 0.56, 1);
 
-  /* type scale (phone first) */
-  --h1: 32px;
-  --h2: 30px;
-  --h3: 26px;
-  --h4: 22px;
-  --h5: 18px;
-  --h6: 16px;
-  --body-lg: 18px;
-  --body: 16px;
-  --body-sm: 14px;
-  --caption: 12px;
-  --caption2: 12px;
-  --wordmark: 80px;
+  /* medidas que fijan las reglas */
+  --tactil: 48px; /* alto y área táctil mínima (diseño §6, SEO §10) */
+  --alto-header: 64px; /* máximo del header fijo en móvil (diseño §7) */
+  --icono: 24px;
+  --icono-boton: 20px; /* íconos dentro de botones (diseño §6) */
+  --logo-ancho: 128px; /* ≥ 120 px (identidad §1) */
+  --foco: 2px; /* grosor y separación del contorno de foco (diseño §9) */
+
+  /* retícula (diseño §1): móvil 16/16, tableta y escritorio 32/24, ancho 32/32 */
+  --contenedor: 1280px;
+  --margen: var(--esp-4);
+  --medianil: var(--esp-4);
 }
 
-@media (min-width: 810px) {
+@media (min-width: 768px) {
   :root {
-    --h1: 32px;
-    --h2: 38px;
-    --h3: 32px;
-    --h4: 26px;
-    --h5: 20px;
-    --h6: 18px;
-    --body-lg: 14px;
-    --caption: 10px;
-    --caption2: 10px;
-    --wordmark: 180px;
+    --margen: var(--esp-6);
+    --medianil: var(--esp-5);
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1280px) {
   :root {
-    --section-y: 80px;
-    --h1: 56px;
-    --h2: 48px;
-    --h3: 40px;
-    --h4: 32px;
-    --h5: 24px;
-    --h6: 20px;
-    --body-lg: 18px;
-    --caption: 12px;
-    --caption2: 12px;
-    --wordmark: 280px;
+    --medianil: var(--esp-6);
   }
 }
 
@@ -111,7 +116,7 @@
   --texto: var(--dx-blanco);
   --texto-sec: var(--dx-gris-medio);
   --borde: var(--dx-gris-medio);
-  --foco: var(--dx-amarillo);
+  --foco-color: var(--dx-amarillo);
   --btn-fondo: var(--dx-amarillo);
   --btn-texto: var(--dx-negro);
   --btn-fondo-hover: var(--dx-amarillo-dorado);

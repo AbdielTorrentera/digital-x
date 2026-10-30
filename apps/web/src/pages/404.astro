@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Btn from '../components/Btn.astro';
 import { enlacesDe404 } from '../lib/paginas';
 
 // Enlaces de regreso a Inicio y Servicios (reglas-seo sección 9). Solo aparecen los que ya existen:
@@ -16,31 +17,19 @@ const textos: Record<string, string> = { '/': 'Ir al inicio de Digital X', '/ser
     <h1 class="t-h1">Esta página no existe</h1>
     <p class="t-body">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar.</p>
     <ul class="nf__enlaces">
-      {enlacesDe404.map((p) => (
-        <li><a class="nf__enlace" href={p.url}>{textos[p.url] ?? p.titulo}</a></li>
+      {enlacesDe404.map((p, i) => (
+        <li><Btn label={textos[p.url] ?? p.titulo} href={p.url} variant={i === 0 ? 'primary' : 'secondary'} /></li>
       ))}
     </ul>
   </section>
 </Base>
 <style>
-  .nf { padding-block: 56px; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; max-width: 760px; margin-inline: 0; }
-  .nf__enlaces { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 360px; margin-top: 8px; }
-  .nf__enlace {
-    display: flex;
-    align-items: center;
-    min-height: 56px;
-    padding: 0 20px;
-    border-radius: 8px;
-    background: var(--btn-fondo);
-    color: var(--btn-texto);
-    border: 1px solid var(--btn-borde);
-    font-weight: 600;
+  .nf { padding-block: var(--esp-8); display: flex; flex-direction: column; align-items: flex-start; gap: var(--esp-4); }
+  .nf__enlaces { display: flex; flex-direction: column; align-items: stretch; gap: var(--esp-3); width: 100%; margin-top: var(--esp-2); }
+  @media (min-width: 768px) {
+    .nf__enlaces { flex-direction: row; flex-wrap: wrap; width: auto; }
   }
-  @media (hover: hover) {
-    .nf__enlace:hover { background: var(--btn-fondo-hover); color: var(--btn-texto-hover); }
-  }
-  @media (min-width: 1200px) {
-    .nf { padding-block: 96px; margin-inline: auto; max-width: var(--container); }
-    .nf > * { max-width: 760px; }
+  @media (min-width: 1024px) {
+    .nf { padding-block: var(--esp-9); }
   }
 </style>

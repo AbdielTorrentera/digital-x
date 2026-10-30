@@ -4,14 +4,14 @@ import { site } from '../../lib/site';
 const contact = await site('contact');
 const n = contact.offices.length;
 ---
-<section class="offices" data-appear="mount" style="--appear-delay:0.6s;--appear-y:150px">
+<section class="offices" data-appear="mount">
   {contact.offices.map((o: any, i: number) => (
-    <div class="office" data-dark>
+    <div class="office sobre-negro" data-dark>
       <picture>
-        {o.imagePhone && <source media="(max-width: 809.98px)" srcset={o.imagePhone} />}
-        <img class="office__bg" src={o.image} alt={contact.labels.image} loading={i === 0 ? 'eager' : 'lazy'} />
+        {o.imagePhone && <source media="(min-width: 768px)" srcset={o.image} />}
+        <img class="office__bg" src={o.imagePhone ?? o.image} alt={contact.labels.image} loading={i === 0 ? 'eager' : 'lazy'} />
       </picture>
-      <div class="office__inner">
+      <div class="container office__inner">
         <div class="ocard">
           <div class="ocard__progress">
             <div class="ocard__bars">
@@ -24,14 +24,14 @@ const n = contact.offices.length;
             <h2 class="t-h3 c-blanco">{o.city}</h2>
           </div>
           <div class="ocard__details">
-            <p class="t-body-sm c-blanco ocard__text">{o.text}</p>
+            <p class="t-body c-blanco ocard__text">{o.text}</p>
             <div class="ocard__pair">
-              <div><p class="t-caption2 c-blanco">{contact.labels.address}</p><p class="t-body-sm c-blanco">{o.address[0]}<br />{o.address[1]}</p></div>
-              <div><p class="t-caption2 c-blanco">{contact.labels.hours}</p><div class="ocard__hours">{o.hours.map((h: string) => <p class="t-body-sm c-blanco">{h}</p>)}</div></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.address}</p><p class="t-body c-blanco">{o.address[0]}<br />{o.address[1]}</p></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.hours}</p><div class="ocard__hours">{o.hours.map((h: string) => <p class="t-body c-blanco">{h}</p>)}</div></div>
             </div>
             <div class="ocard__pair">
-              <div><p class="t-caption2 c-blanco">{contact.labels.phone}</p><a class="t-body-sm c-blanco" href={`tel:${o.tel}`}>{o.phone}</a></div>
-              <div><p class="t-caption2 c-blanco">{contact.labels.email}</p><a class="t-body-sm c-blanco" href={`mailto:${o.email}`}>{o.email}</a></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.phone}</p><a class="t-body c-blanco" href={`tel:${o.tel}`}>{o.phone}</a></div>
+              <div><p class="t-caption2 c-blanco">{contact.labels.email}</p><a class="t-body c-blanco" href={`mailto:${o.email}`}>{o.email}</a></div>
             </div>
           </div>
           <Btn label={contact.cta.label} href={contact.cta.href} variant="secondary" />
@@ -43,43 +43,48 @@ const n = contact.offices.length;
 <style>
   .offices { overflow: clip; display: flex; flex-direction: column; }
   .office {
-    position: sticky;
-    top: 80px;
-    height: 100vh;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
     overflow: clip;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .office__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(var(--dx-brillo-sobre-foto)); }
-  .office__inner { position: relative; width: 100%; max-width: var(--container); padding: 20px; display: flex; align-items: center; }
+  /* Retícula del diseño §1: 4 columnas en móvil, 8 en tableta y 12 en escritorio. */
+  .office__inner { position: relative; padding-block: var(--esp-5); display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--medianil); }
   .ocard {
-    width: 440px;
-    height: 500px;
-    padding: 20px;
-    border-radius: 8px;
-    overflow: hidden;
+    grid-column: 1 / -1;
+    padding: var(--esp-4);
+    border-radius: var(--radio);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: flex-start;
-    gap: 40px;
+    gap: var(--esp-6);
     background: var(--dx-capa-oscura);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(var(--desenfoque));
+    backdrop-filter: blur(var(--desenfoque));
   }
-  .ocard__progress { width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
-  .ocard__bars { width: 100%; display: flex; gap: 4px; }
-  .ocard__bars span { flex: 1; height: 1px; background: var(--dx-linea-sobre-foto); }
+  .ocard__progress { width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: var(--esp-2); }
+  .ocard__bars { width: 100%; display: flex; gap: var(--esp-1); }
+  .ocard__bars span { flex: 1; height: var(--linea); background: var(--dx-linea-sobre-foto); }
   .ocard__bars span.is-active { background: var(--dx-blanco); }
-  .ocard__name { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-  .ocard__details { width: 100%; display: flex; flex-direction: column; gap: 12px; }
-  .ocard__text { padding-bottom: 20px; box-shadow: inset 0 -1px 0 var(--dx-linea-sobre-foto); }
-  .ocard__pair { display: flex; gap: 20px; }
-  .ocard__hours { display: flex; flex-direction: column; gap: 20px; }
-  .ocard__pair > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
-  @media (max-width: 809.98px) {
-    .office { position: relative; top: auto; z-index: 1; }
-    .ocard { width: 100%; }
+  .ocard__name { width: 100%; display: flex; flex-direction: column; gap: var(--esp-2); }
+  .ocard__details { width: 100%; display: flex; flex-direction: column; gap: var(--esp-3); }
+  .ocard__text { padding-bottom: var(--esp-4); box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-linea-sobre-foto); }
+  .ocard__pair { display: flex; gap: var(--esp-4); }
+  .ocard__pair a { overflow-wrap: anywhere; display: inline-flex; align-items: center; min-height: var(--tactil); }
+  .ocard__hours { display: flex; flex-direction: column; gap: var(--esp-2); }
+  .ocard__pair > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--esp-2); }
+  @media (min-width: 768px) {
+    .office__inner { grid-template-columns: repeat(8, 1fr); }
+    .ocard { grid-column: span 5; }
+  }
+  /* Escritorio: cada oficina se queda fija y la siguiente la cubre al bajar. */
+  @media (min-width: 1024px) {
+    .office { position: sticky; top: var(--alto-header); }
+    .office__inner { grid-template-columns: repeat(12, 1fr); }
+    .ocard { grid-column: span 5; padding: var(--esp-5); }
   }
 </style>

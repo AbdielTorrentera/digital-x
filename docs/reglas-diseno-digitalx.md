@@ -28,7 +28,7 @@ Versión: borrador de trabajo · 2026-10-30
 
 - **Contenedor máximo:** 1280 px de ancho de contenido, centrado. En pantallas mayores, el fondo de la sección puede ir a todo lo ancho, pero el contenido no.
 - Los estilos base son los de móvil; los demás se agregan con `min-width` (nunca al revés con `max-width`).
-- **Anchos de revisión obligatorios:** 375, 390, 768, 1024 y 1440 px.
+- **Anchos de revisión obligatorios:** 360, 375, 390, 768, 1024 y 1440 px. 360 px es el ancho mínimo que se debe soportar (Android de gama media).
 
 ---
 
@@ -224,12 +224,12 @@ Objetivo: **WCAG 2.2 nivel AA**.
 - [ ] Color del header (blanco o negro).
 - [ ] Confirmar el juego de íconos (se mantiene el de Marby mientras tanto).
 - [ ] Colores de estado para formularios (ver marca §2), si se publica el formulario.
-
+- [ ] Estilo del menú de escritorio: acercarlo al de Marby cuando haya páginas de servicio en el desplegable.
 ---
 
 ## 12. Criterios de aceptación
 
-- [ ] Cada página revisada a 375, 390, 768, 1024 y 1440 px, sin scroll horizontal.
+- [ ] Cada página revisada a 360, 375, 390, 768, 1024 y 1440 px, sin scroll horizontal.
 - [ ] Ningún espacio, tamaño, radio o duración fuera de los tokens.
 - [ ] Cuerpo de texto ≥ 16 px en `rem`, interlineado 1.5 y ≤ 68 caracteres por línea.
 - [ ] Una sola acción principal por sección; prueba de entrecerrar los ojos superada.

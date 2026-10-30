@@ -8,14 +8,14 @@ import { menu } from '../lib/paginas';
 const actual = Astro.url.pathname;
 ---
 <!--
-  Móvil (<1024 px): barra con marca, "Llamar" y "Menú". El menú abre a pantalla completa
-  con los enlaces pegados abajo (alcance del pulgar) y botones de 56 px.
+  Móvil (<1024 px): barra de 64 px con marca, "Llamar" y "Menú". El menú abre a pantalla completa
+  con los enlaces pegados abajo (alcance del pulgar) y botones de 48 px.
   Escritorio: barra horizontal; "Servicios" es un desplegable de tres columnas.
   Sin JavaScript el menú queda como lista visible debajo de la barra.
 -->
 <header class="nav" data-nav>
   <div class="nav__bar">
-    <a class="nav__marca" href="/"><Logo width={132} /></a>
+    <a class="nav__marca" href="/"><Logo /></a>
 
     <div class="menu" id="menu" data-menu>
       <nav class="menu__nav" aria-label="Principal">
@@ -26,7 +26,7 @@ const actual = Astro.url.pathname;
                 <>
                   <button class="menu__enlace menu__sub-btn" type="button" aria-expanded="false" aria-controls="sub-servicios" data-sub-toggle>
                     <span>{item.titulo}</span>
-                    <Icon name="plus" size={20} class="menu__mas" />
+                    <Icon name="plus" size="boton" class="menu__mas" />
                   </button>
                   <div class="sub" id="sub-servicios">
                     {item.url && <a class="sub__todos" href={item.url}>Todos los servicios</a>}
@@ -52,15 +52,15 @@ const actual = Astro.url.pathname;
         </ul>
       </nav>
       <div class="menu__movil">
-        <a class="menu__btn" href={telUrl}><Icon name="phone" size={20} /> Llamar</a>
-        <button class="menu__btn menu__btn--cerrar" type="button" data-menu-close><Icon name="close" size={20} /> Cerrar</button>
+        <a class="menu__btn" href={telUrl}><Icon name="phone" size="boton" /> Llamar</a>
+        <button class="menu__btn menu__btn--cerrar" type="button" data-menu-close><Icon name="close" size="boton" /> Cerrar</button>
       </div>
     </div>
 
     <div class="nav__acciones">
       <BotonLlamar />
       <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-open>
-        <Icon name="menu" size={20} />
+        <Icon name="menu" size="boton" />
         <span>Menú</span>
       </button>
     </div>
@@ -68,6 +68,7 @@ const actual = Astro.url.pathname;
 </header>
 
 <style>
+  /* Estilos base: móvil. Escritorio se agrega con min-width: 1024px (diseño §1). */
   .nav {
     position: sticky;
     top: 0;
@@ -75,164 +76,178 @@ const actual = Astro.url.pathname;
     z-index: 40;
     background: var(--dx-blanco);
     color: var(--dx-negro);
-    border-bottom: 1px solid var(--dx-gris-claro);
+    /* La línea inferior va dentro de la altura del header (64 px), no suma a ella. */
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-claro);
   }
   .nav__bar {
-    max-width: var(--container);
+    max-width: calc(var(--contenedor) + 2 * var(--margen));
     margin-inline: auto;
-    padding: 8px 8px 8px var(--gutter);
-    min-height: 64px;
+    padding: var(--esp-2) var(--margen);
+    min-height: var(--alto-header);
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--esp-2);
   }
   .nav__marca {
     display: inline-flex;
     align-items: center;
-    min-height: 48px;
+    min-height: var(--tactil);
     color: var(--dx-negro);
   }
-  .nav__acciones { display: flex; align-items: center; gap: 4px; }
+  .nav__acciones { display: flex; align-items: center; gap: var(--esp-2); }
   .nav__toggle {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-height: 48px;
-    padding-inline: 14px;
-    border-radius: 8px;
+    gap: var(--esp-2);
+    min-height: var(--tactil);
+    padding-inline: var(--esp-3);
+    border-radius: var(--radio);
     background: var(--dx-negro);
     color: var(--dx-blanco);
-    font-size: var(--body);
+    font-size: var(--txt-cuerpo);
     font-weight: 600;
-    line-height: 1;
+    line-height: var(--lh-etiqueta);
   }
   :global(html:not(.js)) .nav__toggle { display: none; }
 
-  /* ---------- menú ---------- */
-  .menu__lista { display: flex; flex-direction: column; }
+  /* ---------- menú: panel a pantalla completa en móvil ---------- */
+  .menu { flex: 1 0 100%; order: 3; }
+  .menu__lista { display: flex; flex-direction: column; gap: var(--esp-2); }
   .menu__enlace {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    min-height: 56px;
-    padding: 0 4px;
+    min-height: var(--tactil);
+    padding: var(--esp-3) var(--esp-1);
     font-family: var(--font-titulos);
-    font-size: var(--h4);
+    font-size: var(--txt-h3);
     font-weight: 800;
-    line-height: 1.2;
+    line-height: var(--lh-h3);
     text-align: left;
     color: var(--dx-negro);
-    border-top: 1px solid var(--dx-gris-medio);
+    border-top: var(--linea) solid var(--dx-gris-medio);
   }
-  .menu__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: 6px; }
-  .menu__mas { transition: transform 0.2s var(--ease-inout); }
+  .menu__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: var(--esp-2); }
+  .menu__mas { transition: transform var(--dur-media) var(--ease); }
   .menu__sub-btn[aria-expanded='true'] .menu__mas { transform: rotate(45deg); }
 
-  .sub { padding-bottom: 12px; }
+  .sub { padding-bottom: var(--esp-3); }
+  .sub ul { display: flex; flex-direction: column; gap: var(--esp-2); }
+  .sub__grupos { display: flex; flex-direction: column; gap: var(--esp-2); }
   :global(html.js) .sub:not(.is-open) { display: none; }
   .sub__todos,
   .sub__enlace,
   .sub__titulo {
     display: flex;
     align-items: center;
-    min-height: 48px;
-    padding: 0 4px 0 16px;
-    font-size: var(--body);
+    min-height: var(--tactil);
+    padding: 0 var(--esp-1) 0 var(--esp-4);
+    font-size: var(--txt-cuerpo);
     color: var(--dx-negro);
   }
-  .sub__todos { color: var(--dx-negro); font-weight: 600; }
-  .sub__titulo { color: var(--dx-negro); font-weight: 600; }
-  .sub__enlace[aria-current='page'] { color: var(--dx-negro); text-decoration: underline; text-underline-offset: 4px; }
+  .sub__todos { margin-bottom: var(--esp-2); }
+  .sub__todos,
+  .sub__titulo { font-weight: 600; }
+  .sub__enlace[aria-current='page'] { text-decoration: underline; text-underline-offset: var(--esp-1); }
 
   .menu__movil { display: none; }
 
-  /* ---------- móvil: panel a pantalla completa ---------- */
-  @media (max-width: 1023.98px) {
-    .nav__bar { flex-wrap: wrap; }
-    .menu { flex: 1 0 100%; order: 3; }
-    :global(html.js) .menu {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 30;
-      flex-direction: column;
-      gap: 16px;
-      padding: 16px 16px max(16px, env(safe-area-inset-bottom));
-      background: var(--dx-gris-claro);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-    }
-    /* margin-top:auto pega los enlaces abajo sin perder el scroll cuando el contenido es más alto que la pantalla. */
-    :global(html.js) .menu__nav { margin-top: auto; }
-    :global(html.js) .menu.is-open { display: flex; animation: menu-in 0.25s var(--ease-appear); }
-    /* Llamar y Cerrar quedan siempre a la vista, aunque el panel tenga que hacer scroll. */
-    :global(html.js) .menu__movil {
-      display: flex;
-      gap: 12px;
-      position: sticky;
-      bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
-      margin-bottom: calc(-1 * max(16px, env(safe-area-inset-bottom)));
-      padding-block: 12px max(16px, env(safe-area-inset-bottom));
-      background: var(--dx-gris-claro);
-    }
-    .menu__btn {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 56px;
-      border-radius: 8px;
-      background: var(--dx-blanco);
-      color: var(--dx-negro);
-      font-size: var(--body);
-      font-weight: 600;
-    }
-    .menu__btn--cerrar { background: var(--dx-negro); color: var(--dx-blanco); }
+  :global(html.js) .menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    flex-direction: column;
+    gap: var(--esp-4);
+    padding: var(--margen) var(--margen) max(var(--margen), env(safe-area-inset-bottom));
+    background: var(--dx-gris-claro);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
+  /* margin-top:auto pega los enlaces abajo sin perder el scroll cuando el contenido es más alto que la pantalla. */
+  :global(html.js) .menu__nav { margin-top: auto; }
+  :global(html.js) .menu.is-open { display: flex; animation: menu-in var(--dur-media) var(--ease); }
+  /* Llamar y Cerrar quedan siempre a la vista, aunque el panel tenga que hacer scroll. */
+  :global(html.js) .menu__movil {
+    display: flex;
+    gap: var(--esp-2);
+    position: sticky;
+    bottom: calc(-1 * max(var(--margen), env(safe-area-inset-bottom)));
+    margin-bottom: calc(-1 * max(var(--margen), env(safe-area-inset-bottom)));
+    padding-block: var(--esp-3) max(var(--margen), env(safe-area-inset-bottom));
+    background: var(--dx-gris-claro);
+  }
+  .menu__btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--esp-2);
+    min-height: var(--tactil);
+    border-radius: var(--radio);
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
+    font-size: var(--txt-cuerpo);
+    font-weight: 600;
+  }
+  .menu__btn--cerrar { background: var(--dx-negro); color: var(--dx-blanco); }
   @keyframes menu-in {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(var(--esp-4)); }
     to { opacity: 1; transform: none; }
   }
 
   /* ---------- escritorio ---------- */
   @media (min-width: 1024px) {
-    .nav__bar { min-height: 72px; padding: 8px var(--gutter); gap: 24px; }
+    .nav__bar { flex-wrap: nowrap; gap: var(--esp-5); }
     .nav__toggle { display: none; }
-    .menu { flex: 1; display: flex; justify-content: center; }
-    .menu__lista { flex-direction: row; gap: 4px; }
+    .menu { flex: 1; order: 0; display: flex; justify-content: center; }
+    /* Deshace el panel a pantalla completa de móvil (esas reglas llevan html.js y ganarían por especificidad). */
+    :global(html.js) .menu {
+      display: flex;
+      position: static;
+      z-index: auto;
+      flex-direction: row;
+      gap: 0;
+      padding: 0;
+      background: none;
+      overflow: visible;
+    }
+    :global(html.js) .menu.is-open { animation: none; }
+    :global(html.js) .menu__nav { margin-top: 0; }
+    :global(html.js) .menu__movil { display: none; }
+    .menu__lista { flex-direction: row; gap: var(--esp-2); }
     .menu__item { position: relative; }
     .menu__enlace {
       width: auto;
-      gap: 8px;
-      padding: 0 16px;
+      gap: var(--esp-2);
+      padding: 0 var(--esp-4);
       border-top: 0;
-      border-radius: 8px;
-      font-size: var(--body);
-      transition: background-color 0.2s ease;
+      border-radius: var(--radio);
+      font-size: var(--txt-cuerpo);
+      line-height: var(--lh-etiqueta);
     }
     .menu__enlace:hover,
     .menu__sub-btn[aria-expanded='true'] { background: var(--dx-gris-claro); }
-    .menu__mas { width: 16px; height: 16px; }
+    .menu__mas { width: var(--icono-boton); height: var(--icono-boton); }
     .sub {
       position: absolute;
-      top: calc(100% + 8px);
+      top: calc(100% + var(--esp-2));
       left: 0;
       width: max-content;
-      max-width: min(760px, calc(100vw - 2 * var(--gutter)));
-      padding: 20px 24px 24px;
+      max-width: calc(100vw - 2 * var(--margen));
+      padding: var(--esp-5);
       background: var(--dx-blanco);
-      border: 1px solid var(--dx-gris-claro);
-      border-radius: 12px;
-      box-shadow: 0 12px 32px var(--dx-sombra);
+      border: var(--linea) solid var(--dx-gris-claro);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra-flotante);
     }
-    .sub__grupos { display: grid; grid-template-columns: repeat(3, minmax(190px, 1fr)); gap: 24px; }
+    .sub__grupos { display: grid; grid-template-columns: repeat(3, max-content); gap: var(--esp-5); }
     .sub__todos,
     .sub__enlace,
-    .sub__titulo { padding: 0 8px; border-radius: 6px; }
-    .sub__todos { margin-bottom: 8px; }
+    .sub__titulo { padding: 0 var(--esp-2); border-radius: var(--radio-chico); }
     .sub__enlace:hover,
     .sub__todos:hover,
     a.sub__titulo:hover { background: var(--dx-gris-claro); color: var(--dx-negro); }

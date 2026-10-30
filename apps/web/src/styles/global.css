@@ -12,6 +12,8 @@ body {
   display: flex;
   flex-direction: column;
   font-family: var(--font-texto);
+  font-size: var(--txt-cuerpo);
+  line-height: var(--lh-cuerpo);
   color: var(--texto);
   background: var(--fondo);
   -webkit-font-smoothing: antialiased;
@@ -25,35 +27,44 @@ img { height: auto; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 input, textarea { font: inherit; }
-:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+/* Diseño §9: contorno de 2 px con separación de 2 px; negro sobre claro y amarillo sobre negro (--foco-color). */
+:focus-visible { outline: var(--foco) solid var(--foco-color); outline-offset: var(--foco); }
 
 main { flex: 1 0 auto; }
 main:focus { outline: none; }
 
+/* Párrafos: máximo 68 caracteres por línea (diseño §3). */
+p { max-width: var(--medida); }
+/* Un párrafo centrado también centra su bloque, para que el máximo no lo cargue a la izquierda. */
+.centrado { text-align: center; }
+p.centrado,
+.centrado > p { margin-inline: auto; }
+
 /* Enlace "Saltar al contenido": fuera de pantalla hasta recibir foco con teclado. */
 .skip-link {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: var(--esp-2);
+  left: var(--esp-2);
   z-index: 100;
   display: inline-flex;
   align-items: center;
-  min-height: 48px;
-  padding: 0 20px;
-  border-radius: 8px;
+  min-height: var(--tactil);
+  padding-inline: var(--esp-5);
+  border-radius: var(--radio);
   background: var(--dx-negro);
   color: var(--dx-blanco);
   font-weight: 600;
   transform: translateY(-200%);
 }
-.skip-link:focus { transform: none; }
+.skip-link:focus { transform: none; outline-color: var(--dx-amarillo); }
 
 /* ---------- layout ---------- */
+/* Contenido de hasta 1280 px, centrado; el margen lateral viene de --margen (diseño §1). */
 .container {
   width: 100%;
-  max-width: var(--container);
+  max-width: calc(var(--contenedor) + 2 * var(--margen));
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-inline: var(--margen);
 }
 .cover { width: 100%; height: 100%; object-fit: cover; }
 .visually-hidden {
@@ -61,35 +72,29 @@ main:focus { outline: none; }
   clip: rect(0 0 0 0); white-space: nowrap;
 }
 
-/* ---------- type presets ---------- */
-.t-h1, .t-h2, .t-h3, .t-h4, .t-h5, .t-h6 {
+/* ---------- tipografía (diseño §3) ---------- */
+/* Nombres heredados de Marby: h4–h6 usan la escala de h3; body-lg la de cuerpo; caption y body-sm la de --txt-chico. */
+.t-display, .t-h1, .t-h2, .t-h3, .t-h4, .t-h5, .t-h6 {
   font-family: var(--font-titulos);
   font-weight: 800;
   color: var(--texto);
-  letter-spacing: 0;
   text-wrap: balance;
 }
-.t-h1 { font-size: var(--h1); line-height: 1.2; }
-.t-h2 { font-size: var(--h2); line-height: 1.2; }
-.t-h3 { font-size: var(--h3); line-height: 1.25; }
-.t-h4 { font-size: var(--h4); line-height: 1.3; }
-.t-h5 { font-size: var(--h5); line-height: 1.2; }
-.t-h6 { font-size: var(--h6); line-height: 1.2; }
-.t-body-lg, .t-body, .t-body-sm, .t-caption, .t-caption2 {
-  font-weight: 400;
-  color: var(--texto);
-  letter-spacing: 0;
-}
-.t-body-lg { font-size: var(--body-lg); line-height: 1.15; }
-.t-body { font-size: var(--body); line-height: 1.2; }
-.t-body-sm { font-size: var(--body-sm); line-height: 1.1; }
-.t-caption { font-size: var(--caption); line-height: 1.2; }
+.t-display { font-size: var(--txt-display); line-height: var(--lh-titulo); letter-spacing: var(--ls-titulo); }
+.t-h1 { font-size: var(--txt-h1); line-height: var(--lh-titulo); letter-spacing: var(--ls-titulo); }
+.t-h2 { font-size: var(--txt-h2); line-height: var(--lh-titulo); letter-spacing: var(--ls-titulo); }
+.t-h3, .t-h4, .t-h5, .t-h6 { font-size: var(--txt-h3); line-height: var(--lh-h3); }
+.t-body, .t-body-lg { font-size: var(--txt-cuerpo); font-weight: 400; line-height: var(--lh-cuerpo); color: var(--texto); }
+/* --txt-chico: etiquetas, fechas y pies de foto. Nunca párrafos. */
+.t-body-sm, .t-caption { font-size: var(--txt-chico); font-weight: 400; line-height: var(--lh-cuerpo); color: var(--texto); }
 .t-caption2 {
   font-family: var(--font-texto);
+  font-size: var(--txt-chico);
   font-weight: 600;
-  font-size: var(--caption2);
-  line-height: 1;
+  line-height: var(--lh-etiqueta);
+  letter-spacing: var(--ls-etiqueta);
   text-transform: uppercase;
+  color: var(--texto);
 }
 .balance { text-wrap: balance; }
 /* Colores de texto. .c-gris y .c-amarillo solo sobre negro (identidad sección 3). */
@@ -98,104 +103,114 @@ main:focus { outline: none; }
 .c-gris { color: var(--dx-gris-medio); }
 .c-amarillo { color: var(--dx-amarillo); }
 
-/* inline links inside body copy use the Link preset */
-.link { color: var(--texto); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s ease; }
-.link:hover { text-decoration-thickness: 2px; }
+/* Enlaces dentro de texto: siempre subrayados (diseño §5.6). */
+.link { color: var(--texto); text-decoration: underline; text-underline-offset: var(--esp-1); }
+.link:hover { text-decoration-thickness: var(--foco); }
 
-/* ---------- button (Buttons component) ---------- */
+/* ---------- botón (diseño §6) ---------- */
+/* Primario: negro sobre claro, amarillo sobre negro. Secundario: contorno. Colores en tokens.css. */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 20px;
-  height: 28px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  overflow: hidden;
-  white-space: nowrap;
-  flex-shrink: 0;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-.btn__label {
+  justify-content: center;
+  gap: var(--esp-2);
+  width: 100%;
+  min-height: var(--tactil);
+  padding: var(--esp-2) var(--esp-4);
+  border: var(--linea) solid var(--btn-borde);
+  border-radius: var(--radio);
+  background: var(--btn-fondo);
+  color: var(--btn-texto);
   font-family: var(--font-texto);
+  font-size: var(--txt-cuerpo);
   font-weight: 600;
-  font-size: var(--caption2);
-  line-height: 1;
-  text-transform: uppercase;
+  line-height: var(--lh-etiqueta);
+  text-align: center;
+  cursor: pointer;
   user-select: none;
+  transition: transform var(--dur-rapida) var(--ease);
 }
+.btn--secondary { background: transparent; color: var(--texto); border-color: var(--texto); }
+.btn--icon { width: var(--tactil); padding: 0; }
 .btn__icon {
   display: grid;
   place-items: center;
-  width: 16px;
-  height: 16px;
+  width: var(--icono-boton);
+  height: var(--icono-boton);
   flex: none;
-  transition: transform var(--spring-04-dur) var(--spring-04);
+  transition: transform var(--dur-rapida) var(--ease);
 }
-.btn__icon svg { width: 16px; height: 16px; }
-/* Primario: negro sobre fondo claro, amarillo sobre negro (valores en tokens.css). */
-.btn--primary,
-.btn--icon { background: var(--btn-fondo); color: var(--btn-texto); border-color: var(--btn-borde); }
-.btn--secondary { background: var(--dx-gris-claro); color: var(--dx-negro); border-color: var(--dx-gris-claro); }
-.btn--icon { width: 32px; justify-content: center; }
+.btn__icon svg { width: 100%; height: 100%; }
+.btn:active { transform: translateY(var(--linea)); }
+/* Deshabilitado: no depende solo de la opacidad; cambia el borde, el cursor y el relleno. */
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  background: var(--fondo-suave);
+  color: var(--texto-sec);
+  border: var(--linea) dashed var(--borde);
+  cursor: not-allowed;
+  transform: none;
+}
 @media (hover: hover) {
-  .btn--primary:hover,
-  .btn--icon:hover { background: var(--btn-fondo-hover); color: var(--btn-texto-hover); }
-  .btn--secondary:hover { background: var(--dx-blanco); border-color: var(--dx-negro); }
-}
-/* Mobile first: área táctil de al menos 48 px. */
-@media (max-width: 809.98px) {
-  .btn { height: 48px; padding-inline: 16px; }
-  .btn--icon { width: 48px; padding-inline: 0; }
-}
-@media (hover: hover) and (min-width: 810px) {
+  .btn:hover { background: var(--btn-fondo-hover); color: var(--btn-texto-hover); }
+  .btn--secondary:hover { background: var(--texto); color: var(--fondo); }
+  .btn[disabled]:hover,
+  .btn[aria-disabled='true']:hover { background: var(--fondo-suave); color: var(--texto-sec); }
   .btn:hover .btn__icon,
   .hover-target:hover .btn__icon { transform: rotate(45deg); }
 }
+@media (min-width: 768px) {
+  .btn { width: auto; }
+}
 
-/* ---------- appear effects ---------- */
+/* ---------- entradas de sección (diseño §8) ---------- */
 /*
- * Elements with [data-appear] start hidden and are revealed by
- * scripts/appear.js (in view, once) or on load ([data-appear="mount"]).
- * Without JavaScript, or with reduced motion, everything renders in place.
+ * Los elementos con [data-appear] arrancan ocultos y scripts/appear.ts los muestra una sola vez
+ * al entrar en pantalla (o al cargar con [data-appear="mount"]). Solo opacity y transform.
+ * Sin JavaScript, o con movimiento reducido, todo se muestra en su lugar.
  */
 html.js [data-appear] {
   opacity: 0;
-  transform: translate3d(0, var(--appear-y, 20px), 0) scale(var(--appear-scale, 1));
+  transform: translate3d(0, var(--esp-4), 0);
 }
 html.js [data-appear].is-in {
   opacity: 1;
   transform: none;
-  transition:
-    opacity var(--appear-dur, 0.4s) var(--appear-ease, var(--ease-appear)) var(--appear-delay, 0s),
-    transform var(--appear-dur, 0.4s) var(--appear-ease, var(--ease-appear)) var(--appear-delay, 0s);
+  transition: opacity var(--dur-entrada) var(--ease), transform var(--dur-entrada) var(--ease);
 }
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   html.js [data-appear] { opacity: 1; transform: none; }
-  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
-/* ---------- section shells ---------- */
-.section { position: relative; padding-block: var(--section-y); }
+/* ---------- secciones ---------- */
+.section { position: relative; padding-block: var(--esp-8); }
 .section-head {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--esp-5);
 }
-.section-head__title { display: flex; flex-direction: column; gap: 12px; max-width: 460px; }
-@media (max-width: 809.98px) {
-  .section-head { flex-direction: column; align-items: flex-start; justify-content: flex-start; }
+.section-head__title { display: flex; flex-direction: column; gap: var(--esp-3); max-width: var(--medida); }
+@media (min-width: 768px) {
+  .section-head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+}
+@media (min-width: 1024px) {
+  .section { padding-block: var(--esp-9); }
 }
 
-/* glass panel (backdrop blur over photography) */
+/* Capa de vidrio sobre fotos. */
 .glass {
   background: var(--dx-capa-oscura);
   color: var(--dx-blanco);
-  border: 1px solid var(--dx-linea-sobre-foto);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  border: var(--linea) solid var(--dx-linea-sobre-foto);
+  -webkit-backdrop-filter: blur(var(--desenfoque));
+  backdrop-filter: blur(var(--desenfoque));
 }
 .scrim {
   position: absolute;
@@ -204,31 +219,14 @@ html.js [data-appear].is-in {
   pointer-events: none;
 }
 
-/* rich text (property descriptions, articles) */
-.prose { color: var(--texto); font-size: var(--body); line-height: 1.2; }
-.prose > * + * { margin-top: 20px; }
-.prose > :is(h1, h2, h3, h4, h5, h6):not(:first-child) { margin-top: 40px; }
-.prose h2 { font-size: var(--h2); line-height: 1.2; }
-.prose h3 { font-size: var(--h3); line-height: 1.25; }
-.prose h4 { font-size: var(--h4); line-height: 1.3; }
-.prose h5 { font-size: var(--h5); line-height: 1.2; }
+/* Texto enriquecido (descripciones, artículos). */
+.prose { color: var(--texto); font-size: var(--txt-cuerpo); line-height: var(--lh-cuerpo); }
+.prose > * { max-width: var(--medida); }
+.prose > * + * { margin-top: var(--esp-4); }
+.prose > :is(h1, h2, h3, h4, h5, h6):not(:first-child) { margin-top: var(--esp-7); }
+.prose h2 { font-size: var(--txt-h2); line-height: var(--lh-titulo); letter-spacing: var(--ls-titulo); }
+.prose h3, .prose h4, .prose h5 { font-size: var(--txt-h3); line-height: var(--lh-h3); }
 .prose h2, .prose h3, .prose h4, .prose h5 { font-family: var(--font-titulos); font-weight: 800; color: var(--texto); text-wrap: balance; }
-.prose ol { list-style: decimal; padding-left: 1.5em; }
-.prose ul { list-style: disc; padding-left: 1.5em; }
-.prose a { color: var(--texto); text-decoration: underline; text-underline-offset: 3px; }
-
-/* filter tabs (Blog Tabs / Property Tabs components) */
-.tab {
-  flex: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: var(--dx-gris-claro);
-  color: var(--dx-negro);
-  font-size: var(--body-sm);
-  line-height: 1.1;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.tab[aria-pressed='true'] { background: var(--dx-negro); color: var(--dx-blanco); }
-@media (hover: hover) { .tab:hover { background: var(--dx-negro); color: var(--dx-blanco); } }
-@media (max-width: 809.98px) { .tab { height: 48px; } }
+.prose ol { list-style: decimal; padding-left: var(--esp-5); }
+.prose ul { list-style: disc; padding-left: var(--esp-5); }
+.prose a { color: var(--texto); text-decoration: underline; text-underline-offset: var(--esp-1); }

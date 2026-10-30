@@ -7,20 +7,20 @@ const { services } = await site('home');
   <div class="container services__inner">
     <div class="services__head">
       <p class="t-caption2" data-appear>{services.label}</p>
-      <h2 class="t-h2" data-appear style="--appear-delay:0.1s">{services.title}</h2>
+      <h2 class="t-h2" data-appear>{services.title}</h2>
     </div>
     <div class="services__stack">
       {services.items.map((s: any, i: number) => (
-        <a class="svc hover-target" href={s.href} data-appear={i === 0 ? '' : undefined} style={i === 0 ? '--appear-delay:0.2s;--appear-ease:var(--ease-inout)' : undefined}>
+        <a class="svc hover-target" href={s.href} data-appear={i === 0 ? '' : undefined}>
           <img class="svc__img" src={s.image} alt="Service card property image" loading="lazy" />
           <div class="svc__card">
             <div class="svc__progress">
               <span class="svc__line"></span>
               <span class="svc__count">{s.counter}</span>
             </div>
-            <p class="t-body-sm c-negro">{s.label}</p>
+            <p class="t-body c-negro">{s.label}</p>
             <h3 class="t-h3">{s.title}</h3>
-            <div class="svc__text"><p class="t-body-sm">{s.text}</p></div>
+            <div class="svc__text"><p class="t-body">{s.text}</p></div>
             <Btn label={s.button} variant="secondary" />
           </div>
         </a>
@@ -29,46 +29,33 @@ const { services } = await site('home');
   </div>
 </section>
 <style>
-  .services { background: var(--dx-blanco); padding-block: 80px; }
-  .services__inner { display: flex; flex-direction: column; gap: 40px; }
-  .services__head { display: flex; flex-direction: column; gap: 12px; }
-  .services__stack { display: flex; flex-direction: column; gap: 20px; }
-  .svc {
-    position: sticky;
-    top: 100px;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .svc__img { flex: 1 1 0; min-width: 0; height: 500px; object-fit: cover; border-radius: 8px; }
+  .services { background: var(--dx-blanco); padding-block: var(--esp-8); }
+  .services__inner { display: flex; flex-direction: column; gap: var(--esp-7); }
+  .services__head { display: flex; flex-direction: column; gap: var(--esp-3); }
+  .services__stack { display: flex; flex-direction: column; gap: var(--esp-5); }
+  .svc { display: flex; flex-direction: column; gap: var(--esp-4); }
+  .svc__img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radio); }
   .svc__card {
-    flex: 1 1 0;
-    min-width: 0;
-    height: 500px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px;
-    border-radius: 8px;
+    gap: var(--esp-3);
+    padding: var(--esp-4);
+    border-radius: var(--radio);
     background: var(--dx-gris-claro);
-    overflow: hidden;
   }
-  .svc__progress { width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
-  .svc__line { width: 100%; height: 1px; background: var(--dx-gris-medio); }
-  .svc__count { font-family: var(--font-texto); font-weight: 600; font-size: 14px; line-height: 1.2; color: var(--dx-negro); }
-  .svc__text { flex: 1; width: 100%; display: flex; align-items: center; }
-  @media (max-width: 1199.98px) {
-    .services { padding-block: 40px; }
-    .services__inner { gap: 20px; }
-  }
-  @media (max-width: 809.98px) {
-    .services__inner { gap: 40px; }
-    .svc { height: auto; flex-direction: column; }
-    .svc:nth-child(3) { top: 120px; }
-    .svc__img, .svc__card { flex: none; width: 100%; }
-    .svc__img { height: 260px; }
-    .svc__card { height: auto; }
-    .svc__text { flex: none; height: 340px; }
+  .svc__progress { width: 100%; display: flex; flex-direction: column; align-items: flex-end; gap: var(--esp-2); }
+  .svc__line { width: 100%; height: var(--linea); background: var(--dx-gris-medio); }
+  .svc__count { font-family: var(--font-texto); font-weight: 600; font-size: var(--txt-chico); line-height: var(--lh-etiqueta); color: var(--dx-negro); }
+  .svc__text { width: 100%; }
+  /* Escritorio: imagen y tarjeta lado a lado; cada servicio se queda fijo y el siguiente lo cubre. */
+  @media (min-width: 1024px) {
+    .services { padding-block: var(--esp-9); }
+    .services__stack { gap: var(--esp-6); }
+    .svc { position: sticky; top: calc(var(--alto-header) + var(--esp-5)); flex-direction: row; align-items: stretch; gap: var(--medianil); }
+    .svc__img, .svc__card { flex: 1 1 0; min-width: 0; }
+    .svc__img { aspect-ratio: auto; height: auto; }
+    .svc__card { padding: var(--esp-5); }
+    .svc__text { flex: 1; display: flex; align-items: center; }
   }
 </style>

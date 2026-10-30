@@ -1,9 +1,8 @@
 import { reduced } from './motion';
 
 /**
- * [data-appear]            fade + rise when it enters the viewport (once)
- * [data-appear="mount"]    same, on page load
- * Per element: --appear-delay, --appear-y, --appear-dur, --appear-ease.
+ * [data-appear]            fundido y subida (--esp-4) al entrar en pantalla, una sola vez
+ * [data-appear="mount"]    igual, al cargar la página
  */
 export function initAppear(root: ParentNode = document) {
   const els = [...root.querySelectorAll<HTMLElement>('[data-appear]:not(.is-in)')];

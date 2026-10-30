@@ -15,47 +15,40 @@ const { mensaje } = Astro.props;
   aria-label={`${textoBotonWhatsApp}, por WhatsApp (se abre en una pestaña nueva)`}
   data-wa
 >
-  <Icon name="whatsapp" size={28} />
+  <Icon name="whatsapp" />
   <span class="wa__texto">{textoBotonWhatsApp}</span>
 </a>
 <style>
   .wa {
     position: fixed;
-    right: 16px;
-    bottom: 16px;
+    right: var(--esp-4);
+    bottom: var(--esp-4);
     z-index: 20;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    height: 56px;
-    max-width: calc(100vw - 32px);
-    padding: 0 20px 0 14px;
-    border-radius: 28px;
+    gap: var(--esp-2);
+    min-height: var(--tactil);
+    max-width: calc(100vw - 2 * var(--esp-4));
+    padding: var(--esp-2) var(--esp-5) var(--esp-2) var(--esp-4);
+    border-radius: var(--radio-pildora);
     /* Verde oficial de WhatsApp con ícono y texto negros: el blanco no cumple contraste (identidad sección 2). */
     background: var(--dx-whatsapp);
     color: var(--dx-negro);
     font-family: var(--font-texto);
-    font-size: var(--body);
+    font-size: var(--txt-cuerpo);
     font-weight: 600;
-    line-height: 1.1;
-    box-shadow: 0 4px 16px var(--dx-sombra);
-    transition: padding 0.25s var(--ease-inout), gap 0.25s var(--ease-inout), box-shadow 0.2s ease;
+    line-height: var(--lh-etiqueta);
+    box-shadow: var(--sombra-flotante);
   }
-  .wa:hover { box-shadow: 0 6px 20px var(--dx-sombra); }
-  .wa:focus-visible { outline: 2px solid var(--dx-negro); outline-offset: 3px; }
-  .wa__texto {
-    display: block;
-    max-width: 260px;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: max-width 0.25s var(--ease-inout), opacity 0.2s ease;
-  }
-  /* Móvil: tras hacer scroll queda solo el ícono para no tapar contenido. */
-  @media (max-width: 809.98px) {
-    .wa.is-compact { gap: 0; padding: 0 14px; }
-    .wa.is-compact .wa__texto { max-width: 0; opacity: 0; }
-  }
-  @media (min-width: 810px) {
-    .wa { right: 24px; bottom: 24px; }
+  .wa:active { transform: translateY(var(--linea)); }
+  /* Sobre el pie negro el contorno negro no se ve: un halo blanco en la separación de 2 px lo marca. */
+  .wa:focus-visible { outline-color: var(--dx-negro); box-shadow: 0 0 0 var(--foco) var(--dx-blanco), var(--sombra-flotante); }
+  /* Móvil: tras hacer scroll queda solo el ícono para no tapar contenido. El texto sigue en el aria-label. */
+  .wa.is-compact { padding-inline: var(--esp-3); }
+  .wa.is-compact .wa__texto { display: none; }
+  @media (min-width: 768px) {
+    .wa { right: var(--esp-5); bottom: var(--esp-5); }
+    .wa.is-compact { padding-inline: var(--esp-4) var(--esp-5); }
+    .wa.is-compact .wa__texto { display: block; }
   }
 </style>

@@ -2,19 +2,19 @@
 import { site } from '../../lib/site';
 const { hero } = await site('home');
 ---
-<section class="hero" data-dark>
+<section class="hero sobre-negro" data-dark>
   <link rel="preload" as="image" href={hero.poster} fetchpriority="high" />
   <video class="hero__video" data-src={hero.video} poster={hero.poster} muted loop playsinline preload="none" aria-hidden="true"></video>
   <div class="scrim" aria-hidden="true"></div>
   <div class="container hero__inner">
     <h1 class="hero__title" data-appear="mount">{hero.title}</h1>
-    <p class="hero__text t-caption2 c-blanco" data-appear="mount" style="--appear-delay:0.2s">{hero.text}</p>
+    <p class="hero__text t-caption2 c-blanco" data-appear="mount">{hero.text}</p>
   </div>
 </section>
 <style>
   .hero {
     position: relative;
-    height: 95vh;
+    min-height: 80vh;
     overflow: clip;
     display: flex;
     align-items: flex-end;
@@ -32,23 +32,21 @@ const { hero } = await site('home');
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-    padding-bottom: 32px;
+    align-items: flex-start;
+    gap: var(--esp-3);
+    padding-bottom: var(--esp-6);
   }
   .hero__title {
     width: 100%;
     font-family: var(--font-titulos);
-    font-size: var(--wordmark);
+    font-size: var(--txt-display);
     font-weight: 800;
-    line-height: 1.2;
+    line-height: var(--lh-titulo);
+    letter-spacing: var(--ls-titulo);
     color: var(--dx-blanco);
   }
-  .hero__text { width: 460px; max-width: 100%; }
-  @media (min-width: 1200px) { .hero__title { width: 1158px; max-width: 100%; } }
-  @media (max-width: 1199.98px) { .hero { height: 600px; } }
-  @media (max-width: 809.98px) {
-    .hero__inner { align-items: flex-start; }
-    .hero__text { width: 100%; }
+  @media (min-width: 1024px) {
+    .hero { min-height: 95vh; }
+    .hero__inner { align-items: flex-end; }
   }
 </style>

@@ -28,9 +28,9 @@ Las reglas viven en `docs/`, un archivo por tema. **Son obligatorias.** Antes de
 | `docs/reglas-seo-digitalx.md` | Metadatos, encabezados, enlazado, contenido, imágenes, SEO técnico, rendimiento, WhatsApp, datos estructurados |
 | `docs/reglas-seguridad-digitalx.md` | Secretos, contenido de Sanity, encabezados HTTP, dependencias, cuentas y datos personales. Tiene la prioridad más alta |
 | `docs/reglas-diseno-digitalx.md` | Retícula, espaciado, tipografía en pantalla, jerarquía, componentes, movimiento y accesibilidad |
-| `docs/buenas-practicas-digitalx.md` | *(pendiente de crear)* |
+| `docs/buenas-practicas-digitalx.md` | Organización del código, estilo, pruebas, Git, CI/CD y definición de terminado |
 
-**Orden de prioridad cuando dos reglas chocan:** seguridad > estructura > SEO > diseño > buenas prácticas. Este `CLAUDE.md` solo resume: si algo aquí contradice un archivo de `docs/`, manda el archivo.
+**Orden de prioridad cuando dos reglas chocan:** seguridad > estructura > SEO > marca > diseño > buenas prácticas.
 
 ### Reglas que nunca se rompen
 

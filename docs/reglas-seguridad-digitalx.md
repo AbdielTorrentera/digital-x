@@ -113,10 +113,10 @@ upgrade-insecure-requests
 1. **Menos es mejor.** Antes de agregar un paquete, el plan explica para qué, por qué no basta con código propio o con lo que ya está instalado, y quién lo mantiene.
 2. Antes de instalar, se verifica que el nombre sea el correcto (cuidado con imitaciones con letras cambiadas), que tenga mantenimiento reciente y repositorio público.
 3. `pnpm-lock.yaml` siempre en Git. En Vercel y CI se instala con `pnpm install --frozen-lockfile`.
-4. **Scripts de instalación:** pnpm bloquea por defecto los scripts `postinstall` de las dependencias. Solo se permiten para paquetes aprobados (`onlyBuiltDependencies`).
+4. **Scripts de instalación:** pnpm bloquea por defecto los scripts de instalación de las dependencias (`strictDepBuilds`). Solo se permiten para paquetes aprobados (`allowBuilds`).
 5. **Edad mínima de versiones:** configurar en pnpm que no se instalen versiones publicadas hace menos de unos días (`minimumReleaseAge`), para evitar paquetes recién comprometidos. `[PENDIENTE: confirmar valor, sugerido 3 días]`.
 6. `pnpm audit` antes de cada lanzamiento; vulnerabilidades altas o críticas se corrigen antes de publicar.
-7. Actualizaciones automáticas con Dependabot o Renovate, revisadas una por una (nada se fusiona solo).
+7. Actualizaciones automáticas con Dependabot, revisadas una por una (nada se fusiona solo). Dependabot mensual, máximo 2 PR abiertos; las versiones mayores no se fusionan sin revisarlas (si no hay soporte, se ignoran con el comando de Dependabot).
 8. Se elimina código, componentes y dependencias que ya no se usen (por ejemplo, restos de la plantilla Marby que no lleguen a utilizarse).
 
 ---
@@ -125,7 +125,7 @@ upgrade-insecure-requests
 
 1. **Verificación en dos pasos (2FA)** obligatoria en GitHub, Vercel, Sanity, Mux, GoDaddy, Akky, Google (Search Console, Perfil de Negocio) y el correo. De preferencia con app o llave de seguridad, no SMS.
 2. **Sanity:** el dueño es *Administrator*; quien solo edita contenido es *Editor*. Cuando alguien deja de colaborar, se le quita el acceso ese día.
-3. **GitHub:** repositorio privado. Rama `main` protegida: sin *force push* y con el build pasando antes de fusionar.
+3. **GitHub:** repositorio público (permite proteger ramas y Actions sin costo). Por eso nunca se suben secretos, datos personales de clientes ni información privada del negocio, ni siquiera en `docs/`. Rama `main` protegida: sin *force push*, solo con pull request y con las verificaciones en verde.
 4. **Vercel:** las versiones de prueba (*preview*) con protección de acceso activada, además del `noindex`.
 5. **Dominios:** `digitalx.mx` y `digitalequis.com` con bloqueo de transferencia activado, renovación automática y datos de contacto vigentes en el registrador.
 6. **Correo y suplantación:** cuando se configure el correo de `digitalx.mx`, publicar SPF, DKIM y DMARC. Para `digitalequis.com`, que no envía correo, publicar `v=spf1 -all` y DMARC `p=reject` para que nadie pueda enviar correos haciéndose pasar por el dominio.

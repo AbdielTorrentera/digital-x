@@ -1,0 +1,46 @@
+# Actualizaciones automáticas (seguridad §6.7). Dependabot solo abre pull requests: ninguna se fusiona sola,
+# el dueño revisa cada una. Es gratis en repositorios públicos.
+version: 2
+
+updates:
+  # pnpm usa el ecosistema "npm". El lockfile vive en la raíz; cada app se lista porque tiene su propio package.json.
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /apps/web
+      - /apps/studio
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Mexico_City
+    # pnpm exige 3 días de antigüedad (minimumReleaseAge); con 4 queda margen para que el CI no rechace el PR.
+    cooldown:
+      default-days: 4
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+    groups:
+      menores-y-parches:
+        update-types:
+          - minor
+          - patch
+
+  # Las acciones van fijadas por SHA con un comentario de versión; Dependabot actualiza ambos.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: America/Mexico_City
+    cooldown:
+      default-days: 4
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: ci
+    groups:
+      menores-y-parches:
+        update-types:
+          - minor
+          - patch

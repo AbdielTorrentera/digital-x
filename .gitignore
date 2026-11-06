@@ -7,3 +7,7 @@ dist
 .env.local
 .env.*.local
 .DS_Store
+
+# Fotos originales (traen fecha de captura y pueden traer GPS). Viven fuera del repo, en ../digital-x-fotos/;
+# esta línea es solo una protección por si alguien las copia aquí. Al proyecto solo entran las ya procesadas.
+/fotos/

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mensajesWhatsApp, negocio, telUrl, waUrl, zonas } from './negocio.ts';
+import { mensajesWhatsApp, negocio, redesConUrl, telUrl, waUrl, zonas } from './negocio.ts';
 
 test('waUrl usa el número del negocio y el mensaje general por defecto', () => {
   assert.equal(waUrl(), `https://wa.me/${negocio.whatsapp}?text=${encodeURIComponent(mensajesWhatsApp.general)}`);
@@ -68,4 +68,17 @@ test('el texto del pie nombra las 6 zonas y no muestra condiciones de traslado n
   );
   assert.ok(!/traslado|cargo|km|radio/i.test(negocio.textoCobertura));
   assert.ok(!/Atlixco, Puebla/.test(negocio.textoCobertura), '"Puebla" sola es la ciudad, no el estado');
+});
+
+test('redesConUrl deja fuera las redes sin URL y conserva las que ya la tienen', () => {
+  const redes = [
+    { nombre: 'Facebook', url: null },
+    { nombre: 'Instagram', url: 'https://www.instagram.com/digitalx' },
+  ];
+  assert.deepEqual(redesConUrl(redes), [{ nombre: 'Instagram', url: 'https://www.instagram.com/digitalx' }]);
+  assert.deepEqual(redesConUrl([{ nombre: 'TikTok', url: null }]), []);
+});
+
+test('mientras las URLs de las redes sean pendientes, negocio.redes queda vacía (no se pintan enlaces vacíos)', () => {
+  assert.ok(negocio.redes.every((red) => typeof red.url === 'string' && red.url.startsWith('https://')));
 });

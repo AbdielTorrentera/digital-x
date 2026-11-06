@@ -4,7 +4,7 @@
 
 Digital X es una agencia de **audio, video y tecnología** con base en Atlixco, estado de Puebla. Sus servicios son los oficiales de su Perfil de Negocio de Google:
 
-- **Audio:** renta de audio y sonido para eventos (incluye sonorización; personal técnico capacitado de principio a fin).
+- **Audio:** renta de audio y sonido, y sonorización, para eventos (personal técnico capacitado de principio a fin). La sonorización se nombra en los textos pero no tiene página propia.
 - **Video:** circuito cerrado para eventos (cámaras en vivo proyectadas en pantallas; no es sistema de seguridad ni graba), producción de videos para eventos, transmisión en vivo (streaming), video con dron y recorridos virtuales 360.
 - **Tecnología:** páginas web (páginas de destino y desarrollo web), desarrollo de apps móviles, desarrollo de software y tienda en línea.
 

@@ -13,6 +13,10 @@ export const serializarJsonLd = (datos: unknown): string =>
     .replace(/&/g, '\\u0026')
     .replace(SEPARADORES, (c) => `\\u${c.charCodeAt(0).toString(16)}`);
 
+/** `sameAs` del negocio: las URLs de sus redes; sin ninguna, no hay propiedad (devuelve undefined). */
+export const sameAsDeRedes = (redes: { url: string }[]): string[] | undefined =>
+  redes.length > 0 ? redes.map((red) => red.url) : undefined;
+
 export interface PreguntaFrecuente {
   pregunta: string;
   respuesta: string;

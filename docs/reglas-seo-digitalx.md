@@ -31,7 +31,7 @@ Versión: borrador de trabajo · 2026-10-23
 
 | Página | Title | H1 |
 | --- | --- | --- |
-| Inicio | `Audio, video y tecnología en Puebla \| Digital X` | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
+| Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
 
 Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
 
@@ -87,6 +87,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
+- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), un grupo "Digital X" con Proyectos, Nosotros y Contacto, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
 
@@ -228,7 +229,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 
 ## 12. Datos estructurados (JSON-LD)
 
-- **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`, se agrega cuando existan) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`).
+- **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`).
 - **Cada página de servicio:** nodo `Service` con `name`, `serviceType`, `description`, `provider` (referencia al negocio) y `areaServed`.
 - **`FAQPage`** solo en páginas que muestran las preguntas frecuentes en pantalla.
 - **`BreadcrumbList`** en subpáginas.

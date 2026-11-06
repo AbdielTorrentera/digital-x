@@ -15,7 +15,7 @@ Versión: borrador de trabajo · 2026-10-23
 6. Si algo no está definido, o dos reglas parecen chocar, **detente y pregunta** antes de implementar.
 7. Si este archivo y `reglas-seo-digitalx.md` chocan: URLs, páginas y jerarquía mandan en **este**; metadatos y técnica mandan en el **de SEO**.
 8. Alcance: este documento no define diseño visual (colores, tipografías, layout).
-9. **Enlaces a páginas planeadas.** En desarrollo el contenido (por ejemplo, las tarjetas de servicios del Inicio) puede enlazar a páginas con estado "Lanzamiento" que aún no están construidas: llevan a la 404. Las "Pendiente de material" nunca se enlazan. El **build de producción** (`VERCEL_ENV=production`) falla mientras exista un enlace interno a una página sin construir, con la lista de páginas y enlaces. El pie y el sitemap muestran **solo páginas construidas**; el menú principal enlaza las páginas planeadas (ver sección 4).
+9. **Enlaces a páginas planeadas.** En desarrollo el contenido (por ejemplo, las tarjetas de servicios del Inicio) puede enlazar a páginas con estado "Lanzamiento" que aún no están construidas: llevan a la 404. Las "Pendiente de material" nunca se enlazan. El **build de producción** (`VERCEL_ENV=production`) falla mientras exista un enlace interno a una página sin construir, con la lista de páginas y enlaces. El sitemap muestra **solo páginas construidas**; el menú principal y el pie enlazan las páginas planeadas (ver sección 4).
 
 ---
 
@@ -59,7 +59,7 @@ Versión: borrador de trabajo · 2026-10-23
 /servicios/                                         Hub general (vitrina de las 3 categorías)
 │
 ├─ /servicios-de-audio/                             Categoría Audio
-│   └─ /servicios-de-audio/renta-de-audio/          Renta de audio y sonido para eventos (incluye sonorización)
+│   └─ /servicios-de-audio/renta-de-audio/          Renta de audio y sonido, y sonorización, para eventos
 │
 ├─ /servicios-de-video/                             Categoría Video
 │   ├─ /servicios-de-video/circuito-cerrado/        Circuito cerrado para eventos
@@ -88,7 +88,7 @@ Versión: borrador de trabajo · 2026-10-23
 | `/` | Lanzamiento | |
 | `/servicios/` | Lanzamiento | |
 | `/servicios-de-audio/` | Lanzamiento | |
-| `/servicios-de-audio/renta-de-audio/` | Lanzamiento | Renta de audio y sonido para eventos. Incluye sonorización: usar "audio" y "sonido" en sus textos |
+| `/servicios-de-audio/renta-de-audio/` | Lanzamiento | Renta de audio y sonido, y sonorización, para eventos: usar "audio", "sonido" y "sonorización" en sus textos. La sonorización no tiene página propia |
 | `/servicios-de-video/` | Lanzamiento | Misma URL del sitio anterior |
 | `/servicios-de-video/circuito-cerrado/` | Lanzamiento | Cámaras en vivo proyectadas en pantallas. No es sistema de seguridad ni graba |
 | `/servicios-de-video/grabacion-de-eventos/` | Lanzamiento | Producción de videos para eventos. Antes incluía el circuito cerrado y era el servicio de mayores ingresos `[PENDIENTE: confirmar cuál de los dos lo es hoy]` |
@@ -117,7 +117,7 @@ Páginas por municipio: **no existen** en esta estructura (ver `reglas-seo-digit
 ## 4. Navegación y jerarquía
 
 - **Menú principal** (panel a pantalla completa, sin desplegables): Inicio · Servicios · Proyectos · Nosotros · Contacto, y Blog cuando `/blog/` esté publicado. Enlaza páginas planeadas aunque no estén construidas (ver sección 0, punto 9); las categorías de servicios se enlazan desde `/servicios/` y desde las tarjetas del Inicio.
-- **Pie de página:** servicios principales, Blog (cuando esté publicado), Condiciones de contratación, Política de privacidad, contacto, texto de cobertura (ver SEO, sección 4).
+- **Pie de página:** las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), grupo "Digital X" con Proyectos, Nosotros, Contacto y Blog (cuando esté publicado), contacto, redes (Facebook, Instagram, TikTok y perfil de Google: solo las que tengan URL real; nunca enlaces vacíos ni con `#`) y texto de cobertura (ver SEO, sección 4). Todas son páginas planeadas, aunque no estén construidas. En la línea inferior, junto al ©, van como enlaces pequeños Condiciones de contratación y Política de privacidad.
 - **Cada artículo del blog** enlaza al menos a una página de servicio relacionada, con texto descriptivo.
 - **Cada categoría** enlaza a todas sus subpáginas publicadas.
 - **Cada subpágina** muestra migas de pan: Inicio › {Categoría} › {Servicio}.
@@ -133,7 +133,7 @@ Una página le habla a **un solo cliente**.
 | --- | --- | --- |
 | Inicio | Servicios por categoría (Audio, Video y Tecnología) | Propuesta: "Un solo proveedor en Puebla, Atlixco e Izúcar de Matamoros para el audio y el video de tu evento, y para la página web, la app o el software de tu negocio" (la frase ya nombra las ciudades). No usar "software a la medida": el servicio se llama "Desarrollo de software". Servicios por categoría: tres tarjetas apiladas (Audio, Video y Tecnología), cada una con su foto, una frase de para quién es y los nombres de sus servicios como texto. Cada tarjeta entera enlaza a la página de su categoría (`/servicios-de-audio/`, `/servicios-de-video/`, `/servicios-de-tecnologia/`); no hay enlaces ni botones por servicio en el Inicio (esos enlaces van en cada página de categoría). Recorridos virtuales 360 va en Video. No hay secciones separadas por tipo de cliente. Proyectos: la sección solo se muestra cuando hay al menos 3 con foto y permiso (si no, no se dibuja). "Por qué Digital X" con ventajas comprobables: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida. **No se publican topes de personas ni datos del equipo.** Cobertura como lista de lugares (Puebla, Atlixco, Izúcar de Matamoros, Tepeaca, San Martín Texmelucan, Amozoc y alrededores), sin condiciones de traslado ni cargos, y con la invitación a escribir si el evento o proyecto es en otro lugar. Testimonio solo con permiso. FAQ. CTA final a WhatsApp. El botón de la portada es "Ver servicios" (baja a `#servicios`, y a `/servicios/` cuando exista); la portada, Cobertura y FAQ no llevan botón de WhatsApp. |
 | `/servicios/` | Cualquiera | Vitrina con las 3 categorías y enlaces descriptivos |
-| Renta de audio | Organizadores de fiestas, agrupaciones, clases (ej. zumba), conferencias, salones | Renta de audio y sonido para eventos; incluye sonorización (usar ambas palabras en los textos). Personal técnico capacitado de principio a fin, equipo y sonorización elegidos según el evento, cotización a la medida y viáticos incluidos en la cotización final. **Sin precios** (decisión del dueño) **y sin topes de personas ni datos del equipo**. En su lugar: ejemplos por tipo de evento, factores que mueven el costo (personas, horas, distancia, equipo), fotos reales, enlace a condiciones de contratación. FAQ. Enlace cruzado a circuito cerrado, producción de videos y transmisión en vivo |
+| Renta de audio | Organizadores de fiestas, agrupaciones, clases (ej. zumba), conferencias, salones | Renta de audio y sonido, y sonorización, para eventos (usar las tres palabras en los textos). Personal técnico capacitado de principio a fin, equipo y sonorización elegidos según el evento, cotización a la medida y viáticos incluidos en la cotización final. **Sin precios** (decisión del dueño) **y sin topes de personas ni datos del equipo**. En su lugar: ejemplos por tipo de evento, factores que mueven el costo (personas, horas, distancia, equipo), fotos reales, enlace a condiciones de contratación. FAQ. Enlace cruzado a circuito cerrado, producción de videos y transmisión en vivo |
 | Circuito cerrado | Instituciones, eventos culturales, conferencias, eventos deportivos | Cámaras en vivo proyectadas en pantallas del lugar. **No es un sistema de seguridad y no graba**: aclararlo siempre, y explicarlo junto con "pantallas para eventos" o "proyección en vivo". Pantallas **rentadas a un tercero**: redactar "coordinamos", nunca "tenemos". Precio de referencia: `[PENDIENTE: confirmar a qué servicio aplica "desde $5,000 MXN" (Circuito cerrado, Producción de videos o ambos) y si incluye IVA]` |
 | Producción de videos para eventos | Instituciones, eventos culturales, conferencias, deportivos | Grabación y producción del video del evento (la URL es `grabacion-de-eventos`), audio, dron si aplica. Precio de referencia y tiempo de entrega: `[PENDIENTE: ver Circuito cerrado y confirmar el tiempo de entrega]` |
 | Transmisión en vivo (streaming) | Organizadores de conferencias, eventos culturales, cultos | Transmisión en vivo en alta definición |
@@ -194,6 +194,8 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 - [ ] ¿Cada proyecto tiene su página (`/proyectos/{slug}/`) o son secciones dentro de `/proyectos/`? **Por defecto: secciones, sin páginas individuales.**
 - [ ] ¿Se crea una página única `/cobertura/`? **Por defecto: no.**
 - [ ] Número mínimo de artículos para publicar el blog y temas de los primeros artículos.
+- [ ] **Fase 3 (Sanity):** cuando el contenido de `SchemaNegocio.astro` venga de Sanity, cambiar `JSON.stringify` por `serializarJsonLd` (`lib/jsonld.ts`), que escapa `<`, `>` y `&` para que ningún texto cierre el `<script>` (seguridad §4).
+- [ ] **Fase 4:** al construir la primera página de servicio, enlazar en las tarjetas del Inicio los nombres de los servicios ya construidos. Hoy cada tarjeta entera es un `<a>`, y un enlace dentro de otro no es HTML válido. Propuesta: la tarjeta pasa a `<article>` con el título como enlace extendido a toda la tarjeta (`::after` sobre la tarjeta), y los nombres de servicios construidos como enlaces por encima (`position: relative; z-index: 1`); los demás quedan como texto. El aspecto no cambia y el foco queda en el título. No se programa antes: hoy ningún servicio está construido.
 - [ ] ¿`/nosotros/` incluye sección de equipo (nombres, puestos, fotos con permiso)? **Por defecto: no.**
 
 ---

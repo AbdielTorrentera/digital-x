@@ -2,8 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   archivosDe,
-  enlacesInformacion,
-  gruposDeServicios,
+  enlacesEmpresa,
+  enlacesLegales,
+  categoriasDeServicios,
   menu,
   paginas,
   urlsConstruidas,
@@ -36,12 +37,34 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
   assert.ok(urlsPublicadas.every((url) => urlsConstruidas.includes(url)));
 });
 
-test('el pie solo enlaza páginas publicadas', () => {
-  const publicadas = new Set(urlsPublicadas);
-  const deGrupos = gruposDeServicios.flatMap((g) => [g.hub?.url, ...g.servicios.map((s) => s.url)]);
-  const todas = [...deGrupos, ...enlacesInformacion.map((p) => p.url)];
-  for (const url of todas.filter(Boolean))
-    assert.ok(publicadas.has(url), `${url} aparece en el pie sin estar publicada`);
+test('el pie enlaza las 3 categorías de servicios, en orden, desde el registro', () => {
+  assert.deepEqual(categoriasDeServicios, [
+    { titulo: 'Servicios de audio', url: '/servicios-de-audio/' },
+    { titulo: 'Servicios de video', url: '/servicios-de-video/' },
+    { titulo: 'Servicios de tecnología', url: '/servicios-de-tecnologia/' },
+  ]);
+  for (const { url } of categoriasDeServicios) assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
+});
+
+test('el grupo "Digital X" del pie enlaza Proyectos, Nosotros y Contacto, y los legales van aparte', () => {
+  assert.deepEqual(
+    enlacesEmpresa.map((p) => [p.titulo, p.url]),
+    [
+      ['Proyectos', '/proyectos/'],
+      ['Nosotros', '/nosotros/'],
+      ['Contacto', '/contacto/'],
+    ],
+  );
+  assert.deepEqual(
+    enlacesLegales.map((p) => [p.titulo, p.url]),
+    [
+      ['Condiciones de contratación', '/condiciones-de-contratacion/'],
+      ['Política de privacidad', '/politica-de-privacidad/'],
+    ],
+  );
+  // Nunca el Blog mientras esté pendiente, y todo lo que el pie enlaza está en lanzamiento.
+  for (const { url } of [...enlacesEmpresa, ...enlacesLegales])
+    assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
 });
 
 test('el menú enlaza páginas planeadas, en este orden, y nunca una pendiente de material', () => {

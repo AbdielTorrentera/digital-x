@@ -34,9 +34,20 @@ export interface Categoria {
 
 const whatsappGeneral = waUrl(mensajesWhatsApp.general);
 
+// Servicios de cada categoría: una sola lista para el texto de las tarjetas y para la respuesta de "¿Qué servicios
+// ofrecen?" (en minúscula, para poder usarla a mitad de frase). Son los oficiales; la sonorización va como texto,
+// sin página propia (la cubre la de renta de audio y sonido).
+const lista = {
+  audio: 'renta de audio y sonido, y sonorización',
+  video:
+    'circuito cerrado para eventos, producción de videos para eventos, transmisión en vivo, video con dron y recorridos virtuales 360',
+  tecnologia: 'páginas web, desarrollo de apps móviles, desarrollo de software y tienda en línea',
+};
+const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
+
 export const portada = {
   // H1, title y meta: exactos de reglas-seo sección 1.
-  title: 'Audio, video y tecnología en Puebla | Digital X',
+  title: 'Audio, video y tecnología en Puebla y Atlixco | Digital X',
   descripcion:
     'Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.',
   h1: 'Audio, video y tecnología para tus eventos y tu negocio en Puebla',
@@ -66,8 +77,7 @@ export const servicios = {
     {
       contador: '/1',
       titulo: 'Audio',
-      texto:
-        'Para quienes organizan fiestas, conferencias, eventos culturales y cultos, con personal técnico de principio a fin. Renta de audio y sonido.',
+      texto: `Para quienes organizan fiestas, conferencias, eventos culturales y cultos, con personal técnico de principio a fin. ${capital(lista.audio)}.`,
       url: '/servicios-de-audio/',
       foto: {
         src: fotoAudio,
@@ -77,8 +87,7 @@ export const servicios = {
     {
       contador: '/2',
       titulo: 'Video',
-      texto:
-        'Para que tu evento se vea y se transmita, y para mostrar tu negocio o institución. Circuito cerrado para eventos, producción de videos para eventos, transmisión en vivo, video con dron y recorridos virtuales 360.',
+      texto: `Para que tu evento se vea y se transmita, y para mostrar tu negocio o institución. ${capital(lista.video)}.`,
       url: '/servicios-de-video/',
       foto: {
         src: fotoVideo,
@@ -88,8 +97,7 @@ export const servicios = {
     {
       contador: '/3',
       titulo: 'Tecnología',
-      texto:
-        'Para negocios e instituciones que necesitan presencia y herramientas en línea. Páginas web, desarrollo de apps móviles, desarrollo de software y tienda en línea.',
+      texto: `Para negocios e instituciones que necesitan presencia y herramientas en línea. ${capital(lista.tecnologia)}.`,
       url: '/servicios-de-tecnologia/',
       foto: {
         src: fotoTecnologia,
@@ -161,12 +169,26 @@ export const faq = {
     },
     {
       pregunta: '¿Qué servicios ofrecen?',
-      respuesta:
-        'En audio, la renta de audio y sonido para eventos. En video, circuito cerrado para eventos, producción de videos para eventos, transmisión en vivo, video con dron y recorridos virtuales 360. En tecnología, páginas web, desarrollo de apps móviles, desarrollo de software y tienda en línea.',
+      respuesta: `En audio, ${lista.audio}. En video, ${lista.video}. En tecnología, ${lista.tecnologia}.`,
     },
     {
       pregunta: '¿Dónde ofrecen sus servicios?',
       respuesta: textoCobertura,
+    },
+    {
+      pregunta: '¿Qué datos necesitan para cotizar?',
+      respuesta:
+        'La fecha, el lugar, el tipo de evento o proyecto, si es en interior o exterior y qué servicio necesitas. Con eso preparamos una cotización adecuada.',
+    },
+    {
+      pregunta: '¿Cómo se aparta la fecha?',
+      respuesta:
+        'Una vez que aceptas la cotización, se aparta la fecha con un anticipo y se liquida antes del evento o de la entrega.',
+    },
+    {
+      pregunta: '¿Cuánto cuesta un servicio?',
+      respuesta:
+        'Cada servicio se cotiza a la medida. El precio depende del tipo de evento o proyecto, el lugar, la duración y el equipo que se necesite. Escríbenos por WhatsApp con esos datos y te respondemos con una propuesta.',
     },
   ] satisfies PreguntaFrecuente[],
 };

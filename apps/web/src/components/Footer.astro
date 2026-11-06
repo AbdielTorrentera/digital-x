@@ -1,10 +1,11 @@
 ---
 import Logo from './Logo.astro';
 import { negocio, telUrl, waUrl } from '../lib/negocio';
-import { enlacesInformacion, gruposDeServicios } from '../lib/paginas';
+import { categoriasDeServicios, enlacesEmpresa, enlacesLegales } from '../lib/paginas';
 
 // Pie de página (estructura sección 4, reglas-seo sección 4).
-// Las columnas de servicios e información solo muestran páginas lanzadas y construidas.
+// Las columnas de servicios y de la empresa enlazan páginas planeadas (como el menú); las redes, solo con URL real.
+// Los enlaces legales van en la línea inferior, junto al ©.
 // El texto de cobertura es fijo, en texto plano y sin enlaces por ciudad.
 const anio = new Date().getFullYear();
 ---
@@ -20,32 +21,26 @@ const anio = new Date().getFullYear();
       </div>
 
       <div class="footer__cols">
-        {gruposDeServicios.length > 0 && (
+        {categoriasDeServicios.length > 0 && (
           <div class="footer__col">
             <p class="footer__titulo">Servicios</p>
             <ul>
-              {gruposDeServicios.map((g) => (
+              {categoriasDeServicios.map((c) => (
                 <li>
-                  {g.hub ? (
-                    <a class="footer__enlace" href={g.hub.url}>{`Servicios de ${g.titulo.toLowerCase()}`}</a>
-                  ) : (
-                    g.servicios[0] && (
-                      <a class="footer__enlace" href={g.servicios[0].url}>
-                        {g.servicios[0].titulo}
-                      </a>
-                    )
-                  )}
+                  <a class="footer__enlace" href={c.url}>
+                    {c.titulo}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {enlacesInformacion.length > 0 && (
+        {enlacesEmpresa.length > 0 && (
           <div class="footer__col">
-            <p class="footer__titulo">Información</p>
+            <p class="footer__titulo">{negocio.nombre}</p>
             <ul>
-              {enlacesInformacion.map((p) => (
+              {enlacesEmpresa.map((p) => (
                 <li>
                   <a class="footer__enlace" href={p.url}>
                     {p.titulo}
@@ -88,9 +83,20 @@ const anio = new Date().getFullYear();
       </div>
     </div>
 
-    <p class="t-caption footer__copy">
-      © {anio} {negocio.nombre}
-    </p>
+    <div class="footer__abajo">
+      <p class="t-caption footer__copy">
+        © {anio} {negocio.nombre}
+      </p>
+      <ul class="footer__legales">
+        {enlacesLegales.map((p) => (
+          <li>
+            <a class="footer__legal" href={p.url}>
+              {p.titulo}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </div>
 </footer>
 
@@ -158,8 +164,37 @@ const anio = new Date().getFullYear();
   .footer__copy {
     color: var(--texto-sec);
   }
+  /* Línea inferior: el © y, como enlaces pequeños (14 px) con 48 px de área táctil, los legales. */
+  .footer__abajo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-2);
+  }
+  .footer__legales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esp-2) var(--esp-5);
+  }
+  .footer__legal {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tactil);
+    font-size: var(--txt-chico);
+    line-height: var(--lh-etiqueta);
+    color: var(--dx-blanco);
+  }
+  .footer__legal:hover {
+    color: var(--dx-amarillo);
+  }
 
   @media (min-width: 768px) {
+    .footer__abajo {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
     .footer__cols {
       grid-template-columns: repeat(3, 1fr);
       gap: var(--medianil);

@@ -117,7 +117,7 @@ Páginas por municipio: **no existen** en esta estructura (ver `reglas-seo-digit
 ## 4. Navegación y jerarquía
 
 - **Menú principal** (panel a pantalla completa, sin desplegables): Inicio · Servicios · Proyectos · Nosotros · Contacto, y Blog cuando `/blog/` esté publicado. Enlaza páginas planeadas aunque no estén construidas (ver sección 0, punto 9); las categorías de servicios se enlazan desde `/servicios/` y desde las tarjetas del Inicio.
-- **Pie de página:** las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), Proyectos, Nosotros, Contacto, Blog (cuando esté publicado), Condiciones de contratación y Política de privacidad (páginas planeadas, aunque no estén construidas), contacto, redes (Facebook, Instagram, TikTok y perfil de Google: solo las que tengan URL real; nunca enlaces vacíos ni con `#`) y texto de cobertura (ver SEO, sección 4).
+- **Pie de página:** las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), grupo "Digital X" con Proyectos, Nosotros, Contacto y Blog (cuando esté publicado), contacto, redes (Facebook, Instagram, TikTok y perfil de Google: solo las que tengan URL real; nunca enlaces vacíos ni con `#`) y texto de cobertura (ver SEO, sección 4). Todas son páginas planeadas, aunque no estén construidas. En la línea inferior, junto al ©, van como enlaces pequeños Condiciones de contratación y Política de privacidad.
 - **Cada artículo del blog** enlaza al menos a una página de servicio relacionada, con texto descriptivo.
 - **Cada categoría** enlaza a todas sus subpáginas publicadas.
 - **Cada subpágina** muestra migas de pan: Inicio › {Categoría} › {Servicio}.

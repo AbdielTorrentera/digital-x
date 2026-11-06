@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   archivosDe,
-  enlacesInformacion,
+  enlacesEmpresa,
+  enlacesLegales,
   categoriasDeServicios,
   menu,
   paginas,
@@ -45,16 +46,25 @@ test('el pie enlaza las 3 categorías de servicios, en orden, desde el registro'
   for (const { url } of categoriasDeServicios) assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
 });
 
-test('el pie enlaza las 5 páginas de información planeadas, en orden, y nunca el Blog mientras esté pendiente', () => {
+test('el grupo "Digital X" del pie enlaza Proyectos, Nosotros y Contacto, y los legales van aparte', () => {
   assert.deepEqual(
-    enlacesInformacion.map((p) => p.url),
-    ['/proyectos/', '/nosotros/', '/contacto/', '/condiciones-de-contratacion/', '/politica-de-privacidad/'],
+    enlacesEmpresa.map((p) => [p.titulo, p.url]),
+    [
+      ['Proyectos', '/proyectos/'],
+      ['Nosotros', '/nosotros/'],
+      ['Contacto', '/contacto/'],
+    ],
   );
   assert.deepEqual(
-    enlacesInformacion.map((p) => p.titulo),
-    ['Proyectos', 'Nosotros', 'Contacto', 'Condiciones de contratación', 'Política de privacidad'],
+    enlacesLegales.map((p) => [p.titulo, p.url]),
+    [
+      ['Condiciones de contratación', '/condiciones-de-contratacion/'],
+      ['Política de privacidad', '/politica-de-privacidad/'],
+    ],
   );
-  for (const { url } of enlacesInformacion) assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
+  // Nunca el Blog mientras esté pendiente, y todo lo que el pie enlaza está en lanzamiento.
+  for (const { url } of [...enlacesEmpresa, ...enlacesLegales])
+    assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
 });
 
 test('el menú enlaza páginas planeadas, en este orden, y nunca una pendiente de material', () => {

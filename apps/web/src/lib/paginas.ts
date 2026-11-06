@@ -198,21 +198,18 @@ export const menu: ItemMenu[] = [
   })
   .filter(Boolean) as ItemMenu[];
 
-/**
- * Enlaces de información del pie (sin servicios, que salen de categoriasDeServicios): Proyectos, Nosotros, Contacto,
- * Condiciones de contratación y Política de privacidad, y Blog cuando esté publicado. Como el menú, enlazan páginas
- * planeadas aunque aún no estén construidas; el build de producción falla mientras quede alguna.
- */
-export const enlacesInformacion: Pagina[] = [
-  '/proyectos/',
-  '/blog/',
-  '/nosotros/',
-  '/contacto/',
-  '/condiciones-de-contratacion/',
-  '/politica-de-privacidad/',
-]
-  .map((url) => paginas.find((p) => p.url === url && (url === '/blog/' ? visible(p) : p.estado === 'lanzamiento')))
-  .filter(Boolean) as Pagina[];
+// Como el menú, el pie enlaza páginas planeadas aunque aún no estén construidas (el build de producción falla mientras
+// quede alguna). El Blog solo entra cuando esté publicado.
+const paginasDelPie = (urls: string[]) =>
+  urls
+    .map((url) => paginas.find((p) => p.url === url && (url === '/blog/' ? visible(p) : p.estado === 'lanzamiento')))
+    .filter(Boolean) as Pagina[];
+
+/** Grupo "Digital X" del pie: Proyectos, Nosotros y Contacto (y Blog cuando esté publicado). */
+export const enlacesEmpresa = paginasDelPie(['/proyectos/', '/blog/', '/nosotros/', '/contacto/']);
+
+/** Línea inferior del pie, junto al ©: Condiciones de contratación y Política de privacidad. */
+export const enlacesLegales = paginasDelPie(['/condiciones-de-contratacion/', '/politica-de-privacidad/']);
 
 /** Destino de "Ver servicios" en la 404: la página de Servicios cuando exista; mientras, la sección del Inicio. */
 export const urlVerServicios = porUrl('/servicios/')?.url ?? '/#servicios';

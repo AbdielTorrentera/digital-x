@@ -87,7 +87,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
-- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), Proyectos, Nosotros, Contacto, Condiciones de contratación y Política de privacidad, aunque aún no estén construidas (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
+- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), un grupo "Digital X" con Proyectos, Nosotros y Contacto, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
 

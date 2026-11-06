@@ -1,5 +1,5 @@
 ---
-import { negocio } from '../lib/negocio';
+import { negocio, zonas } from '../lib/negocio';
 
 // JSON-LD del negocio (reglas-seo sección 12).
 // PROHIBIDO: address, streetAddress y geo. El negocio opera sin dirección pública.
@@ -10,7 +10,8 @@ const datos: Record<string, unknown> = {
   name: negocio.nombre,
   url: `${negocio.url}/`,
   telephone: negocio.telefono.tel,
-  areaServed: negocio.zonas.map((z) => ({ '@type': 'City', name: z })),
+  areaServed: zonas.todas.map((zona) => ({ '@type': 'City', name: zona })),
+  logo: new URL(negocio.logo, negocio.url).href,
 };
 if (negocio.correo) datos.email = negocio.correo;
 if (negocio.redes.length > 0) datos.sameAs = negocio.redes.map((r) => r.url);

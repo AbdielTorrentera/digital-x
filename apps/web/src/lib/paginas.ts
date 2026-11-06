@@ -2,9 +2,13 @@
  * Registro de páginas. Fuente: docs/estructura-sitio-digitalx.md sección 3.
  * No agregar URLs que no estén en esa tabla.
  *
- * Una página solo aparece en menú, pie, 404 y sitemap si su estado es
- * 'lanzamiento' Y está construida. Marcar `construida: true` al crear su archivo
- * en src/pages/ (el build falla si se marca sin que el archivo exista).
+ * Una página solo aparece en menú, pie y sitemap si su estado es 'lanzamiento' Y está
+ * construida. Marcar `construida: true` al crear su archivo en src/pages/ (el build falla
+ * si se marca sin que el archivo exista).
+ *
+ * Páginas planeadas: las de estado 'lanzamiento' que aún no se construyen. Se pueden enlazar
+ * desde el contenido (en desarrollo llevan a la 404), pero el build de producción falla
+ * mientras exista un enlace a una (ver astro.config.mjs). Las 'pendiente' nunca se enlazan.
  */
 export type Categoria = 'audio' | 'video' | 'tecnologia';
 
@@ -22,6 +26,8 @@ export const paginas: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
   { url: '/servicios/', titulo: 'Servicios', estado: 'lanzamiento', construida: false },
 
+  // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Cada página se
+  // publica cuando el dueño apruebe sus fotos y videos: hasta entonces `construida` es false y no se enlaza.
   {
     url: '/servicios-de-audio/',
     titulo: 'Audio',
@@ -31,15 +37,8 @@ export const paginas: Pagina[] = [
     hub: true,
   },
   {
-    url: '/servicios-de-audio/renta-de-sonido/',
-    titulo: 'Renta de sonido',
-    estado: 'lanzamiento',
-    construida: false,
-    categoria: 'audio',
-  },
-  {
-    url: '/servicios-de-audio/instalacion-de-audio/',
-    titulo: 'Instalación de audio',
+    url: '/servicios-de-audio/renta-de-audio/',
+    titulo: 'Renta de audio y sonido',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'audio',
@@ -54,27 +53,40 @@ export const paginas: Pagina[] = [
     hub: true,
   },
   {
-    url: '/servicios-de-video/grabacion-de-eventos/',
-    titulo: 'Grabación de eventos',
+    url: '/servicios-de-video/circuito-cerrado/',
+    titulo: 'Circuito cerrado para eventos',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
   {
-    url: '/servicios-de-video/video-para-redes/',
-    titulo: 'Video para redes',
+    url: '/servicios-de-video/grabacion-de-eventos/',
+    titulo: 'Producción de videos para eventos',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
   {
     url: '/servicios-de-video/streaming/',
-    titulo: 'Streaming',
+    titulo: 'Transmisión en vivo',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
-  { url: '/servicios-de-video/dron/', titulo: 'Dron', estado: 'pendiente', construida: false, categoria: 'video' },
+  {
+    url: '/servicios-de-video/dron/',
+    titulo: 'Video con dron',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'video',
+  },
+  {
+    url: '/servicios-de-video/recorridos-360/',
+    titulo: 'Recorridos virtuales 360',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'video',
+  },
 
   {
     url: '/servicios-de-tecnologia/',
@@ -85,15 +97,22 @@ export const paginas: Pagina[] = [
     hub: true,
   },
   {
-    url: '/servicios-de-tecnologia/software-a-la-medida/',
-    titulo: 'Software a la medida',
+    url: '/servicios-de-tecnologia/paginas-web/',
+    titulo: 'Páginas web',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'tecnologia',
   },
   {
-    url: '/servicios-de-tecnologia/sitios-web/',
-    titulo: 'Sitios web',
+    url: '/servicios-de-tecnologia/apps-moviles/',
+    titulo: 'Desarrollo de apps móviles',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'tecnologia',
+  },
+  {
+    url: '/servicios-de-tecnologia/desarrollo-de-software/',
+    titulo: 'Desarrollo de software',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'tecnologia',
@@ -101,7 +120,7 @@ export const paginas: Pagina[] = [
   {
     url: '/servicios-de-tecnologia/tienda-en-linea/',
     titulo: 'Tienda en línea',
-    estado: 'pendiente',
+    estado: 'lanzamiento',
     construida: false,
     categoria: 'tecnologia',
   },
@@ -134,6 +153,12 @@ export const urlsConstruidas = paginas.filter((p) => p.construida).map((p) => p.
 
 export const urlsPublicadas = paginas.filter(visible).map((p) => p.url);
 
+/** Páginas en lanzamiento, construidas o no: las únicas a las que el contenido puede enlazar. */
+export const urlsPlaneadas = paginas.filter((p) => p.estado === 'lanzamiento').map((p) => p.url);
+
+/** Planeadas que todavía no existen: producción no compila si algún enlace apunta a ellas. */
+export const urlsSinConstruir = paginas.filter((p) => p.estado === 'lanzamiento' && !p.construida).map((p) => p.url);
+
 export interface GrupoMenu {
   titulo: string;
   /** página de la categoría, si ya está construida */
@@ -154,24 +179,28 @@ export const gruposDeServicios: GrupoMenu[] = (['audio', 'video', 'tecnologia'] 
 
 export interface ItemMenu {
   titulo: string;
-  url?: string;
-  /** si existe, el ítem es un desplegable (Servicios) */
-  grupos?: GrupoMenu[];
+  url: string;
 }
 
-/** Menú principal: Inicio · Servicios (desplegable) · Proyectos · Blog · Nosotros · Contacto. */
+/**
+ * Menú principal (panel de pantalla completa de Marby): Inicio · Servicios · Proyectos · Blog · Nosotros · Contacto.
+ * Enlaza páginas planeadas (en lanzamiento) aunque aún no estén construidas: llevan a la 404 en desarrollo y el build
+ * de producción falla mientras quede alguna. Blog solo aparece cuando está publicado (hoy "pendiente de material").
+ * El pie, en cambio, solo muestra páginas construidas.
+ */
 export const menu: ItemMenu[] = [
-  porUrl('/') && { titulo: 'Inicio', url: '/' },
-  (gruposDeServicios.length > 0 || porUrl('/servicios/')) && {
-    titulo: 'Servicios',
-    url: porUrl('/servicios/')?.url,
-    grupos: gruposDeServicios,
-  },
-  ...['/proyectos/', '/blog/', '/nosotros/', '/contacto/'].map((u) => {
-    const p = porUrl(u);
-    return p && { titulo: p.titulo, url: p.url };
-  }),
-].filter(Boolean) as ItemMenu[];
+  { url: '/' },
+  { url: '/servicios/' },
+  { url: '/proyectos/' },
+  { url: '/blog/', soloPublicada: true },
+  { url: '/nosotros/' },
+  { url: '/contacto/' },
+]
+  .map(({ url, soloPublicada }) => {
+    const pagina = paginas.find((p) => p.url === url && (soloPublicada ? visible(p) : p.estado === 'lanzamiento'));
+    return pagina && { titulo: pagina.titulo, url: pagina.url };
+  })
+  .filter(Boolean) as ItemMenu[];
 
 /** Enlaces de información del pie (sin servicios, que salen de gruposDeServicios). */
 export const enlacesInformacion: Pagina[] = [
@@ -185,5 +214,5 @@ export const enlacesInformacion: Pagina[] = [
   .map(porUrl)
   .filter(Boolean) as Pagina[];
 
-/** Enlaces de salida de la 404: Inicio y Servicios (reglas-seo sección 9), solo si existen. */
-export const enlacesDe404: Pagina[] = ['/', '/servicios/'].map(porUrl).filter(Boolean) as Pagina[];
+/** Destino de "Ver servicios" en la 404: la página de Servicios cuando exista; mientras, la sección del Inicio. */
+export const urlVerServicios = porUrl('/servicios/')?.url ?? '/#servicios';

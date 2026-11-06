@@ -1,5 +1,6 @@
 ---
 import { negocio, zonas } from '../lib/negocio';
+import { sameAsDeRedes } from '../lib/jsonld';
 
 // JSON-LD del negocio (reglas-seo sección 12).
 // PROHIBIDO: address, streetAddress y geo. El negocio opera sin dirección pública.
@@ -14,7 +15,8 @@ const datos: Record<string, unknown> = {
   logo: new URL(negocio.logo, negocio.url).href,
 };
 if (negocio.correo) datos.email = negocio.correo;
-if (negocio.redes.length > 0) datos.sameAs = negocio.redes.map((r) => r.url);
+const sameAs = sameAsDeRedes(negocio.redes);
+if (sameAs) datos.sameAs = sameAs;
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(datos)} />

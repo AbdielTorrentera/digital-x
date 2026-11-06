@@ -23,6 +23,21 @@ export const zonas = {
   texto: enEspanol([...todas, 'alrededores']),
 };
 
+/**
+ * Redes del negocio. [PENDIENTE: URLs de Facebook, Instagram, TikTok y del perfil de Google.] Mientras la URL sea
+ * null la red no se muestra ni entra a sameAs: no se pintan enlaces vacíos ni con "#".
+ */
+const redesDelNegocio: { nombre: string; url: string | null }[] = [
+  { nombre: 'Facebook', url: null },
+  { nombre: 'Instagram', url: null },
+  { nombre: 'TikTok', url: null },
+  { nombre: 'Perfil de Google', url: null },
+];
+
+/** Solo las redes que ya tienen URL real. */
+export const redesConUrl = <T extends { url: string | null }>(redes: T[]) =>
+  redes.filter((red): red is T & { url: string } => red.url !== null);
+
 export const negocio = {
   nombre: 'Digital X',
   url: 'https://digitalx.mx',
@@ -30,8 +45,8 @@ export const negocio = {
   whatsapp: '522441244913',
   // [PENDIENTE: correo definitivo en digitalx.mx]
   correo: null as string | null,
-  // [PENDIENTE: URLs de Facebook, Instagram, TikTok y del perfil de Google. Entran a sameAs cuando existan]
-  redes: [] as { nombre: string; url: string }[],
+  // Solo las redes con URL: el pie, el menú y sameAs leen esta lista y no pintan nada si está vacía.
+  redes: redesConUrl(redesDelNegocio),
   // Pie de página: texto fijo, igual en todo el sitio, sin enlaces por ciudad (reglas-seo sección 4).
   textoCobertura: `Servicios de audio, video y tecnología en ${zonas.texto}.`,
   // [PENDIENTE: SEO de las páginas, ver reglas-seo sección 1]

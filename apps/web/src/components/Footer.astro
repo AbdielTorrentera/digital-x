@@ -1,10 +1,10 @@
 ---
 import Logo from './Logo.astro';
 import { negocio, telUrl, waUrl } from '../lib/negocio';
-import { enlacesInformacion, gruposDeServicios } from '../lib/paginas';
+import { categoriasDeServicios, enlacesInformacion } from '../lib/paginas';
 
 // Pie de página (estructura sección 4, reglas-seo sección 4).
-// Las columnas de servicios e información solo muestran páginas lanzadas y construidas.
+// Las columnas de servicios e información enlazan páginas planeadas (como el menú); las redes, solo con URL real.
 // El texto de cobertura es fijo, en texto plano y sin enlaces por ciudad.
 const anio = new Date().getFullYear();
 ---
@@ -20,21 +20,15 @@ const anio = new Date().getFullYear();
       </div>
 
       <div class="footer__cols">
-        {gruposDeServicios.length > 0 && (
+        {categoriasDeServicios.length > 0 && (
           <div class="footer__col">
             <p class="footer__titulo">Servicios</p>
             <ul>
-              {gruposDeServicios.map((g) => (
+              {categoriasDeServicios.map((c) => (
                 <li>
-                  {g.hub ? (
-                    <a class="footer__enlace" href={g.hub.url}>{`Servicios de ${g.titulo.toLowerCase()}`}</a>
-                  ) : (
-                    g.servicios[0] && (
-                      <a class="footer__enlace" href={g.servicios[0].url}>
-                        {g.servicios[0].titulo}
-                      </a>
-                    )
-                  )}
+                  <a class="footer__enlace" href={c.url}>
+                    {c.titulo}
+                  </a>
                 </li>
               ))}
             </ul>

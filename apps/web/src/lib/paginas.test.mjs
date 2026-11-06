@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   archivosDe,
   enlacesInformacion,
-  gruposDeServicios,
+  categoriasDeServicios,
   menu,
   paginas,
   urlsConstruidas,
@@ -36,12 +36,25 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
   assert.ok(urlsPublicadas.every((url) => urlsConstruidas.includes(url)));
 });
 
-test('el pie solo enlaza páginas publicadas', () => {
-  const publicadas = new Set(urlsPublicadas);
-  const deGrupos = gruposDeServicios.flatMap((g) => [g.hub?.url, ...g.servicios.map((s) => s.url)]);
-  const todas = [...deGrupos, ...enlacesInformacion.map((p) => p.url)];
-  for (const url of todas.filter(Boolean))
-    assert.ok(publicadas.has(url), `${url} aparece en el pie sin estar publicada`);
+test('el pie enlaza las 3 categorías de servicios, en orden, desde el registro', () => {
+  assert.deepEqual(categoriasDeServicios, [
+    { titulo: 'Servicios de audio', url: '/servicios-de-audio/' },
+    { titulo: 'Servicios de video', url: '/servicios-de-video/' },
+    { titulo: 'Servicios de tecnología', url: '/servicios-de-tecnologia/' },
+  ]);
+  for (const { url } of categoriasDeServicios) assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
+});
+
+test('el pie enlaza las 5 páginas de información planeadas, en orden, y nunca el Blog mientras esté pendiente', () => {
+  assert.deepEqual(
+    enlacesInformacion.map((p) => p.url),
+    ['/proyectos/', '/nosotros/', '/contacto/', '/condiciones-de-contratacion/', '/politica-de-privacidad/'],
+  );
+  assert.deepEqual(
+    enlacesInformacion.map((p) => p.titulo),
+    ['Proyectos', 'Nosotros', 'Contacto', 'Condiciones de contratación', 'Política de privacidad'],
+  );
+  for (const { url } of enlacesInformacion) assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
 });
 
 test('el menú enlaza páginas planeadas, en este orden, y nunca una pendiente de material', () => {

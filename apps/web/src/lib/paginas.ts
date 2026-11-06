@@ -159,23 +159,19 @@ export const urlsPlaneadas = paginas.filter((p) => p.estado === 'lanzamiento').m
 /** Planeadas que todavía no existen: producción no compila si algún enlace apunta a ellas. */
 export const urlsSinConstruir = paginas.filter((p) => p.estado === 'lanzamiento' && !p.construida).map((p) => p.url);
 
-export interface GrupoMenu {
+export interface CategoriaDelPie {
+  /** Texto del enlace: "Servicios de audio", "Servicios de video" o "Servicios de tecnología". */
   titulo: string;
-  /** página de la categoría, si ya está construida */
-  hub: Pagina | undefined;
-  servicios: Pagina[];
+  url: string;
 }
 
-const nombresCategoria: Record<Categoria, string> = { audio: 'Audio', video: 'Video', tecnologia: 'Tecnología' };
-
-/** Categorías de servicios con al menos una página visible (la categoría o alguno de sus servicios). */
-export const gruposDeServicios: GrupoMenu[] = (['audio', 'video', 'tecnologia'] as Categoria[])
-  .map((c) => ({
-    titulo: nombresCategoria[c],
-    hub: paginas.find((p) => p.categoria === c && p.hub && visible(p)),
-    servicios: paginas.filter((p) => p.categoria === c && !p.hub && visible(p)),
-  }))
-  .filter((g) => g.hub || g.servicios.length > 0);
+/**
+ * Categorías de servicios del pie. Como el menú, enlazan las páginas de categoría planeadas aunque aún no estén
+ * construidas; el build de producción falla mientras quede alguna.
+ */
+export const categoriasDeServicios: CategoriaDelPie[] = paginas
+  .filter((p) => p.hub && p.estado === 'lanzamiento')
+  .map((p) => ({ titulo: `Servicios de ${p.titulo.toLowerCase()}`, url: p.url }));
 
 export interface ItemMenu {
   titulo: string;
@@ -202,7 +198,11 @@ export const menu: ItemMenu[] = [
   })
   .filter(Boolean) as ItemMenu[];
 
-/** Enlaces de información del pie (sin servicios, que salen de gruposDeServicios). */
+/**
+ * Enlaces de información del pie (sin servicios, que salen de categoriasDeServicios): Proyectos, Nosotros, Contacto,
+ * Condiciones de contratación y Política de privacidad, y Blog cuando esté publicado. Como el menú, enlazan páginas
+ * planeadas aunque aún no estén construidas; el build de producción falla mientras quede alguna.
+ */
 export const enlacesInformacion: Pagina[] = [
   '/proyectos/',
   '/blog/',
@@ -211,7 +211,7 @@ export const enlacesInformacion: Pagina[] = [
   '/condiciones-de-contratacion/',
   '/politica-de-privacidad/',
 ]
-  .map(porUrl)
+  .map((url) => paginas.find((p) => p.url === url && (url === '/blog/' ? visible(p) : p.estado === 'lanzamiento')))
   .filter(Boolean) as Pagina[];
 
 /** Destino de "Ver servicios" en la 404: la página de Servicios cuando exista; mientras, la sección del Inicio. */

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { faqPageJsonLd, serializarJsonLd } from './jsonld.ts';
+import { faqPageJsonLd, sameAsDeRedes, serializarJsonLd } from './jsonld.ts';
 
 test('serializarJsonLd escapa lo que podría cerrar el script o inyectar HTML', () => {
   const salida = serializarJsonLd({ texto: '</script><img src=x onerror=alert(1)> & más' });
@@ -35,4 +35,15 @@ test('faqPageJsonLd lleva cada pregunta y respuesta tal como se muestran', () =>
 test('faqPageJsonLd no publica dirección ni coordenadas', () => {
   const texto = JSON.stringify(faqPageJsonLd([{ pregunta: 'P', respuesta: 'R' }]));
   assert.ok(!/address|streetAddress|"geo"/.test(texto));
+});
+
+test('sameAsDeRedes lista las URLs de las redes y, sin ninguna, no hay propiedad', () => {
+  assert.equal(sameAsDeRedes([]), undefined);
+  assert.deepEqual(
+    sameAsDeRedes([
+      { nombre: 'Facebook', url: 'https://www.facebook.com/digitalx' },
+      { nombre: 'Instagram', url: 'https://www.instagram.com/digitalx' },
+    ]),
+    ['https://www.facebook.com/digitalx', 'https://www.instagram.com/digitalx'],
+  );
 });

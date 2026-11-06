@@ -1,379 +1,340 @@
 ---
+import Btn from './Btn.astro';
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
-import BotonLlamar from './BotonLlamar.astro';
-import { telUrl } from '../lib/negocio';
+import { negocio, waUrl } from '../lib/negocio';
 import { menu } from '../lib/paginas';
 
 const actual = Astro.url.pathname;
+const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
 ---
 
 <!--
-  Móvil (<1024 px): barra de 64 px con marca, "Llamar" y "Menú". El menú abre a pantalla completa
-  con los enlaces pegados abajo (alcance del pulgar) y botones de 48 px.
-  Escritorio: barra horizontal; "Servicios" es un desplegable de tres columnas.
-  Sin JavaScript el menú queda como lista visible debajo de la barra.
+  Menú de la plantilla Marby, tal cual. Barra fija y translúcida (blanco al 85 % con desenfoque, para que lo que pasa por
+  detrás no estorbe al logo), con el botón (chip negro, solo ícono) que abre un panel claro a pantalla completa: arriba
+  la marca y la X, enlaces grandes y centrados con entrada escalonada, y debajo las redes (solo si existen) y "Cotizar
+  por WhatsApp". El logo de Digital X ocupa el lugar del texto de Marby y, igual que el botón, es siempre negro. Se
+  quitaron el botón de consulta de la barra y el "clic en cualquier parte abre el menú" (accesibilidad). Solo cambian los
+  textos, los colores, las tipografías y lo que exigen las reglas.
 -->
 <header class="nav" data-nav>
   <div class="nav__bar">
-    <a class="nav__marca" href="/">
-      <Logo />
-    </a>
-
-    <div class="menu" id="menu" data-menu>
-      <nav class="menu__nav" aria-label="Principal">
-        <ul class="menu__lista">
-          {menu.map((item) => (
-            <li class:list={['menu__item', item.grupos && item.grupos.length > 0 && 'has-sub']}>
-              {item.grupos && item.grupos.length > 0 ? (
-                <>
-                  <button
-                    class="menu__enlace menu__sub-btn"
-                    type="button"
-                    aria-expanded="false"
-                    aria-controls="sub-servicios"
-                    data-sub-toggle
-                  >
-                    <span>{item.titulo}</span>
-                    <Icon name="plus" size="boton" class="menu__mas" />
-                  </button>
-                  <div class="sub" id="sub-servicios">
-                    {item.url && (
-                      <a class="sub__todos" href={item.url}>
-                        Todos los servicios
-                      </a>
-                    )}
-                    <div class="sub__grupos">
-                      {item.grupos.map((g) => (
-                        <div class="sub__grupo">
-                          {g.hub ? (
-                            <a class="sub__titulo" href={g.hub.url}>
-                              {g.titulo}
-                            </a>
-                          ) : (
-                            <p class="sub__titulo">{g.titulo}</p>
-                          )}
-                          <ul>
-                            {g.servicios.map((s) => (
-                              <li>
-                                <a
-                                  class="sub__enlace"
-                                  href={s.url}
-                                  aria-current={actual === s.url ? 'page' : undefined}
-                                >
-                                  {s.titulo}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <a class="menu__enlace" href={item.url} aria-current={actual === item.url ? 'page' : undefined}>
-                  {item.titulo}
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <div class="menu__movil">
-        <a class="menu__btn" href={telUrl}>
-          <Icon name="phone" size="boton" /> Llamar
-        </a>
-        <button class="menu__btn menu__btn--cerrar" type="button" data-menu-close>
-          <Icon name="close" size="boton" /> Cerrar
-        </button>
-      </div>
-    </div>
-
-    <div class="nav__acciones">
-      <BotonLlamar />
-      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-open>
+    <div class="nav__col nav__col--menu">
+      <button
+        class="chip"
+        type="button"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="menu"
+        data-menu-open
+      >
         <Icon name="menu" size="boton" />
-        <span>Menú</span>
       </button>
     </div>
+    <a class="nav__col nav__col--tag" href="/" aria-label="Digital X, inicio">
+      <span class="nav__tag">
+        <Logo />
+      </span>
+    </a>
+    <div class="nav__col nav__col--cta" aria-hidden="true"></div>
   </div>
 </header>
 
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menú principal" hidden data-menu>
+  <div class="menu__top">
+    <div class="menu__brand">
+      <button class="chip" type="button" aria-label="Cerrar menú" data-menu-close>
+        <Icon name="close" size="boton" />
+      </button>
+      <a class="menu__logo" href="/" aria-label="Digital X, inicio">
+        <Logo />
+      </a>
+    </div>
+    <div class="menu__top-cta">
+      <Btn
+        label="Cotizar por WhatsApp"
+        href={waUrl()}
+        target="_blank"
+        rel="noopener"
+        aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
+      />
+    </div>
+  </div>
+  <nav class="menu__list" aria-label="Principal">
+    {menu.map((item, i) => (
+      <a
+        class="menu__item t-h2"
+        href={item.url}
+        aria-current={actual === item.url ? 'page' : undefined}
+        style={`--d:${retardos[i] ?? 0.45}s`}
+      >
+        {item.titulo}
+      </a>
+    ))}
+    {negocio.redes.length > 0 && (
+      <div class="menu__socials" style="--d:0.55s">
+        {negocio.redes.map((r) => (
+          <a class="menu__social t-caption2" href={r.url} target="_blank" rel="noopener">
+            {r.nombre}
+            <span class="visually-hidden"> (se abre en una pestaña nueva)</span>
+          </a>
+        ))}
+      </div>
+    )}
+    <div class="menu__bottom-cta">
+      <Btn
+        label="Cotizar por WhatsApp"
+        href={waUrl()}
+        target="_blank"
+        rel="noopener"
+        aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
+      />
+    </div>
+  </nav>
+</div>
+
 <style>
-  /* Estilos base: móvil. Escritorio se agrega con min-width: 1024px (diseño §1). */
+  /* Blanco translúcido con desenfoque; la línea inferior (dentro del alto, sin sumarle) separa la barra del contenido.
+     Sin soporte de backdrop-filter, blanco casi opaco. El panel del menú no es hijo de la barra: no le afecta. */
   .nav {
     position: sticky;
     top: 0;
-    /* Por encima del botón de WhatsApp (z 20) para que el menú abierto lo cubra. */
-    z-index: 40;
-    background: var(--dx-blanco);
-    color: var(--dx-negro);
-    /* La línea inferior va dentro de la altura del header (64 px), no suma a ella. */
-    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-claro);
+    z-index: 5;
+    background: color-mix(in srgb, var(--dx-blanco) 85%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: inset 0 -1px 0 var(--dx-gris-claro);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav {
+      background: color-mix(in srgb, var(--dx-blanco) 95%, transparent);
+    }
   }
   .nav__bar {
-    max-width: calc(var(--contenedor) + 2 * var(--margen));
+    max-width: 1240px;
     margin-inline: auto;
-    padding: var(--esp-2) var(--margen);
-    min-height: var(--alto-header);
+    padding: 20px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--esp-2);
+    align-items: flex-start;
+    gap: 20px;
   }
-  .nav__marca {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tactil);
+  .nav__col {
+    flex: 1 1 0;
+    display: flex;
+  }
+  .nav__col--tag {
+    position: relative;
+    justify-content: center;
+  }
+  /* Zona de toque del logo de al menos 48 px de alto, sin cambiar su tamaño visible. */
+  .nav__col--tag::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--tactil) - 100%) / -2) 0;
+  }
+  .nav__col--cta {
+    justify-content: flex-end;
+  }
+  .nav__tag {
+    text-align: center;
     color: var(--dx-negro);
   }
-  .nav__acciones {
-    display: flex;
-    align-items: center;
-    gap: var(--esp-2);
-  }
-  .nav__toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--esp-2);
-    min-height: var(--tactil);
-    padding-inline: var(--esp-3);
-    border-radius: var(--radio);
+
+  .chip {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 28px;
+    padding: 4px 8px;
+    border-radius: 4px;
     background: var(--dx-negro);
     color: var(--dx-blanco);
-    font-size: var(--txt-cuerpo);
-    font-weight: 600;
-    line-height: var(--lh-etiqueta);
+    cursor: pointer;
   }
-  :global(html:not(.js)) .nav__toggle {
+  /* Zona de toque de 48 × 48 px, centrada y sin efecto visual (diseño §6, SEO §10). */
+  .chip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--tactil);
+    height: var(--tactil);
+    transform: translate(-50%, -50%);
+  }
+  .chip :global(.icon) {
+    width: 16px;
+    height: 16px;
+  }
+  /* Sin JavaScript el panel no se puede abrir: el botón no se muestra y la navegación queda en el pie. */
+  :global(html:not(.js)) [data-menu-open] {
     display: none;
   }
 
-  /* ---------- menú: panel a pantalla completa en móvil ---------- */
+  @media (max-width: 809.98px) {
+    .nav__bar {
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav__col--menu {
+      order: 2;
+      justify-content: flex-end;
+    }
+    .nav__col--tag {
+      order: 1;
+      justify-content: flex-start;
+    }
+    .nav__tag {
+      width: 100%;
+      text-align: left;
+    }
+    .nav__col--cta {
+      display: none;
+    }
+  }
+
+  /* ---------- panel del menú ---------- */
+  /* Por encima de los botones flotantes (z 20) para que el panel abierto los cubra. */
   .menu {
-    flex: 1 0 100%;
-    order: 3;
-  }
-  .menu__lista {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-2);
-  }
-  .menu__enlace {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    min-height: var(--tactil);
-    padding: var(--esp-3) var(--esp-1);
-    font-family: var(--font-titulos);
-    font-size: var(--txt-h3);
-    font-weight: 800;
-    line-height: var(--lh-h3);
-    text-align: left;
-    color: var(--dx-negro);
-    border-top: var(--linea) solid var(--dx-gris-medio);
-  }
-  .menu__enlace[aria-current='page'] {
-    text-decoration: underline;
-    text-underline-offset: var(--esp-2);
-  }
-  .menu__mas {
-    transition: transform var(--dur-media) var(--ease);
-  }
-  .menu__sub-btn[aria-expanded='true'] .menu__mas {
-    transform: rotate(45deg);
-  }
-
-  .sub {
-    padding-bottom: var(--esp-3);
-  }
-  .sub ul {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-2);
-  }
-  .sub__grupos {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-2);
-  }
-  :global(html.js) .sub:not(.is-open) {
-    display: none;
-  }
-  .sub__todos,
-  .sub__enlace,
-  .sub__titulo {
-    display: flex;
-    align-items: center;
-    min-height: var(--tactil);
-    padding: 0 var(--esp-1) 0 var(--esp-4);
-    font-size: var(--txt-cuerpo);
-    color: var(--dx-negro);
-  }
-  .sub__todos {
-    margin-bottom: var(--esp-2);
-  }
-  .sub__todos,
-  .sub__titulo {
-    font-weight: 600;
-  }
-  .sub__enlace[aria-current='page'] {
-    text-decoration: underline;
-    text-underline-offset: var(--esp-1);
-  }
-
-  .menu__movil {
-    display: none;
-  }
-
-  :global(html.js) .menu {
-    display: none;
     position: fixed;
     inset: 0;
     z-index: 30;
-    flex-direction: column;
-    gap: var(--esp-4);
-    padding: var(--margen) var(--margen) max(var(--margen), env(safe-area-inset-bottom));
     background: var(--dx-gris-claro);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
-  /* margin-top:auto pega los enlaces abajo sin perder el scroll cuando el contenido es más alto que la pantalla. */
-  :global(html.js) .menu__nav {
-    margin-top: auto;
+  .menu[hidden] {
+    display: none;
   }
-  :global(html.js) .menu.is-open {
+  .menu__top {
+    position: absolute;
+    inset: 0 0 auto 0;
+    max-width: 1160px;
+    margin-inline: auto;
+    padding: 20px;
     display: flex;
-    animation: menu-in var(--dur-media) var(--ease);
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
   }
-  /* Llamar y Cerrar quedan siempre a la vista, aunque el panel tenga que hacer scroll. */
-  :global(html.js) .menu__movil {
+  .menu__brand {
     display: flex;
-    gap: var(--esp-2);
-    position: sticky;
-    bottom: calc(-1 * max(var(--margen), env(safe-area-inset-bottom)));
-    margin-bottom: calc(-1 * max(var(--margen), env(safe-area-inset-bottom)));
-    padding-block: var(--esp-3) max(var(--margen), env(safe-area-inset-bottom));
-    background: var(--dx-gris-claro);
+    align-items: flex-start;
+    gap: 10px;
   }
-  .menu__btn {
-    flex: 1;
+  .menu__logo {
+    position: relative;
     display: inline-flex;
+    color: var(--dx-negro);
+  }
+  .menu__logo::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--tactil) - 100%) / -2) 0;
+  }
+  .menu__list {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--esp-2);
-    min-height: var(--tactil);
-    border-radius: var(--radio);
-    background: var(--dx-blanco);
+    gap: 20px;
+    padding-block: 90px;
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  .menu.is-open .menu__list {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--spring-05-dur) var(--spring-05),
+      transform var(--spring-05-dur) var(--spring-05);
+  }
+  .menu__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0;
     color: var(--dx-negro);
-    font-size: var(--txt-cuerpo);
-    font-weight: 600;
+    border-bottom: 1px solid transparent;
+    transition:
+      padding var(--spring-04-dur) var(--spring-04),
+      color var(--spring-04-dur) var(--spring-04),
+      border-color var(--spring-04-dur) var(--spring-04);
   }
-  .menu__btn--cerrar {
-    background: var(--dx-negro);
-    color: var(--dx-blanco);
+  /* Zona de toque de al menos 48 px de alto, sin cambiar el tamaño ni el espaciado del original. */
+  .menu__item::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--tactil) - 100%) / -2) -8px;
   }
-  @keyframes menu-in {
-    from {
-      opacity: 0;
-      transform: translateY(var(--esp-4));
+  .menu__item,
+  .menu__socials {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .menu__socials {
+    transform: translateY(10px);
+  }
+  .menu.is-open .menu__item,
+  .menu.is-open .menu__socials {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--spring-055-dur) var(--spring-055) var(--d),
+      transform var(--spring-055-dur) var(--spring-055) var(--d),
+      padding var(--spring-04-dur) var(--spring-04),
+      color var(--spring-04-dur) var(--spring-04),
+      border-color var(--spring-04-dur) var(--spring-04);
+  }
+  .menu__item[aria-current='page'] {
+    border-color: var(--dx-negro);
+  }
+  @media (hover: hover) and (min-width: 810px) {
+    .menu__item:hover {
+      padding-left: 12px;
+      border-color: var(--dx-negro);
     }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+  }
+  .menu__socials {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+  }
+  /* Las redes ocupan 48 px de alto de verdad (no solo de zona de toque): entre sí quedarían zonas encimadas. */
+  .menu__social {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tactil);
+    color: var(--dx-negro);
+  }
+  .menu__social:hover {
+    text-decoration: underline;
+  }
+  .menu__bottom-cta {
+    display: none;
   }
 
-  /* ---------- escritorio ---------- */
-  @media (min-width: 1024px) {
-    .nav__bar {
-      flex-wrap: nowrap;
-      gap: var(--esp-5);
+  @media (max-width: 809.98px) {
+    .menu__top {
+      padding: 16px;
     }
-    .nav__toggle {
-      display: none;
-    }
-    .menu {
+    .menu__brand {
       flex: 1;
-      order: 0;
-      display: flex;
-      justify-content: center;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      align-items: center;
     }
-    /* Deshace el panel a pantalla completa de móvil (esas reglas llevan html.js y ganarían por especificidad). */
-    :global(html.js) .menu {
-      display: flex;
-      position: static;
-      z-index: auto;
-      flex-direction: row;
-      gap: 0;
-      padding: 0;
-      background: none;
-      overflow: visible;
-    }
-    :global(html.js) .menu.is-open {
-      animation: none;
-    }
-    :global(html.js) .menu__nav {
-      margin-top: 0;
-    }
-    :global(html.js) .menu__movil {
+    .menu__top-cta {
       display: none;
     }
-    .menu__lista {
-      flex-direction: row;
-      gap: var(--esp-2);
+    .menu__list {
+      padding-left: 20px;
     }
-    .menu__item {
-      position: relative;
-    }
-    .menu__enlace {
-      width: auto;
-      gap: var(--esp-2);
-      padding: 0 var(--esp-4);
-      border-top: 0;
-      border-radius: var(--radio);
-      font-size: var(--txt-cuerpo);
-      line-height: var(--lh-etiqueta);
-    }
-    .menu__enlace:hover,
-    .menu__sub-btn[aria-expanded='true'] {
-      background: var(--dx-gris-claro);
-    }
-    .menu__mas {
-      width: var(--icono-boton);
-      height: var(--icono-boton);
-    }
-    .sub {
-      position: absolute;
-      top: calc(100% + var(--esp-2));
-      left: 0;
-      width: max-content;
-      max-width: calc(100vw - 2 * var(--margen));
-      padding: var(--esp-5);
-      background: var(--dx-blanco);
-      border: var(--linea) solid var(--dx-gris-claro);
-      border-radius: var(--radio);
-      box-shadow: var(--sombra-flotante);
-    }
-    .sub__grupos {
-      display: grid;
-      grid-template-columns: repeat(3, max-content);
-      gap: var(--esp-5);
-    }
-    .sub__todos,
-    .sub__enlace,
-    .sub__titulo {
-      padding: 0 var(--esp-2);
-      border-radius: var(--radio-chico);
-    }
-    .sub__enlace:hover,
-    .sub__todos:hover,
-    a.sub__titulo:hover {
-      background: var(--dx-gris-claro);
-      color: var(--dx-negro);
+    .menu__bottom-cta {
+      display: flex;
     }
   }
 </style>

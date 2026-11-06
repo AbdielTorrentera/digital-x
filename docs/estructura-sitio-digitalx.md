@@ -15,6 +15,7 @@ Versión: borrador de trabajo · 2026-10-23
 6. Si algo no está definido, o dos reglas parecen chocar, **detente y pregunta** antes de implementar.
 7. Si este archivo y `reglas-seo-digitalx.md` chocan: URLs, páginas y jerarquía mandan en **este**; metadatos y técnica mandan en el **de SEO**.
 8. Alcance: este documento no define diseño visual (colores, tipografías, layout).
+9. **Enlaces a páginas planeadas.** En desarrollo el contenido (por ejemplo, las tarjetas de servicios del Inicio) puede enlazar a páginas con estado "Lanzamiento" que aún no están construidas: llevan a la 404. Las "Pendiente de material" nunca se enlazan. El **build de producción** (`VERCEL_ENV=production`) falla mientras exista un enlace interno a una página sin construir, con la lista de páginas y enlaces. El pie y el sitemap muestran **solo páginas construidas**; el menú principal enlaza las páginas planeadas (ver sección 4).
 
 ---
 
@@ -25,16 +26,15 @@ Versión: borrador de trabajo · 2026-10-23
 | Nombre | Digital X |
 | Dominio nuevo | digitalx.mx |
 | Dominio anterior | digitalequis.com (se redirige con 301) |
-| Ubicación | Atlixco, Puebla. **Sin dirección pública** |
+| Ubicación | Atlixco, estado de Puebla. **Sin dirección pública** |
 | Teléfono | +52 244 124 4913 |
 | WhatsApp | 522441244913 (el número 244 137 1957 ya no se usa) |
 | Correo | `[PENDIENTE: correo definitivo en digitalx.mx]` |
-| Redes | `[PENDIENTE: URL de Facebook e Instagram]` |
-| Zonas confirmadas | Atlixco, Izúcar de Matamoros |
-| Radio objetivo | ~50 km desde Atlixco. Un municipio solo se nombra en el sitio si el dueño lo confirma |
-| Zonas por confirmar | Puebla (capital), Amozoc, Tepeaca: `[PENDIENTE: confirmar si se cubren]` |
+| Redes | `[PENDIENTE: URLs de Facebook, Instagram, TikTok y del perfil de Google]` |
+| Zonas con traslado incluido (dato interno) | Puebla, Atlixco, Izúcar de Matamoros |
+| Zonas con cargo adicional (dato interno) | Tepeaca, San Martín Texmelucan, Amozoc y alrededores |
 
-"Puebla" en frases como "Atlixco, Puebla" se refiere siempre al estado.
+"Puebla" sola significa la **ciudad** de Puebla. El estado se escribe "estado de Puebla" (por ejemplo, "Atlixco, estado de Puebla"). Solo se nombran en el sitio las zonas de esta tabla, como una sola lista de lugares: "Puebla, Atlixco, Izúcar de Matamoros, Tepeaca, San Martín Texmelucan, Amozoc y alrededores". Los dos grupos (traslado incluido y cargo adicional) son **dato interno**: no se muestran en el sitio.
 
 ---
 
@@ -59,19 +59,20 @@ Versión: borrador de trabajo · 2026-10-23
 /servicios/                                         Hub general (vitrina de las 3 categorías)
 │
 ├─ /servicios-de-audio/                             Categoría Audio
-│   ├─ /servicios-de-audio/renta-de-sonido/
-│   └─ /servicios-de-audio/instalacion-de-audio/
+│   └─ /servicios-de-audio/renta-de-audio/          Renta de audio y sonido para eventos (incluye sonorización)
 │
 ├─ /servicios-de-video/                             Categoría Video
-│   ├─ /servicios-de-video/grabacion-de-eventos/    (incluye circuito cerrado)
-│   ├─ /servicios-de-video/video-para-redes/        (incluye edición)
-│   ├─ /servicios-de-video/streaming/
-│   └─ /servicios-de-video/dron/
+│   ├─ /servicios-de-video/circuito-cerrado/        Circuito cerrado para eventos
+│   ├─ /servicios-de-video/grabacion-de-eventos/    Producción de videos para eventos
+│   ├─ /servicios-de-video/streaming/               Transmisión en vivo
+│   ├─ /servicios-de-video/dron/                    Video con dron
+│   └─ /servicios-de-video/recorridos-360/          Recorridos virtuales 360
 │
 └─ /servicios-de-tecnologia/                        Categoría Tecnología
-    ├─ /servicios-de-tecnologia/software-a-la-medida/
-    ├─ /servicios-de-tecnologia/sitios-web/
-    └─ /servicios-de-tecnologia/tienda-en-linea/
+    ├─ /servicios-de-tecnologia/paginas-web/        Páginas web (páginas de destino y desarrollo web)
+    ├─ /servicios-de-tecnologia/apps-moviles/       Desarrollo de apps móviles
+    ├─ /servicios-de-tecnologia/desarrollo-de-software/   Desarrollo de software
+    └─ /servicios-de-tecnologia/tienda-en-linea/    Tienda en línea
 
 /proyectos/
 /blog/                                              Listado de artículos
@@ -87,17 +88,18 @@ Versión: borrador de trabajo · 2026-10-23
 | `/` | Lanzamiento | |
 | `/servicios/` | Lanzamiento | |
 | `/servicios-de-audio/` | Lanzamiento | |
-| `/servicios-de-audio/renta-de-sonido/` | Lanzamiento | Slug provisional: validar "sonido" vs "audio" en el autocompletado de Google |
-| `/servicios-de-audio/instalacion-de-audio/` | Lanzamiento | Ya hay 2 casos reales (iglesia, proyección con pantallas) |
+| `/servicios-de-audio/renta-de-audio/` | Lanzamiento | Renta de audio y sonido para eventos. Incluye sonorización: usar "audio" y "sonido" en sus textos |
 | `/servicios-de-video/` | Lanzamiento | Misma URL del sitio anterior |
-| `/servicios-de-video/grabacion-de-eventos/` | Lanzamiento | Servicio de mayores ingresos |
-| `/servicios-de-video/video-para-redes/` | Lanzamiento | Slug provisional |
-| `/servicios-de-video/streaming/` | Lanzamiento | |
-| `/servicios-de-video/dron/` | **Pendiente de material** | Publicar con los primeros trabajos |
+| `/servicios-de-video/circuito-cerrado/` | Lanzamiento | Cámaras en vivo proyectadas en pantallas. No es sistema de seguridad ni graba |
+| `/servicios-de-video/grabacion-de-eventos/` | Lanzamiento | Producción de videos para eventos. Antes incluía el circuito cerrado y era el servicio de mayores ingresos `[PENDIENTE: confirmar cuál de los dos lo es hoy]` |
+| `/servicios-de-video/streaming/` | Lanzamiento | Transmisión en vivo |
+| `/servicios-de-video/dron/` | Lanzamiento | Video con dron |
+| `/servicios-de-video/recorridos-360/` | Lanzamiento | Recorridos virtuales 360 |
 | `/servicios-de-tecnologia/` | Lanzamiento | |
-| `/servicios-de-tecnologia/software-a-la-medida/` | Lanzamiento | 3 proyectos: SaaS, sitio de compras, e-commerce en desarrollo |
-| `/servicios-de-tecnologia/sitios-web/` | Lanzamiento | |
-| `/servicios-de-tecnologia/tienda-en-linea/` | **Pendiente de material** | Publicar cuando el e-commerce esté terminado |
+| `/servicios-de-tecnologia/paginas-web/` | Lanzamiento | Páginas de destino y desarrollo web |
+| `/servicios-de-tecnologia/apps-moviles/` | Lanzamiento | Desarrollo de apps móviles |
+| `/servicios-de-tecnologia/desarrollo-de-software/` | Lanzamiento | 3 proyectos: SaaS, sitio de compras, e-commerce en desarrollo |
+| `/servicios-de-tecnologia/tienda-en-linea/` | Lanzamiento | Tienda en línea |
 | `/proyectos/` | Lanzamiento | |
 | `/blog/` | **Pendiente de material** | Se publica cuando haya al menos `[PENDIENTE: número mínimo, sugerido 3]` artículos reales. Mientras tanto, la ruta no se genera ni se enlaza |
 | `/blog/{slug}/` | Según cada artículo | Un artículo = una búsqueda principal; no puede competir con una página de servicio (regla 5 de la sección 2) |
@@ -106,13 +108,15 @@ Versión: borrador de trabajo · 2026-10-23
 | `/condiciones-de-contratacion/` | Lanzamiento | |
 | `/politica-de-privacidad/` | Lanzamiento | |
 
+Los 10 servicios son los oficiales del Perfil de Negocio de Google. Todas las páginas de servicio están en "Lanzamiento", pero **cada una se publica cuando el dueño apruebe sus fotos y videos** (regla 6 de la sección 2: una página nueva solo sale con material real). Mientras una página no esté construida no se enlaza: el Inicio y los demás enlaces llevan a WhatsApp.
+
 Páginas por municipio: **no existen** en esta estructura (ver `reglas-seo-digitalx.md`, sección 2).
 
 ---
 
 ## 4. Navegación y jerarquía
 
-- **Menú principal:** Inicio · Servicios (desplegable: Audio, Video, Tecnología, con sus subpáginas publicadas) · Proyectos · Blog · Nosotros · Contacto. "Blog" solo aparece cuando `/blog/` esté publicado.
+- **Menú principal** (panel a pantalla completa, sin desplegables): Inicio · Servicios · Proyectos · Nosotros · Contacto, y Blog cuando `/blog/` esté publicado. Enlaza páginas planeadas aunque no estén construidas (ver sección 0, punto 9); las categorías de servicios se enlazan desde `/servicios/` y desde las tarjetas del Inicio.
 - **Pie de página:** servicios principales, Blog (cuando esté publicado), Condiciones de contratación, Política de privacidad, contacto, texto de cobertura (ver SEO, sección 4).
 - **Cada artículo del blog** enlaza al menos a una página de servicio relacionada, con texto descriptivo.
 - **Cada categoría** enlaza a todas sus subpáginas publicadas.
@@ -127,17 +131,19 @@ Una página le habla a **un solo cliente**.
 
 | Página | Cliente | Contenido obligatorio |
 | --- | --- | --- |
-| Inicio | Dos caminos: organizador de evento / negocio o institución | Propuesta (un solo proveedor para que el evento se vea, se escuche y se transmita; más software a la medida). Sección "Para tu evento" y sección "Para tu negocio o institución". 3 o 4 proyectos. "Por qué Digital X" con hechos comprobables: equipo para hasta 500 personas, mezcladora de 32 canales, técnico en cada evento, un solo proveedor. Cobertura. Testimonio solo con permiso. FAQ. CTA |
+| Inicio | Servicios por categoría (Audio, Video y Tecnología) | Propuesta: "Un solo proveedor en Puebla, Atlixco e Izúcar de Matamoros para el audio y el video de tu evento, y para la página web, la app o el software de tu negocio" (la frase ya nombra las ciudades). No usar "software a la medida": el servicio se llama "Desarrollo de software". Servicios por categoría: tres tarjetas apiladas (Audio, Video y Tecnología), cada una con su foto, una frase de para quién es y los nombres de sus servicios como texto. Cada tarjeta entera enlaza a la página de su categoría (`/servicios-de-audio/`, `/servicios-de-video/`, `/servicios-de-tecnologia/`); no hay enlaces ni botones por servicio en el Inicio (esos enlaces van en cada página de categoría). Recorridos virtuales 360 va en Video. No hay secciones separadas por tipo de cliente. Proyectos: la sección solo se muestra cuando hay al menos 3 con foto y permiso (si no, no se dibuja). "Por qué Digital X" con ventajas comprobables: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida. **No se publican topes de personas ni datos del equipo.** Cobertura como lista de lugares (Puebla, Atlixco, Izúcar de Matamoros, Tepeaca, San Martín Texmelucan, Amozoc y alrededores), sin condiciones de traslado ni cargos, y con la invitación a escribir si el evento o proyecto es en otro lugar. Testimonio solo con permiso. FAQ. CTA final a WhatsApp. El botón de la portada es "Ver servicios" (baja a `#servicios`, y a `/servicios/` cuando exista); la portada, Cobertura y FAQ no llevan botón de WhatsApp. |
 | `/servicios/` | Cualquiera | Vitrina con las 3 categorías y enlaces descriptivos |
-| Renta de sonido | Organizadores de fiestas, agrupaciones, clases (ej. zumba), conferencias, salones | Capacidad hasta 500 personas, mezcladora de 32 canales, técnico en todos los eventos, viáticos incluidos en la cotización final. **Sin precios** (decisión del dueño). En su lugar: ejemplos por tipo de evento, factores que mueven el costo (personas, horas, distancia, equipo), fotos reales, enlace a condiciones de contratación. FAQ. Enlace cruzado a grabación de eventos |
-| Instalación de audio | Iglesias/templos, escuelas, restaurantes | Casos reales: audio en una iglesia y proyección con pantallas (instalación **fija**; no confundir con el circuito cerrado de eventos). Qué incluye: `[PENDIENTE: elegir 2 o 3 servicios]`. Usar "iglesia" o "templo", no "casa de culto". No usar "asesoría" como término principal: casi no se busca |
-| Grabación de eventos | Instituciones, eventos culturales, conferencias, deportivos | Grabación, circuito cerrado (proyección en vivo en pantallas del lugar), streaming opcional, audio, dron si aplica. Pantallas **rentadas a un tercero**: redactar "coordinamos", nunca "tenemos". Aclarar que circuito cerrado no es cámaras de seguridad. Precio de referencia: desde $5,000 MXN `[PENDIENTE: confirmar si incluye IVA]`. Tiempo de entrega: `[PENDIENTE]` |
-| Video para redes | Negocios que necesitan contenido | Videos para redes, edición |
-| Streaming | Organizadores de conferencias, eventos culturales, cultos | Transmisión en vivo en alta definición |
-| Dron | Eventos y propiedades/turismo | Video aéreo, foto aérea 360°, tours. Permisos de la AFAC: verificar antes de afirmar nada |
-| Tecnología (hub) | Dueños de negocio | Agrupa software, sitios y tienda en línea |
-| Software a la medida | Negocios con procesos propios | Los 3 proyectos como casos (problema, solución, resultado), anónimos si no hay permiso. El e-commerce se presenta "en desarrollo" |
-| Sitios web | Negocios | Validar competencia antes de definir el enfoque |
+| Renta de audio | Organizadores de fiestas, agrupaciones, clases (ej. zumba), conferencias, salones | Renta de audio y sonido para eventos; incluye sonorización (usar ambas palabras en los textos). Personal técnico capacitado de principio a fin, equipo y sonorización elegidos según el evento, cotización a la medida y viáticos incluidos en la cotización final. **Sin precios** (decisión del dueño) **y sin topes de personas ni datos del equipo**. En su lugar: ejemplos por tipo de evento, factores que mueven el costo (personas, horas, distancia, equipo), fotos reales, enlace a condiciones de contratación. FAQ. Enlace cruzado a circuito cerrado, producción de videos y transmisión en vivo |
+| Circuito cerrado | Instituciones, eventos culturales, conferencias, eventos deportivos | Cámaras en vivo proyectadas en pantallas del lugar. **No es un sistema de seguridad y no graba**: aclararlo siempre, y explicarlo junto con "pantallas para eventos" o "proyección en vivo". Pantallas **rentadas a un tercero**: redactar "coordinamos", nunca "tenemos". Precio de referencia: `[PENDIENTE: confirmar a qué servicio aplica "desde $5,000 MXN" (Circuito cerrado, Producción de videos o ambos) y si incluye IVA]` |
+| Producción de videos para eventos | Instituciones, eventos culturales, conferencias, deportivos | Grabación y producción del video del evento (la URL es `grabacion-de-eventos`), audio, dron si aplica. Precio de referencia y tiempo de entrega: `[PENDIENTE: ver Circuito cerrado y confirmar el tiempo de entrega]` |
+| Transmisión en vivo (streaming) | Organizadores de conferencias, eventos culturales, cultos | Transmisión en vivo en alta definición |
+| Video con dron | Eventos y propiedades/turismo | Video aéreo. Permisos de la AFAC: verificar antes de afirmar nada |
+| Recorridos virtuales 360 | `[PENDIENTE: a quién le habla]` | Recorridos virtuales 360. `[PENDIENTE: qué incluye y casos]` |
+| Tecnología (hub) | Dueños de negocio | Agrupa páginas web, apps móviles, desarrollo de software y tienda en línea |
+| Páginas web | Negocios | Páginas de destino y desarrollo web. Validar competencia antes de definir el enfoque |
+| Apps móviles | Negocios | Desarrollo de apps móviles. `[PENDIENTE: casos y qué incluye]` |
+| Desarrollo de software | Negocios con procesos propios | Los 3 proyectos como casos (problema, solución, resultado), anónimos si no hay permiso. El e-commerce se presenta "en desarrollo" |
+| Tienda en línea | Negocios que quieren vender por internet | Tiendas en línea. El e-commerce propio se presenta "en desarrollo" hasta que esté terminado |
 | `/proyectos/` | Cualquiera | Portafolio etiquetado por servicio, solo trabajos reales y con permiso |
 | `/blog/` | Quien investiga antes de contratar | Artículos útiles y propios (guías, comparativas, consejos para eventos), con fecha y autor. Sin artículos de relleno ni generados sin revisión. Categorías como filtros en la misma página, **sin URL propia** por categoría |
 | `/blog/{slug}/` | Una búsqueda informativa concreta | Respuesta completa a una pregunta real, fotos propias cuando existan, enlace a la página de servicio relacionada y CTA |
@@ -160,7 +166,7 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 | `/contacto/` | `/contacto/` |
 | `/politica-de-privacidad/` | `/politica-de-privacidad/` |
 | `/servicios-de-video/` | `/servicios-de-video/` |
-| `/renta-de-audio/` | `/servicios-de-audio/renta-de-sonido/` |
+| `/renta-de-audio/` | `/servicios-de-audio/renta-de-audio/` |
 
 - Redirigir cualquier otra URL del dominio viejo a `/`, **nunca** a una página sin relación.
 - El dominio viejo debe seguir respondiendo para que el 301 funcione.
@@ -171,20 +177,19 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 
 **Datos**
 - [ ] Correo definitivo en digitalx.mx.
-- [ ] URLs de Facebook e Instagram.
+- [ ] URLs de Facebook, Instagram, TikTok y del perfil de Google.
 - [ ] 3 o 4 proyectos para el Inicio, con fotos, nombre del lugar y permiso.
 - [ ] Autorización de Genaro Ríos (Impact Hub CDMX) para su testimonio con nombre y foto.
-- [ ] Zonas realmente cubiertas además de Atlixco e Izúcar de Matamoros.
 - [ ] Marcas y modelos de equipo (ver SEO, sección 8).
-- [ ] Casos de instalación (iglesia, proyección) con foto y descripción.
+- [ ] Casos del portafolio: audio en una iglesia y proyección con pantallas. **No son un servicio**: cuando haya fotos y permiso entrarán en `/proyectos/` como casos de éxito, con su ficha enlazando a la página del servicio que se usó.
 - [ ] Casos de software (problema, solución, resultado).
 - [ ] Tiempo de entrega del video editado.
+- [ ] Precio de referencia "desde $5,000 MXN": a qué servicio aplica (Circuito cerrado, Producción de videos o ambos) y si incluye IVA.
+- [ ] Fotos y videos de cada página de servicio, aprobados por el dueño antes de publicarla.
 - [ ] Contenido de condiciones de contratación.
 
 **Decisiones**
-- [ ] Slug de video para redes (`video-para-redes` provisional).
-- [ ] `renta-de-sonido` vs `renta-de-audio`.
-- [ ] Qué incluye exactamente la instalación de audio.
+- [ ] A quién le habla y qué incluye Recorridos virtuales 360.
 - [ ] Formulario de contacto: sí o no.
 - [ ] ¿Cada proyecto tiene su página (`/proyectos/{slug}/`) o son secciones dentro de `/proyectos/`? **Por defecto: secciones, sin páginas individuales.**
 - [ ] ¿Se crea una página única `/cobertura/`? **Por defecto: no.**
@@ -197,7 +202,8 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 
 - [ ] Existen todas las páginas con estado "Lanzamiento" y ninguna más, con la URL exacta de la sección 3.
 - [ ] Ninguna página "Pendiente de material" está publicada ni enlazada.
-- [ ] Todos los enlaces internos funcionan y usan texto descriptivo.
+- [ ] Todos los enlaces internos funcionan y usan texto descriptivo. En desarrollo se permiten los que van a páginas planeadas sin construir; en producción, ninguno.
+- [ ] El build de producción falla si queda algún enlace interno a una página sin construir.
 - [ ] Las redirecciones de la sección 6 responden 301 al destino correcto.
 - [ ] No hay datos inventados: todo hueco aparece como `[PENDIENTE: ...]` y está en el reporte final.
 - [ ] Erratas heredadas corregidas y los tres pilares con texto propio.

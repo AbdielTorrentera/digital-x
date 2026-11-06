@@ -66,7 +66,7 @@ Paleta oficial (archivo `paleta_Colores_Digital-x.ase`), más el blanco para fon
 
 - **Proporción sugerida** *(propuesta)*: el sitio es predominantemente **negro y blanco**; el amarillo es el acento (botones, llamados a la acción, detalles) y no debe cubrir más de un 10 % aproximado de una pantalla. Así el amarillo destaca donde importa: en lo que se debe tocar.
 - **No hay más colores.** Si se necesita un color de estado (error, éxito en formularios), se define primero aquí. `[PENDIENTE: colores de estado, si se usa formulario]`.
-- El botón flotante de WhatsApp usa el **verde oficial de WhatsApp** (`#25D366`) con ícono y texto en **negro** (el blanco sobre ese verde no cumple contraste: 2.0:1), por ser un elemento reconocible de terceros. Es la única excepción a la paleta.
+- El botón flotante de WhatsApp usa el **verde oficial de WhatsApp** (`#25D366`) con el ícono en **negro** (el blanco sobre ese verde no cumple contraste: 2.0:1), por ser un elemento reconocible de terceros. Es la única excepción a la paleta.
 
 ---
 
@@ -116,7 +116,7 @@ Tipografías del sitio:
 - **Vocabulario obligatorio** (de `reglas-seo-digitalx.md`):
   - "iglesia" o "templo", no "casa de culto".
   - Pantallas para eventos: "**coordinamos**", nunca "tenemos".
-  - "Circuito cerrado" siempre junto con "proyección en vivo" o "pantallas para eventos", aclarando que no es seguridad.
+  - "Circuito cerrado" siempre junto con "proyección en vivo" o "pantallas para eventos", aclarando que no es seguridad ni graba.
 - Ortografía cuidada: acentos, signos de apertura (¿ ¡) y mayúsculas solo donde corresponde.
 
 ---

@@ -1,0 +1,47 @@
+---
+import Icon from './Icon.astro';
+import { negocio, telUrl } from '../lib/negocio';
+
+// Botón flotante de llamada directa (reglas-seo sección 11): solo ícono, círculo negro de 56 px con ícono blanco para
+// que el verde de WhatsApp siga siendo la acción principal. Solo se ve por debajo de 1024 px; en escritorio el
+// teléfono está en el pie. Su posición la da Flotantes.astro.
+---
+
+<a class="llamar" href={telUrl} aria-label={`Llamar a ${negocio.nombre}`}>
+  <Icon name="phone" size="boton" />
+</a>
+<style>
+  .llamar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--boton-flotante);
+    height: var(--boton-flotante);
+    border-radius: var(--radio-pildora);
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
+    /* El contorno fino separa el círculo del pie negro, donde de otro modo se perdería. */
+    box-shadow:
+      0 0 0 var(--linea) var(--dx-gris-medio),
+      var(--sombra-flotante);
+  }
+  .llamar:hover {
+    background: var(--dx-amarillo);
+    color: var(--dx-negro);
+  }
+  .llamar:active {
+    transform: translateY(var(--linea));
+  }
+  /* El foco es un halo blanco de 2 px con el contorno negro por fuera: se ve sobre fondo blanco y sobre el pie negro. */
+  .llamar:focus-visible {
+    outline-color: var(--dx-negro);
+    box-shadow:
+      0 0 0 var(--foco) var(--dx-blanco),
+      var(--sombra-flotante);
+  }
+  @media (min-width: 1024px) {
+    .llamar {
+      display: none;
+    }
+  }
+</style>

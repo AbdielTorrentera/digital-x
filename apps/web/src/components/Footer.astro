@@ -95,10 +95,11 @@ const anio = new Date().getFullYear();
 </footer>
 
 <style>
-  /* El relleno inferior (--esp-9) deja libre el final de la página para que el botón flotante de WhatsApp no tape texto. */
+  /* El relleno inferior deja libre el final de la página para que los botones flotantes no tapen texto: en móvil y
+     tableta son dos (llamada 56 px + 8 px + WhatsApp 56 px + margen), en escritorio solo WhatsApp. */
   /* .sobre-negro (tokens.css) pone fondo negro, texto blanco, texto secundario en gris medio y foco amarillo. */
   .footer {
-    padding: var(--esp-8) 0 var(--esp-9);
+    padding: var(--esp-8) 0 calc(var(--esp-9) + var(--esp-7));
   }
   .footer__inner {
     display: flex;
@@ -168,6 +169,7 @@ const anio = new Date().getFullYear();
   @media (min-width: 1024px) {
     .footer {
       padding-top: var(--esp-9);
+      padding-bottom: var(--esp-9);
     }
     .footer__top {
       display: grid;

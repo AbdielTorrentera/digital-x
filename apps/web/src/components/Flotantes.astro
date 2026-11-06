@@ -1,0 +1,35 @@
+---
+import LlamarFlotante from './LlamarFlotante.astro';
+import WhatsApp from './WhatsApp.astro';
+
+// Botones flotantes (reglas-seo sección 11): llamada encima y WhatsApp debajo, en una sola pila fija de dos círculos
+// de 56 px. Así la separación entre ellos es siempre la misma (8 px) y no se encimen. Respetan el área segura del
+// celular. El pie deja espacio al final para que no tapen su contenido.
+interface Props {
+  mensaje?: string;
+}
+const { mensaje } = Astro.props;
+---
+
+<div class="flotantes">
+  <LlamarFlotante />
+  <WhatsApp mensaje={mensaje} />
+</div>
+<style>
+  .flotantes {
+    position: fixed;
+    right: max(var(--esp-4), env(safe-area-inset-right));
+    bottom: max(var(--esp-4), env(safe-area-inset-bottom));
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--esp-2);
+  }
+  @media (min-width: 768px) {
+    .flotantes {
+      right: max(var(--esp-5), env(safe-area-inset-right));
+      bottom: max(var(--esp-5), env(safe-area-inset-bottom));
+    }
+  }
+</style>

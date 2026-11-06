@@ -1,31 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
 import Btn from '../components/Btn.astro';
-import { enlacesDe404 } from '../lib/paginas';
-
-// Enlaces de regreso a Inicio y Servicios (reglas-seo sección 9). Solo aparecen los que ya existen:
-// [PENDIENTE: enlace a /servicios/ cuando esa página esté construida; se agrega solo al marcarla en paginas.ts]
-const textos: Record<string, string> = {
-  '/': 'Ir al inicio de Digital X',
-  '/servicios/': 'Ver los servicios de Digital X',
-};
+import { urlVerServicios } from '../lib/paginas';
 ---
 
 <Base
   title="Página no encontrada | Digital X"
-  description="La página que buscas no existe o cambió de dirección. Vuelve al inicio de Digital X para ver audio, video y tecnología en Atlixco."
+  description="La página que buscas no existe o cambió de dirección. Vuelve al inicio de Digital X para ver audio, video y tecnología en Puebla."
   noindex
 >
   <section class="container nf">
     <p class="t-caption2">Error 404</p>
     <h1 class="t-h1">Esta página no existe</h1>
-    <p class="t-body">Puede que la dirección esté mal escrita o que la página haya cambiado de lugar.</p>
+    <p class="t-body">Al parecer lo que estás buscando se ha movido o no existe.</p>
     <ul class="nf__enlaces">
-      {enlacesDe404.map((p, i) => (
-        <li>
-          <Btn label={textos[p.url] ?? p.titulo} href={p.url} variant={i === 0 ? 'primary' : 'secondary'} />
-        </li>
-      ))}
+      <li>
+        <Btn label="Ver servicios" href={urlVerServicios} />
+      </li>
+      <li>
+        <Btn label="Regresar al inicio" href="/" variant="secondary" />
+      </li>
     </ul>
   </section>
 </Base>

@@ -1,39 +1,33 @@
 ---
-import Btn from '../Btn.astro';
-import { site } from '../../lib/site';
-const { features } = await site('home');
+import Foto from '../Foto.astro';
+import type { Foto as FotoDatos } from '../../content/inicio';
+
+// "Por qué Digital X": solo hechos comprobables (estructura-sitio sección 5). El texto de cada tarjeta se ve siempre,
+// no solo al pasar el cursor, para que también se lea con teclado y en pantallas táctiles.
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  foto: FotoDatos;
+  items: { titulo: string; texto: string }[];
+}
+const { etiqueta, titulo, foto, items } = Astro.props;
 ---
 
-<section class="features sobre-negro" data-dark>
-  <img class="features__bg" src={features.image} alt="" loading="lazy" data-appear />
+<section class="features sobre-negro">
+  <Foto class="features__bg" src={foto.src} alt={foto.alt} sizes="100vw" />
   <div class="container features__inner">
     <div class="features__head">
-      <div class="features__title">
-        <p class="t-caption2 c-blanco" data-appear>
-          {features.label}
-        </p>
-        <h2 class="t-h2 c-blanco" data-appear>
-          {features.title}
-        </h2>
-      </div>
-      <div class="features__side">
-        <p class="t-body c-blanco balance" data-appear>
-          {features.text}
-        </p>
-        <div data-appear>
-          <Btn label={features.cta.label} href={features.cta.href} variant="secondary" />
-        </div>
-      </div>
+      <p class="t-caption2 c-blanco">{etiqueta}</p>
+      <h2 class="t-h2 c-blanco">{titulo}</h2>
     </div>
-    <div class="features__grid" data-appear>
-      {features.items.map((f: any) => (
-        <div class="fcard">
-          <h3 class="t-h5 c-blanco">{f.title}</h3>
-          <p class="t-body c-blanco fcard__text">{f.text}</p>
-          <p class="t-caption c-blanco fcard__num">{f.number}</p>
-        </div>
+    <ul class="features__grid">
+      {items.map((item) => (
+        <li class="fcard">
+          <h3 class="t-h3 c-blanco">{item.titulo}</h3>
+          <p class="t-body c-blanco">{item.texto}</p>
+        </li>
       ))}
-    </div>
+    </ul>
   </div>
 </section>
 <style>
@@ -42,7 +36,7 @@ const { features } = await site('home');
     overflow: clip;
     padding-block: var(--esp-8);
   }
-  .features__bg {
+  .features :global(.features__bg) {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -59,19 +53,7 @@ const { features } = await site('home');
   .features__head {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: var(--esp-5);
-  }
-  .features__title {
-    display: flex;
-    flex-direction: column;
     gap: var(--esp-3);
-  }
-  .features__side {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--esp-4);
   }
   .features__grid {
     display: grid;
@@ -79,21 +61,15 @@ const { features } = await site('home');
     gap: var(--esp-5);
   }
   .fcard {
-    position: relative;
-    padding: var(--esp-4);
-    border-radius: var(--radio);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: var(--esp-7);
+    gap: var(--esp-3);
+    padding: var(--esp-4);
+    border-radius: var(--radio);
     border: var(--linea) solid var(--dx-linea-sobre-foto);
     background: var(--dx-capa-oscura);
     -webkit-backdrop-filter: blur(var(--desenfoque));
     backdrop-filter: blur(var(--desenfoque));
-  }
-  .fcard__num {
-    text-align: right;
   }
   @media (min-width: 768px) {
     .features__grid {
@@ -104,33 +80,12 @@ const { features } = await site('home');
     .features {
       padding-block: var(--esp-9);
     }
-    .features__head {
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-    .features__title,
-    .features__side {
-      flex: 1 1 0;
-    }
     .features__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: var(--esp-6);
     }
     .fcard {
       padding: var(--esp-5);
-    }
-  }
-  /* Escritorio con cursor: el texto aparece al pasar sobre la tarjeta. */
-  @media (min-width: 1024px) and (hover: hover) {
-    .fcard__text {
-      display: none;
-    }
-    .fcard:hover {
-      background: var(--dx-negro);
-    }
-    .fcard:hover .fcard__text {
-      display: block;
     }
   }
 </style>

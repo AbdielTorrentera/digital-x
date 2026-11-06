@@ -1,51 +1,40 @@
 ---
-import Btn from '../Btn.astro';
 import QuestionRow from '../ui/QuestionRow.astro';
-import { site } from '../../lib/site';
+import { faqPageJsonLd, serializarJsonLd, type PreguntaFrecuente } from '../../lib/jsonld';
+
+// Preguntas frecuentes. El FAQPage (JSON-LD) se genera de la misma lista que se muestra, así nunca difieren
+// (reglas-seo sección 12: solo en páginas que muestran las preguntas en pantalla).
 interface Props {
-  set?: 'general' | 'property';
-  imageAlt?: string;
+  etiqueta: string;
+  titulo: string;
+  texto: string;
+  items: PreguntaFrecuente[];
 }
-const { set = 'general', imageAlt } = Astro.props;
-const faq = await site('faq');
-const items = faq[set];
+const { etiqueta, titulo, texto, items } = Astro.props;
 ---
 
 <section class="faq">
   <div class="container faq__inner">
     <div class="faq__head">
       <div class="faq__title">
-        <p class="t-caption2" data-appear>
-          {faq.label}
-        </p>
-        <h2 class="t-h2" data-appear>
-          {faq.title}
-        </h2>
+        <p class="t-caption2">{etiqueta}</p>
+        <h2 class="t-h2">{titulo}</h2>
       </div>
       <div class="faq__side">
-        <p class="t-body" data-appear>
-          {faq.text}
-        </p>
-        <div data-appear>
-          <Btn label={faq.cta.label} href={faq.cta.href} />
-        </div>
+        <p class="t-body">{texto}</p>
       </div>
     </div>
-    <div class="faq__body">
-      <div class="faq__list" data-accordion>
-        {items.map((it: any, i: number) => (
-          <QuestionRow n={i + 1} q={it.q} a={it.a} />
-        ))}
-      </div>
-      <div class="faq__media" data-appear>
-        <img class="faq__img" src={faq.image} alt={imageAlt ?? faq.imageAlt} loading="lazy" />
-      </div>
+    <div class="faq__list" data-accordion>
+      {items.map((item, i) => (
+        <QuestionRow n={i + 1} q={item.pregunta} a={item.respuesta} />
+      ))}
     </div>
   </div>
+  <script type="application/ld+json" set:html={serializarJsonLd(faqPageJsonLd(items))} />
 </section>
 <style>
   .faq {
-    background: var(--dx-blanco);
+    background: var(--dx-gris-claro);
     padding-block: var(--esp-8);
   }
   .faq__inner {
@@ -70,26 +59,10 @@ const items = faq[set];
     align-items: flex-start;
     gap: var(--esp-4);
   }
-  .faq__body {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--esp-7);
-  }
   .faq__list {
-    flex: 1 1 0;
-    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--esp-5);
-  }
-  .faq__media {
-    display: none;
-  }
-  .faq__img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: var(--radio);
   }
   @media (min-width: 1024px) {
     .faq {
@@ -103,11 +76,6 @@ const items = faq[set];
     .faq__title,
     .faq__side {
       flex: 1 1 0;
-    }
-    .faq__media {
-      display: block;
-      flex: 1 1 0;
-      min-width: 0;
     }
   }
 </style>

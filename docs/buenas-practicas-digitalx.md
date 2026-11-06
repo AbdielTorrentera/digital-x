@@ -73,7 +73,7 @@ Reglas:
 4. Linter: el que traiga cada herramienta (`astro check`, el de Sanity). Solo se agrega ESLint si aparece un problema que estas herramientas no detectan. `[PENDIENTE: decidir si se agrega ESLint]`.
 5. **Nombres que digan lo que hacen:** `waUrl(mensaje)`, `urlsPublicadas`, no `fn1` ni `data2`.
 6. **Idioma:**
-   - Código nuevo de este proyecto: nombres en **español** para conceptos del negocio (`negocio`, `paginas`, `BotonLlamar`), como ya está.
+   - Código nuevo de este proyecto: nombres en **español** para conceptos del negocio (`negocio`, `paginas`, `LlamarFlotante`), como ya está.
    - El código heredado de Marby **no se renombra** solo para traducirlo; se renombra únicamente si se reescribe por otra razón.
    - Comentarios, mensajes de commit y documentación en español.
 7. **Comentarios:** explican **por qué** se tomó una decisión, no qué hace el código. Se borran los comentarios obsoletos y el código comentado.
@@ -91,13 +91,15 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 | Tipos y plantillas | `astro check` / `tsc` | Cada *pull request* |
 | Compilación | `pnpm build` | Cada *pull request* |
 | Formato | `prettier --check` | Cada *pull request* |
-| Enlaces internos sin 404 | Script de revisión sobre `dist/` | Cada *pull request* |
+| Enlaces internos sin 404 | Script de revisión sobre `dist/` (acepta páginas planeadas sin construir) | Cada *pull request* |
+| Sin enlaces a páginas sin construir, fotos temporales ni `[PENDIENTE` | Protección en el build de producción (`VERCEL_ENV=production`) | Cada build de producción |
 | Registro de páginas coherente con las rutas | Protección en el build (ya existe) | Cada build |
 | Esquemas de Sanity válidos | Validaciones del esquema y `sanity schema validate` | Al cambiar esquemas |
 | Pantallas a 360 y 1440 px, sin scroll horizontal | Playwright (capturas y comprobaciones básicas) | Al cambiar componentes o páginas |
 | Accesibilidad automática | axe con Playwright | Al cambiar componentes o páginas |
 | Rendimiento | Lighthouse o PageSpeed | Antes de lanzar y al agregar páginas |
 
+- **Enlaces a páginas planeadas.** En desarrollo y en CI se permite enlazar a páginas en estado "Lanzamiento" que todavía no están construidas (llevan a la 404): `check:enlaces` las acepta y sigue fallando con cualquier URL que no esté en el registro `paginas.ts` o que esté "Pendiente de material". El build de producción falla si queda alguno, con la lista de páginas y enlaces; es el mismo mecanismo (y el mismo tipo de pruebas) que la protección de fotos temporales y de `[PENDIENTE` visibles.
 - Las funciones con lógica real (por ejemplo `waUrl`, el filtrado de páginas visibles o la validación de enlaces) llevan una **prueba unitaria pequeña**.
 - Ninguna tarea se da por terminada si alguna de sus verificaciones falla o no se pudo ejecutar; se reporta.
 

@@ -1,9 +1,10 @@
 ---
 import Icon from './Icon.astro';
-import { textoBotonWhatsApp, waUrl } from '../lib/negocio';
+import { waUrl } from '../lib/negocio';
 
-// Botón flotante de WhatsApp (reglas-seo sección 11). El mensaje prellenado cambia por página.
-// En móvil se reduce a un ícono al hacer scroll (scripts/whatsapp.ts); el aria-label conserva el texto completo.
+// Botón flotante de WhatsApp (reglas-seo sección 11): solo ícono, en todos los tamaños, en un círculo igual al de
+// llamada. El mensaje prellenado cambia por página. Su posición fija la da Flotantes.astro, que lo apila con el
+// botón de llamada.
 interface Props {
   mensaje?: string;
 }
@@ -15,32 +16,21 @@ const { mensaje } = Astro.props;
   href={waUrl(mensaje)}
   target="_blank"
   rel="noopener"
-  aria-label={`${textoBotonWhatsApp}, por WhatsApp (se abre en una pestaña nueva)`}
-  data-wa
+  aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
 >
   <Icon name="whatsapp" />
-  <span class="wa__texto">{textoBotonWhatsApp}</span>
 </a>
 <style>
   .wa {
-    position: fixed;
-    right: var(--esp-4);
-    bottom: var(--esp-4);
-    z-index: 20;
     display: inline-flex;
     align-items: center;
-    gap: var(--esp-2);
-    min-height: var(--tactil);
-    max-width: calc(100vw - 2 * var(--esp-4));
-    padding: var(--esp-2) var(--esp-5) var(--esp-2) var(--esp-4);
+    justify-content: center;
+    width: var(--boton-flotante);
+    height: var(--boton-flotante);
     border-radius: var(--radio-pildora);
-    /* Verde oficial de WhatsApp con ícono y texto negros: el blanco no cumple contraste (identidad sección 2). */
+    /* Verde oficial de WhatsApp con ícono negro: el blanco no cumple contraste (identidad sección 2). */
     background: var(--dx-whatsapp);
     color: var(--dx-negro);
-    font-family: var(--font-texto);
-    font-size: var(--txt-cuerpo);
-    font-weight: 600;
-    line-height: var(--lh-etiqueta);
     box-shadow: var(--sombra-flotante);
   }
   .wa:active {
@@ -52,24 +42,5 @@ const { mensaje } = Astro.props;
     box-shadow:
       0 0 0 var(--foco) var(--dx-blanco),
       var(--sombra-flotante);
-  }
-  /* Móvil: tras hacer scroll queda solo el ícono para no tapar contenido. El texto sigue en el aria-label. */
-  .wa.is-compact {
-    padding-inline: var(--esp-3);
-  }
-  .wa.is-compact .wa__texto {
-    display: none;
-  }
-  @media (min-width: 768px) {
-    .wa {
-      right: var(--esp-5);
-      bottom: var(--esp-5);
-    }
-    .wa.is-compact {
-      padding-inline: var(--esp-4) var(--esp-5);
-    }
-    .wa.is-compact .wa__texto {
-      display: block;
-    }
   }
 </style>

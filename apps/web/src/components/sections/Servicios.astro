@@ -1,0 +1,182 @@
+---
+import Btn from '../Btn.astro';
+import Foto from '../Foto.astro';
+import { enlaceAPagina } from '../../lib/enlaces';
+import type { Categoria } from '../../content/inicio';
+
+// Servicios por categoría: la sección Services de la plantilla Marby, tal cual. Tres tarjetas del mismo alto; cada una
+// se fija arriba (position: sticky) y la siguiente se desliza encima. Cada tarjeta ENTERA es un enlace a la página de
+// su categoría (una página planeada se enlaza aunque aún no exista; producción no compila así). El botón es un <span>
+// decorativo: la zona de toque es la tarjeta. Solo cambian los textos, los colores (tokens --dx-*), las tipografías y
+// lo que exigen las reglas (aria-label, movimiento reducido). Medidas y animaciones, las del original.
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  etiquetaTarjeta: string;
+  items: Categoria[];
+}
+const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
+---
+
+<section class="services" id="servicios">
+  <div class="container services__inner">
+    <div class="services__head">
+      <p class="t-caption2" data-appear>
+        {etiqueta}
+      </p>
+      <h2 class="t-h2" data-appear style="--appear-delay:0.1s">
+        {titulo}
+      </h2>
+    </div>
+    <div class="services__stack">
+      {items.map((s, i) => (
+        <a
+          class="svc hover-target"
+          href={enlaceAPagina(s.url)}
+          aria-label={`Ver servicios de ${s.titulo.toLowerCase()}`}
+          data-appear={i === 0 ? '' : undefined}
+          style={i === 0 ? '--appear-delay:0.2s;--appear-ease:var(--ease)' : undefined}
+        >
+          <Foto class="svc__img" src={s.foto.src} alt={s.foto.alt} sizes="(min-width: 810px) 50vw, 100vw" />
+          <div class="svc__card">
+            <div class="svc__progress">
+              <span class="svc__line" />
+              <span class="svc__count">{s.contador}</span>
+            </div>
+            <p class="t-body-sm">{etiquetaTarjeta}</p>
+            <h3 class="t-h3">{s.titulo}</h3>
+            <div class="svc__text">
+              <p class="t-body">{s.texto}</p>
+            </div>
+            <Btn label="Ver servicios" variant="secondary" />
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .services {
+    background: var(--dx-blanco);
+    padding-block: 80px;
+    /* "Ver servicios" (portada y 404) llega aquí (/#servicios): el header fijo no debe tapar el título. */
+    scroll-margin-top: 68px;
+  }
+  .services__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .services__head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .services__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .svc {
+    position: sticky;
+    top: 100px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  /* <picture> no pinta caja: así el <img> es el elemento flexible, como en el original. Y Picture no le pone al <img> el
+     atributo de alcance de Astro, por eso se selecciona como global dentro de la sección. */
+  .svc :global(picture) {
+    display: contents;
+  }
+  .svc :global(.svc__img) {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .svc__card {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--dx-borde-tarjeta);
+    background: var(--dx-gris-claro);
+    overflow: hidden;
+  }
+  .svc__progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 9px;
+  }
+  .svc__line {
+    width: 100%;
+    height: 1px;
+    background: var(--dx-gris-medio);
+  }
+  .svc__count {
+    font-family: var(--font-texto);
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--dx-negro);
+  }
+  .svc__text {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+  @media (max-width: 1199.98px) {
+    .services {
+      padding-block: 40px;
+    }
+    .services__inner {
+      gap: 20px;
+    }
+  }
+  @media (max-width: 809.98px) {
+    .services__inner {
+      gap: 40px;
+    }
+    .svc {
+      height: auto;
+      flex-direction: column;
+    }
+    .svc:nth-child(3) {
+      top: 120px;
+    }
+    .svc :global(.svc__img),
+    .svc__card {
+      flex: none;
+      width: 100%;
+    }
+    /* La tarjeta entera (foto + texto) debe caber en la pantalla junto con su top fijo: la foto se adapta al alto. */
+    .svc :global(.svc__img) {
+      height: clamp(120px, 24dvh, 260px);
+    }
+    .svc__card {
+      height: auto;
+      gap: var(--esp-2);
+    }
+    /* Sin alto fijo ni texto centrado: el párrafo queda pegado al título y el botón justo después. */
+    .svc__text {
+      flex: none;
+      height: auto;
+      align-items: flex-start;
+    }
+  }
+  /* Movimiento reducido (diseño §8): las tarjetas se muestran una debajo de otra, sin que se fijen ni se encimen. */
+  @media (prefers-reduced-motion: reduce) {
+    .svc {
+      position: static;
+    }
+  }
+</style>

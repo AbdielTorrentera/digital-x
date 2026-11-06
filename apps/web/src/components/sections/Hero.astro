@@ -1,28 +1,26 @@
 ---
-import { site } from '../../lib/site';
-const { hero } = await site('home');
+import Btn from '../Btn.astro';
+import Foto from '../Foto.astro';
+import type { Foto as FotoDatos } from '../../content/inicio';
+
+// Portada del Inicio. La foto es la imagen del LCP: carga de inmediato y con prioridad alta, y el texto no espera
+// a ninguna animación de entrada (que depende de JavaScript). Sin video: [PENDIENTE: clip de portada].
+interface Props {
+  titulo: string;
+  texto: string;
+  boton: { etiqueta: string; href: string };
+  foto: FotoDatos;
+}
+const { titulo, texto, boton, foto } = Astro.props;
 ---
 
-<section class="hero sobre-negro" data-dark>
-  <link rel="preload" as="image" href={hero.poster} fetchpriority="high" />
-  <video
-    class="hero__video"
-    data-src={hero.video}
-    poster={hero.poster}
-    muted
-    loop
-    playsinline
-    preload="none"
-    aria-hidden="true"
-  ></video>
+<section class="hero sobre-negro">
+  <Foto class="hero__img" src={foto.src} alt={foto.alt} sizes="100vw" prioritaria />
   <div class="scrim" aria-hidden="true"></div>
   <div class="container hero__inner">
-    <h1 class="hero__title" data-appear="mount">
-      {hero.title}
-    </h1>
-    <p class="hero__text t-caption2 c-blanco" data-appear="mount">
-      {hero.text}
-    </p>
+    <h1 class="hero__title">{titulo}</h1>
+    <p class="hero__text t-body c-blanco">{texto}</p>
+    <Btn label={boton.etiqueta} href={boton.href} />
   </div>
 </section>
 <style>
@@ -32,9 +30,9 @@ const { hero } = await site('home');
     overflow: clip;
     display: flex;
     align-items: flex-end;
-    justify-content: center;
   }
-  .hero__video {
+  /* Picture no le pone al <img> el atributo de alcance de Astro: se selecciona como global dentro de la sección. */
+  .hero :global(.hero__img) {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -47,24 +45,24 @@ const { hero } = await site('home');
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--esp-3);
-    padding-bottom: var(--esp-6);
+    gap: var(--esp-4);
+    padding-block: var(--esp-8) var(--esp-7);
   }
   .hero__title {
-    width: 100%;
     font-family: var(--font-titulos);
     font-size: var(--txt-display);
     font-weight: 800;
     line-height: var(--lh-titulo);
     letter-spacing: var(--ls-titulo);
     color: var(--dx-blanco);
+    text-wrap: balance;
   }
   @media (min-width: 1024px) {
     .hero {
-      min-height: 95vh;
+      min-height: 85vh;
     }
     .hero__inner {
-      align-items: flex-end;
+      padding-block: var(--esp-9) var(--esp-8);
     }
   }
 </style>

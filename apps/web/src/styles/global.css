@@ -227,84 +227,72 @@ p.centrado,
   text-decoration-thickness: var(--foco);
 }
 
-/* ---------- botón (diseño §6) ---------- */
-/* Primario: negro sobre claro, amarillo sobre negro. Secundario: contorno. Colores en tokens.css. */
+/* ---------- botón (Buttons de la plantilla Marby, original) ---------- */
+/*
+ * Medidas y movimiento del original: 28 px de alto, etiqueta en mayúsculas, flecha de 16 px que gira 45° al pasar el
+ * cursor. Solo cambian los colores (tokens --dx-*), la tipografía y lo que exigen las reglas: la zona de toque se
+ * agranda a 48 px con ::after, sin cambiar el tamaño visible. Primario: negro sobre claro y amarillo sobre negro
+ * (--btn-fondo/--btn-texto, tokens.css). Secundario: gris, sin contorno.
+ */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--esp-2);
-  width: 100%;
-  min-height: var(--tactil);
-  padding: var(--esp-2) var(--esp-4);
-  border: var(--linea) solid var(--btn-borde);
-  border-radius: var(--radio);
-  background: var(--btn-fondo);
-  color: var(--btn-texto);
-  font-family: var(--font-texto);
-  font-size: var(--txt-cuerpo);
-  font-weight: 600;
-  line-height: var(--lh-etiqueta);
-  text-align: center;
+  gap: 20px;
+  height: 28px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
   cursor: pointer;
+}
+/* Zona de toque de al menos 48 × 48 px, centrada y sin efecto visual (el original lleva overflow: hidden, que la recortaría). */
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, var(--tactil));
+  height: var(--tactil);
+  transform: translate(-50%, -50%);
+}
+.btn__label {
+  font-family: var(--font-texto);
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
   user-select: none;
-  transition: transform var(--dur-rapida) var(--ease);
-}
-.btn--secondary {
-  background: transparent;
-  color: var(--texto);
-  border-color: var(--texto);
-}
-.btn--icon {
-  width: var(--tactil);
-  padding: 0;
 }
 .btn__icon {
   display: grid;
   place-items: center;
-  width: var(--icono-boton);
-  height: var(--icono-boton);
+  width: 16px;
+  height: 16px;
   flex: none;
-  transition: transform var(--dur-rapida) var(--ease);
+  transition: transform var(--spring-04-dur) var(--spring-04);
 }
-.btn__icon svg {
-  width: 100%;
-  height: 100%;
+.btn__icon .icon {
+  width: 16px;
+  height: 16px;
 }
-.btn:active {
-  transform: translateY(var(--linea));
+.btn--primary {
+  background: var(--btn-fondo);
+  color: var(--btn-texto);
 }
-/* Deshabilitado: no depende solo de la opacidad; cambia el borde, el cursor y el relleno. */
-.btn[disabled],
-.btn[aria-disabled='true'] {
-  background: var(--fondo-suave);
-  color: var(--texto-sec);
-  border: var(--linea) dashed var(--borde);
-  cursor: not-allowed;
-  transform: none;
+.btn--secondary {
+  background: var(--dx-gris-medio);
+  color: var(--dx-negro);
 }
-@media (hover: hover) {
-  .btn:hover {
-    background: var(--btn-fondo-hover);
-    color: var(--btn-texto-hover);
-  }
-  .btn--secondary:hover {
-    background: var(--texto);
-    color: var(--fondo);
-  }
-  .btn[disabled]:hover,
-  .btn[aria-disabled='true']:hover {
-    background: var(--fondo-suave);
-    color: var(--texto-sec);
-  }
+.btn--icon {
+  background: var(--dx-gris-claro);
+  color: var(--dx-negro);
+  width: 32px;
+  justify-content: center;
+}
+@media (hover: hover) and (min-width: 810px) {
   .btn:hover .btn__icon,
   .hover-target:hover .btn__icon {
     transform: rotate(45deg);
-  }
-}
-@media (min-width: 768px) {
-  .btn {
-    width: auto;
   }
 }
 
@@ -316,14 +304,14 @@ p.centrado,
  */
 html.js [data-appear] {
   opacity: 0;
-  transform: translate3d(0, var(--esp-4), 0);
+  transform: translate3d(0, var(--appear-y, var(--esp-4)), 0);
 }
 html.js [data-appear].is-in {
   opacity: 1;
   transform: none;
   transition:
-    opacity var(--dur-entrada) var(--ease),
-    transform var(--dur-entrada) var(--ease);
+    opacity var(--dur-entrada) var(--appear-ease, var(--ease)) var(--appear-delay, 0s),
+    transform var(--dur-entrada) var(--appear-ease, var(--ease)) var(--appear-delay, 0s);
 }
 @media (prefers-reduced-motion: reduce) {
   html {

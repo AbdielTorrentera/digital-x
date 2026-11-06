@@ -1,0 +1,58 @@
+---
+// Cobertura en texto plano: una sola lista de lugares, sin condiciones de traslado ni cargos (los dos grupos de
+// zonas son dato interno, estructura-sitio sección 1). Sin enlaces por ciudad ni direcciones (reglas-seo sección 2).
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  texto: string;
+}
+const { etiqueta, titulo, texto } = Astro.props;
+---
+
+<section class="cobertura">
+  <div class="container cobertura__inner">
+    <div class="cobertura__title">
+      <p class="t-caption2">{etiqueta}</p>
+      <h2 class="t-h2">{titulo}</h2>
+    </div>
+    <div class="cobertura__texto">
+      <p class="t-body">{texto}</p>
+    </div>
+  </div>
+</section>
+<style>
+  .cobertura {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-8);
+  }
+  .cobertura__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .cobertura__title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .cobertura__texto {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+  @media (min-width: 1024px) {
+    .cobertura {
+      padding-block: var(--esp-9);
+    }
+    .cobertura__inner {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--medianil);
+    }
+    .cobertura__title,
+    .cobertura__texto {
+      flex: 1 1 0;
+    }
+  }
+</style>

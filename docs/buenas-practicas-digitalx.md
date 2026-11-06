@@ -124,9 +124,30 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 ## 7. Integración y despliegue continuo
 
 - **GitHub Actions** en cada *pull request*: `pnpm install --frozen-lockfile`, `prettier --check`, `astro check`, `pnpm build` y revisión de enlaces. Debe pasar para fusionar.
-- **Vercel** despliega automáticamente: vista previa por *pull request* y producción al fusionar a `main`.
+- **Vercel** despliega automáticamente: vista previa por *pull request* y por cada fusión a `main`. La **producción** sale de la rama `lanzamiento` (que no existe a propósito) hasta el día del lanzamiento; ver "Proyecto de Vercel del sitio" abajo.
 - Cada proyecto de Vercel se reconstruye solo cuando cambia su carpeta (`apps/web` o `apps/studio`) o `packages/`.
 - Sin herramientas adicionales de orquestación (Turborepo, Nx) mientras haya dos apps.
+
+### Proyecto de Vercel del sitio (`apps/web`)
+
+Configuración del panel (consultada en la documentación oficial de Vercel, no de memoria):
+
+| Ajuste | Valor |
+| --- | --- |
+| Root Directory | `apps/web` (con "Include source files outside of the Root Directory in the Build Step" activo, si el panel lo muestra, para que la instalación vea `pnpm-workspace.yaml` y el lockfile de la raíz) |
+| Framework Preset | Astro (se detecta solo) |
+| Build Command, Output Directory e Install Command | automáticos, **sin Override**. Un Override "pnpm install" usaría el pnpm más viejo (6) |
+| Node.js Version | 24.x (el CI y el equipo usan Node 24; `engines.node` de `apps/web/package.json` dice lo mismo y anula al panel) |
+| Variable de entorno | `ENABLE_EXPERIMENTAL_COREPACK` = `1`, en Production y Preview |
+| System Environment Variables | "Enable access to System Environment Variables" **activado**. Si se apaga, `VERCEL_ENV` no existe en el build: el sitio saldría con `noindex` y sin las protecciones, también en producción |
+| Production Branch | `lanzamiento` (rama inexistente a propósito). El día del lanzamiento se cambia a `main` |
+| Dominio `digitalx.mx` | no se asigna hasta el lanzamiento |
+
+- **pnpm 11 y Corepack.** La documentación de Vercel lista pnpm 6 a 12, pero su detección por lockfile solo mapea `lockfileVersion: 9.0` a pnpm 9 o 10, y el issue [vercel/vercel#17434](https://github.com/vercel/vercel/issues/17434) reporta que con pnpm 11 cae a `npm install` y falla (correcciones en los PR [#17450](https://github.com/vercel/vercel/pull/17450) y #17573, abiertos al 6 de noviembre de 2026). Por eso el repo declara `packageManager: "pnpm@11.28.9"` en el `package.json` de la raíz y el proyecto usa `ENABLE_EXPERIMENTAL_COREPACK=1`: así Vercel usa esa versión y no adivina por el lockfile. `devEngines.packageManager` queda igual (lo lee el CI); **las dos versiones se cambian juntas** al actualizar pnpm.
+- **Plan B si el log dice que usa npm** o una versión de pnpm distinta de la 11.28.9: Install Command con Override `corepack enable && pnpm install --frozen-lockfile` (no está documentado por Vercel; se prueba en una vista previa).
+- **Producción y vistas previas.** Con Production Branch = `lanzamiento`, `main` y los *pull requests* salen como *preview* (`VERCEL_ENV=preview`): compilan con fotos temporales y enlaces a páginas planeadas, y llevan `noindex` (etiqueta, `robots.txt` en `Disallow` y el encabezado `X-Robots-Tag` que Vercel añade). El **primer deployment** de un proyecto nuevo siempre es de producción, aunque venga de otra rama: con las protecciones de §5 **fallará a propósito** mientras queden fotos temporales o enlaces a páginas sin construir; es lo esperado.
+- **Lanzamiento.** Antes de cambiar la Production Branch a `main`: fotos reales, páginas construidas, sin `[PENDIENTE` visibles y la casilla de variables del sistema activada.
+- **Plan Hobby (decisión del dueño).** Se usa el plan Hobby de Vercel. Su [política de uso justo](https://vercel.com/docs/limits/fair-use-guidelines) lo limita a uso personal no comercial y define como comercial anunciar la venta de un servicio o recibir pago por crear o alojar el sitio, así que digitalx.mx cae en esa definición. **Riesgo:** Vercel puede pedir pasar a Pro o pausar el proyecto. **Alternativa gratuita:** Cloudflare Pages, que según el dueño permite uso comercial y sirve sitios estáticos de Astro (al evaluarla se revisan sus términos vigentes). No se cambia nada por ahora.
 
 ---
 

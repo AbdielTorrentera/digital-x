@@ -131,18 +131,23 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 | Sobre fondo claro | Negro, texto blanco | Contorno negro, texto negro | Negro, subrayado |
 | Sobre fondo negro | Amarillo, texto negro; *hover* amarillo dorado | Contorno blanco, texto blanco | Blanco, subrayado; *hover* amarillo |
 
-- **Altura mínima 48 px** y área táctil de al menos 48 × 48 px (más estricta que el mínimo de WCAG, por la regla de SEO §10). Separación mínima entre dos objetivos táctiles: 8 px.
+- **Área táctil de al menos 48 × 48 px** (más estricta que el mínimo de WCAG, por la regla de SEO §10). Separación mínima entre dos objetivos táctiles: 8 px.
+- **El botón es el de la plantilla Marby, tal cual:** 28 px de alto, etiqueta de 12 px en mayúsculas y flecha que gira 45° al pasar el cursor. Su zona de toque se agranda a 48 px de forma invisible (`::after`), sin cambiar el tamaño que se ve. Primario: negro sobre fondo claro y amarillo sobre negro. Secundario: gris, sin contorno.
+- La Btn original de 28 px también se permite como elemento decorativo dentro de una tarjeta que es en sí el enlace (un `<span>`): el área táctil es la tarjeta.
 - Texto del botón: **verbo + objeto** ("Cotizar por WhatsApp", "Ver servicios de audio"). Prohibido "ver más", "clic aquí" o "enviar" solo (ver SEO §4).
-- En móvil, el botón principal de la portada y de los llamados a la acción ocupa **todo el ancho** disponible.
 - Botones solo con ícono: `aria-label` obligatorio.
-- Estados obligatorios: normal, *hover*, foco visible, presionado y deshabilitado (deshabilitado sin depender solo de la opacidad: lleva cursor y atributo `disabled`).
+- Estados: normal, *hover* (la flecha gira) y foco visible.
 
 ### Tarjetas
 
 - Relleno: `--esp-4` en móvil, `--esp-5` en escritorio. Separación entre tarjetas siempre mayor que su relleno.
 - En móvil, una columna; en tableta, dos; en escritorio, tres o cuatro según el contenido.
-- Si la tarjeta entera es clicable, el enlace va en el título y se extiende a toda la tarjeta; no hay enlaces anidados.
+- Si la tarjeta entera es clicable, el enlace es la tarjeta (con `aria-label`) o va en el título y se extiende a toda la tarjeta; no hay enlaces anidados.
 - No todas las tarjetas tienen el mismo peso: si una es la recomendada o la principal, se distingue.
+- **Tarjetas apiladas (servicios del Inicio).** Son la sección Services de la plantilla Marby, tal cual: tres tarjetas del mismo alto; cada una se fija debajo del header (`position: sticky`) y la siguiente se desliza encima. Solo CSS. Cada tarjeta entera es un solo enlace (a la página de su categoría) y el botón que lleva es decorativo.
+  - Con `prefers-reduced-motion: reduce` las tarjetas se muestran una debajo de otra, sin que se fijen ni se encimen.
+  - Excepción a las medidas de esta sección: las tarjetas conservan las del original (alto fijo de 500 px y relleno de 20 px en escritorio). En móvil y tableta (menos de 810 px) el alto es el del contenido y la foto se adapta al alto de la pantalla (`clamp(120px, 24dvh, 260px)`): la tarjeta pegada, con su botón completo, debe caber entera en la pantalla (se prueba a 360 × 640, 375 × 667, 390 × 844 y 768 × 1024). Si no cabe, se reduce primero la foto y después el relleno; nunca se quita el efecto de apilado.
+  - Para que la tarjeta se distinga del fondo blanco lleva un borde de 1 px con `--dx-borde-tarjeta` (negro al 45 %, 3.45:1 sobre blanco; WCAG 1.4.11 pide 3:1). El color de fondo de la tarjeta no cambia.
 
 ### Formularios (cuando se publiquen)
 
@@ -165,19 +170,20 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 
 ### Radios y sombras
 
-- `--radio-chico` 4 px (campos, etiquetas), `--radio` 8 px (botones, tarjetas), `--radio-pildora` 999 px (botón flotante de WhatsApp). No se usan otros.
+- `--radio-chico` 4 px (campos, etiquetas), `--radio` 8 px (botones, tarjetas), `--radio-pildora` 999 px (botones flotantes de WhatsApp y de llamada). No se usan otros.
 - Sombras solo para elementos que flotan sobre el contenido (menú abierto, botón de WhatsApp): `--dx-sombra`. Las tarjetas no llevan sombra.
 
 ---
 
 ## 7. Navegación
 
-- **Móvil:** header fijo con logo a la izquierda, botón "Llamar" y botón "Menú". El menú abierto tiene los enlaces abajo, al alcance del pulgar.
-- **Escritorio:** barra horizontal con el desplegable de Servicios.
-- El header fijo no ocupa más de 64 px de alto en móvil.
+- **Menú de la plantilla Marby, tal cual, en todos los tamaños.** Barra fija y translúcida (blanco al 85 % con `backdrop-filter: blur(12px)` y una línea inferior de 1 px; sin soporte de `backdrop-filter`, blanco al 95 %) con el botón (chip negro de 32 × 28 px, solo ícono de tres líneas, `aria-label` "Abrir menú") y el logo de Digital X donde Marby pone su texto. El logo y el botón son siempre negros, con contraste suficiente sobre la barra en cualquier sección: el peor caso, con una sección negra detrás, da una barra de #D9D9D9 y 14.8:1 con el logo. No cambian de color según la sección (el cambio a blanco de la plantilla se quitó junto con su script). El chip abre un panel claro a pantalla completa: botón X (`aria-label` "Cerrar menú") arriba, enlaces grandes y centrados con entrada escalonada, las redes debajo (solo si existen) y el botón "Cotizar por WhatsApp". Sin desplegables.
+- Solo el botón abre el menú (no toda la barra). Se mantienen foco atrapado en el panel, Escape para cerrar, bloqueo del scroll y regreso del foco al botón de abrir.
+- La llamada directa no está en el header ni en el menú: es un botón flotante solo ícono, encima del de WhatsApp, en celular y tableta (SEO §11).
+- El alto de la barra es el del logo más 20 px de relleno arriba y abajo (88 px a 360 px; el original mide 68 px con su texto). El panel del menú abierto no es hijo de la barra y se ve igual.
 - La página actual se marca en el menú con algo más que el color (subrayado o indicador) y `aria-current="page"`.
 - Migas de pan en subpáginas (ver estructura §4).
-- `[PENDIENTE: color del header (blanco o negro). Hoy es blanco con logo negro; decidir al ver el Inicio con su portada oscura]`.
+- `[PENDIENTE: color del header (blanco o negro). Hoy es blanco translúcido con logo negro; confirmar al verlo con la portada oscura]`.
 
 ---
 
@@ -186,6 +192,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 - Solo se animan `transform` y `opacity` (no tamaños, márgenes ni posiciones), para no afectar el rendimiento.
 - Duraciones: 150 ms (*hover*, botones), 250 ms (menús, acordeones), hasta 400 ms (entradas de sección). Nada más lento.
 - Las animaciones de entrada son sutiles (desplazamiento máximo de 24 px) y se ejecutan **una sola vez**.
+- **Las animaciones originales de la plantilla Marby se conservan tal cual (con `prefers-reduced-motion`); los límites de esta sección aplican a componentes nuevos.**
 - Con `prefers-reduced-motion`, se desactivan animaciones, carruseles automáticos, el desplazamiento suave y la reproducción automática de video.
 - **Prohibido:** secuestrar el scroll, carruseles que avanzan solos sin botón de pausa, parpadeos de más de 3 veces por segundo y video con sonido automático.
 - En pantallas táctiles el desplazamiento es el nativo del sistema (sin desplazamiento suave por JavaScript).

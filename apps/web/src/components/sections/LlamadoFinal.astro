@@ -1,0 +1,42 @@
+---
+import Btn from '../Btn.astro';
+
+// Llamado final: una sola acción principal, a WhatsApp.
+interface Props {
+  titulo: string;
+  texto: string;
+  boton: { etiqueta: string; href: string };
+}
+const { titulo, texto, boton } = Astro.props;
+---
+
+<section class="cierre">
+  <div class="container cierre__inner">
+    <h2 class="t-h2">{titulo}</h2>
+    <p class="t-body">{texto}</p>
+    <Btn
+      label={boton.etiqueta}
+      href={boton.href}
+      target="_blank"
+      rel="noopener"
+      aria-label={`${boton.etiqueta} (se abre en una pestaña nueva)`}
+    />
+  </div>
+</section>
+<style>
+  .cierre {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-8);
+  }
+  .cierre__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-4);
+  }
+  @media (min-width: 1024px) {
+    .cierre {
+      padding-block: var(--esp-9);
+    }
+  }
+</style>

@@ -1,29 +1,27 @@
 ---
 import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import Servicios from '../components/sections/Servicios.astro';
+import Proyectos from '../components/sections/Proyectos.astro';
+import Features from '../components/sections/Features.astro';
+import Cobertura from '../components/sections/Cobertura.astro';
+import Faq from '../components/sections/Faq.astro';
+import LlamadoFinal from '../components/sections/LlamadoFinal.astro';
 import { mensajesWhatsApp } from '../lib/negocio';
+import { proyectosDelInicio } from '../lib/proyectos';
+import { cierre, cobertura, faq, porQue, portada, proyectos, servicios } from '../content/inicio';
+const proyectosVisibles = proyectosDelInicio(proyectos.items);
 ---
 
-<!-- Metadatos y H1 definidos en docs/reglas-seo-digitalx.md sección 1. -->
-<Base
-  title="Audio, video y tecnología en Atlixco, Puebla | Digital X"
-  description="Renta de sonido, video de eventos, streaming y software a la medida en Atlixco, Puebla. Cobertura en un radio de 50 km. Cotiza con Digital X."
-  whatsapp={mensajesWhatsApp.general}
->
-  <section class="container inicio">
-    <h1 class="t-display">Audio, video y tecnología para tus eventos y tu negocio en Atlixco</h1>
-    <p class="t-body">[PENDIENTE: contenido del Inicio]</p>
-  </section>
+<!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
+<Base title={portada.title} description={portada.descripcion} whatsapp={mensajesWhatsApp.general}>
+  <Hero titulo={portada.h1} texto={portada.texto} boton={portada.boton} foto={portada.foto} />
+  <Servicios {...servicios} />
+  {proyectosVisibles.length > 0 && (
+    <Proyectos etiqueta={proyectos.etiqueta} titulo={proyectos.titulo} items={proyectosVisibles} />
+  )}
+  <Features etiqueta={porQue.etiqueta} titulo={porQue.titulo} foto={porQue.foto} items={porQue.items} />
+  <Cobertura {...cobertura} />
+  <Faq {...faq} />
+  <LlamadoFinal {...cierre} />
 </Base>
-<style>
-  .inicio {
-    padding-block: var(--esp-8);
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-4);
-  }
-  @media (min-width: 1024px) {
-    .inicio {
-      padding-block: var(--esp-9);
-    }
-  }
-</style>

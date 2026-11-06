@@ -1,0 +1,95 @@
+---
+import Foto from '../Foto.astro';
+import type { ProyectoInicio } from '../../content/inicio';
+
+// Proyectos del Inicio (estructura-sitio sección 5). El Inicio solo dibuja esta sección cuando hay 3 o 4 proyectos
+// con foto y permiso del cliente (lib/proyectos.ts); si no, no aparece nada. Sin enlace a /proyectos/ hasta que esa
+// página esté construida.
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  items: ProyectoInicio[];
+}
+const { etiqueta, titulo, items } = Astro.props;
+---
+
+<section class="proyectos">
+  <div class="container proyectos__inner">
+    <div class="proyectos__head">
+      <p class="t-caption2">{etiqueta}</p>
+      <h2 class="t-h2">{titulo}</h2>
+    </div>
+    <ul class="proyectos__lista">
+      {items.map((proyecto) => (
+        <li class="proyecto">
+          <Foto
+            class="proyecto__img"
+            src={proyecto.foto.src}
+            alt={proyecto.foto.alt}
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          />
+          <div class="proyecto__texto">
+            <h3 class="t-h3">{proyecto.titulo}</h3>
+            <p class="t-body">{proyecto.texto}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .proyectos {
+    background: var(--dx-gris-claro);
+    padding-block: var(--esp-8);
+  }
+  .proyectos__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .proyectos__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .proyectos__lista {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--esp-5);
+  }
+  .proyecto {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radio);
+    background: var(--dx-blanco);
+    overflow: clip;
+  }
+  .proyecto :global(.proyecto__img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .proyecto__texto {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    padding: var(--esp-4);
+  }
+  @media (min-width: 768px) {
+    .proyectos__lista {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .proyectos {
+      padding-block: var(--esp-9);
+    }
+    .proyectos__lista {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--esp-6);
+    }
+    .proyecto__texto {
+      padding: var(--esp-5);
+    }
+  }
+</style>

@@ -1,10 +1,13 @@
 /**
  * Revisa que los enlaces internos de apps/web/dist apunten a archivos que existen (buenas prácticas §5).
+ * Excepción: un enlace a una página planeada (en paginas.ts con estado "lanzamiento") se acepta aunque todavía no esté
+ * construida; con cualquier otra URL que no exista, falla. El build de producción es quien prohíbe las planeadas.
  * Uso: pnpm check:enlaces (después de pnpm build). Termina con código 1 si hay enlaces rotos.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { esPaginaPlaneada } from '../src/lib/enlaces.ts';
 
 const dist = resolve(dirname(fileURLToPath(import.meta.url)), '../dist');
 
@@ -48,6 +51,7 @@ const resuelve = (rutaUrl) => {
 };
 
 const rotos = [];
+const planeados = [];
 let revisados = 0;
 for (const archivo of htmlDe(dist)) {
   const paginaUrl =
@@ -62,7 +66,8 @@ for (const archivo of htmlDe(dist)) {
     // Relativos ("foto.png") se resuelven contra la carpeta de la página; los absolutos, contra dist.
     const absoluto = sinHash.startsWith('/') ? sinHash : new URL(sinHash, `https://sitio.local${paginaUrl}`).pathname;
     revisados++;
-    if (!resuelve(absoluto)) rotos.push(`${paginaUrl}  →  ${enlace}`);
+    if (resuelve(absoluto)) continue;
+    (esPaginaPlaneada(absoluto) ? planeados : rotos).push(`${paginaUrl}  →  ${enlace}`);
   }
 }
 
@@ -71,4 +76,5 @@ if (rotos.length > 0) {
   for (const r of rotos) console.error(`  ${r}`);
   process.exit(1);
 }
-console.log(`Enlaces internos revisados: ${revisados}. Ninguno roto.`);
+const aviso = planeados.length > 0 ? ` (${planeados.length} a páginas planeadas que aún no se construyen)` : '';
+console.log(`Enlaces internos revisados: ${revisados}. Ninguno roto${aviso}.`);

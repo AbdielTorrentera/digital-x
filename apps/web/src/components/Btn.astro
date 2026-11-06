@@ -1,8 +1,9 @@
 ---
 import Icon from './Icon.astro';
 
-// Botón de diseño §6: mínimo 48 px de alto, etiqueta de verbo + objeto y flecha que gira 45° al pasar el cursor.
-// Sin `href` se dibuja un <span>, para poder ponerlo dentro de una tarjeta que ya es un enlace.
+// Botón de la plantilla Marby, tal cual: 28 px de alto, etiqueta en mayúsculas y flecha que gira 45° al pasar el
+// cursor (estilos en global.css). Sin `href` se dibuja un <span>, para poder ponerlo dentro de una tarjeta que ya es
+// un enlace. La zona de toque es de 48 px aunque se vea de 28 (global.css, .btn::after).
 interface Props {
   label?: string;
   href?: string;
@@ -15,7 +16,7 @@ const Tag = href ? 'a' : 'span';
 ---
 
 <Tag href={href} class:list={['btn', `btn--${variant}`, cls]} {...rest}>
-  {variant !== 'icon' && <span>{label}</span>}
+  {variant !== 'icon' && <span class="btn__label">{label}</span>}
   <span class="btn__icon">
     <Icon name="arrow" size="boton" />
   </span>

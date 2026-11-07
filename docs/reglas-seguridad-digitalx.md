@@ -118,6 +118,11 @@ upgrade-insecure-requests
 6. `pnpm audit` antes de cada lanzamiento; vulnerabilidades altas o críticas se corrigen antes de publicar.
 7. Actualizaciones automáticas con Dependabot, revisadas una por una (nada se fusiona solo). Dependabot mensual, máximo 2 PR abiertos; las versiones mayores no se fusionan sin revisarlas (si no hay soporte, se ignoran con el comando de Dependabot).
 8. Se elimina código, componentes y dependencias que ya no se usen (por ejemplo, restos de la plantilla Marby que no lleguen a utilizarse).
+9. **Riesgos aceptados:** alertas de Dependabot cerradas sin corrección, cada una con su justificación y cuándo revisarla.
+   - **`minimatch@10.2.6`** — aviso [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) (CVE-2026-118764, denegación de servicio por amplificación de patrones), alerta #2, cerrada en noviembre de 2026 como "vulnerable code is not used".
+     - **Por qué no aplica:** el ataque exige patrones controlados por un atacante y `optimizationLevel >= 2`. Las herramientas que lo traen (ESLint del Studio y la CLI de Sanity) usan el nivel por defecto y patrones propios, solo corren en desarrollo y en CI, y `apps/web` no incluye el paquete.
+     - **Por qué no se corrige:** la corrección existe solo en minimatch 11.0.1 o superior, que quita APIs (`makeRe()`, `Minimatch#regexp`, la clase `AST`), y ningún dependiente la acepta (eslint 10.14, `@eslint/config-array`, `@typescript-eslint/typescript-estree`, `eslint-plugin-jsx-a11y-x` y `@oclif/core` piden `^10`). Un override rompería herramientas que el CI no ejecuta (ESLint).
+     - **Cuándo revisarlo:** cuando eslint o `@oclif/core` adopten minimatch 11, y en cada `pnpm audit` previo a un lanzamiento (punto 6).
 
 ---
 

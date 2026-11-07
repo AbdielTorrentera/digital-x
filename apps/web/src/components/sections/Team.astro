@@ -8,9 +8,10 @@ import type { Proyecto } from '../../content/proyectos';
 // Fila de tarjetas que se desplaza sola: el Team de la plantilla Marby, con proyectos en lugar de personas (foto,
 // número, título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/.
 // Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas: la fila se pausa
-// con el cursor o el foco, y con movimiento reducido se detiene y se desplaza con el dedo o el teclado; la foto no
-// depende del cursor en pantallas táctiles. La copia que repite la fila queda fuera del foco y de los lectores de
-// pantalla. Esta pieza solo pinta: la protección contra los ejemplos vive en content/proyectos.ts.
+// con el cursor o el foco, tiene un botón visible de pausa y reanudar (WCAG 2.2.2: en móvil no hay cursor), y con
+// movimiento reducido se detiene y se desplaza con el dedo o el teclado; la foto no depende del cursor en pantallas
+// táctiles. La copia que repite la fila queda fuera del foco y de los lectores de pantalla. La protección contra los
+// ejemplos vive en content/proyectos.ts.
 interface Props {
   etiqueta: string;
   titulo: string;
@@ -41,6 +42,7 @@ const loop = items.length * (278 + 20);
       role="region"
       aria-label="Proyectos"
       tabindex="0"
+      data-ticker
       data-appear
       style={`--appear-delay:0.3s;--loop:${loop}px;--dur:${loop / 50}s`}
     >
@@ -85,7 +87,26 @@ const loop = items.length * (278 + 20);
     </div>
     <div class="team__boton" data-appear style="--appear-delay:0.4s">
       <Btn label={boton.etiqueta} href={boton.href} />
+      <button class="ticker__pausa" type="button" aria-label="Pausar proyectos" aria-pressed="false" data-ticker-pausa>
+        <svg class="ticker__icono ticker__icono--pausa" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor" />
+        </svg>
+        <svg class="ticker__icono ticker__icono--play" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M4.5 3l8 5-8 5z" fill="currentColor" />
+        </svg>
+      </button>
     </div>
+    <script>
+      // Pausa y reanuda la fila de proyectos. El botón cambia su nombre y su estado (aria-pressed).
+      document.querySelectorAll<HTMLElement>('[data-ticker]').forEach((fila) => {
+        const boton = fila.parentElement?.querySelector<HTMLButtonElement>('[data-ticker-pausa]');
+        boton?.addEventListener('click', () => {
+          const pausada = fila.classList.toggle('is-pausado');
+          boton.setAttribute('aria-pressed', String(pausada));
+          boton.setAttribute('aria-label', pausada ? 'Reanudar proyectos' : 'Pausar proyectos');
+        });
+      });
+    </script>
   </div>
 </section>
 <style>
@@ -134,7 +155,8 @@ const loop = items.length * (278 + 20);
   }
   /* Se detiene mientras el cursor o el foco están en la fila (diseño §8: contenido en movimiento con pausa). */
   .ticker:hover .ticker__track,
-  .ticker:focus-within .ticker__track {
+  .ticker:focus-within .ticker__track,
+  .ticker.is-pausado .ticker__track {
     animation-play-state: paused;
   }
   .ticker__set {
@@ -155,7 +177,8 @@ const loop = items.length * (278 + 20);
     .ticker__track {
       animation: none;
     }
-    .ticker__set[aria-hidden='true'] {
+    .ticker__set[aria-hidden='true'],
+    .team__boton .ticker__pausa {
       display: none;
     }
   }
@@ -244,6 +267,42 @@ const loop = items.length * (278 + 20);
   }
   .team__boton {
     display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  /* Botón de pausa y reanudar: 48 × 48 px, amarillo con ícono negro (el contraste de la marca sobre fondo oscuro). */
+  .ticker__pausa {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: var(--tactil);
+    height: var(--tactil);
+    border-radius: 8px;
+    background: var(--dx-amarillo);
+    color: var(--dx-negro);
+    cursor: pointer;
+  }
+  .ticker__icono {
+    width: 20px;
+    height: 20px;
+  }
+  .ticker__icono--play,
+  .ticker__pausa[aria-pressed='true'] .ticker__icono--pausa {
+    display: none;
+  }
+  .ticker__pausa[aria-pressed='true'] .ticker__icono--play {
+    display: block;
+  }
+  /* Sin JavaScript el botón no funciona: la fila queda detenida y se desplaza a mano, como con movimiento reducido. */
+  :global(html:not(.js)) .ticker {
+    overflow-x: auto;
+  }
+  :global(html:not(.js)) .ticker__track {
+    animation: none;
+  }
+  :global(html:not(.js)) .ticker__set[aria-hidden='true'],
+  :global(html:not(.js)) .ticker__pausa {
+    display: none;
   }
   /* Sin cursor que revele la foto (tablet, móvil o pantalla táctil), la foto se ve siempre. */
   @media (max-width: 1199.98px), (hover: none) {

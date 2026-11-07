@@ -103,10 +103,9 @@ const { etiqueta, titulo, foto, items } = Astro.props;
     flex-direction: column;
     overflow: hidden;
   }
+  /* El texto va justo debajo del título (no al fondo de la tarjeta): se lee antes de que la siguiente se encime. */
   .scard__text {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
+    margin-top: var(--esp-2);
   }
   @media (max-width: 1199.98px) {
     .beliefs {

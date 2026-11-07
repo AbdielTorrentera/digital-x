@@ -192,7 +192,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 - Solo se animan `transform` y `opacity` (no tamaños, márgenes ni posiciones), para no afectar el rendimiento.
 - Duraciones: 150 ms (*hover*, botones), 250 ms (menús, acordeones), hasta 400 ms (entradas de sección). Nada más lento.
 - Las animaciones de entrada son sutiles (desplazamiento máximo de 24 px) y se ejecutan **una sola vez**.
-- **Las animaciones originales de la plantilla Marby se conservan tal cual (con `prefers-reduced-motion`); los límites de esta sección aplican a componentes nuevos.**
+- **Las animaciones originales de la plantilla Marby se conservan tal cual (con `prefers-reduced-motion`); los límites de esta sección aplican a componentes nuevos.** Excepción pedida por accesibilidad: la fila de proyectos de Nosotros (el Team de Marby) se mueve sola, pero se pausa con el cursor y el foco y, con movimiento reducido, se detiene y se desplaza con el dedo o el teclado.
 - Con `prefers-reduced-motion`, se desactivan animaciones, carruseles automáticos, el desplazamiento suave y la reproducción automática de video.
 - **Prohibido:** secuestrar el scroll, carruseles que avanzan solos sin botón de pausa, parpadeos de más de 3 veces por segundo y video con sonido automático.
 - En pantallas táctiles el desplazamiento es el nativo del sistema (sin desplazamiento suave por JavaScript).

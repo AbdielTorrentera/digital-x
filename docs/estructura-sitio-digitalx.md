@@ -31,6 +31,7 @@ Versión: borrador de trabajo · 2026-10-23
 | WhatsApp | 522441244913 (el número 244 137 1957 ya no se usa) |
 | Correo | `[PENDIENTE: correo definitivo en digitalx.mx]` |
 | Redes | `[PENDIENTE: URLs de Facebook, Instagram, TikTok y del perfil de Google]` |
+| Historia | La idea de Digital X nació en 2018 y el negocio se formalizó en 2021 (datos del dueño; `foundingDate` = 2018) |
 | Zonas con traslado incluido (dato interno) | Puebla, Atlixco, Izúcar de Matamoros |
 | Zonas con cargo adicional (dato interno) | Tepeaca, San Martín Texmelucan, Amozoc y alrededores |
 
@@ -78,7 +79,6 @@ Versión: borrador de trabajo · 2026-10-23
 /blog/                                              Listado de artículos
 │   └─ /blog/{slug-del-articulo}/
 /nosotros/
-/contacto/
 /condiciones-de-contratacion/
 /politica-de-privacidad/
 ```
@@ -104,7 +104,6 @@ Versión: borrador de trabajo · 2026-10-23
 | `/blog/` | **Pendiente de material** | Se publica cuando haya al menos `[PENDIENTE: número mínimo, sugerido 3]` artículos reales. Mientras tanto, la ruta no se genera ni se enlaza |
 | `/blog/{slug}/` | Según cada artículo | Un artículo = una búsqueda principal; no puede competir con una página de servicio (regla 5 de la sección 2) |
 | `/nosotros/` | Lanzamiento | |
-| `/contacto/` | Lanzamiento | |
 | `/condiciones-de-contratacion/` | Lanzamiento | |
 | `/politica-de-privacidad/` | Lanzamiento | |
 
@@ -116,8 +115,8 @@ Páginas por municipio: **no existen** en esta estructura (ver `reglas-seo-digit
 
 ## 4. Navegación y jerarquía
 
-- **Menú principal** (panel a pantalla completa, sin desplegables): Inicio · Servicios · Proyectos · Nosotros · Contacto, y Blog cuando `/blog/` esté publicado. Enlaza páginas planeadas aunque no estén construidas (ver sección 0, punto 9); las categorías de servicios se enlazan desde `/servicios/` y desde las tarjetas del Inicio.
-- **Pie de página:** las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), grupo "Digital X" con Proyectos, Nosotros, Contacto y Blog (cuando esté publicado), contacto, redes (Facebook, Instagram, TikTok y perfil de Google: solo las que tengan URL real; nunca enlaces vacíos ni con `#`) y texto de cobertura (ver SEO, sección 4). Todas son páginas planeadas, aunque no estén construidas. En la línea inferior, junto al ©, van como enlaces pequeños Condiciones de contratación y Política de privacidad.
+- **Menú principal** (panel a pantalla completa, sin desplegables): Inicio · Servicios · Proyectos · Nosotros, y Blog cuando `/blog/` esté publicado. Enlaza páginas planeadas aunque no estén construidas (ver sección 0, punto 9); las categorías de servicios se enlazan desde `/servicios/` y desde las tarjetas del Inicio.
+- **Pie de página:** las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), grupo "Digital X" con Proyectos y Nosotros (y Blog cuando esté publicado), grupo "Contacto" con el teléfono y WhatsApp, redes (Facebook, Instagram, TikTok y perfil de Google: solo las que tengan URL real; nunca enlaces vacíos ni con `#`) y texto de cobertura (ver SEO, sección 4). Todas son páginas planeadas, aunque no estén construidas. En la línea inferior, junto al ©, van como enlaces pequeños Condiciones de contratación y Política de privacidad.
 - **Cada artículo del blog** enlaza al menos a una página de servicio relacionada, con texto descriptivo.
 - **Cada categoría** enlaza a todas sus subpáginas publicadas.
 - **Cada subpágina** muestra migas de pan: Inicio › {Categoría} › {Servicio}.
@@ -148,8 +147,7 @@ Una página le habla a **un solo cliente**.
 | `/blog/` | Quien investiga antes de contratar | Artículos útiles y propios (guías, comparativas, consejos para eventos), con fecha y autor. Sin artículos de relleno ni generados sin revisión. Categorías como filtros en la misma página, **sin URL propia** por categoría |
 | `/blog/{slug}/` | Una búsqueda informativa concreta | Respuesta completa a una pregunta real, fotos propias cuando existan, enlace a la página de servicio relacionada y CTA |
 | `/condiciones-de-contratacion/` | Cliente que va a contratar | Anticipo, cancelación, horas extra (en el sitio anterior: 15% del servicio, máximo 5 horas; `[PENDIENTE: confirmar vigencia]`), viáticos incluidos en la cotización, contrato. Todo `[PENDIENTE: confirmar con el dueño]` |
-| `/nosotros/` | Cualquiera | Quiénes somos, misión, ruta de 4 pasos (escuchamos, planeamos, ejecutamos, entregamos), pilares Calidad, Desempeño y Personalización, **cada uno con texto propio** |
-| `/contacto/` | Cliente listo para escribir | Teléfono, correo, WhatsApp, zonas de servicio. Formulario: `[PENDIENTE: decidir si se publica]` |
+| `/nosotros/` | Cualquiera | Quiénes somos: encabezado con foto; prólogo con línea de tiempo de 3 hitos (2018: nace la idea de Digital X; 2021: se formaliza el negocio; hoy: audio, video y tecnología con un solo proveedor); "Qué nos distingue" (Calidad, Optimización, Rapidez, Innovación y Versatilidad); "Lo que nos importa" (manifiesto de 3 puntos); proyectos (los del arreglo único de `content/proyectos.ts`: los de ejemplo llevan la etiqueta EJEMPLO y el build de producción falla mientras existan); 3 preguntas frecuentes; y un cierre sin formulario con WhatsApp y llamada. **No se publica** nombre, foto ni biografía del dueño, equipo con personas, tamaño del equipo ni cantidad de colaboradores, cifras, precios ni reseñas. |
 | `/politica-de-privacidad/` | Cualquiera | Reescribir sin los apartados genéricos de WordPress que no aplican (comentarios, metadatos EXIF) |
 
 Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas: "perzonalizado", "Apicaciones", "de de", "Beneficiese", "siguiente Nivel".
@@ -163,7 +161,7 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 | `/` | `/` |
 | `/servicios/` | `/servicios/` |
 | `/nosotros/` | `/nosotros/` |
-| `/contacto/` | `/contacto/` |
+| `/contacto/` | `/` (el sitio nuevo no tiene página de contacto, decisión del dueño) |
 | `/politica-de-privacidad/` | `/politica-de-privacidad/` |
 | `/servicios-de-video/` | `/servicios-de-video/` |
 | `/renta-de-audio/` | `/servicios-de-audio/renta-de-audio/` |
@@ -190,13 +188,12 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 
 **Decisiones**
 - [ ] A quién le habla y qué incluye Recorridos virtuales 360.
-- [ ] Formulario de contacto: sí o no.
 - [ ] ¿Cada proyecto tiene su página (`/proyectos/{slug}/`) o son secciones dentro de `/proyectos/`? **Por defecto: secciones, sin páginas individuales.**
 - [ ] ¿Se crea una página única `/cobertura/`? **Por defecto: no.**
 - [ ] Número mínimo de artículos para publicar el blog y temas de los primeros artículos.
 - [ ] **Fase 3 (Sanity):** cuando el contenido de `SchemaNegocio.astro` venga de Sanity, cambiar `JSON.stringify` por `serializarJsonLd` (`lib/jsonld.ts`), que escapa `<`, `>` y `&` para que ningún texto cierre el `<script>` (seguridad §4).
 - [ ] **Fase 4:** al construir la primera página de servicio, enlazar en las tarjetas del Inicio los nombres de los servicios ya construidos. Hoy cada tarjeta entera es un `<a>`, y un enlace dentro de otro no es HTML válido. Propuesta: la tarjeta pasa a `<article>` con el título como enlace extendido a toda la tarjeta (`::after` sobre la tarjeta), y los nombres de servicios construidos como enlaces por encima (`position: relative; z-index: 1`); los demás quedan como texto. El aspecto no cambia y el foco queda en el título. No se programa antes: hoy ningún servicio está construido.
-- [ ] ¿`/nosotros/` incluye sección de equipo (nombres, puestos, fotos con permiso)? **Por defecto: no.**
+- [ ] Reemplazar los 3 proyectos de ejemplo de `content/proyectos.ts` por proyectos reales (con foto y permiso del cliente) y pasarlos a Sanity en la fase 3, con esa misma forma: título, municipio, servicios, foto, texto corto y permiso.
 
 ---
 

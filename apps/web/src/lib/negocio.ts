@@ -41,6 +41,8 @@ export const redesConUrl = <T extends { url: string | null }>(redes: T[]) =>
 export const negocio = {
   nombre: 'Digital X',
   url: 'https://digitalx.mx',
+  // La idea nació en 2018 y el negocio se formalizó en 2021 (dato del dueño). foundingDate usa el año de la idea.
+  fundacion: '2018',
   telefono: { pantalla: '+52 244 124 4913', tel: '+522441244913' },
   whatsapp: '522441244913',
   // [PENDIENTE: correo definitivo en digitalx.mx]
@@ -55,6 +57,9 @@ export const negocio = {
   // Logo para los datos estructurados: copia de brand/png/digitalx-logo-negro-1200.png (brand/ es la fuente).
   logo: '/logo-digitalx-negro-1200.png',
 } as const;
+
+/** @id del ProfessionalService: las demás páginas (por ejemplo, AboutPage) lo referencian en vez de duplicarlo. */
+export const idNegocio = `${negocio.url}/#negocio`;
 
 /**
  * Mensajes prellenados por página (reglas-seo sección 11).

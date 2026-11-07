@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import PageHeader from '../components/sections/PageHeader.astro';
+import AboutYears from '../components/sections/AboutYears.astro';
+import AboutBeliefs from '../components/sections/AboutBeliefs.astro';
+import AboutVision from '../components/sections/AboutVision.astro';
+import Team from '../components/sections/Team.astro';
+import Faq from '../components/sections/Faq.astro';
+import CierreNosotros from '../components/sections/CierreNosotros.astro';
+import { cierre, distingue, faq, historia, manifiesto, pagina, proyectosPagina } from '../content/nosotros';
+import { proyectos } from '../content/proyectos';
+import { aboutPageJsonLd, serializarJsonLd } from '../lib/jsonld';
+import { idNegocio, mensajesWhatsApp, negocio } from '../lib/negocio';
+import { proyectosDeNosotros } from '../lib/proyectos';
+
+const url = new URL('/nosotros/', negocio.url).href;
+---
+
+<!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
+<Base title={pagina.title} description={pagina.descripcion} whatsapp={mensajesWhatsApp.general}>
+  <PageHeader label={pagina.etiqueta} title={pagina.h1} />
+  <section class="portada">
+    <Foto
+      class="portada__img"
+      src={pagina.foto.src}
+      alt={pagina.foto.alt}
+      sizes="(min-width: 1240px) 1200px, 100vw"
+      prioritaria
+    />
+  </section>
+  <AboutYears etiqueta={historia.etiqueta} texto={historia.texto} hitos={historia.hitos} />
+  <AboutBeliefs titulo={distingue.titulo} foto={distingue.foto} items={distingue.items} />
+  <AboutVision titulo={manifiesto.titulo} foto={{ src: manifiesto.foto, alt: '' }} items={manifiesto.items} />
+  <Team
+    etiqueta={proyectosPagina.etiqueta}
+    titulo={proyectosPagina.titulo}
+    foto={{ src: proyectosPagina.foto, alt: '' }}
+    items={proyectosDeNosotros(proyectos)}
+    boton={proyectosPagina.boton}
+  />
+  <Faq {...faq} />
+  <CierreNosotros {...cierre} />
+  <script
+    type="application/ld+json"
+    set:html={serializarJsonLd(
+      aboutPageJsonLd({ url, nombre: pagina.title, descripcion: pagina.descripcion, idNegocio }),
+    )}
+  />
+</Base>
+<style>
+  /* La foto va justo debajo del encabezado, a todo el ancho del contenido, como la primera foto de la página de Marby. */
+  .portada {
+    background: var(--dx-blanco);
+    padding: 0 20px 40px;
+  }
+  .portada :global(picture) {
+    display: contents;
+  }
+  .portada :global(.portada__img) {
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  @media (min-width: 810px) {
+    .portada {
+      padding-bottom: 80px;
+    }
+    .portada :global(.portada__img) {
+      aspect-ratio: 16 / 9;
+    }
+  }
+</style>

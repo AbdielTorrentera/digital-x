@@ -17,6 +17,27 @@ export const serializarJsonLd = (datos: unknown): string =>
 export const sameAsDeRedes = (redes: { url: string }[]): string[] | undefined =>
   redes.length > 0 ? redes.map((red) => red.url) : undefined;
 
+export interface DatosAboutPage {
+  /** URL absoluta de la página. */
+  url: string;
+  nombre: string;
+  descripcion: string;
+  /** @id del negocio ya declarado en el sitio (ProfessionalService): se referencia, no se duplica. */
+  idNegocio: string;
+}
+
+/** AboutPage cuyo `about` y `mainEntity` apuntan por @id al negocio existente (reglas-seo sección 12). */
+export const aboutPageJsonLd = ({ url, nombre, descripcion, idNegocio }: DatosAboutPage) => ({
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  url,
+  name: nombre,
+  description: descripcion,
+  inLanguage: 'es-MX',
+  about: { '@id': idNegocio },
+  mainEntity: { '@id': idNegocio },
+});
+
 export interface PreguntaFrecuente {
   pregunta: string;
   respuesta: string;

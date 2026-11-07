@@ -1,0 +1,141 @@
+---
+import Btn from '../Btn.astro';
+import Foto from '../Foto.astro';
+import type { ImageMetadata } from 'astro';
+
+// Cierre de la página: el bloque de contacto del pie de la plantilla Marby (foto oscura con velo, título, texto y un
+// panel de vidrio), SIN formulario: el panel lleva dos botones, WhatsApp (principal) y Llamar (secundario), y el
+// número a la vista. Distinto del llamado final blanco del Inicio. Cambian los textos, los colores (tokens --dx-*), las
+// tipografías y el velo, más oscuro para que el texto blanco cumpla contraste. Medidas y animaciones, las de la plantilla.
+interface Props {
+  /** Foto de fondo (decorativa). */
+  foto: ImageMetadata;
+  titulo: string;
+  texto: string;
+  whatsapp: { etiqueta: string; href: string };
+  llamar: { etiqueta: string; href: string; numero: string };
+}
+const { foto, titulo, texto, whatsapp, llamar } = Astro.props;
+---
+
+<section class="contact sobre-negro">
+  <Foto class="contact__bg" src={foto} alt="" sizes="100vw" />
+  <div class="contact__scrim" aria-hidden="true"></div>
+  <div class="container contact__inner">
+    <div class="contact__head">
+      <div class="contact__title">
+        <h2 class="t-h2 c-blanco" data-appear>
+          {titulo}
+        </h2>
+      </div>
+      <p class="t-body c-blanco contact__text balance" data-appear style="--appear-delay:0.1s">
+        {texto}
+      </p>
+    </div>
+    <div class="contact__row">
+      <div class="contact__panel glass" data-appear style="--appear-delay:0.2s">
+        <div class="contact__botones">
+          <Btn
+            label={whatsapp.etiqueta}
+            href={whatsapp.href}
+            target="_blank"
+            rel="noopener"
+            aria-label={`${whatsapp.etiqueta} (se abre en una pestaña nueva)`}
+          />
+          <Btn
+            label={llamar.etiqueta}
+            href={llamar.href}
+            variant="secondary"
+            aria-label={`${llamar.etiqueta} a Digital X: ${llamar.numero}`}
+          />
+        </div>
+        <p class="t-body c-blanco contact__numero">{llamar.numero}</p>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .contact {
+    position: relative;
+    min-height: 752px;
+    padding-block: 80px;
+    display: flex;
+    align-items: center;
+    overflow: clip;
+  }
+  .contact :global(.contact__bg) {
+    position: absolute;
+    inset: -116px -122px;
+    width: calc(100% + 244px);
+    height: calc(100% + 232px);
+    max-width: none;
+    object-fit: cover;
+  }
+  .contact__scrim {
+    position: absolute;
+    inset: 0;
+    background: var(--dx-capa-oscura);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+  .contact__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .contact__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .contact__title {
+    flex: 1;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .contact__text {
+    flex: 1;
+    max-width: 460px;
+  }
+  .contact__row {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .contact__panel {
+    width: 460px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
+  }
+  /* Dos botones lado a lado; en pantallas muy angostas pasan uno debajo del otro. */
+  .contact__botones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+  }
+  @media (max-width: 809.98px) {
+    .contact__head {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .contact__title,
+    .contact__text {
+      max-width: none;
+      width: 100%;
+    }
+    .contact__panel {
+      width: 100%;
+    }
+  }
+</style>

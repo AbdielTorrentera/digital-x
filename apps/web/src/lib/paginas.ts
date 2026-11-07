@@ -128,7 +128,7 @@ export const paginas: Pagina[] = [
   { url: '/proyectos/', titulo: 'Proyectos', estado: 'lanzamiento', construida: false },
   // [PENDIENTE: número mínimo de artículos para publicar el blog]
   { url: '/blog/', titulo: 'Blog', estado: 'pendiente', construida: false },
-  { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: false },
+  { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: true },
   {
     url: '/condiciones-de-contratacion/',
     titulo: 'Condiciones de contratación',

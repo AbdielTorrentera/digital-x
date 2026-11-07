@@ -6,6 +6,7 @@
 import type { ImageMetadata } from 'astro';
 import { mensajesWhatsApp, waUrl, zonas } from '../lib/negocio';
 import { urlVerServicios } from '../lib/paginas';
+import { proyectos as proyectosDelSitio } from './proyectos';
 import type { PreguntaFrecuente } from '../lib/jsonld';
 
 // ⚠ FOTOS TEMPORALES (src/assets/temporales/, ver su README). Para poner una real: cambiar el import y el alt.
@@ -107,20 +108,13 @@ export const servicios = {
   ] satisfies Categoria[],
 };
 
-export interface ProyectoInicio {
-  titulo: string;
-  texto: string;
-  foto: Foto;
-  /** true solo si el cliente autorizó mostrar el proyecto. */
-  permiso: boolean;
-}
-
 export const proyectos = {
   etiqueta: 'Proyectos',
   titulo: 'Proyectos de Digital X',
-  // La sección solo se dibuja con 3 o más proyectos con foto y permiso (lib/proyectos.ts). Hoy no hay ninguno.
+  // La sección solo se dibuja con 3 o más proyectos con foto y permiso (lib/proyectos.ts). El arreglo es el mismo que usa
+  // Nosotros (content/proyectos.ts); hoy solo hay ejemplos, sin permiso, así que el Inicio no los muestra.
   // [PENDIENTE: 3 o 4 proyectos reales, con foto, nombre del lugar y permiso del cliente.]
-  items: [] as ProyectoInicio[],
+  items: proyectosDelSitio,
 };
 
 // Solo ventajas permitidas (estructura-sitio sección 5). Sin topes de personas ni datos del equipo.

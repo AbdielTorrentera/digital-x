@@ -5,13 +5,16 @@ import Icon from '../Icon.astro';
 import type { Foto as FotoDatos } from '../../content/inicio';
 import type { Proyecto } from '../../content/proyectos';
 
-// Fila de tarjetas que se desplaza sola: el Team de la plantilla Marby, con proyectos en lugar de personas (foto,
-// número, título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/.
-// Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas: la fila se pausa
-// con el cursor o el foco, tiene un botón visible de pausa y reanudar (WCAG 2.2.2: en móvil no hay cursor), y con
-// movimiento reducido se detiene y se desplaza con el dedo o el teclado; la foto no depende del cursor en pantallas
-// táctiles. La copia que repite la fila queda fuera del foco y de los lectores de pantalla. La protección contra los
-// ejemplos vive en content/proyectos.ts.
+// Fila de tarjetas que avanza sola: el Team de la plantilla Marby, con proyectos en lugar de personas (foto, número,
+// título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/.
+// Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas. En lugar de una
+// animación CSS (que no deja deslizar), la fila es un contenedor con scroll horizontal nativo que un pequeño script
+// hace avanzar a 50 px por segundo, como la plantilla: se desliza con el dedo, la rueda, el trackpad o arrastrando, y
+// el avance se detiene mientras la persona toca, arrastra, pasa el cursor o hace foco, y se reanuda 3 segundos
+// después. El ciclo es continuo (la fila se repite las veces necesarias y el script salta entre copias idénticas). Las copias
+// quedan fuera del foco y de los lectores de pantalla. Con movimiento reducido no avanza sola, pero se desliza a
+// mano. La foto no depende del cursor en pantallas táctiles. La protección contra los ejemplos vive en
+// content/proyectos.ts.
 interface Props {
   etiqueta: string;
   titulo: string;
@@ -20,8 +23,10 @@ interface Props {
   boton: { etiqueta: string; href: string };
 }
 const { etiqueta, titulo, foto, items, boton } = Astro.props;
-// Velocidad de la fila: 50 px por segundo, como en la plantilla.
-const loop = items.length * (278 + 20);
+// Copias de la fila para el ciclo continuo: la antes, la real y las que hagan falta para que, al avanzar un ciclo, aún
+// quede fila a la derecha en la pantalla más ancha (el contenedor mide 1240 px como máximo).
+const ancho = Math.max(items.length, 1) * (278 + 20);
+const copias = 2 + Math.ceil(1240 / ancho);
 ---
 
 <section class="team sobre-negro">
@@ -44,22 +49,22 @@ const loop = items.length * (278 + 20);
       tabindex="0"
       data-ticker
       data-appear
-      style={`--appear-delay:0.3s;--loop:${loop}px;--dur:${loop / 50}s`}
+      style="--appear-delay:0.3s"
     >
       <div class="ticker__track">
-        {[0, 1].map((copia) => (
-          <div class="ticker__set" aria-hidden={copia === 1 ? 'true' : undefined}>
+        {Array.from({ length: copias }, (_, copia) => (
+          <div class="ticker__set" aria-hidden={copia !== 1 ? 'true' : undefined}>
             {items.map((p, i) => (
               <a
                 class="member"
                 href={boton.href}
                 aria-label={`Ver proyectos: ${p.titulo}`}
-                tabindex={copia === 1 ? -1 : undefined}
+                tabindex={copia !== 1 ? -1 : undefined}
               >
                 <Foto
                   class="member__photo"
                   src={p.foto.src}
-                  alt={copia === 0 ? p.foto.alt : ''}
+                  alt={copia === 1 ? p.foto.alt : ''}
                   sizes="278px"
                   widths={[278, 556, 834]}
                 />
@@ -87,24 +92,140 @@ const loop = items.length * (278 + 20);
     </div>
     <div class="team__boton" data-appear style="--appear-delay:0.4s">
       <Btn label={boton.etiqueta} href={boton.href} />
-      <button class="ticker__pausa" type="button" aria-label="Pausar proyectos" aria-pressed="false" data-ticker-pausa>
-        <svg class="ticker__icono ticker__icono--pausa" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-          <path d="M4 3h3v10H4zM9 3h3v10H9z" fill="currentColor" />
-        </svg>
-        <svg class="ticker__icono ticker__icono--play" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-          <path d="M4.5 3l8 5-8 5z" fill="currentColor" />
-        </svg>
-      </button>
     </div>
     <script>
-      // Pausa y reanuda la fila de proyectos. El botón cambia su nombre y su estado (aria-pressed).
+      // Hace avanzar la fila de proyectos y la deja deslizar a mano.
+      const VELOCIDAD = 50; // px por segundo, como en la plantilla
+      const ESPERA = 3000; // ms que el avance espera después de que la persona suelta
+      const reducido = window.matchMedia('(prefers-reduced-motion: reduce)');
+
       document.querySelectorAll<HTMLElement>('[data-ticker]').forEach((fila) => {
-        const boton = fila.parentElement?.querySelector<HTMLButtonElement>('[data-ticker-pausa]');
-        boton?.addEventListener('click', () => {
-          const pausada = fila.classList.toggle('is-pausado');
-          boton.setAttribute('aria-pressed', String(pausada));
-          boton.setAttribute('aria-label', pausada ? 'Reanudar proyectos' : 'Pausar proyectos');
+        const copias = fila.querySelectorAll<HTMLElement>('.ticker__set');
+        if (copias.length < 3) return;
+
+        let ancho = 0; // ancho de una copia: lo que mide un ciclo completo
+        let pos = 0;
+        let hover = false;
+        let foco = false;
+        let tocando = false;
+        let arrastrando = false;
+        let visible = false;
+        let reanudaEn = 0;
+        let ultimo = 0;
+        let raf = 0;
+        let movido = 0;
+        let inicioX = 0;
+        let inicioScroll = 0;
+
+        const esperar = () => (reanudaEn = performance.now() + ESPERA);
+        const colocar = () => {
+          // La copia real es la del medio: se empieza ahí y se puede ir a ambos lados sin llegar a un borde.
+          ancho = copias[0].offsetWidth;
+          fila.scrollLeft = ancho;
+          pos = ancho;
+        };
+        // Saltar una copia a otra es invisible: son idénticas.
+        const envolver = () => {
+          const x = fila.scrollLeft;
+          if (x >= 2 * ancho) fila.scrollLeft = x - ancho;
+          else if (x <= 0) fila.scrollLeft = x + ancho;
+        };
+
+        const cuadro = (t: number) => {
+          raf = requestAnimationFrame(cuadro);
+          const dt = Math.min(t - ultimo, 100);
+          ultimo = t;
+          if (!ancho || !visible) return;
+          if (hover || foco || tocando || arrastrando || t < reanudaEn) {
+            pos = fila.scrollLeft; // la persona mueve la fila: el avance sigue desde donde quedó
+            if (!tocando) envolver();
+            return;
+          }
+          pos += (VELOCIDAD * dt) / 1000;
+          if (pos >= 2 * ancho) pos -= ancho;
+          fila.scrollLeft = pos;
+        };
+
+        const iniciar = () => {
+          colocar();
+          ultimo = performance.now();
+          raf = requestAnimationFrame(cuadro);
+        };
+        const detener = () => {
+          cancelAnimationFrame(raf);
+          fila.scrollLeft = 0;
+        };
+        const aplicar = () => (reducido.matches ? detener() : iniciar());
+
+        new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(fila);
+
+        // Mientras la persona usa la fila, el avance se detiene.
+        fila.addEventListener('mouseenter', () => (hover = true));
+        fila.addEventListener('mouseleave', () => {
+          hover = false;
+          esperar();
         });
+        fila.addEventListener('focusin', () => (foco = true));
+        fila.addEventListener('focusout', () => {
+          foco = false;
+          esperar();
+        });
+        fila.addEventListener('touchstart', () => (tocando = true), { passive: true });
+        const soltar = () => {
+          tocando = false;
+          esperar();
+        };
+        fila.addEventListener('touchend', soltar);
+        fila.addEventListener('touchcancel', soltar);
+        fila.addEventListener('wheel', esperar, { passive: true });
+        fila.addEventListener('keydown', esperar);
+
+        // Arrastre con el mouse (con el dedo, el navegador ya desliza solo).
+        fila.addEventListener('pointerdown', (e) => {
+          if (e.pointerType !== 'mouse' || e.button !== 0) return;
+          arrastrando = true;
+          movido = 0;
+          inicioX = e.clientX;
+          inicioScroll = fila.scrollLeft;
+          fila.classList.add('is-arrastrando');
+          const mover = (m: PointerEvent) => {
+            const dx = m.clientX - inicioX;
+            movido = Math.max(movido, Math.abs(dx));
+            fila.scrollLeft = inicioScroll - dx;
+            envolver();
+            inicioScroll = fila.scrollLeft + dx;
+          };
+          const terminar = () => {
+            arrastrando = false;
+            fila.classList.remove('is-arrastrando');
+            esperar();
+            removeEventListener('pointermove', mover);
+            removeEventListener('pointerup', terminar);
+            removeEventListener('pointercancel', terminar);
+          };
+          addEventListener('pointermove', mover);
+          addEventListener('pointerup', terminar);
+          addEventListener('pointercancel', terminar);
+        });
+        // Si la persona arrastró, soltar no cuenta como clic en la tarjeta.
+        fila.addEventListener(
+          'click',
+          (e) => {
+            if (movido > 5) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            movido = 0;
+          },
+          true,
+        );
+        fila.addEventListener('dragstart', (e) => e.preventDefault());
+
+        addEventListener('resize', () => {
+          if (!reducido.matches) colocar();
+        });
+        reducido.addEventListener('change', aplicar);
+        aplicar();
       });
     </script>
   </div>
@@ -144,43 +265,40 @@ const loop = items.length * (278 + 20);
     flex-direction: column;
     gap: 20px;
   }
+  /* Contenedor con scroll horizontal nativo: avanza solo (script) y se desliza a mano. Sin barra visible. */
   .ticker {
-    overflow: clip;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
     border-radius: 10px;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .ticker::-webkit-scrollbar {
+    display: none;
+  }
+  .ticker.is-arrastrando {
+    cursor: grabbing;
   }
   .ticker__track {
     display: flex;
     width: max-content;
-    animation: ticker var(--dur) linear infinite;
-  }
-  /* Se detiene mientras el cursor o el foco están en la fila (diseño §8: contenido en movimiento con pausa). */
-  .ticker:hover .ticker__track,
-  .ticker:focus-within .ticker__track,
-  .ticker.is-pausado .ticker__track {
-    animation-play-state: paused;
   }
   .ticker__set {
     display: flex;
     gap: 20px;
     padding-right: 20px;
   }
-  @keyframes ticker {
-    to {
-      transform: translateX(calc(-1 * var(--loop)));
-    }
-  }
-  /* Movimiento reducido: la fila no se mueve, se desplaza con el dedo o el teclado, y se oculta la copia. */
+  /* Movimiento reducido (o sin JavaScript): la fila no avanza sola, solo se desliza a mano, y se ocultan las copias. */
   @media (prefers-reduced-motion: reduce) {
-    .ticker {
-      overflow-x: auto;
-    }
-    .ticker__track {
-      animation: none;
-    }
-    .ticker__set[aria-hidden='true'],
-    .team__boton .ticker__pausa {
+    .ticker__set[aria-hidden='true'] {
       display: none;
     }
+  }
+  :global(html:not(.js)) .ticker__set[aria-hidden='true'] {
+    display: none;
   }
 
   .member {
@@ -195,6 +313,7 @@ const loop = items.length * (278 + 20);
     background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    -webkit-user-drag: none;
   }
   .member :global(.member__photo),
   .member__blur {
@@ -267,42 +386,6 @@ const loop = items.length * (278 + 20);
   }
   .team__boton {
     display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  /* Botón de pausa y reanudar: 48 × 48 px, amarillo con ícono negro (el contraste de la marca sobre fondo oscuro). */
-  .ticker__pausa {
-    display: inline-grid;
-    place-items: center;
-    flex: none;
-    width: var(--tactil);
-    height: var(--tactil);
-    border-radius: 8px;
-    background: var(--dx-amarillo);
-    color: var(--dx-negro);
-    cursor: pointer;
-  }
-  .ticker__icono {
-    width: 20px;
-    height: 20px;
-  }
-  .ticker__icono--play,
-  .ticker__pausa[aria-pressed='true'] .ticker__icono--pausa {
-    display: none;
-  }
-  .ticker__pausa[aria-pressed='true'] .ticker__icono--play {
-    display: block;
-  }
-  /* Sin JavaScript el botón no funciona: la fila queda detenida y se desplaza a mano, como con movimiento reducido. */
-  :global(html:not(.js)) .ticker {
-    overflow-x: auto;
-  }
-  :global(html:not(.js)) .ticker__track {
-    animation: none;
-  }
-  :global(html:not(.js)) .ticker__set[aria-hidden='true'],
-  :global(html:not(.js)) .ticker__pausa {
-    display: none;
   }
   /* Sin cursor que revele la foto (tablet, móvil o pantalla táctil), la foto se ve siempre. */
   @media (max-width: 1199.98px), (hover: none) {

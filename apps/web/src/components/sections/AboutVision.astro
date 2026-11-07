@@ -114,10 +114,9 @@ const { etiqueta, titulo, texto, foto, items } = Astro.props;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
+  /* El texto va justo debajo del título (no al fondo de la tarjeta); el alto y los desfases no cambian. */
   .vcard__text {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
+    margin-top: var(--esp-2);
   }
   @media (max-width: 1199.98px) {
     .vcard {

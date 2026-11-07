@@ -46,13 +46,12 @@ test('el pie enlaza las 3 categorías de servicios, en orden, desde el registro'
   for (const { url } of categoriasDeServicios) assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
 });
 
-test('el grupo "Digital X" del pie enlaza Proyectos, Nosotros y Contacto, y los legales van aparte', () => {
+test('el grupo "Digital X" del pie enlaza Proyectos y Nosotros, y los legales van aparte', () => {
   assert.deepEqual(
     enlacesEmpresa.map((p) => [p.titulo, p.url]),
     [
       ['Proyectos', '/proyectos/'],
       ['Nosotros', '/nosotros/'],
-      ['Contacto', '/contacto/'],
     ],
   );
   assert.deepEqual(
@@ -70,7 +69,7 @@ test('el grupo "Digital X" del pie enlaza Proyectos, Nosotros y Contacto, y los 
 test('el menú enlaza páginas planeadas, en este orden, y nunca una pendiente de material', () => {
   assert.deepEqual(
     menu.map((i) => i.url),
-    ['/', '/servicios/', '/proyectos/', '/nosotros/', '/contacto/'],
+    ['/', '/servicios/', '/proyectos/', '/nosotros/'],
   );
   for (const { url } of menu) assert.ok(urlsPlaneadas.includes(url), `${url} está en el menú sin estar en lanzamiento`);
   assert.ok(!menu.some((i) => i.url === '/blog/'), 'Blog no se publica todavía');
@@ -118,6 +117,11 @@ test('los servicios eliminados ya no están en el registro', () => {
   ]) {
     assert.ok(!urls.includes(url), `${url} debería haberse eliminado`);
   }
+});
+
+test('no hay página de contacto: /contacto/ no está en el registro, el menú ni el pie', () => {
+  assert.ok(!paginas.some((p) => p.url === '/contacto/'));
+  assert.ok(![...menu, ...enlacesEmpresa, ...enlacesLegales].some((i) => i.url === '/contacto/'));
 });
 
 test('toda URL cumple el formato de estructura §2: minúsculas, sin acentos, con barra final y prefijo de su categoría', () => {

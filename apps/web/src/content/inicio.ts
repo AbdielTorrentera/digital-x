@@ -6,6 +6,7 @@
 import type { ImageMetadata } from 'astro';
 import { mensajesWhatsApp, waUrl, zonas } from '../lib/negocio';
 import { urlVerServicios } from '../lib/paginas';
+import { lista } from '../lib/servicios';
 import { proyectos as proyectosDelSitio } from './proyectos';
 import type { PreguntaFrecuente } from '../lib/jsonld';
 
@@ -35,15 +36,6 @@ export interface Categoria {
 
 const whatsappGeneral = waUrl(mensajesWhatsApp.general);
 
-// Servicios de cada categoría: una sola lista para el texto de las tarjetas y para la respuesta de "¿Qué servicios
-// ofrecen?" (en minúscula, para poder usarla a mitad de frase). Son los oficiales; la sonorización va como texto,
-// sin página propia (la cubre la de renta de audio y sonido).
-const lista = {
-  audio: 'renta de audio y sonido, y sonorización',
-  video:
-    'circuito cerrado para eventos, producción de videos para eventos, transmisión en vivo, video con dron y recorridos virtuales 360',
-  tecnologia: 'páginas web, desarrollo de apps móviles, desarrollo de software y tienda en línea',
-};
 const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
 export const portada = {

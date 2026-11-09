@@ -133,7 +133,7 @@ export const paginas: Pagina[] = [
     url: '/condiciones-de-contratacion/',
     titulo: 'Condiciones de contratación',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
   },
   { url: '/politica-de-privacidad/', titulo: 'Política de privacidad', estado: 'lanzamiento', construida: false },
 ];

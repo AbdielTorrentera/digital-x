@@ -33,10 +33,13 @@ Versión: borrador de trabajo · 2026-10-23
 | --- | --- | --- |
 | Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
 | Nosotros | `Nosotros: audio, video y tecnología en Puebla \| Digital X` (57 caracteres) | `Quiénes somos: Digital X, audio, video y tecnología en Puebla` |
+| Condiciones de contratación | `Condiciones de contratación \| Digital X` (39 caracteres) | `Condiciones de contratación` |
 
 Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
 
 Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
+
+Meta de Condiciones de contratación (139 caracteres): `Cómo contratar a Digital X: anticipo, pagos, cancelación, horas extra y viáticos en eventos, y cómo trabajamos los proyectos de tecnología.`
 
 ### Resto de páginas
 `[PENDIENTE: SEO de cada página. Se define una por una, en este orden]`

@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/sections/PageHeader.astro';
+import { actualizacion, cambios, derechos, intro, pagina, secciones } from '../content/privacidad';
+import { mensajesWhatsApp } from '../lib/negocio';
+---
+
+<!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
+<Base title={pagina.title} description={pagina.descripcion} whatsapp={mensajesWhatsApp.general}>
+  <PageHeader label={pagina.etiqueta} title={pagina.h1} />
+  <section class="privacidad">
+    <div class="container">
+      <div class="prose">
+        <p>{intro}</p>
+        {secciones.map((seccion) => (
+          <>
+            <h2>{seccion.titulo}</h2>
+            {seccion.bloques.map((b) =>
+              'parrafo' in b ? (
+                <p>{b.parrafo}</p>
+              ) : (
+                <ul>
+                  {b.lista.map((i) => (
+                    <li>{i}</li>
+                  ))}
+                </ul>
+              ),
+            )}
+          </>
+        ))}
+        <h2>{derechos.titulo}</h2>
+        <p>
+          {derechos.antes}
+          <a href={derechos.whatsapp.href}>{derechos.whatsapp.texto}</a>
+          {derechos.medio}
+          <a href={derechos.llamar.href}>{derechos.llamar.texto}</a>
+          {derechos.despues}
+        </p>
+        <h2>{cambios.titulo}</h2>
+        <p>{cambios.texto}</p>
+        <p class="t-body-sm privacidad__fecha">
+          Última actualización: <time datetime={actualizacion.iso}>{actualizacion.texto}</time>
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .privacidad {
+    background: var(--dx-blanco);
+    padding: 0 0 var(--esp-9);
+  }
+  .privacidad__fecha {
+    margin-top: var(--esp-7);
+  }
+</style>

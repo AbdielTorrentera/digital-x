@@ -135,7 +135,7 @@ export const paginas: Pagina[] = [
     estado: 'lanzamiento',
     construida: true,
   },
-  { url: '/politica-de-privacidad/', titulo: 'Política de privacidad', estado: 'lanzamiento', construida: false },
+  { url: '/politica-de-privacidad/', titulo: 'Política de privacidad', estado: 'lanzamiento', construida: true },
 ];
 
 export const visible = (p: Pagina) => p.estado === 'lanzamiento' && p.construida;

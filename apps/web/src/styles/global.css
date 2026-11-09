@@ -418,8 +418,13 @@ html.js [data-appear].is-in {
   list-style: disc;
   padding-left: var(--esp-5);
 }
+/* Enlaces del texto: subrayados, y con zona de toque de 48 px sin mover las líneas. */
 .prose a {
   color: var(--texto);
+  font-weight: 600;
   text-decoration: underline;
-  text-underline-offset: var(--esp-1);
+  text-underline-offset: 0.2em;
+  display: inline-block;
+  padding-block: 12px;
+  margin-block: -12px;
 }

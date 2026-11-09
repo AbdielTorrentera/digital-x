@@ -41,7 +41,8 @@ const migas = items.map(({ titulo, url }) => ({ nombre: titulo, url: new URL(url
     align-items: center;
     column-gap: var(--esp-2);
   }
-  .migas__item + .migas__item::before {
+  /* La barra va al final del elemento anterior, para que al partirse la línea no empiece con ella. */
+  .migas__item:not(:last-child)::after {
     content: '/';
   }
   /* Enlace subrayado (diseño §5.6) y con zona de toque de 48 px de alto, sin cambiar el tamaño de la letra. */

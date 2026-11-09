@@ -22,7 +22,7 @@ const anclas = secciones.map((s, i) => ({ id: `galeria-${i + 1}`, titulo: s.titu
 <dialog class="galeria" data-galeria aria-label={`Fotos de ${nombre}`}>
   <div class="galeria__scroll" data-jump-scroller data-lenis-prevent>
     <div class="galeria__barra">
-      <button class="galeria__cerrar" type="button" aria-label="Cerrar galería" data-galeria-cerrar>
+      <button class="galeria__cerrar" type="button" aria-label="Cerrar galería" data-galeria-cerrar autofocus>
         <Icon name="close" />
       </button>
       <Btn

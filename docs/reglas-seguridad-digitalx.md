@@ -146,6 +146,7 @@ upgrade-insecure-requests
 - Mensajes de error genéricos: nunca muestran detalles técnicos.
 - El sitio no guarda los datos: los recibe el proveedor y se reenvían al correo del negocio. El proveedor y su ubicación se mencionan en el aviso de privacidad.
 - **Aviso de privacidad** conforme a la LFPDPPP (responsable, finalidades, derechos ARCO, transferencias) antes de publicar el formulario o la analítica. `[PENDIENTE: revisión del aviso de privacidad por alguien con conocimiento legal]`.
+- **Si el sitio agrega formulario, analítica o cookies** (Vercel Analytics, GA4 u otras), `/politica-de-privacidad/` se actualiza **antes** de publicarlos. Hoy el sitio no usa ninguno.
 
 ---
 

@@ -11,7 +11,7 @@ import { titulosDeEjemplo } from '../lib/proyectos';
 
 // ⚠ FOTOS TEMPORALES (src/assets/temporales/, ver su README).
 import fotoConferencia from '../assets/temporales/temporal-conferencia-escenario-pantalla.jpg';
-import fotoDron from '../assets/temporales/temporal-dron-campo.jpg';
+import fotoDrone from '../assets/temporales/temporal-drone-campo.jpg';
 import fotoSitioWeb from '../assets/temporales/temporal-laptop-escritorio-software.jpg';
 
 export interface Proyecto {
@@ -42,10 +42,10 @@ export const proyectos: Proyecto[] = [
     placeholder: true,
   },
   {
-    titulo: 'Transmisión multicámara con dron',
+    titulo: 'Transmisión multicámara con drone',
     municipio: 'Atlixco',
-    servicios: ['Transmisión en vivo', 'Video con dron', 'Producción de video'],
-    foto: { src: fotoDron, alt: 'Dron en vuelo sobre un campo con el cielo nublado' },
+    servicios: ['Transmisión en vivo', 'Video con drone', 'Producción de video'],
+    foto: { src: fotoDrone, alt: 'Drone en vuelo sobre un campo con el cielo nublado' },
     texto: 'Transmisión en vivo con varias cámaras y tomas aéreas para un evento al aire libre.',
     permiso: false,
     placeholder: true,

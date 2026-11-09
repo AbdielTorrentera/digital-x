@@ -1,0 +1,25 @@
+---
+import PaginaServicio from '../../components/PaginaServicio.astro';
+import { faltantesDePagina, slugs, type Slug } from '../../content/servicios';
+import { fotos } from '../../content/servicios-fotos';
+import { paginas, slugDe, visible } from '../../lib/paginas';
+
+// Una página por servicio, generada SOLO si su página está construida en lib/paginas.ts (nunca páginas vacías) y con su
+// contenido completo en content/servicios.ts: si falta algo, el build se detiene en vez de publicar una página a medias.
+export function getStaticPaths() {
+  return paginas
+    .filter((pagina) => pagina.categoria && visible(pagina))
+    .map((pagina) => {
+      const slug = slugDe(pagina.url) as Slug;
+      if (!slugs.includes(slug)) throw new Error(`"${slug}" está en lib/paginas.ts pero no en content/servicios.ts.`);
+      const faltan = faltantesDePagina(slug);
+      if (faltan.length > 0) {
+        throw new Error(`${pagina.url} está construida, pero a su contenido le falta: ${faltan.join(', ')}.`);
+      }
+      return { params: { slug }, props: { slug, foto: fotos[slug] } };
+    });
+}
+const { slug, foto } = Astro.props;
+---
+
+<PaginaServicio slug={slug} foto={foto} />

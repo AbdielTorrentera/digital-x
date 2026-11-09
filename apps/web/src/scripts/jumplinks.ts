@@ -1,3 +1,6 @@
+import { reduced } from './motion';
+import { lenis } from './smooth';
+
 /** Segmented jump links: highlight the section currently under the sticky bar. */
 export function initJumpLinks() {
   document.querySelectorAll<HTMLElement>('[data-jump]').forEach((bar) => {
@@ -10,16 +13,27 @@ export function initJumpLinks() {
       targets.forEach((t, k) => {
         if (t.getBoundingClientRect().top <= line) current = k;
       });
-      links.forEach((a, k) => a.classList.toggle('is-active', k === current));
+      links.forEach((a, k) => {
+        a.classList.toggle('is-active', k === current);
+        if (k === current) a.setAttribute('aria-current', 'location');
+        else a.removeAttribute('aria-current');
+      });
     };
     links.forEach((a) =>
       a.addEventListener('click', (e) => {
         const t = document.getElementById(a.hash.slice(1));
         if (!t) return;
         e.preventDefault();
-        if (scroller)
-          scroller.scrollTo({ top: t.offsetTop - (Number(bar.dataset.jumpOffset) || 0), behavior: 'smooth' });
-        else t.scrollIntoView({ behavior: 'smooth' });
+        // Diseño §8: con prefers-reduced-motion el salto es directo, sin desplazamiento suave. Con Lenis activo, el
+        // salto es suyo: si el navegador desplazara por su cuenta, Lenis lo pisaría con su propia posición.
+        const behavior = reduced ? 'auto' : 'smooth';
+        const offset = Number(bar.dataset.jumpOffset) || 0;
+        if (scroller) scroller.scrollTo({ top: t.offsetTop - offset, behavior });
+        else {
+          const top = t.getBoundingClientRect().top + window.scrollY - offset;
+          if (lenis) lenis.scrollTo(top);
+          else window.scrollTo({ top, behavior });
+        }
       }),
     );
     (scroller ?? window).addEventListener('scroll', update, { passive: true });

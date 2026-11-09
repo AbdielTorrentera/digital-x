@@ -222,6 +222,9 @@
   /* medidas que fijan las reglas */
   --tactil: 48px; /* alto y área táctil mínima (diseño §6, SEO §10) */
   --alto-header: 64px; /* máximo del header fijo en móvil (diseño §7) */
+  /* Barra del menú, fija: logo + 20 px arriba y abajo (diseño §7). De aquí cuelgan la navegación interna y los saltos. */
+  --nav-alto: 88px;
+  --salto-alto: calc(var(--tactil) + 2 * var(--esp-1)); /* barra de navegación interna: 48 px + su relleno */
   --boton-flotante: 56px; /* círculo de los botones flotantes de WhatsApp y de llamada (SEO §11) */
   --icono: 24px;
   --icono-boton: 20px; /* íconos dentro de botones (diseño §6) */

@@ -1,0 +1,124 @@
+---
+import Btn from './Btn.astro';
+import Foto from './Foto.astro';
+import Icon from './Icon.astro';
+import NavInterna from './NavInterna.astro';
+import type { SeccionGaleria } from '../content/servicios-fotos';
+import { waUrl } from '../lib/negocio';
+
+// Galería por secciones de la plantilla Marby (la de las fotos por habitación), preparada para cuando un servicio tenga
+// fotos reales. La página solo la dibuja si el servicio trae fotos. Es un <dialog> modal (scripts/galeria.ts): foco,
+// Escape y regreso del foco los pone el navegador. Se quitó el lightbox de Marby (una segunda capa modal). Necesita
+// JavaScript para abrirse; sin él, el botón "Ver todas las fotos" no se muestra (ver PaginaServicio).
+interface Props {
+  nombre: string;
+  secciones: SeccionGaleria[];
+  mensaje: string;
+}
+const { nombre, secciones, mensaje } = Astro.props;
+const anclas = secciones.map((s, i) => ({ id: `galeria-${i + 1}`, titulo: s.titulo }));
+---
+
+<dialog class="galeria" data-galeria aria-label={`Fotos de ${nombre}`}>
+  <div class="galeria__scroll" data-jump-scroller data-lenis-prevent>
+    <div class="galeria__barra">
+      <button class="galeria__cerrar" type="button" aria-label="Cerrar galería" data-galeria-cerrar autofocus>
+        <Icon name="close" />
+      </button>
+      <Btn
+        label="Cotizar por WhatsApp"
+        href={waUrl(mensaje)}
+        target="_blank"
+        rel="noopener"
+        aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
+      />
+    </div>
+    {secciones.length > 1 && (
+      <NavInterna
+        modal
+        etiqueta="Secciones de la galería"
+        offset={96}
+        items={anclas.map((a) => ({ href: `#${a.id}`, etiqueta: a.titulo }))}
+      />
+    )}
+    {secciones.map((seccion, i) => (
+      <section class="galeria__seccion" id={anclas[i].id}>
+        <h2 class="t-h3">{seccion.titulo}</h2>
+        <div class="galeria__fotos">
+          {seccion.fotos.map((foto) => (
+            <Foto class="galeria__foto" src={foto.src} alt={foto.alt} sizes="(min-width: 768px) 50vw, 100vw" />
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</dialog>
+<style>
+  .galeria {
+    width: 100%;
+    max-width: var(--contenedor);
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
+  }
+  .galeria::backdrop {
+    background: var(--dx-capa-oscura);
+  }
+  .galeria__scroll {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--margen);
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-6);
+  }
+  .galeria__barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-5);
+  }
+  .galeria__cerrar {
+    display: grid;
+    place-items: center;
+    width: var(--tactil);
+    height: var(--tactil);
+    border-radius: var(--radio);
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
+  }
+  .galeria__seccion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+    scroll-margin-top: calc(var(--salto-alto) + var(--esp-4));
+  }
+  .galeria__fotos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-4);
+  }
+  .galeria__fotos :global(picture) {
+    display: contents;
+  }
+  .galeria__fotos :global(.galeria__foto) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radio);
+  }
+  @media (min-width: 768px) {
+    .galeria__scroll {
+      padding: var(--esp-6);
+    }
+    .galeria__fotos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

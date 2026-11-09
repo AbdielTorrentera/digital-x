@@ -12,7 +12,9 @@ export function initAccordions() {
     };
     items.forEach((item) => {
       const trigger = item.matches('[data-acc-trigger]') ? item : item.querySelector('[data-acc-trigger]');
-      trigger?.addEventListener('click', () => {
+      trigger?.addEventListener('click', (e) => {
+        // Un enlace dentro de la respuesta lleva a su destino: no abre ni cierra la tarjeta.
+        if ((e.target as HTMLElement).closest('a')) return;
         const willOpen = !item.classList.contains('is-open');
         items.forEach((i) => set(i, false));
         set(item, willOpen);

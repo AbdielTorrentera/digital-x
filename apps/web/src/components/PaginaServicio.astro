@@ -1,0 +1,394 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from './Foto.astro';
+import Icon from './Icon.astro';
+import Btn from './Btn.astro';
+import GaleriaServicio from './GaleriaServicio.astro';
+import Migas from './Migas.astro';
+import NavInterna from './NavInterna.astro';
+import CierreContacto from './sections/CierreContacto.astro';
+import Faq from './sections/Faq.astro';
+import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
+import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
+import { enlaceAPagina } from '../lib/enlaces';
+import { serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
+import { idNegocio, negocio, telUrl, waUrl, zonas } from '../lib/negocio';
+import { paginas } from '../lib/paginas';
+import { enlaceDeServicio } from '../lib/servicios';
+
+// Plantilla de la página de un servicio: la página de detalle de la plantilla Marby (migas, barra con el título, foto
+// con ficha, navegación interna, descripción, lista de lo que incluye, enlaces relacionados, tarjeta de cotización,
+// preguntas frecuentes y galería). Se quitan la tarjeta de asesor, el mapa y el lightbox: no hay datos ni material.
+// Solo se genera para un servicio con `construida: true` y con su contenido completo (pages/servicios/[slug].astro).
+interface Props {
+  slug: Slug;
+  foto: FotoDeServicio;
+}
+const { slug, foto } = Astro.props;
+
+const faltan = faltantesDePagina(slug);
+if (faltan.length > 0)
+  throw new Error(`La página de ${slug} no tiene su contenido completo: falta ${faltan.join(', ')}.`);
+
+const registro = paginas.find((p) => p.categoria && p.url === `/servicios/${slug}/`)!;
+const numero = String(paginas.filter((p) => p.categoria).indexOf(registro) + 1).padStart(2, '0');
+const c = servicios[slug];
+const p = c.pagina!;
+const ficha = p.ficha!;
+const descripcion = p.descripcion!;
+const tambien = p.tambien!;
+const cotizacion = p.cotizacion!;
+const cierre = p.cierre!;
+const secciones = p.secciones ?? [];
+const galeria = foto.galeria?.some((s) => s.fotos.length > 0) ? foto.galeria : undefined;
+
+const categorias = { audio: 'Audio', video: 'Video', tecnologia: 'Tecnología' };
+const tipos = { audio: 'Servicios de audio', video: 'Servicios de video', tecnologia: 'Servicios de tecnología' };
+const nombre = registro.titulo;
+const url = new URL(registro.url, negocio.url).href;
+
+const enlaceDe = (item: EnlaceRelacionado) =>
+  'slug' in item
+    ? { titulo: paginas.find((x) => x.url === `/servicios/${item.slug}/`)!.titulo, href: enlaceDeServicio(item.slug) }
+    : { titulo: item.titulo, href: enlaceAPagina(item.url) };
+const relacionados = tambien.items.map((item) => ({ ...enlaceDe(item), texto: item.texto }));
+
+const salto = [
+  { href: '#descripcion', etiqueta: 'Descripción' },
+  { href: '#que-incluye', etiqueta: 'Qué incluye' },
+  ...secciones.map((s) => ({ href: `#${s.id}`, etiqueta: s.etiqueta })),
+  { href: '#te-puede-servir', etiqueta: 'Te puede servir' },
+];
+const nombreEnMinuscula = nombre.toLowerCase();
+const datosEstructurados = serviceJsonLd({
+  url,
+  nombre,
+  tipo: tipos[registro.categoria!],
+  descripcion: c.descripcion,
+  idNegocio,
+  zonas: [...zonas.todas],
+});
+---
+
+<!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
+<Base title={c.title} description={c.meta} whatsapp={c.mensaje}>
+  <section class="srv">
+    <div class="container srv__inner">
+      <Migas
+        items={[
+          { titulo: 'Inicio', url: '/' },
+          { titulo: 'Servicios', url: '/servicios/' },
+          { titulo: nombre, url: registro.url },
+        ]}
+      />
+      <div class="srv__nombre">
+        <h1 class="t-h1">{c.h1}</h1>
+        <p class="t-caption" aria-hidden="true">
+          [{numero}]
+        </p>
+      </div>
+      <div class="srv__arriba">
+        <div class="srv__foto">
+          <Foto class="srv__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 60vw, 100vw" prioritaria />
+          <span class="srv__chip t-body-sm">{categorias[registro.categoria!]}</span>
+          {galeria && (
+            <button class="srv__ver t-body-sm" type="button" data-galeria-abrir>
+              Ver todas las fotos
+            </button>
+          )}
+        </div>
+        <dl class="srv__ficha">
+          {ficha.map((fila) => (
+            <div class="srv__fila">
+              <dt class="t-caption2">{fila.etiqueta}</dt>
+              <dd class="t-body">{fila.valor}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div class="srv__contenido">
+        <div class="srv__izquierda">
+          <NavInterna items={salto} />
+          <div class="prose srv__bloque" id="descripcion" data-appear>
+            <h2>{descripcion.titulo}</h2>
+            {descripcion.parrafos.map((parrafo) => (
+              <p>{parrafo}</p>
+            ))}
+          </div>
+          <div class="srv__bloque" id="que-incluye" data-appear>
+            <h2 class="t-h2">Qué incluye</h2>
+            <ul class="inc">
+              {p.incluye!.map((item) => (
+                <li class="inc__item">
+                  <span class="inc__icono">
+                    <Icon name="check" />
+                  </span>
+                  <span class="t-body">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {secciones.map((seccion) => (
+            <div class="prose srv__bloque" id={seccion.id} data-appear>
+              <h2>{seccion.titulo}</h2>
+              {seccion.parrafos.map((parrafo) => (
+                <p>{parrafo}</p>
+              ))}
+            </div>
+          ))}
+          <div class="srv__bloque" id="te-puede-servir" data-appear>
+            <h2 class="t-h2">También te puede servir</h2>
+            {tambien.intro && <p class="t-body srv__intro">{tambien.intro}</p>}
+            <ul class="cerca">
+              {relacionados.map((item) => (
+                <li>
+                  <a class="cerca__enlace" href={item.href}>
+                    <span class="cerca__titulo t-h3">{item.titulo}</span>
+                    <span class="t-body">{item.texto}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <aside class="srv__lateral">
+          <div class="cotiza sobre-negro">
+            <p class="t-caption2 c-gris">{cotizacion.etiqueta}</p>
+            <p class="t-body c-blanco">{cotizacion.texto}</p>
+            <Btn
+              label="Cotizar por WhatsApp"
+              href={waUrl(c.mensaje)}
+              target="_blank"
+              rel="noopener"
+              aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  {p.faq?.length ? (
+    <Faq
+      etiqueta="Preguntas frecuentes"
+      titulo={`Preguntas frecuentes sobre ${nombreEnMinuscula}`}
+      texto={`Lo que más nos preguntan sobre ${nombreEnMinuscula}.`}
+      items={p.faq}
+    />
+  ) : null}
+  <CierreContacto
+    foto={fotoCierre}
+    titulo={cierre.titulo}
+    texto={cierre.texto}
+    whatsapp={{ etiqueta: 'Cotizar por WhatsApp', href: waUrl(c.mensaje) }}
+    llamar={{ etiqueta: 'Llamar', href: telUrl, numero: negocio.telefono.pantalla }}
+  />
+  {galeria && <GaleriaServicio nombre={nombre} secciones={galeria} mensaje={c.mensaje} />}
+  <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
+</Base>
+<style>
+  .srv {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-2) var(--esp-8);
+  }
+  .srv__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .srv__nombre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-4);
+    padding: var(--esp-3) var(--esp-4);
+    border-radius: var(--radio);
+    background: var(--dx-gris-claro);
+  }
+
+  /* Foto principal y ficha. <picture> no pinta caja: el <img> es el elemento del flujo. */
+  .srv__arriba {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .srv__foto {
+    position: relative;
+    min-width: 0;
+  }
+  .srv__foto :global(picture) {
+    display: contents;
+  }
+  .srv__foto :global(.srv__img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radio);
+  }
+  /* Etiqueta de la categoría y botón de la galería: fondo sólido, para que se lean sobre cualquier foto. */
+  .srv__chip,
+  .srv__ver {
+    position: absolute;
+    padding: var(--esp-1) var(--esp-2);
+    border-radius: var(--radio-chico);
+    background: var(--dx-gris-claro);
+    color: var(--dx-negro);
+  }
+  .srv__chip {
+    top: var(--esp-4);
+    left: var(--esp-4);
+  }
+  .srv__ver {
+    right: var(--esp-4);
+    bottom: var(--esp-4);
+    min-height: var(--tactil);
+    padding-inline: var(--esp-4);
+  }
+  /* El modal de la galería necesita JavaScript: sin él, el botón no se muestra. */
+  :global(html:not(.js)) .srv__ver {
+    display: none;
+  }
+  .srv__ficha {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .srv__fila {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    padding-block: var(--esp-3);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .srv__fila:last-child {
+    box-shadow: none;
+  }
+  .srv__fila dd {
+    margin: 0;
+  }
+
+  .srv__contenido {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .srv__izquierda {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  /* Los títulos de sección no quedan bajo el menú ni bajo la barra de navegación interna al saltar a ellos. */
+  .srv__bloque {
+    scroll-margin-top: calc(var(--nav-alto) + var(--salto-alto) + var(--esp-4));
+  }
+  .srv__bloque > :global(h2),
+  .srv__bloque > .t-h2 {
+    margin-bottom: var(--esp-5);
+  }
+  .srv__bloque.prose > :global(h2) {
+    margin-bottom: 0;
+  }
+  .srv__intro {
+    margin-top: calc(-1 * var(--esp-3));
+    margin-bottom: var(--esp-4);
+  }
+
+  /* Lo que incluye (los highlights de Marby): una fila por inclusión, con su palomita. */
+  .inc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-4);
+  }
+  .inc__item {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-3);
+  }
+  .inc__icono {
+    flex: none;
+    display: grid;
+    place-items: center;
+    padding: var(--esp-2);
+    border-radius: var(--radio-chico);
+    background: var(--dx-gris-claro);
+  }
+
+  /* "También te puede servir": filas con línea, como la lista de lugares cercanos de Marby. */
+  .cerca {
+    display: flex;
+    flex-direction: column;
+  }
+  .cerca li {
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .cerca li:last-child {
+    box-shadow: none;
+  }
+  .cerca__enlace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    min-height: var(--tactil);
+    padding-block: var(--esp-3);
+  }
+  .cerca__titulo {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .cerca__enlace:hover .cerca__titulo {
+    text-decoration-thickness: var(--foco);
+  }
+
+  /* Tarjeta de cotización (la tarjeta oscura del lateral de Marby): la única acción principal de la página. */
+  .cotiza {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-4);
+    padding: var(--esp-5);
+    border-radius: var(--radio);
+  }
+
+  @media (min-width: 768px) {
+    .inc {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cerca__enlace {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--esp-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .srv {
+      padding-block: var(--esp-4) var(--esp-9);
+    }
+    .srv__arriba {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--medianil);
+    }
+    .srv__foto {
+      flex: 1 1 0;
+    }
+    .srv__ficha {
+      flex: none;
+      width: 340px;
+    }
+    .srv__contenido {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--medianil);
+    }
+    .srv__izquierda {
+      flex: 1 1 0;
+    }
+    .srv__lateral {
+      flex: none;
+      width: 340px;
+      position: sticky;
+      top: calc(var(--nav-alto) + var(--esp-4));
+    }
+  }
+</style>

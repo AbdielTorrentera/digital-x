@@ -1,6 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { aboutPageJsonLd, faqPageJsonLd, sameAsDeRedes, serializarJsonLd } from './jsonld.ts';
+import {
+  aboutPageJsonLd,
+  breadcrumbListJsonLd,
+  collectionPageJsonLd,
+  faqPageJsonLd,
+  sameAsDeRedes,
+  serializarJsonLd,
+  serviceJsonLd,
+} from './jsonld.ts';
 
 test('serializarJsonLd escapa lo que podría cerrar el script o inyectar HTML', () => {
   const salida = serializarJsonLd({ texto: '</script><img src=x onerror=alert(1)> & más' });
@@ -61,4 +69,76 @@ test('aboutPageJsonLd apunta por @id al negocio y no declara otro negocio', () =
   assert.deepEqual(datos.mainEntity, { '@id': 'https://digitalx.mx/#negocio' });
   const texto = JSON.stringify(datos);
   assert.ok(!texto.includes('ProfessionalService') && !texto.includes('Person'));
+});
+
+test('breadcrumbListJsonLd numera las migas y lleva la URL de cada una', () => {
+  const datos = breadcrumbListJsonLd([
+    { nombre: 'Inicio', url: 'https://digitalx.mx/' },
+    { nombre: 'Renta de audio y sonido', url: 'https://digitalx.mx/servicios/renta-de-audio/' },
+  ]);
+  assert.equal(datos['@type'], 'BreadcrumbList');
+  assert.deepEqual(
+    datos.itemListElement.map((m) => [m.position, m.name, m.item]),
+    [
+      [1, 'Inicio', 'https://digitalx.mx/'],
+      [2, 'Renta de audio y sonido', 'https://digitalx.mx/servicios/renta-de-audio/'],
+    ],
+  );
+});
+
+test('serviceJsonLd referencia al negocio por @id, lleva sus zonas y no declara otro negocio', () => {
+  const datos = serviceJsonLd({
+    url: 'https://digitalx.mx/servicios/renta-de-audio/',
+    nombre: 'Renta de audio y sonido',
+    tipo: 'Servicios de audio',
+    descripcion: 'Equipo de audio y sonorización.',
+    idNegocio: 'https://digitalx.mx/#negocio',
+    zonas: ['Puebla', 'Atlixco'],
+  });
+  assert.equal(datos['@type'], 'Service');
+  assert.equal(datos['@id'], 'https://digitalx.mx/servicios/renta-de-audio/#servicio');
+  assert.deepEqual(datos.provider, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.deepEqual(datos.areaServed, [
+    { '@type': 'City', name: 'Puebla' },
+    { '@type': 'City', name: 'Atlixco' },
+  ]);
+  assert.ok(!/ProfessionalService|address|"geo"/.test(JSON.stringify(datos)));
+});
+
+test('collectionPageJsonLd lista los elementos en orden y apunta por @id al negocio', () => {
+  const datos = collectionPageJsonLd({
+    url: 'https://digitalx.mx/servicios/',
+    nombre: 'Servicios',
+    descripcion: 'Elige tu servicio.',
+    idNegocio: 'https://digitalx.mx/#negocio',
+    elementos: [
+      { name: 'Renta de audio y sonido', url: 'https://digitalx.mx/servicios/renta-de-audio/' },
+      { name: 'Video con drone', url: 'https://digitalx.mx/servicios/video-con-drone/' },
+    ],
+  });
+  assert.equal(datos['@type'], 'CollectionPage');
+  assert.equal(datos['@id'], 'https://digitalx.mx/servicios/#pagina');
+  assert.deepEqual(datos.about, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.equal(datos.mainEntity['@type'], 'ItemList');
+  assert.deepEqual(
+    datos.mainEntity.itemListElement.map((e) => [e['@type'], e.position, e.name]),
+    [
+      ['ListItem', 1, 'Renta de audio y sonido'],
+      ['ListItem', 2, 'Video con drone'],
+    ],
+  );
+  assert.ok(!/ProfessionalService|"address"|"geo"/.test(JSON.stringify(datos)));
+});
+
+test('collectionPageJsonLd sin elementos no lleva ItemList vacío', () => {
+  const datos = collectionPageJsonLd({
+    url: 'https://digitalx.mx/servicios/',
+    nombre: 'Servicios',
+    descripcion: 'Elige tu servicio.',
+    idNegocio: 'https://digitalx.mx/#negocio',
+    elementos: [],
+  });
+  assert.equal(datos['@type'], 'CollectionPage');
+  assert.deepEqual(datos.about, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.ok(!('mainEntity' in datos));
 });

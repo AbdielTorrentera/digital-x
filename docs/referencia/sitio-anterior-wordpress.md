@@ -173,7 +173,7 @@ Seis secciones, con dos videos en reproducción automática (sin sonido y en buc
 2. **Nuestros servicios de video** (4 tarjetas con ícono)
    - **Videos para redes** (ícono personas): videos cortos, dinámicos y atractivos, ideales para plataformas como Instagram, Facebook o TikTok.
    - **Video institucional** (ícono edificio): videos corporativos que reflejan la identidad, valores y servicios de tu empresa.
-   - **Vuelo de dron (interior y exterior)** (ícono visor VR): **Ideal para:** eventos, recorridos virtuales, videos turísticos o inmobiliarios.
+   - **Vuelo de drone (interior y exterior)** (ícono visor VR): **Ideal para:** eventos, recorridos virtuales, videos turísticos o inmobiliarios.
    - **Transmisión en vivo (Streaming)** (ícono cámara): Calidad de audio y video, para conferencias, conciertos, cultos o presentaciones.
 3. **Video a lo ancho**: `Drone.mp4` (autoplay, loop, muted)
 4. **Nuestro proceso de trabajo** (línea de tiempo vertical de 4 pasos)
@@ -192,7 +192,7 @@ Seis secciones, con dos videos en reproducción automática (sin sonido y en buc
    - Texto: Escríbenos y hablemos de tu proyecto
    - Botón: "Contacto" → WhatsApp 522441244913, mensaje: "Hola, Estoy interesado en una cotización para servicios de video"
 
-Meta descripción de la página: Videos para redes, institucionales, dron, streaming y podcast. Producción de video profesional en Puebla con calidad, creatividad y servicio cercano.
+Meta descripción de la página: Videos para redes, institucionales, drone, streaming y podcast. Producción de video profesional en Puebla con calidad, creatividad y servicio cercano.
 
 ## Página: Contacto (/contacto/)
 

@@ -26,10 +26,10 @@ test('cada uno de los 10 servicios tiene su mensaje de WhatsApp', () => {
     'circuitoCerrado',
     'produccionDeVideos',
     'streaming',
-    'dron',
+    'drone',
     'recorridos360',
     'paginasWeb',
-    'appsMoviles',
+    'aplicacionesMoviles',
     'desarrolloDeSoftware',
     'tiendaEnLinea',
   ];

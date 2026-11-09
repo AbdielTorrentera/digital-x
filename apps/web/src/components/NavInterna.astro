@@ -1,0 +1,58 @@
+---
+// Navegación interna: los jump links de la plantilla Marby. Una barra fija debajo del menú con enlaces a las secciones
+// de la página; scripts/jumplinks.ts marca la sección que se está viendo (aria-current) y hace el salto, con Lenis y
+// con prefers-reduced-motion. Sin JavaScript son anclas normales. Dentro de la galería (modal) va fija arriba del
+// contenedor con scroll en lugar de bajo el menú.
+interface Props {
+  items: { href: string; etiqueta: string }[];
+  /** Nombre de la navegación para lectores de pantalla. */
+  etiqueta?: string;
+  /** Distancia (px) desde arriba a la que una sección cuenta como actual y a la que queda tras el salto: menú + barra. */
+  offset?: number;
+  modal?: boolean;
+}
+const { items, etiqueta = 'En esta página', offset = 168, modal = false } = Astro.props;
+---
+
+<nav class:list={['salto', { 'salto--modal': modal }]} data-jump data-jump-offset={offset} aria-label={etiqueta}>
+  {items.map((item, i) => (
+    <a class:list={['salto__enlace t-body-sm', { 'is-active': i === 0 }]} href={item.href}>
+      {item.etiqueta}
+    </a>
+  ))}
+</nav>
+<style>
+  .salto {
+    flex: none;
+    position: sticky;
+    top: var(--nav-alto);
+    z-index: 2;
+    display: flex;
+    gap: var(--esp-1);
+    padding: var(--esp-1);
+    border-radius: var(--radio);
+    background: var(--dx-gris-claro);
+    /* Con enlaces de más para el ancho (360 px, o letra grande) la barra se desliza en lugar de partir los nombres. */
+    overflow-x: auto;
+  }
+  .salto--modal {
+    top: 0;
+  }
+  .salto__enlace {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tactil);
+    padding-inline: var(--esp-2);
+    border-radius: var(--radio-chico);
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .salto__enlace.is-active {
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
+  }
+</style>

@@ -33,6 +33,17 @@ Versión: borrador de trabajo · 2026-10-23
 | --- | --- | --- |
 | Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
 | Nosotros | `Nosotros: audio, video y tecnología en Puebla \| Digital X` (57 caracteres) | `Quiénes somos: Digital X, audio, video y tecnología en Puebla` |
+| Servicios | `Servicios de audio, video y tecnología en Puebla \| Digital X` (60 caracteres) | `Servicios de audio, video y tecnología en Puebla` |
+| Renta de audio y sonido | `Renta de audio para eventos en Puebla y Atlixco \| Digital X` (59 caracteres) | `Renta de audio y sonido para eventos en Puebla y Atlixco` |
+| Circuito cerrado para eventos | `Circuito cerrado para eventos en Puebla \| Digital X` (51 caracteres) | `Circuito cerrado para eventos en Puebla` |
+| Producción de videos para eventos | `Video para eventos en Puebla y Atlixco \| Digital X` (50 caracteres) | `Video para eventos en Puebla y Atlixco` |
+| Transmisión en vivo | `Streaming para eventos en Puebla y Atlixco \| Digital X` (54 caracteres) | `Streaming para eventos en Puebla y Atlixco` |
+| Video con drone | `Video con drone: eventos y negocios en Puebla \| Digital X` (57 caracteres) | `Video con drone: eventos y negocios en Puebla` |
+| Recorridos virtuales 360 | `Recorridos virtuales 360 para negocios en Puebla \| Digital X` (60 caracteres) | `Recorridos virtuales 360 para negocios en Puebla` |
+| Páginas web | `Diseño de páginas web en Puebla y Atlixco \| Digital X` (53 caracteres) | `Diseño de páginas web en Puebla y Atlixco` |
+| Tienda en línea | `Tiendas en línea para negocios en Puebla \| Digital X` (52 caracteres) | `Tiendas en línea para negocios en Puebla` |
+| Desarrollo de aplicaciones móviles | `Desarrollo de aplicaciones móviles en Puebla \| Digital X` (56 caracteres) | `Desarrollo de aplicaciones móviles en Puebla` |
+| Desarrollo de software | `Desarrollo de software para negocios en Puebla \| Digital X` (58 caracteres) | `Desarrollo de software para negocios en Puebla` |
 | Condiciones de contratación | `Condiciones de contratación \| Digital X` (39 caracteres) | `Condiciones de contratación` |
 | Política de privacidad | `Política de privacidad \| Digital X` (34 caracteres) | `Política de privacidad` |
 
@@ -40,20 +51,38 @@ Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web e
 
 Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
 
+Meta de Servicios (143 caracteres): `Servicios para tu evento o tu negocio: audio, video y tecnología en Puebla, Atlixco e Izúcar de Matamoros. Elige el tuyo y cotiza por WhatsApp.`
+
+Meta de Renta de audio y sonido (130 caracteres): `Renta de audio y sonido, y sonorización, con técnico durante todo tu evento en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
+Meta de Circuito cerrado para eventos (132 caracteres): `Circuito cerrado para eventos en Puebla y Atlixco: cámaras en vivo en pantallas; no es un sistema de seguridad. Cotiza por WhatsApp.`
+
+Meta de Producción de videos para eventos (131 caracteres): `Grabación profesional de conferencias, ceremonias y eventos en Puebla y Atlixco, con entrega de video editado. Cotiza por WhatsApp.`
+
+Meta de Transmisión en vivo (127 caracteres): `Transmisión en vivo (streaming) de tu evento por Facebook, YouTube y más en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
+Meta de Video con drone (121 caracteres): `Video con drone: tomas aéreas e interiores para eventos y negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
+Meta de Recorridos virtuales 360 (122 caracteres): `Recorridos virtuales 360 para hoteles, restaurantes, escuelas, museos y negocios en Puebla y Atlixco. Cotiza por WhatsApp.`
+
+Meta de Páginas web (119 caracteres): `Diseño y desarrollo de páginas web y landing pages para negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
+Meta de Tienda en línea (120 caracteres): `Diseño y desarrollo de tiendas en línea para vender por internet, en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
+Meta de Desarrollo de aplicaciones móviles (142 caracteres): `Aplicaciones móviles para Android y iPhone, del levantamiento de requerimientos a la implementación, en Puebla y Atlixco. Cotiza por WhatsApp.`
+
+Meta de Desarrollo de software (117 caracteres): `Desarrollo de software para los procesos propios de tu negocio en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
 Meta de Condiciones de contratación (139 caracteres): `Cómo contratar a Digital X: anticipo, pagos, cancelación, horas extra y viáticos en eventos, y cómo trabajamos los proyectos de tecnología.`
 
 Meta de Política de privacidad (132 caracteres): `Qué datos personales recibe Digital X cuando nos contactas por WhatsApp o teléfono, para qué los usamos y cómo ejercer tus derechos.`
 
-### Resto de páginas
-`[PENDIENTE: SEO de cada página. Se define una por una, en este orden]`
-1. Renta de audio y sonido
-2. Circuito cerrado para eventos
-3. Producción de videos para eventos
-4. Transmisión en vivo (streaming)
-5. Video con dron y recorridos virtuales 360
-6. Páginas web, apps móviles, desarrollo de software y tienda en línea
+### Metadatos de los servicios
 
-Para cada una se define: palabra clave principal, title, meta, H1, secciones, FAQ y enlaces internos.
+- Los 10 servicios tienen su página en `/servicios/{slug}/`. Sus **titles** y **descripciones cortas** (las de la tarjeta del catálogo y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
+- La **meta** de cada servicio se redacta aparte de su descripción: servicio + zona (Puebla, Atlixco o alrededores) + "Cotiza por WhatsApp", sin datos nuevos y de 155 caracteres como máximo. Las metas y los H1 de arriba están aprobados por el dueño.
+- En renta de audio se usan juntas las palabras "audio" y "sonido" (incluye sonorización), también en el H1.
+- Falta definir por servicio, al aprobar cada página: palabra clave principal, secciones, FAQ propias y enlaces internos.
 
 ---
 
@@ -87,8 +116,8 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 
 ## 4. Enlazado interno y pie de página
 
-- Cada **subpágina** enlaza a: su categoría, `/proyectos/` y un servicio complementario.
-- Cada **categoría** enlaza a todas sus subpáginas publicadas.
+- Cada **página de servicio** enlaza a: `/servicios/` (el catálogo, donde está su categoría), `/proyectos/` y un servicio complementario. Si el complementario aún no está publicado, el enlace va a su tarjeta del catálogo (`/servicios/#slug`).
+- El **catálogo** (`/servicios/`) enlaza a todas las páginas de servicio publicadas; las categorías (Audio, Video y Tecnología) son secciones suyas, no páginas.
 - Textos de enlace **descriptivos**. PROHIBIDO: "ver más", "clic aquí", "leer más", "contacto" como único texto de un enlace de servicio.
 - Enlaces cruzados obligatorios: renta de audio ↔ circuito cerrado, producción de videos y transmisión en vivo ("¿quieres también proyectar, grabar o transmitir tu evento?").
 - **Pie de página geográfico:** un texto fijo, igual en todo el sitio, con las zonas de los dos grupos. Ejemplo:
@@ -96,7 +125,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
-- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
+- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología, que llevan a las secciones `/servicios/#audio`, `#video` y `#tecnologia`), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
 
@@ -108,9 +137,9 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Páginas delgadas:** una página sin material propio (fotos, clips, caso) no se publica. Ver estado "Pendiente de material".
 - **Contenido duplicado:** ningún bloque de texto se repite entre páginas. El pilar "Personalización" no repite el de "Desempeño".
 - **Precios:** renta de audio no muestra cifras (decisión del dueño). Cualquier otro precio solo si el dueño lo confirmó (ej. "desde $5,000 MXN", `[PENDIENTE: confirmar a qué servicio aplica, circuito cerrado o producción de videos, y si incluye IVA]`).
-- **Circuito cerrado** se explica siempre junto con "pantallas para eventos" o "proyección en vivo", y se aclara que **no es un sistema de seguridad y no graba**. Las pantallas son rentadas: se redacta "coordinamos".
+- **Circuito cerrado** se explica siempre junto con "pantallas para eventos" o "proyección en vivo", y se aclara que **no es un sistema de seguridad**. Las pantallas son rentadas: se redacta "coordinamos".
 - **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida.
-- **Dron:** no afirmar permisos, registros ni regulación sin verificarlos.
+- **Drone:** no afirmar permisos, registros ni regulación sin verificarlos.
 
 ---
 
@@ -220,13 +249,14 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Circuito cerrado | `Hola, quiero cotizar circuito cerrado (cámaras en vivo en pantallas) para un evento. Fecha: __ Lugar: __ Tipo de evento: __` |
 | Producción de videos para eventos | `Hola, quiero cotizar la producción de video de un evento. Fecha: __ Lugar: __ Tipo de evento: __` |
 | Transmisión en vivo | `Hola, quiero transmitir un evento en vivo. Fecha: __ Lugar: __ Plataforma(s): __` |
-| Video con dron | `Hola, me interesa video con dron. Fecha: __ Lugar: __ Qué necesito grabar: __` |
+| Video con drone | `Hola, me interesa video con drone. Fecha: __ Lugar: __ Qué necesito grabar: __` |
 | Recorridos virtuales 360 | `Hola, quiero cotizar un recorrido virtual 360. Lugar a recorrer: __ Para qué lo necesito: __` |
 | Páginas web | `Hola, quiero cotizar una página web. Negocio: __ Qué necesito: __` |
-| Apps móviles | `Hola, quiero cotizar una app móvil. Qué necesito resolver: __` |
+| Desarrollo de aplicaciones móviles | `Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __` |
 | Desarrollo de software | `Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __` |
 | Tienda en línea | `Hola, quiero cotizar una tienda en línea. Negocio: __ Qué voy a vender: __` |
 
+- **Catálogo:** `/servicios/` usa el mensaje general; cada página de servicio usa el suyo.
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):
   - Enlace `tel:+522441244913`, solo ícono, `aria-label` `Llamar a Digital X`.
   - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de al menos 56 px, fondo negro (`--dx-negro`) con ícono blanco, para que WhatsApp (verde) siga siendo la acción principal.
@@ -240,9 +270,10 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 
 - **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`). `foundingDate` = `2018` (el año en que nació la idea).
 - **Nosotros:** un nodo `AboutPage` cuyo `about` y `mainEntity` apuntan por `@id` a `https://digitalx.mx/#negocio`: no se duplica el `ProfessionalService`. Más el `FAQPage` de sus preguntas, que salen del mismo arreglo que se muestra. Sin `Person` ni datos del dueño.
-- **Cada página de servicio:** nodo `Service` con `name`, `serviceType`, `description`, `provider` (referencia al negocio) y `areaServed`.
+- **Catálogo (`/servicios/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de los servicios **publicados**; mientras no haya ninguno, la página no lleva `ItemList` (uno vacío no sirve). Más el `BreadcrumbList` (Inicio › Servicios). No lleva `FAQPage`: su guía "¿Qué servicios necesito para mi evento?" son casos, no preguntas.
+- **Cada página de servicio:** nodo `Service` (con `@id` `{url}#servicio`) con `name`, `serviceType` (la categoría), `description`, `url`, `provider` (referencia al negocio por `@id`) y `areaServed`.
 - **`FAQPage`** solo en páginas que muestran las preguntas frecuentes en pantalla.
-- **`BreadcrumbList`** en subpáginas.
+- **`BreadcrumbList`** en el catálogo y en las páginas de servicio (las mismas migas que se ven).
 - **`BlogPosting`** en cada artículo del blog, con `headline`, `datePublished`, `dateModified`, `author` e `image`, todos coincidiendo con lo visible.
 - **PROHIBIDO:**
   - Publicar `address`/`streetAddress` o **coordenadas (`geo`)**. El negocio opera sin dirección pública; las coordenadas revelarían un domicilio.
@@ -297,7 +328,7 @@ Como no hay dirección pública, la consistencia se aplica a **nombre y teléfon
 
 ## 16. Pendientes
 
-- [ ] Metadatos y estructura de cada página (se definen una por una).
+- [ ] Metadatos y estructura de cada página (se definen una por una). Las metas y los H1 de los 10 servicios ya están aprobados.
 - [ ] Marcas y modelos de equipo.
 - [ ] Mensajes de WhatsApp: confirmar los propuestos.
 - [ ] Nombre oficial para Google y redes.

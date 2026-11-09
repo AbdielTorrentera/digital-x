@@ -1,0 +1,128 @@
+---
+import Btn from '../Btn.astro';
+import Foto from '../Foto.astro';
+import { enlaceAPagina } from '../../lib/enlaces';
+import type { Foto as FotoDatos } from '../../content/inicio';
+
+// Tarjeta de servicio del catálogo: la PropertyCard de la plantilla Marby (foto, barra con el nombre y el número, y
+// filas de datos), más la descripción corta. Con la página del servicio construida, el nombre (H3) es un enlace
+// extendido a toda la tarjeta (::after) y el botón "Ver servicio" es decorativo: un solo <a>, sin enlaces anidados.
+// Sin página, es solo texto. El `id` es el slug, para saltar a la tarjeta (/servicios/#slug). Sin la barra que solo
+// aparece al pasar el cursor, que en pantallas táctiles no existe.
+interface Props {
+  slug: string;
+  titulo: string;
+  /** "01" a "10": decorativo. */
+  numero: string;
+  descripcion: string;
+  para: string;
+  incluye: string;
+  /** Su página, solo si está construida. */
+  url: string | null;
+  foto: FotoDatos;
+}
+const { slug, titulo, numero, descripcion, para, incluye, url, foto } = Astro.props;
+---
+
+<article class:list={['tsrv', { 'hover-target': url }]} id={slug}>
+  <Foto
+    class="tsrv__img"
+    src={foto.src}
+    alt={foto.alt}
+    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+  />
+  <div class="tsrv__nombre">
+    <h3 class="t-h3">
+      {url ? (
+        <a class="tsrv__enlace" href={enlaceAPagina(url)}>
+          {titulo}
+        </a>
+      ) : (
+        titulo
+      )}
+    </h3>
+    <p class="t-caption" aria-hidden="true">
+      [{numero}]
+    </p>
+  </div>
+  <p class="t-body">{descripcion}</p>
+  <dl class="tsrv__lista">
+    <div class="tsrv__fila">
+      <dt class="t-caption2">Para</dt>
+      <dd class="t-body">{para}</dd>
+    </div>
+    <div class="tsrv__fila">
+      <dt class="t-caption2">Incluye</dt>
+      <dd class="t-body">{incluye}</dd>
+    </div>
+  </dl>
+  {url && <Btn class="tsrv__boton" label="Ver servicio" variant="secondary" />}
+</article>
+<style>
+  .tsrv {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+    min-width: 0;
+    /* El salto a la tarjeta (/servicios/#slug) la deja bajo el menú y la barra de navegación interna. */
+    scroll-margin-top: calc(var(--nav-alto) + var(--salto-alto) + var(--esp-4));
+  }
+  /* <picture> no pinta caja: el <img> es el elemento del flujo. Picture no le pone el atributo de alcance de Astro. */
+  .tsrv :global(picture) {
+    display: contents;
+  }
+  .tsrv :global(.tsrv__img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radio);
+  }
+  .tsrv__nombre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-4);
+    padding: var(--esp-3) var(--esp-4);
+    border-radius: var(--radio);
+    background: var(--dx-gris-claro);
+  }
+  .tsrv > p {
+    padding-inline: var(--esp-4);
+  }
+  .tsrv__enlace {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .tsrv__enlace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .tsrv__lista {
+    flex: 1;
+    margin: 0;
+    padding-inline: var(--esp-4);
+    display: flex;
+    flex-direction: column;
+  }
+  .tsrv__fila {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    padding-block: var(--esp-3);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .tsrv__fila:last-child {
+    box-shadow: none;
+  }
+  .tsrv__fila dd {
+    margin: 0;
+  }
+  .tsrv :global(.tsrv__boton) {
+    align-self: flex-start;
+    margin-inline: var(--esp-4);
+    margin-bottom: var(--esp-2);
+  }
+</style>

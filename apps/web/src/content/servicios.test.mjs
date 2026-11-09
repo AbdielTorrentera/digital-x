@@ -141,10 +141,46 @@ test('renta de audio: todo el contenido migrado, la sección Sonorización y sol
   }
 });
 
+test('circuito cerrado: página completa, 5 FAQ propias, sin secciones extra ni galería y sin hablar de grabar', () => {
+  const c = servicios['circuito-cerrado-para-eventos'];
+  const pagina = c.pagina;
+  assert.equal(pagina.ficha.length, 3);
+  assert.equal(pagina.descripcion.parrafos.length, 2);
+  assert.equal(pagina.faq.length, 5);
+  assert.ok(!pagina.secciones, 'no lleva secciones extra: serían las FAQ repetidas');
+  assert.equal(c.mensaje, mensajesWhatsApp.circuitoCerrado);
+  // La aclaración va a la vista (ficha) y en la descripción; las pantallas se "coordinan".
+  assert.match(pagina.ficha[0].valor, /no es un sistema de seguridad/);
+  assert.match(pagina.descripcion.parrafos[0], /No es un sistema de seguridad\./);
+  assert.ok(pagina.incluye.some((i) => /las coordinamos/.test(i)));
+  // Lo que incluye es lo confirmado por el dueño, ni más ni menos.
+  assert.deepEqual(pagina.incluye, [
+    'Personal que opera las cámaras durante tu evento',
+    'Una o varias cámaras en vivo, según tu evento',
+    'Proyección de la imagen en pantallas del lugar',
+    'Pantallas para eventos, si las necesitas: las coordinamos y van incluidas en tu cotización',
+    'Montaje e instalación del equipo',
+  ]);
+  // Ningún texto de la página dice si graba o no: el video va por su propio servicio.
+  const texto = JSON.stringify(pagina);
+  assert.ok(!/grab/i.test(texto), 'la página no habla de grabar');
+  // El enlace cruzado de SEO §4: renta de audio, producción de videos y transmisión en vivo, /proyectos/ y condiciones.
+  const destinos = pagina.tambien.items.map((i) => i.slug ?? i.url);
+  for (const esperado of [
+    'renta-de-audio',
+    'video-para-eventos',
+    'streaming-para-eventos',
+    '/proyectos/',
+    '/condiciones-de-contratacion/',
+  ]) {
+    assert.ok(destinos.includes(esperado), `falta ${esperado}`);
+  }
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
-  assert.equal(preguntas('circuito-cerrado-para-eventos').length, 3);
+  assert.equal(preguntas('circuito-cerrado-para-eventos').length, 5);
   assert.deepEqual(preguntas('video-para-eventos'), ['¿Cómo obtengo un video de mi evento?']);
   assert.deepEqual(preguntas('paginas-web'), ['¿Qué diferencia hay entre una página web y una tienda en línea?']);
   assert.equal(preguntas('desarrollo-de-software').length, 2);

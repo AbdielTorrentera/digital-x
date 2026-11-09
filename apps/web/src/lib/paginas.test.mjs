@@ -90,12 +90,12 @@ test('archivosDe da las rutas posibles del archivo de cada página', () => {
 
 const servicios = paginas.filter((p) => p.categoria);
 
-test('hay 10 servicios, todos en "lanzamiento", y solo renta de audio está construido', () => {
+test('hay 10 servicios, todos en "lanzamiento", y solo renta de audio y circuito cerrado están construidos', () => {
   assert.equal(servicios.length, 10);
   for (const p of servicios) assert.equal(p.estado, 'lanzamiento', p.url);
   assert.deepEqual(
     servicios.filter((p) => p.construida).map((p) => p.url),
-    ['/servicios/renta-de-audio/'],
+    ['/servicios/renta-de-audio/', '/servicios/circuito-cerrado-para-eventos/'],
   );
 });
 

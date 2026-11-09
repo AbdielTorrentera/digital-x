@@ -177,12 +177,46 @@ export const servicios: Record<Slug, ServicioContenido> = {
     para: 'Conferencias, eventos culturales y deportivos',
     incluye: 'Cámaras y pantallas',
     mensaje: mensajesWhatsApp.circuitoCerrado,
-    // Texto migrado de la categoría Video, listo para cuando se apruebe la página.
     pagina: {
+      ficha: [
+        { etiqueta: 'Qué es', valor: 'Proyección en vivo de tu evento en pantallas; no es un sistema de seguridad' },
+        {
+          etiqueta: 'Para',
+          valor: 'Conferencias, eventos culturales y deportivos, e instituciones; también en exteriores',
+        },
+        { etiqueta: 'Pantallas', valor: 'Si las necesitas, las coordinamos; van incluidas en tu cotización' },
+      ],
       descripcion: {
+        titulo: 'Proyección en vivo de tu evento en pantallas',
         parrafos: [
-          'El circuito cerrado es proyección en vivo: cámaras cuya imagen se ve en pantallas para eventos dentro del mismo lugar. No es un sistema de seguridad. Si además quieres el video de tu evento, súmale la producción de videos para eventos.',
+          'El circuito cerrado es proyección en vivo: cámaras cuya imagen se ve en pantallas para eventos dentro del mismo lugar. No es un sistema de seguridad.',
+          'Así todo tu público ve el escenario. Si además quieres el video de tu evento, súmale la producción de videos para eventos.',
         ],
+      },
+      incluye: [
+        'Personal que opera las cámaras durante tu evento',
+        'Una o varias cámaras en vivo, según tu evento',
+        'Proyección de la imagen en pantallas del lugar',
+        'Pantallas para eventos, si las necesitas: las coordinamos y van incluidas en tu cotización',
+        'Montaje e instalación del equipo',
+      ],
+      tambien: {
+        intro: '¿Quieres que tu evento también se escuche y se transmita?',
+        items: [
+          { slug: 'renta-de-audio', texto: 'Audio y sonorización para el mismo evento' },
+          { slug: 'video-para-eventos', texto: 'Video editado de tu evento' },
+          { slug: 'streaming-para-eventos', texto: 'Tu evento también por internet' },
+          proyectos,
+          condiciones('Cómo se aparta la fecha y cómo se paga'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu evento',
+        texto: 'Mándanos la fecha, el lugar y el tipo de evento.',
+      },
+      cierre: {
+        titulo: 'Que todo tu público vea el escenario',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos las cámaras y pantallas de tu evento.',
       },
       faq: [
         {
@@ -198,7 +232,17 @@ export const servicios: Record<Slug, ServicioContenido> = {
         {
           pregunta: '¿Ustedes ponen las pantallas?',
           respuesta:
-            'Las pantallas para eventos las coordinamos nosotros, junto con las cámaras y la proyección en vivo, para que no tengas que buscar otro proveedor.',
+            'Si las necesitas, sí. Las coordinamos nosotros, junto con las cámaras y la proyección en vivo, y van incluidas en tu cotización.',
+        },
+        {
+          pregunta: '¿Las pantallas también llevan el audio de mi evento?',
+          respuesta:
+            'Si también contratas la renta de audio con nosotros, sí. Si el audio de tu evento es con otro proveedor, nos coordinamos con él para integrarlo.',
+        },
+        {
+          pregunta: '¿Qué necesita el lugar para el circuito cerrado?',
+          respuesta:
+            'Acceso a corriente eléctrica de 110 V. Si el lugar no tiene energía, vemos la opción de suministrarla con una planta; lo revisamos al cotizar.',
         },
       ],
     },

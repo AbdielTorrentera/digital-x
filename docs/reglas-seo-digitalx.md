@@ -33,12 +33,24 @@ Versión: borrador de trabajo · 2026-10-23
 | --- | --- | --- |
 | Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
 | Nosotros | `Nosotros: audio, video y tecnología en Puebla \| Digital X` (57 caracteres) | `Quiénes somos: Digital X, audio, video y tecnología en Puebla` |
+| Servicios | `Servicios de audio, video y tecnología en Puebla \| Digital X` (60 caracteres) | `Elige tu servicio de audio, video o tecnología en Puebla` |
+| Servicios de audio | `Servicios de audio para eventos en Puebla \| Digital X` (53 caracteres) | `Servicios de audio para eventos en Puebla` |
+| Servicios de video | `Servicios de video para eventos en Puebla \| Digital X` (53 caracteres) | `Servicios de video para eventos y negocios en Puebla` |
+| Servicios de tecnología | `Servicios de tecnología para negocios en Puebla \| Digital X` (59 caracteres) | `Servicios de tecnología para tu negocio en Puebla` |
 | Condiciones de contratación | `Condiciones de contratación \| Digital X` (39 caracteres) | `Condiciones de contratación` |
 | Política de privacidad | `Política de privacidad \| Digital X` (34 caracteres) | `Política de privacidad` |
 
 Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
 
 Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
+
+Meta de Servicios (143 caracteres): `Servicios para tu evento o tu negocio: audio, video y tecnología en Puebla, Atlixco e Izúcar de Matamoros. Elige el tuyo y cotiza por WhatsApp.`
+
+Meta de Servicios de audio (151 caracteres): `Renta de audio y sonido, y sonorización, para fiestas, conferencias, eventos culturales y cultos en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+
+Meta de Servicios de video (155 caracteres): `Circuito cerrado, producción de videos, transmisión en vivo, video con dron y recorridos 360 en Puebla, Atlixco e Izúcar de Matamoros. Cotiza por WhatsApp.`
+
+Meta de Servicios de tecnología (144 caracteres): `Páginas web, apps móviles, desarrollo de software y tienda en línea para negocios en Puebla, Atlixco e Izúcar de Matamoros. Cotiza por WhatsApp.`
 
 Meta de Condiciones de contratación (139 caracteres): `Cómo contratar a Digital X: anticipo, pagos, cancelación, horas extra y viáticos en eventos, y cómo trabajamos los proyectos de tecnología.`
 
@@ -108,7 +120,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Páginas delgadas:** una página sin material propio (fotos, clips, caso) no se publica. Ver estado "Pendiente de material".
 - **Contenido duplicado:** ningún bloque de texto se repite entre páginas. El pilar "Personalización" no repite el de "Desempeño".
 - **Precios:** renta de audio no muestra cifras (decisión del dueño). Cualquier otro precio solo si el dueño lo confirmó (ej. "desde $5,000 MXN", `[PENDIENTE: confirmar a qué servicio aplica, circuito cerrado o producción de videos, y si incluye IVA]`).
-- **Circuito cerrado** se explica siempre junto con "pantallas para eventos" o "proyección en vivo", y se aclara que **no es un sistema de seguridad y no graba**. Las pantallas son rentadas: se redacta "coordinamos".
+- **Circuito cerrado** se explica siempre junto con "pantallas para eventos" o "proyección en vivo", y se aclara que **no es un sistema de seguridad**. Las pantallas son rentadas: se redacta "coordinamos".
 - **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida.
 - **Dron:** no afirmar permisos, registros ni regulación sin verificarlos.
 
@@ -227,6 +239,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Desarrollo de software | `Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __` |
 | Tienda en línea | `Hola, quiero cotizar una tienda en línea. Negocio: __ Qué voy a vender: __` |
 
+- **Páginas de categoría:** Servicios de audio usa el mensaje de renta de audio; Servicios de video, Servicios de tecnología y `/servicios/`, el general (hasta que el dueño pida mensajes propios).
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):
   - Enlace `tel:+522441244913`, solo ícono, `aria-label` `Llamar a Digital X`.
   - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de al menos 56 px, fondo negro (`--dx-negro`) con ícono blanco, para que WhatsApp (verde) siga siendo la acción principal.

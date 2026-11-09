@@ -80,7 +80,7 @@ Meta de Política de privacidad (132 caracteres): `Qué datos personales recibe 
 ### Metadatos de los servicios
 
 - Los 10 servicios tienen su página en `/servicios/{slug}/`. Sus **titles** y **descripciones cortas** (las de la tarjeta del catálogo y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
-- La **meta** de cada servicio se redacta aparte de su descripción: servicio + zona (Puebla, Atlixco o alrededores) + "Cotiza por WhatsApp", sin datos nuevos y de 155 caracteres como máximo. Las metas y los H1 de arriba son propuestas: `[PENDIENTE: aprobación del dueño de las metas y los H1 de los servicios]`.
+- La **meta** de cada servicio se redacta aparte de su descripción: servicio + zona (Puebla, Atlixco o alrededores) + "Cotiza por WhatsApp", sin datos nuevos y de 155 caracteres como máximo. Las metas y los H1 de arriba están aprobados por el dueño.
 - En renta de audio se usan juntas las palabras "audio" y "sonido" (incluye sonorización), también en el H1.
 - Falta definir por servicio, al aprobar cada página: palabra clave principal, secciones, FAQ propias y enlaces internos.
 
@@ -328,7 +328,7 @@ Como no hay dirección pública, la consistencia se aplica a **nombre y teléfon
 
 ## 16. Pendientes
 
-- [ ] Metadatos y estructura de cada página (se definen una por una). Pendiente: aprobar las metas y los H1 de los 10 servicios.
+- [ ] Metadatos y estructura de cada página (se definen una por una). Las metas y los H1 de los 10 servicios ya están aprobados.
 - [ ] Marcas y modelos de equipo.
 - [ ] Mensajes de WhatsApp: confirmar los propuestos.
 - [ ] Nombre oficial para Google y redes.

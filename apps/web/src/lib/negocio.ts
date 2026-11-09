@@ -74,10 +74,10 @@ export const mensajesWhatsApp = {
   produccionDeVideos:
     'Hola, quiero cotizar la producción de video de un evento. Fecha: __ Lugar: __ Tipo de evento: __',
   streaming: 'Hola, quiero transmitir un evento en vivo. Fecha: __ Lugar: __ Plataforma(s): __',
-  dron: 'Hola, me interesa video con dron. Fecha: __ Lugar: __ Qué necesito grabar: __',
+  drone: 'Hola, me interesa video con drone. Fecha: __ Lugar: __ Qué necesito grabar: __',
   recorridos360: 'Hola, quiero cotizar un recorrido virtual 360. Lugar a recorrer: __ Para qué lo necesito: __',
   paginasWeb: 'Hola, quiero cotizar una página web. Negocio: __ Qué necesito: __',
-  appsMoviles: 'Hola, quiero cotizar una app móvil. Qué necesito resolver: __',
+  aplicacionesMoviles: 'Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __',
   desarrolloDeSoftware: 'Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __',
   tiendaEnLinea: 'Hola, quiero cotizar una tienda en línea. Negocio: __ Qué voy a vender: __',
 } as const;

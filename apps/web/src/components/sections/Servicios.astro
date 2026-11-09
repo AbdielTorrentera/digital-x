@@ -2,13 +2,15 @@
 import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
 import { enlaceAPagina } from '../../lib/enlaces';
+import { partesDeServicios } from '../../lib/servicios';
 import type { Categoria } from '../../content/inicio';
 
 // Servicios por categoría: la sección Services de la plantilla Marby, tal cual. Tres tarjetas del mismo alto; cada una
-// se fija arriba (position: sticky) y la siguiente se desliza encima. Cada tarjeta ENTERA es un enlace a la página de
-// su categoría (una página planeada se enlaza aunque aún no exista; producción no compila así). El botón es un <span>
-// decorativo: la zona de toque es la tarjeta. Solo cambian los textos, los colores (tokens --dx-*), las tipografías y
-// lo que exigen las reglas (aria-label, movimiento reducido). Medidas y animaciones, las del original.
+// se fija arriba (position: sticky) y la siguiente se desliza encima. La tarjeta ENTERA lleva a su sección del catálogo
+// (/servicios/#audio): el título es el enlace y se extiende a toda la tarjeta (::after), para no anidar enlaces. Los
+// nombres de servicio van por encima y son enlaces solo si su página está construida; si no, son texto. El botón es un
+// <span> decorativo. Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas
+// (aria-label, movimiento reducido). Medidas y animaciones, las del original.
 interface Props {
   etiqueta: string;
   titulo: string;
@@ -16,6 +18,7 @@ interface Props {
   items: Categoria[];
 }
 const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
+const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
 ---
 
 <section class="services" id="servicios">
@@ -30,10 +33,8 @@ const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
     </div>
     <div class="services__stack">
       {items.map((s, i) => (
-        <a
+        <article
           class="svc hover-target"
-          href={enlaceAPagina(s.url)}
-          aria-label={`Ver servicios de ${s.titulo.toLowerCase()}`}
           data-appear={i === 0 ? '' : undefined}
           style={i === 0 ? '--appear-delay:0.2s;--appear-ease:var(--ease)' : undefined}
         >
@@ -44,13 +45,35 @@ const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
               <span class="svc__count">{s.contador}</span>
             </div>
             <p class="t-body-sm">{etiquetaTarjeta}</p>
-            <h3 class="t-h3">{s.titulo}</h3>
+            <h3 class="t-h3">
+              <a
+                class="svc__enlace"
+                href={enlaceAPagina(s.url)}
+                aria-label={`Ver servicios de ${s.titulo.toLowerCase()}`}
+              >
+                {s.titulo}
+              </a>
+            </h3>
             <div class="svc__text">
-              <p class="t-body">{s.texto}</p>
+              <p class="t-body">
+                {s.para}{' '}
+                {partesDeServicios(s.categoria).map((parte, j) => {
+                  if ('literal' in parte) return parte.literal;
+                  const nombre = j === 0 ? capital(parte.nombre) : parte.nombre;
+                  return parte.url ? (
+                    <a class="svc__nombre" href={enlaceAPagina(parte.url)}>
+                      {nombre}
+                    </a>
+                  ) : (
+                    nombre
+                  );
+                })}
+                .
+              </p>
             </div>
             <Btn label="Ver servicios" variant="secondary" />
           </div>
-        </a>
+        </article>
       ))}
     </div>
   </div>
@@ -96,6 +119,19 @@ const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
     height: 500px;
     object-fit: cover;
     border-radius: 8px;
+  }
+  /* El título es el único enlace de la tarjeta y se extiende a toda ella. Los nombres de servicio (enlaces) van por
+     encima. .svc es sticky, así que es el bloque de referencia del ::after. */
+  .svc__enlace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .svc__nombre {
+    position: relative;
+    z-index: 1;
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
   }
   .svc__card {
     flex: 1 1 0;
@@ -176,7 +212,7 @@ const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
   /* Movimiento reducido (diseño §8): las tarjetas se muestran una debajo de otra, sin que se fijen ni se encimen. */
   @media (prefers-reduced-motion: reduce) {
     .svc {
-      position: static;
+      position: relative;
     }
   }
 </style>

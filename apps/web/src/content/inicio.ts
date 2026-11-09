@@ -5,7 +5,7 @@
  */
 import type { ImageMetadata } from 'astro';
 import { mensajesWhatsApp, waUrl, zonas } from '../lib/negocio';
-import { urlVerServicios } from '../lib/paginas';
+import { urlVerServicios, type Categoria as IdCategoria } from '../lib/paginas';
 import { lista } from '../lib/servicios';
 import { proyectos as proyectosDelSitio } from './proyectos';
 import type { PreguntaFrecuente } from '../lib/jsonld';
@@ -23,20 +23,20 @@ export interface Foto {
   alt: string;
 }
 
-/** Una tarjeta de la sección de servicios: una categoría (Audio, Video o Tecnología) que enlaza a su página. */
+/** Una tarjeta de la sección de servicios: una categoría (Audio, Video o Tecnología) que enlaza a su sección del catálogo. */
 export interface Categoria {
   contador: string;
   titulo: 'Audio' | 'Video' | 'Tecnología';
-  /** Para quién es, y los nombres de sus servicios, en texto. */
-  texto: string;
-  /** Página de la categoría (estructura sección 3). Se enlaza aunque aún no esté construida; producción no compila así. */
+  /** Sus servicios (nombres desde el registro de páginas) van detrás de `para`, en la misma frase. */
+  categoria: IdCategoria;
+  /** Para quién es. */
+  para: string;
+  /** Sección del catálogo (/servicios/#audio, #video o #tecnologia). */
   url: string;
   foto: Foto;
 }
 
 const whatsappGeneral = waUrl(mensajesWhatsApp.general);
-
-const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
 export const portada = {
   // H1, title y meta: exactos de reglas-seo sección 1.
@@ -58,8 +58,8 @@ export const portada = {
 };
 
 // Tres tarjetas, una por categoría (Audio, Video y Tecnología), como la sección Services de Marby: cada tarjeta entera
-// es un enlace a la página de su categoría, y ahí irán los enlaces a cada servicio. El texto dice para quién es y
-// nombra los servicios de la categoría (los 10 oficiales, cada uno una sola vez), sin enlaces por servicio.
+// es un enlace a su sección del catálogo (/servicios/#audio). El texto dice para quién es y nombra los servicios de la
+// categoría (los 10 oficiales, cada uno una sola vez): un nombre es enlace a su página solo si ya está construida.
 // [PENDIENTE: el dueño debe confirmar las frases de las tarjetas.] Sin cifras, marcas ni capacidades.
 export const servicios = {
   etiqueta: 'Servicios',
@@ -70,8 +70,9 @@ export const servicios = {
     {
       contador: '/1',
       titulo: 'Audio',
-      texto: `Para quienes organizan fiestas, conferencias, eventos culturales y cultos, con personal técnico de principio a fin. ${capital(lista.audio)}.`,
-      url: '/servicios-de-audio/',
+      categoria: 'audio',
+      para: 'Para quienes organizan fiestas, conferencias, eventos culturales y cultos, con personal técnico de principio a fin.',
+      url: '/servicios/#audio',
       foto: {
         src: fotoAudio,
         alt: 'Bocinas de sonido profesional colgadas del techo de un recinto, en blanco y negro',
@@ -80,8 +81,9 @@ export const servicios = {
     {
       contador: '/2',
       titulo: 'Video',
-      texto: `Para que tu evento se vea y se transmita, y para mostrar tu negocio o institución. ${capital(lista.video)}.`,
-      url: '/servicios-de-video/',
+      categoria: 'video',
+      para: 'Para que tu evento se vea y se transmita, y para mostrar tu negocio o institución.',
+      url: '/servicios/#video',
       foto: {
         src: fotoVideo,
         alt: 'Cámara de video sobre un trípode grabando una sesión en un salón',
@@ -90,8 +92,9 @@ export const servicios = {
     {
       contador: '/3',
       titulo: 'Tecnología',
-      texto: `Para negocios e instituciones que necesitan presencia y herramientas en línea. ${capital(lista.tecnologia)}.`,
-      url: '/servicios-de-tecnologia/',
+      categoria: 'tecnologia',
+      para: 'Para negocios e instituciones que necesitan presencia y herramientas en línea.',
+      url: '/servicios/#tecnologia',
       foto: {
         src: fotoTecnologia,
         alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla',

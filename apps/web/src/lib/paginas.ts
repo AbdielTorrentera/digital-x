@@ -4,7 +4,9 @@
  *
  * Una página solo aparece en menú, pie y sitemap si su estado es 'lanzamiento' Y está
  * construida. Marcar `construida: true` al crear su archivo en src/pages/ (el build falla
- * si se marca sin que el archivo exista).
+ * si se marca sin que el archivo exista). Los servicios no tienen archivo propio: los genera
+ * pages/servicios/[slug].astro, y el build también falla si uno construido no trae su contenido completo
+ * en content/servicios.ts.
  *
  * Páginas planeadas: las de estado 'lanzamiento' que aún no se construyen. Se pueden enlazar
  * desde el contenido (en desarrollo llevan a la 404), pero el build de producción falla
@@ -17,71 +19,56 @@ export interface Pagina {
   titulo: string;
   estado: 'lanzamiento' | 'pendiente';
   construida: boolean;
+  /** Solo los servicios: la sección del catálogo (/servicios/#audio, #video o #tecnologia) donde aparecen */
   categoria?: Categoria;
-  /** true si es la página de la categoría (hub), no un servicio */
-  hub?: boolean;
 }
 
 export const paginas: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
   { url: '/servicios/', titulo: 'Servicios', estado: 'lanzamiento', construida: true },
 
-  // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Cada página se
-  // publica cuando el dueño apruebe sus fotos y videos: hasta entonces `construida` es false y no se enlaza.
+  // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Un solo catálogo
+  // (/servicios/) y una página por servicio (/servicios/{slug}/), generada por pages/servicios/[slug].astro solo
+  // cuando `construida` es true. Cada una se publica cuando el dueño apruebe sus fotos y videos: hasta entonces no se
+  // enlaza y el catálogo la muestra como texto. El orden de aquí es el del catálogo y el de los textos del Inicio.
   {
-    url: '/servicios-de-audio/',
-    titulo: 'Audio',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'audio',
-    hub: true,
-  },
-  {
-    url: '/servicios-de-audio/renta-de-audio/',
+    url: '/servicios/renta-de-audio/',
     titulo: 'Renta de audio y sonido',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'audio',
   },
 
   {
-    url: '/servicios-de-video/',
-    titulo: 'Video',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'video',
-    hub: true,
-  },
-  {
-    url: '/servicios-de-video/circuito-cerrado/',
+    url: '/servicios/circuito-cerrado-para-eventos/',
     titulo: 'Circuito cerrado para eventos',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
   {
-    url: '/servicios-de-video/grabacion-de-eventos/',
+    url: '/servicios/video-para-eventos/',
     titulo: 'Producción de videos para eventos',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
   {
-    url: '/servicios-de-video/streaming/',
+    url: '/servicios/streaming-para-eventos/',
     titulo: 'Transmisión en vivo',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
   {
-    url: '/servicios-de-video/dron/',
-    titulo: 'Video con dron',
+    url: '/servicios/video-con-drone/',
+    titulo: 'Video con drone',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'video',
   },
   {
-    url: '/servicios-de-video/recorridos-360/',
+    url: '/servicios/recorridos-virtuales-360/',
     titulo: 'Recorridos virtuales 360',
     estado: 'lanzamiento',
     construida: false,
@@ -89,37 +76,29 @@ export const paginas: Pagina[] = [
   },
 
   {
-    url: '/servicios-de-tecnologia/',
-    titulo: 'Tecnología',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'tecnologia',
-    hub: true,
-  },
-  {
-    url: '/servicios-de-tecnologia/paginas-web/',
+    url: '/servicios/paginas-web/',
     titulo: 'Páginas web',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'tecnologia',
   },
   {
-    url: '/servicios-de-tecnologia/apps-moviles/',
-    titulo: 'Desarrollo de apps móviles',
-    estado: 'lanzamiento',
-    construida: false,
-    categoria: 'tecnologia',
-  },
-  {
-    url: '/servicios-de-tecnologia/desarrollo-de-software/',
-    titulo: 'Desarrollo de software',
-    estado: 'lanzamiento',
-    construida: false,
-    categoria: 'tecnologia',
-  },
-  {
-    url: '/servicios-de-tecnologia/tienda-en-linea/',
+    url: '/servicios/tienda-en-linea/',
     titulo: 'Tienda en línea',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'tecnologia',
+  },
+  {
+    url: '/servicios/aplicaciones-moviles/',
+    titulo: 'Desarrollo de aplicaciones móviles',
+    estado: 'lanzamiento',
+    construida: false,
+    categoria: 'tecnologia',
+  },
+  {
+    url: '/servicios/desarrollo-de-software/',
+    titulo: 'Desarrollo de software',
     estado: 'lanzamiento',
     construida: false,
     categoria: 'tecnologia',
@@ -144,8 +123,14 @@ const porUrl = (url: string) => paginas.find((p) => p.url === url && visible(p))
 /** Rutas relativas a src/pages/ que debe tener una página para estar construida. */
 export const archivosDe = (url: string) => {
   const ruta = url === '/' ? 'index' : url.slice(1, -1);
-  return [`${ruta}.astro`, `${ruta}/index.astro`];
+  const archivos = [`${ruta}.astro`, `${ruta}/index.astro`];
+  // Los servicios (/servicios/{slug}/) salen todos de una sola ruta dinámica.
+  if (/^\/servicios\/[^/]+\/$/.test(url)) archivos.push('servicios/[slug].astro');
+  return archivos;
 };
+
+/** `/servicios/renta-de-audio/` → `renta-de-audio`; solo para las URLs de servicio. */
+export const slugDe = (url: string) => url.split('/')[2] ?? '';
 
 // El build falla si una página se marca como construida sin su archivo (ver astro.config.mjs).
 export const urlsConstruidas = paginas.filter((p) => p.construida).map((p) => p.url);
@@ -161,16 +146,16 @@ export const urlsSinConstruir = paginas.filter((p) => p.estado === 'lanzamiento'
 export interface CategoriaDelPie {
   /** Texto del enlace: "Servicios de audio", "Servicios de video" o "Servicios de tecnología". */
   titulo: string;
+  /** Sección del catálogo: /servicios/#audio, #video o #tecnologia (el id existe en pages/servicios/index.astro). */
   url: string;
 }
 
-/**
- * Categorías de servicios del pie. Como el menú, enlazan las páginas de categoría planeadas aunque aún no estén
- * construidas; el build de producción falla mientras quede alguna.
- */
-export const categoriasDeServicios: CategoriaDelPie[] = paginas
-  .filter((p) => p.hub && p.estado === 'lanzamiento')
-  .map((p) => ({ titulo: `Servicios de ${p.titulo.toLowerCase()}`, url: p.url }));
+/** Las 3 categorías de servicios del pie. Ya no son páginas: cada una lleva a su sección del catálogo. */
+export const categoriasDeServicios: CategoriaDelPie[] = [
+  { titulo: 'Servicios de audio', url: '/servicios/#audio' },
+  { titulo: 'Servicios de video', url: '/servicios/#video' },
+  { titulo: 'Servicios de tecnología', url: '/servicios/#tecnologia' },
+];
 
 export interface ItemMenu {
   titulo: string;

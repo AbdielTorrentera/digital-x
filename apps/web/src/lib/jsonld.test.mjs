@@ -74,34 +74,35 @@ test('aboutPageJsonLd apunta por @id al negocio y no declara otro negocio', () =
 test('breadcrumbListJsonLd numera las migas y lleva la URL de cada una', () => {
   const datos = breadcrumbListJsonLd([
     { nombre: 'Inicio', url: 'https://digitalx.mx/' },
-    { nombre: 'Servicios de audio', url: 'https://digitalx.mx/servicios-de-audio/' },
+    { nombre: 'Renta de audio y sonido', url: 'https://digitalx.mx/servicios/renta-de-audio/' },
   ]);
   assert.equal(datos['@type'], 'BreadcrumbList');
   assert.deepEqual(
     datos.itemListElement.map((m) => [m.position, m.name, m.item]),
     [
       [1, 'Inicio', 'https://digitalx.mx/'],
-      [2, 'Servicios de audio', 'https://digitalx.mx/servicios-de-audio/'],
+      [2, 'Renta de audio y sonido', 'https://digitalx.mx/servicios/renta-de-audio/'],
     ],
   );
 });
 
-test('serviceJsonLd referencia al negocio por @id y solo lleva url si la página existe', () => {
-  const base = {
-    nombre: 'Transmisión en vivo',
-    tipo: 'Servicios de video',
-    descripcion: 'Tu evento en vivo por internet.',
+test('serviceJsonLd referencia al negocio por @id, lleva sus zonas y no declara otro negocio', () => {
+  const datos = serviceJsonLd({
+    url: 'https://digitalx.mx/servicios/renta-de-audio/',
+    nombre: 'Renta de audio y sonido',
+    tipo: 'Servicios de audio',
+    descripcion: 'Equipo de audio y sonorización.',
     idNegocio: 'https://digitalx.mx/#negocio',
-  };
-  const sinPagina = serviceJsonLd(base);
-  assert.equal(sinPagina['@type'], 'Service');
-  assert.deepEqual(sinPagina.provider, { '@id': 'https://digitalx.mx/#negocio' });
-  assert.ok(!('url' in sinPagina));
-  assert.equal(
-    serviceJsonLd({ ...base, url: 'https://digitalx.mx/servicios-de-video/streaming/' }).url,
-    'https://digitalx.mx/servicios-de-video/streaming/',
-  );
-  assert.ok(!/ProfessionalService|address|"geo"/.test(JSON.stringify(sinPagina)));
+    zonas: ['Puebla', 'Atlixco'],
+  });
+  assert.equal(datos['@type'], 'Service');
+  assert.equal(datos['@id'], 'https://digitalx.mx/servicios/renta-de-audio/#servicio');
+  assert.deepEqual(datos.provider, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.deepEqual(datos.areaServed, [
+    { '@type': 'City', name: 'Puebla' },
+    { '@type': 'City', name: 'Atlixco' },
+  ]);
+  assert.ok(!/ProfessionalService|address|"geo"/.test(JSON.stringify(datos)));
 });
 
 test('collectionPageJsonLd lista los elementos en orden y apunta por @id al negocio', () => {
@@ -111,8 +112,8 @@ test('collectionPageJsonLd lista los elementos en orden y apunta por @id al nego
     descripcion: 'Elige tu servicio.',
     idNegocio: 'https://digitalx.mx/#negocio',
     elementos: [
-      { name: 'Servicios de audio', url: 'https://digitalx.mx/servicios-de-audio/' },
-      { name: 'Servicios de video', url: 'https://digitalx.mx/servicios-de-video/' },
+      { name: 'Renta de audio y sonido', url: 'https://digitalx.mx/servicios/renta-de-audio/' },
+      { name: 'Video con drone', url: 'https://digitalx.mx/servicios/video-con-drone/' },
     ],
   });
   assert.equal(datos['@type'], 'CollectionPage');
@@ -122,9 +123,22 @@ test('collectionPageJsonLd lista los elementos en orden y apunta por @id al nego
   assert.deepEqual(
     datos.mainEntity.itemListElement.map((e) => [e['@type'], e.position, e.name]),
     [
-      ['ListItem', 1, 'Servicios de audio'],
-      ['ListItem', 2, 'Servicios de video'],
+      ['ListItem', 1, 'Renta de audio y sonido'],
+      ['ListItem', 2, 'Video con drone'],
     ],
   );
   assert.ok(!/ProfessionalService|"address"|"geo"/.test(JSON.stringify(datos)));
+});
+
+test('collectionPageJsonLd sin elementos no lleva ItemList vacío', () => {
+  const datos = collectionPageJsonLd({
+    url: 'https://digitalx.mx/servicios/',
+    nombre: 'Servicios',
+    descripcion: 'Elige tu servicio.',
+    idNegocio: 'https://digitalx.mx/#negocio',
+    elementos: [],
+  });
+  assert.equal(datos['@type'], 'CollectionPage');
+  assert.deepEqual(datos.about, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.ok(!('mainEntity' in datos));
 });

@@ -1,120 +1,213 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { categorias, hub } from './servicios.ts';
+import { catalogo, faltantesDePagina, servicios, slugs } from './servicios.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
-import { categoriasDeServicios, paginas, urlsPlaneadas } from '../lib/paginas.ts';
+import { paginas, slugDe, urlsPlaneadas } from '../lib/paginas.ts';
 
-const todas = Object.values(categorias);
-const paginasDelTema = [hub, ...todas];
+const registro = paginas.filter((p) => p.categoria);
+const entradas = Object.entries(servicios);
 
-// Todo el texto que se ve en las páginas, en bloques (para revisar reglas de vocabulario).
-const bloques = [
-  hub.intro,
-  ...hub.categorias.map((c) => c.para),
-  hub.contacto.texto,
-  ...todas.flatMap((c) => [
-    ...c.ficha.map((f) => f.valor),
-    ...c.queHacemos.parrafos,
-    ...c.servicios.items.map((s) => s.frase),
-    ...c.tambien.items.map((t) => t.texto),
-    c.cotizacion.texto,
-    ...c.faq.items.flatMap((f) => [f.pregunta, f.respuesta]),
-  ]),
+// Todo el texto que se ve en las páginas de servicio, en bloques (para revisar reglas de vocabulario).
+const bloquesDe = ([, c]) => [
+  c.descripcion,
+  c.para,
+  c.incluye,
+  ...(c.pagina?.ficha ?? []).map((f) => f.valor),
+  ...(c.pagina?.descripcion?.parrafos ?? []),
+  ...(c.pagina?.incluye ?? []),
+  ...(c.pagina?.secciones ?? []).flatMap((s) => s.parrafos),
+  ...(c.pagina?.tambien?.items ?? []).map((t) => t.texto),
+  c.pagina?.tambien?.intro ?? '',
+  c.pagina?.cotizacion?.texto ?? '',
+  c.pagina?.cierre?.texto ?? '',
+  ...(c.pagina?.faq ?? []).flatMap((f) => [f.pregunta, f.respuesta]),
 ];
+const bloques = [
+  ...entradas.flatMap(bloquesDe),
+  catalogo.intro,
+  ...catalogo.secciones.map((s) => s.para),
+  catalogo.cierre.texto,
+].filter(Boolean);
 
-test('title y meta cumplen reglas-seo sección 1 (title ≤ 60, meta ≤ 155) y no se repiten', () => {
-  for (const p of paginasDelTema) {
-    assert.ok(p.title.length <= 60, `title de ${p.title} mide ${p.title.length}`);
-    assert.ok(p.descripcion.length <= 155, `meta de ${p.title} mide ${p.descripcion.length}`);
-    assert.ok(p.title.endsWith(' | Digital X'), p.title);
-    assert.ok(p.h1.includes('Puebla'), `el H1 de ${p.title} nombra Puebla`);
+test('los servicios del contenido son los del registro de páginas, en el mismo orden', () => {
+  assert.deepEqual(
+    slugs,
+    registro.map((p) => slugDe(p.url)),
+  );
+  assert.deepEqual(Object.keys(servicios), [...slugs]);
+});
+
+test('los 10 titles miden ≤ 60 y las 10 metas ≤ 155, y ninguno se repite', () => {
+  for (const [slug, c] of entradas) {
+    assert.ok(c.title.length <= 60, `title de ${slug} mide ${c.title.length}`);
+    assert.ok(c.title.endsWith(' | Digital X'), c.title);
+    assert.ok(c.meta.length <= 155, `meta de ${slug} mide ${c.meta.length}`);
+    assert.ok(c.h1.length > 0, `h1 de ${slug}`);
   }
-  for (const campo of ['title', 'descripcion', 'h1']) {
-    const valores = paginasDelTema.map((p) => p[campo]);
+  for (const campo of ['title', 'meta', 'h1', 'descripcion']) {
+    const valores = entradas.map(([, c]) => c[campo]);
     assert.equal(new Set(valores).size, valores.length, `${campo} repetido`);
   }
 });
 
-test('hay una categoría por cada página de categoría del registro, con su URL, nombre y contador', () => {
-  assert.deepEqual(
-    hub.categorias.map((c) => [c.url, c.titulo]),
-    categoriasDeServicios.map((c) => [c.url, c.titulo]),
+test('cada meta nombra la zona (Puebla o Atlixco) e invita a cotizar por WhatsApp', () => {
+  for (const [slug, c] of entradas) {
+    assert.match(c.meta, /Puebla|Atlixco/, `meta de ${slug} sin zona`);
+    assert.match(c.meta, /Cotiza por WhatsApp\.$/, `meta de ${slug} sin invitación a cotizar`);
+  }
+});
+
+test('title y meta del catálogo no cambian (reglas-seo sección 1)', () => {
+  assert.equal(catalogo.title, 'Servicios de audio, video y tecnología en Puebla | Digital X');
+  assert.ok(catalogo.title.length <= 60);
+  assert.equal(
+    catalogo.descripcion,
+    'Servicios para tu evento o tu negocio: audio, video y tecnología en Puebla, Atlixco e Izúcar de Matamoros. Elige el tuyo y cotiza por WhatsApp.',
   );
-  hub.categorias.forEach((c, i) => {
-    const datos = categorias[c.categoria];
-    assert.equal(datos.url, c.url);
-    assert.equal(datos.nombre, c.titulo);
-    assert.equal(datos.contador, c.contador);
-    assert.equal(c.contador, `/${i + 1}`);
-  });
+  assert.ok(catalogo.descripcion.length <= 155);
+  assert.ok(catalogo.h1.includes('Puebla'));
 });
 
-test('cada categoría describe todos sus servicios del registro, una vez y en orden', () => {
-  for (const c of todas) {
-    const esperados = paginas.filter((p) => p.categoria === c.categoria && !p.hub).map((p) => p.url);
-    assert.deepEqual(
-      c.servicios.items.map((s) => s.url),
-      esperados,
-      c.nombre,
-    );
-    for (const s of c.servicios.items) assert.ok(s.frase.length > 0, s.url);
+test('las descripciones confirmadas por el dueño no cambian de redacción', () => {
+  assert.equal(
+    servicios['renta-de-audio'].descripcion,
+    'Equipo de audio y sonorización, con montaje y mezcla cuando tu evento lo necesita, y un técnico pendiente del sonido durante todo tu evento.',
+  );
+  assert.equal(
+    servicios['circuito-cerrado-para-eventos'].descripcion,
+    'Cámaras en vivo proyectadas en pantallas para que todos vean el escenario. No es un sistema de seguridad.',
+  );
+  assert.equal(
+    servicios['desarrollo-de-software'].descripcion,
+    'Sistemas hechos para los procesos propios de tu negocio.',
+  );
+});
+
+test('el catálogo tiene una sección por categoría, con el id al que enlazan el Inicio y el pie', () => {
+  assert.deepEqual(
+    catalogo.secciones.map((s) => s.id),
+    ['audio', 'video', 'tecnologia'],
+  );
+  assert.deepEqual(
+    catalogo.secciones.map((s) => s.categoria),
+    ['audio', 'video', 'tecnologia'],
+  );
+});
+
+test('cada servicio de la guía "¿Qué servicios necesito?" existe y cada escenario recomienda al menos uno', () => {
+  assert.equal(catalogo.guia.items.length, 5);
+  for (const { escenario, slugs: recomendados } of catalogo.guia.items) {
+    assert.ok(recomendados.length > 0, escenario);
+    for (const slug of recomendados) assert.ok(slugs.includes(slug), `${slug} no es un servicio`);
   }
 });
 
-test('los enlaces relacionados van a páginas en lanzamiento, nunca a la propia categoría', () => {
-  for (const c of todas) {
-    for (const t of c.tambien.items) {
-      assert.ok(urlsPlaneadas.includes(t.url), `${t.url} no está en lanzamiento`);
-      assert.notEqual(t.url, c.url);
-    }
-    assert.ok(
-      c.tambien.items.some((t) => t.url === '/proyectos/'),
-      `${c.nombre} enlaza /proyectos/`,
-    );
+test('un servicio con la página construida trae todo su contenido (si no, el build se detiene)', () => {
+  const construidas = registro.filter((p) => p.construida);
+  assert.ok(construidas.length > 0);
+  for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
+  // Y uno incompleto sí se detecta.
+  assert.ok(faltantesDePagina('video-con-drone').length > 0);
+});
+
+test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
+  const pagina = servicios['renta-de-audio'].pagina;
+  assert.equal(pagina.ficha.length, 3);
+  assert.equal(pagina.faq.length, 4);
+  assert.deepEqual(
+    pagina.secciones.map((s) => s.id),
+    ['sonorizacion'],
+  );
+  assert.deepEqual(pagina.incluye, [
+    'Equipo de audio',
+    'Sonorización',
+    'Montaje y mezcla cuando tu evento lo necesita',
+    'Técnico pendiente del sonido durante todo tu evento',
+  ]);
+  assert.equal(servicios['renta-de-audio'].mensaje, mensajesWhatsApp.rentaDeAudio);
+  // Cumple SEO §4: enlaza a circuito cerrado, producción de videos y transmisión en vivo, a /proyectos/ y a condiciones.
+  const destinos = pagina.tambien.items.map((i) => i.slug ?? i.url);
+  for (const esperado of [
+    'circuito-cerrado-para-eventos',
+    'video-para-eventos',
+    'streaming-para-eventos',
+    '/proyectos/',
+    '/condiciones-de-contratacion/',
+  ]) {
+    assert.ok(destinos.includes(esperado), `falta ${esperado}`);
+  }
+  for (const item of pagina.tambien.items) {
+    if (item.url) assert.ok(urlsPlaneadas.includes(item.url), `${item.url} no está en lanzamiento`);
   }
 });
 
-test('Audio y Video se enlazan entre sí y Video y Tecnología también (estructura SEO §4)', () => {
-  const destinos = (c) => categorias[c].tambien.items.map((t) => t.url);
-  assert.ok(destinos('audio').includes('/servicios-de-video/'));
-  assert.ok(destinos('video').includes('/servicios-de-audio/'));
-  assert.ok(destinos('video').includes('/servicios-de-tecnologia/'));
-  assert.ok(destinos('tecnologia').includes('/servicios-de-video/'));
+test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
+  const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
+  assert.equal(preguntas('renta-de-audio').length, 4);
+  assert.equal(preguntas('circuito-cerrado-para-eventos').length, 3);
+  assert.deepEqual(preguntas('video-para-eventos'), ['¿Cómo obtengo un video de mi evento?']);
+  assert.deepEqual(preguntas('paginas-web'), ['¿Qué diferencia hay entre una página web y una tienda en línea?']);
+  assert.equal(preguntas('desarrollo-de-software').length, 2);
+  assert.deepEqual(preguntas('aplicaciones-moviles'), ['¿Las aplicaciones funcionan en Android y iPhone?']);
+  const todas = entradas.flatMap(([, c]) => (c.pagina?.faq ?? []).map((f) => f.pregunta));
+  assert.equal(new Set(todas).size, todas.length);
 });
 
-test('cada categoría tiene 3 filas de ficha y entre 3 y 4 preguntas propias, sin repetirse entre categorías', () => {
-  const preguntas = todas.flatMap((c) => c.faq.items.map((f) => f.pregunta));
-  for (const c of todas) {
-    assert.equal(c.ficha.length, 3, c.nombre);
-    assert.ok(c.faq.items.length >= 3 && c.faq.items.length <= 4, c.nombre);
-  }
-  assert.equal(new Set(preguntas).size, preguntas.length);
+test('ninguna oración se repite entre servicios ni con el catálogo (sin contenido duplicado)', () => {
+  const oraciones = bloques
+    .flatMap((b) => b.split(/(?<=[.!?])\s+/))
+    .map((o) => o.trim())
+    // Las oraciones cortas (como "No es un sistema de seguridad.") se repiten a propósito junto a "circuito cerrado".
+    .filter((o) => o.split(/\s+/).length >= 7);
+  const vistas = new Map();
+  for (const oracion of oraciones) vistas.set(oracion, (vistas.get(oracion) ?? 0) + 1);
+  const repetidas = [...vistas].filter(([, veces]) => veces > 1).map(([o]) => o);
+  assert.deepEqual(repetidas, []);
 });
 
-test('el circuito cerrado se explica con pantallas y nunca con "no graba" ni como cámaras de seguridad', () => {
+test('el circuito cerrado se explica con pantallas y nunca con "ni graba" ni como cámaras de seguridad', () => {
   for (const texto of bloques) {
-    assert.ok(!/no graba|ni graba/i.test(texto), `"no graba" en: ${texto}`);
-    // Las preguntas solo nombran el servicio; su respuesta es la que lo explica.
-    if (texto.startsWith('¿')) continue;
+    assert.ok(!/no graba|ni graba/i.test(texto), `"graba" en: ${texto}`);
+    if (texto.startsWith('¿')) continue; // la pregunta solo nombra el servicio; su respuesta lo explica
     assert.ok(!/cámaras de seguridad/i.test(texto), `cámaras de seguridad en: ${texto}`);
     if (/circuito cerrado/i.test(texto)) assert.match(texto, /pantallas/i, `circuito cerrado sin pantallas: ${texto}`);
   }
+  assert.match(servicios['circuito-cerrado-para-eventos'].descripcion, /No es un sistema de seguridad\.$/);
 });
 
-test('ningún texto lleva [PENDIENTE, precios ni cifras de equipo, y las pantallas se "coordinan"', () => {
+test('transmisión en vivo no menciona número de cámaras ni mezcla de cámaras', () => {
+  const texto = JSON.stringify(servicios['streaming-para-eventos']);
+  assert.ok(!/multic[aá]mara|mezcla|\bcámaras\b/i.test(texto), texto);
+});
+
+test('"drone" se escribe así en todo el contenido, "aplicaciones móviles" no es "apps" y el software no es "a la medida"', () => {
+  const todo = JSON.stringify([servicios, catalogo]);
+  assert.ok(!/\bdron(es)?\b/i.test(todo), '"dron" en el contenido');
+  assert.ok(!/\bapps?\b/i.test(todo), '"apps" en el contenido');
+  assert.ok(!/a la medida/i.test(JSON.stringify(servicios['desarrollo-de-software'])), 'software "a la medida"');
+});
+
+test('ningún texto lleva [PENDIENTE, precios ni dinero, y las pantallas se "coordinan"', () => {
   for (const texto of bloques) {
     assert.ok(!texto.includes('[PENDIENTE'), texto);
     assert.ok(!/\$\s?\d|MXN|tenemos las pantallas|tenemos pantallas/i.test(texto), texto);
   }
 });
 
-test('"software a la medida" no se usa: el servicio se llama "Desarrollo de software" (estructura §5)', () => {
-  for (const texto of bloques) assert.ok(!/software a la medida/i.test(texto), texto);
-});
-
-test('WhatsApp: Audio usa el mensaje de renta de audio; Video y Tecnología, el general', () => {
-  assert.equal(categorias.audio.cotizacion.mensaje, mensajesWhatsApp.rentaDeAudio);
-  assert.equal(categorias.video.cotizacion.mensaje, mensajesWhatsApp.general);
-  assert.equal(categorias.tecnologia.cotizacion.mensaje, mensajesWhatsApp.general);
-  assert.equal(hub.contacto.mensaje, mensajesWhatsApp.general);
+test('WhatsApp: cada servicio usa su propio mensaje y el catálogo, el general', () => {
+  const esperado = {
+    'renta-de-audio': 'rentaDeAudio',
+    'circuito-cerrado-para-eventos': 'circuitoCerrado',
+    'video-para-eventos': 'produccionDeVideos',
+    'streaming-para-eventos': 'streaming',
+    'video-con-drone': 'drone',
+    'recorridos-virtuales-360': 'recorridos360',
+    'paginas-web': 'paginasWeb',
+    'tienda-en-linea': 'tiendaEnLinea',
+    'aplicaciones-moviles': 'aplicacionesMoviles',
+    'desarrollo-de-software': 'desarrolloDeSoftware',
+  };
+  for (const [slug, clave] of Object.entries(esperado))
+    assert.equal(servicios[slug].mensaje, mensajesWhatsApp[clave], slug);
+  assert.equal(catalogo.cierre.mensaje, mensajesWhatsApp.general);
 });

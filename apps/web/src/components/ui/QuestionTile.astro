@@ -1,15 +1,19 @@
 ---
 import Icon from '../Icon.astro';
+
+// "Question card 2" de la plantilla Marby: una tarjeta numerada que se vuelve negra y muestra su respuesta. La
+// respuesta es el contenido de la ranura (puede llevar enlaces). Sin JavaScript la respuesta queda visible; con JS se
+// muestra al abrir. La tarjeta no tiene alto fijo: crece con el texto y con la letra grande (diseño §9).
 interface Props {
   n: number;
   q: string;
-  a: string;
+  /** Prefijo del id de la respuesta, para que no choque si hay varios grupos en la página. */
+  grupo?: string;
 }
-const { n, q, a } = Astro.props;
-const id = `tile-${n}`;
+const { n, q, grupo = 'tile' } = Astro.props;
+const id = `${grupo}-${n}`;
 ---
 
-<!-- "Question card 2": a tile that turns dark and reveals the answer. -->
 <div class="qtile" data-acc-item data-acc-trigger data-appear>
   <div class="qtile__top">
     <span class="t-h1 qtile__n">{String(n).padStart(2, '0')}</span>
@@ -20,7 +24,7 @@ const id = `tile-${n}`;
   <div class="qtile__body">
     <h3 class="t-h6 qtile__q">{q}</h3>
     <p class="t-body qtile__a" id={id}>
-      {a}
+      <slot />
     </p>
   </div>
 </div>
@@ -32,8 +36,7 @@ const id = `tile-${n}`;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: var(--esp-7);
-    overflow: hidden;
+    gap: var(--esp-6);
     cursor: pointer;
   }
   .qtile__top {
@@ -62,21 +65,30 @@ const id = `tile-${n}`;
     flex-direction: column;
     gap: var(--esp-2);
   }
-  .qtile__a {
+  /* Sin JavaScript la respuesta queda visible, sobre el fondo claro. */
+  :global(html.js) .qtile__a {
     display: none;
-    color: var(--dx-blanco);
+  }
+  .qtile__a :global(a) {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+    font-weight: 600;
   }
   .qtile.is-open {
     background: var(--dx-negro);
+    --foco-color: var(--dx-amarillo);
   }
-  .qtile.is-open .qtile__n {
-    color: var(--dx-blanco);
-  }
-  .qtile.is-open .qtile__q {
-    color: var(--dx-blanco);
-  }
+  .qtile.is-open .qtile__n,
+  .qtile.is-open .qtile__q,
   .qtile.is-open .qtile__a {
+    color: var(--dx-blanco);
+  }
+  :global(html.js) .qtile.is-open .qtile__a {
     display: block;
+  }
+  .qtile.is-open .qtile__btn {
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
   }
   .qtile.is-open .qtile__btn :global(.icon) {
     transform: rotate(45deg);

@@ -1,32 +1,74 @@
-import { paginas, visible, type Categoria } from './paginas.ts';
-
-/**
- * Servicios oficiales de cada categoría (los del Perfil de Negocio de Google), en minúscula para poder usarlos a mitad
- * de frase. Fuente única: la leen las tarjetas y las preguntas frecuentes del Inicio y las condiciones de contratación.
- * La sonorización va como texto, sin página propia (la cubre la de renta de audio y sonido).
- */
-export const lista = {
-  audio: 'renta de audio y sonido, y sonorización',
-  video:
-    'circuito cerrado para eventos, producción de videos para eventos, transmisión en vivo, video con dron y recorridos virtuales 360',
-  tecnologia: 'páginas web, desarrollo de apps móviles, desarrollo de software y tienda en línea',
-};
+import { paginas, slugDe, visible, type Categoria } from './paginas.ts';
 
 export interface ServicioDeCategoria {
   titulo: string;
   url: string;
+  slug: string;
   /** Solo un servicio con página construida se enlaza; si no, su nombre se muestra como texto. */
   construida: boolean;
 }
 
-/** Servicios de una categoría, desde el registro de páginas (nombre y estado), en el orden de estructura §3. */
+/** Servicios de una categoría, desde el registro de páginas (nombre y estado), en el orden del catálogo. */
 export const serviciosDe = (categoria: Categoria): ServicioDeCategoria[] =>
   paginas
-    .filter((p) => p.categoria === categoria && !p.hub)
-    .map((p) => ({ titulo: p.titulo, url: p.url, construida: visible(p) }));
+    .filter((p) => p.categoria === categoria)
+    .map((p) => ({ titulo: p.titulo, url: p.url, slug: slugDe(p.url), construida: visible(p) }));
 
-/** Nombres de los servicios de una categoría para mostrarlos como texto; la sonorización no tiene página propia. */
-export const nombresDeServicios = (categoria: Categoria): string[] => [
-  ...serviciosDe(categoria).map((s) => s.titulo),
-  ...(categoria === 'audio' ? ['Sonorización'] : []),
-];
+/**
+ * Enlace a un servicio desde el contenido: su página si ya está construida y, si no, su tarjeta en el catálogo
+ * (/servicios/#slug). Así ningún enlace lleva a una página que no existe.
+ */
+export const enlaceDeServicio = (slug: string): string => {
+  const servicio = paginas.find((p) => p.categoria && slugDe(p.url) === slug);
+  if (!servicio) throw new Error(`"${slug}" no es un servicio del registro (src/lib/paginas.ts).`);
+  return visible(servicio) ? servicio.url : `/servicios/#${slug}`;
+};
+
+/** Un trozo de una frase con nombres de servicios: texto suelto, o el nombre de un servicio con su enlace (si lo hay). */
+export type Parte = { literal: string } | { nombre: string; url: string | null };
+
+/**
+ * Une nombres en una frase ("a, b y c"). Si el nombre anterior al último ya lleva una "y" ("renta de audio y sonido"),
+ * la coma antes del "y" final evita que se lea como un solo servicio: "renta de audio y sonido, y sonorización".
+ */
+const unir = (nombres: { nombre: string; url: string | null }[]): Parte[] =>
+  nombres.flatMap((item, i): Parte[] => {
+    if (i === 0) return [item];
+    const ultimo = i === nombres.length - 1;
+    const separador = !ultimo ? ', ' : nombres[i - 1].nombre.includes(' y ') ? ', y ' : ' y ';
+    return [{ literal: separador }, item];
+  });
+
+/**
+ * Los servicios de una categoría como frase, en minúscula para usarlos a mitad de oración. Cada nombre trae su URL solo
+ * si la página está construida (si no, es texto). En Audio la sonorización va como texto, sin página propia (la cubre la
+ * de renta de audio y sonido).
+ */
+export const partesDeServicios = (categoria: Categoria): Parte[] =>
+  unir([
+    ...serviciosDe(categoria).map((s) => ({ nombre: s.titulo.toLowerCase(), url: s.construida ? s.url : null })),
+    ...(categoria === 'audio' ? [{ nombre: 'sonorización', url: null }] : []),
+  ]);
+
+/** Servicios elegidos por su slug como frase, con el nombre del registro y `enlaceDeServicio` como enlace. */
+export const partesDeSlugs = (slugs: string[]): Parte[] =>
+  unir(
+    slugs.map((slug) => {
+      const servicio = paginas.find((p) => p.categoria && slugDe(p.url) === slug);
+      if (!servicio) throw new Error(`"${slug}" no es un servicio del registro (src/lib/paginas.ts).`);
+      return { nombre: servicio.titulo, url: enlaceDeServicio(slug) };
+    }),
+  );
+
+const comoTexto = (partes: Parte[]) => partes.map((p) => ('literal' in p ? p.literal : p.nombre)).join('');
+
+/**
+ * Servicios oficiales de cada categoría (los del Perfil de Negocio de Google) como texto, en minúscula para poder
+ * usarlos a mitad de frase. Salen de las mismas páginas del registro, así que no pueden diferir de las tarjetas.
+ * Los leen las tarjetas y las preguntas frecuentes del Inicio y las condiciones de contratación.
+ */
+export const lista = {
+  audio: comoTexto(partesDeServicios('audio')),
+  video: comoTexto(partesDeServicios('video')),
+  tecnologia: comoTexto(partesDeServicios('tecnologia')),
+};

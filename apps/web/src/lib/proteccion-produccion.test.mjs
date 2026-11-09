@@ -59,7 +59,7 @@ test('urlDeArchivoHtml convierte la ruta del HTML en la URL pública', () => {
   assert.equal(urlDeArchivoHtml('index.html'), '/');
   assert.equal(urlDeArchivoHtml('404.html'), '/404/');
   assert.equal(urlDeArchivoHtml('servicios/index.html'), '/servicios/');
-  assert.equal(urlDeArchivoHtml('servicios-de-audio/renta-de-audio/index.html'), '/servicios-de-audio/renta-de-audio/');
+  assert.equal(urlDeArchivoHtml('servicios/renta-de-audio/index.html'), '/servicios/renta-de-audio/');
   assert.equal(urlDeArchivoHtml('servicios\\index.html'), '/servicios/');
 });
 
@@ -75,18 +75,18 @@ test('nombresDeFotosTemporales agrupa por foto original las variantes de tamaño
   assert.deepEqual(nombresDeFotosTemporales(['index.html']), []);
 });
 
-const sinConstruir = ['/servicios-de-audio/renta-de-audio/', '/servicios/'];
+const sinConstruir = ['/servicios/renta-de-audio/', '/servicios/'];
 
 test('enlacesANoConstruidas lista cada enlace interno a una página planeada que no está construida', () => {
   const paginas = [
     {
       url: '/',
-      html: '<a href="/servicios-de-audio/renta-de-audio/">Renta de audio y sonido</a><a href="/">Inicio</a>',
+      html: '<a href="/servicios/renta-de-audio/">Renta de audio y sonido</a><a href="/">Inicio</a>',
     },
     { url: '/404/', html: '<a href="/servicios/">Ver servicios</a>' },
   ];
   assert.deepEqual(enlacesANoConstruidas(paginas, sinConstruir), [
-    { pagina: '/', enlace: '/servicios-de-audio/renta-de-audio/' },
+    { pagina: '/', enlace: '/servicios/renta-de-audio/' },
     { pagina: '/404/', enlace: '/servicios/' },
   ]);
 });

@@ -1,0 +1,76 @@
+---
+import QuestionTile from '../ui/QuestionTile.astro';
+import { enlaceAPagina } from '../../lib/enlaces';
+import type { Parte } from '../../lib/servicios';
+
+// "¿Qué servicios necesito para mi evento?": el bloque pfaq de la plantilla Marby, con tarjetas numeradas que se abren.
+// Cada tarjeta es un caso (H3) y su respuesta son los servicios que le convienen, enlazados a su página o, si aún no
+// existe, a su tarjeta del catálogo. Sin la celda de contacto de Marby: la reemplaza el cierre de la página. No lleva
+// FAQPage: son casos, no preguntas.
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  items: { escenario: string; partes: Parte[] }[];
+}
+const { etiqueta, titulo, items } = Astro.props;
+---
+
+<section class="guia">
+  <div class="container guia__inner">
+    <div class="guia__head">
+      <p class="t-caption2">{etiqueta}</p>
+      <h2 class="t-h2">{titulo}</h2>
+    </div>
+    <div class="guia__grid" data-accordion>
+      {items.map((item, i) => (
+        <QuestionTile n={i + 1} q={item.escenario} grupo="guia">
+          {item.partes.map((parte) =>
+            'literal' in parte ? (
+              parte.literal
+            ) : parte.url ? (
+              <a href={enlaceAPagina(parte.url)}>{parte.nombre}</a>
+            ) : (
+              parte.nombre
+            ),
+          )}
+          .
+        </QuestionTile>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .guia {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-8);
+  }
+  .guia__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .guia__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .guia__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-5);
+  }
+  @media (min-width: 768px) {
+    .guia__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--medianil);
+    }
+  }
+  @media (min-width: 1024px) {
+    .guia {
+      padding-block: var(--esp-9);
+    }
+    .guia__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

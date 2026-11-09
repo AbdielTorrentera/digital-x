@@ -73,24 +73,29 @@ export const breadcrumbListJsonLd = (migas: Miga[]) => ({
 });
 
 export interface DatosServicio {
+  /** URL absoluta de la página del servicio. */
+  url: string;
   nombre: string;
   /** Tipo de servicio: la categoría ("Servicios de audio"). */
   tipo: string;
   descripcion: string;
   /** @id del negocio ya declarado en el sitio: el proveedor se referencia, no se duplica. */
   idNegocio: string;
-  /** URL absoluta de su página; solo si ya está construida. */
-  url?: string;
+  /** Zonas donde se presta (las del negocio), como ciudades. */
+  zonas: string[];
 }
 
-/** Service (sin @context, para ir dentro de un ItemList). `areaServed` queda en el negocio (reglas-seo sección 12). */
-export const serviceJsonLd = ({ nombre, tipo, descripcion, idNegocio, url }: DatosServicio) => ({
+/** Service de la página de un servicio, con proveedor por @id y zonas de servicio (reglas-seo sección 12). */
+export const serviceJsonLd = ({ url, nombre, tipo, descripcion, idNegocio, zonas }: DatosServicio) => ({
+  '@context': 'https://schema.org',
   '@type': 'Service',
+  '@id': `${url}#servicio`,
+  url,
   name: nombre,
   serviceType: tipo,
   description: descripcion,
   provider: { '@id': idNegocio },
-  ...(url ? { url } : {}),
+  areaServed: zonas.map((zona) => ({ '@type': 'City', name: zona })),
 });
 
 export interface DatosCollectionPage {
@@ -100,11 +105,14 @@ export interface DatosCollectionPage {
   descripcion: string;
   /** @id del negocio ya declarado en el sitio (ProfessionalService): se referencia, no se duplica. */
   idNegocio: string;
-  /** Lo que lista la página: cada uno es el contenido de un ListItem (`item`, o `name` y `url`). */
+  /** Lo que lista la página: cada uno es el contenido de un ListItem (`name` y `url`). Puede estar vacío. */
   elementos: Record<string, unknown>[];
 }
 
-/** CollectionPage con un ItemList de lo que la página muestra; apunta por @id al negocio existente. */
+/**
+ * CollectionPage con un ItemList de lo que la página lista; apunta por @id al negocio existente. Sin elementos no hay
+ * `mainEntity`: un ItemList vacío no dice nada.
+ */
 export const collectionPageJsonLd = ({ url, nombre, descripcion, idNegocio, elementos }: DatosCollectionPage) => ({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -114,8 +122,12 @@ export const collectionPageJsonLd = ({ url, nombre, descripcion, idNegocio, elem
   description: descripcion,
   inLanguage: 'es-MX',
   about: { '@id': idNegocio },
-  mainEntity: {
-    '@type': 'ItemList',
-    itemListElement: elementos.map((elemento, i) => ({ '@type': 'ListItem', position: i + 1, ...elemento })),
-  },
+  ...(elementos.length > 0
+    ? {
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: elementos.map((elemento, i) => ({ '@type': 'ListItem', position: i + 1, ...elemento })),
+        },
+      }
+    : {}),
 });

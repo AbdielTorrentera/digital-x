@@ -7,7 +7,7 @@ import AboutBeliefs from '../components/sections/AboutBeliefs.astro';
 import AboutVision from '../components/sections/AboutVision.astro';
 import Team from '../components/sections/Team.astro';
 import Faq from '../components/sections/Faq.astro';
-import CierreNosotros from '../components/sections/CierreNosotros.astro';
+import CierreContacto from '../components/sections/CierreContacto.astro';
 import { cierre, distingue, faq, historia, manifiesto, pagina, proyectosPagina } from '../content/nosotros';
 import { proyectos } from '../content/proyectos';
 import { aboutPageJsonLd, serializarJsonLd } from '../lib/jsonld';
@@ -40,7 +40,7 @@ const url = new URL('/nosotros/', negocio.url).href;
     boton={proyectosPagina.boton}
   />
   <Faq {...faq} />
-  <CierreNosotros {...cierre} />
+  <CierreContacto {...cierre} />
   <script
     type="application/ld+json"
     set:html={serializarJsonLd(

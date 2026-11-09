@@ -1,123 +1,162 @@
 ---
-import { site } from '../../lib/site';
-const { years } = await site('about');
+// Prólogo y línea de tiempo: AboutYears de la plantilla Marby. En escritorio cada hito muestra su título y, al pasar
+// el cursor, su texto; en tablet y móvil se ve el texto. Se agrega lo que exigen las reglas: el texto no depende solo
+// del cursor (en pantallas táctiles se ve siempre) y, mientras está oculto, sigue disponible para lectores de pantalla.
+// Con 3 hitos la cuadrícula de tablet es de 3 columnas, para que no quede un hueco. Medidas, de la plantilla.
+interface Hito {
+  anio: string;
+  titulo: string;
+  texto: string;
+}
+interface Props {
+  etiqueta: string;
+  texto: string;
+  hitos: Hito[];
+}
+const { etiqueta, texto, hitos } = Astro.props;
 ---
 
 <section class="years">
-  <div class="container years__inner">
+  <div class="years__inner">
     <div class="years__head">
       <p class="t-caption2 years__label" data-appear>
-        {years.label}
+        {etiqueta}
       </p>
-      <p class="t-body years__text" data-appear>
-        {years.text}
+      <p class="t-body years__text" data-appear style="--appear-delay:0.1s">
+        {texto}
       </p>
     </div>
-    <div class="years__row">
-      {years.milestones.map((m: any) => (
-        <div class="mcard" data-appear>
-          <p class="t-caption2 mcard__title">{m.title}</p>
-          <p class="t-body mcard__text">{m.text}</p>
-          <p class="t-h2">{m.year}</p>
-        </div>
+    <ul class="years__row">
+      {hitos.map((h, i) => (
+        <li class="mcard" data-appear style={`--appear-delay:${0.2 + i * 0.1}s`}>
+          <p class="t-caption2 mcard__title">{h.titulo}</p>
+          <p class="t-body mcard__text">{h.texto}</p>
+          <p class="t-h2">{h.anio}</p>
+        </li>
       ))}
-    </div>
+    </ul>
   </div>
 </section>
 <style>
   .years {
     background: var(--dx-blanco);
-    padding-block: var(--esp-8);
+    padding: 80px 20px;
   }
   .years__inner {
+    max-width: 1240px;
+    margin-inline: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--esp-7);
+    gap: 40px;
   }
   .years__head {
     display: flex;
-    flex-direction: column;
-    gap: var(--esp-3);
+    gap: 20px;
+  }
+  .years__label {
+    flex: 1;
+  }
+  .years__text {
+    flex: 1;
+    max-width: 460px;
   }
   .years__row {
     display: flex;
-    flex-direction: column;
-    gap: var(--esp-5);
+    gap: 20px;
   }
   .mcard {
+    flex: 1 1 0;
     min-width: 0;
-    padding: var(--esp-4);
-    border-radius: var(--radio);
+    height: 230px;
+    padding: 20px;
+    border-radius: 8px;
     background: var(--dx-gris-claro);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: var(--esp-7);
+    gap: 10px;
     overflow: hidden;
   }
   .mcard__title {
-    display: none;
+    padding-bottom: 20px;
+    box-shadow: inset 0 -1px 0 var(--dx-gris-medio);
   }
   .mcard > .t-h2 {
     margin-top: auto;
   }
-  @keyframes mcard-in {
-    from {
-      opacity: 0;
-    }
-  }
-  @media (min-width: 768px) {
-    .years__row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .years__head {
-      flex-direction: row;
-      justify-content: space-between;
-    }
-    .years__label,
-    .years__text {
-      flex: 1;
-    }
-  }
-  /* Escritorio: cada hito muestra su título y, al pasar el cursor, su texto. */
-  @media (min-width: 1024px) {
-    .years {
-      padding-block: var(--esp-9);
-    }
-    .years__row {
-      display: flex;
-      flex-direction: row;
-      gap: var(--esp-6);
-    }
+  /* Escritorio: el texto está oculto a la vista pero no a los lectores de pantalla (el original usaba display: none). */
+  @media (min-width: 1200px) {
     .mcard {
-      flex: 1 1 0;
-      padding: var(--esp-5);
-    }
-    .mcard__title {
-      display: block;
-      padding-bottom: var(--esp-4);
-      box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+      position: relative;
     }
     .mcard__text {
-      display: none;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
     }
   }
-  @media (min-width: 1024px) and (hover: hover) {
+  @media (hover: hover) and (min-width: 1200px) {
     .mcard:hover .mcard__title {
       display: none;
     }
     .mcard:hover .mcard__text {
-      display: block;
-      animation: mcard-in var(--dur-media) var(--ease);
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+      animation: fade-in 0.4s var(--ease);
     }
   }
-  @media (min-width: 1024px) and (hover: none) {
+  /* Sin cursor (pantalla táctil) el texto no puede depender del hover: se ve siempre, como en tablet. */
+  @media (hover: none) and (min-width: 1200px) {
     .mcard__title {
       display: none;
     }
     .mcard__text {
-      display: block;
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (max-width: 1199.98px) {
+    .mcard__title {
+      display: none;
+    }
+    .years {
+      padding-block: 40px;
+    }
+    .years__row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 809.98px) {
+    .years__head {
+      flex-direction: column;
+    }
+    .years__text {
+      max-width: none;
+    }
+    .years__row {
+      display: flex;
+      flex-direction: column;
+    }
+    .mcard {
+      flex: none;
+      width: 100%;
     }
   }
 </style>

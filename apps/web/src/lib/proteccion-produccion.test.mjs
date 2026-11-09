@@ -35,9 +35,9 @@ test('paginasConPendientes lista las páginas con [PENDIENTE visible, en texto o
   const paginas = [
     { url: '/', html: '<main><p>[PENDIENTE: proyecto con foto]</p></main>' },
     { url: '/nosotros/', html: '<main><p>Quiénes somos</p></main>' },
-    { url: '/contacto/', html: '<img alt="[PENDIENTE: describir la foto]" src="/a.webp">' },
+    { url: '/proyectos/', html: '<img alt="[PENDIENTE: describir la foto]" src="/a.webp">' },
   ];
-  assert.deepEqual(paginasConPendientes(paginas), ['/', '/contacto/']);
+  assert.deepEqual(paginasConPendientes(paginas), ['/', '/proyectos/']);
 });
 
 test('paginasConPendientes ignora comentarios, scripts, estilos y JSON-LD', () => {

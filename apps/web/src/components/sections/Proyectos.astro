@@ -1,6 +1,6 @@
 ---
 import Foto from '../Foto.astro';
-import type { ProyectoInicio } from '../../content/inicio';
+import type { Proyecto } from '../../content/proyectos';
 
 // Proyectos del Inicio (estructura-sitio sección 5). El Inicio solo dibuja esta sección cuando hay 3 o 4 proyectos
 // con foto y permiso del cliente (lib/proyectos.ts); si no, no aparece nada. Sin enlace a /proyectos/ hasta que esa
@@ -8,7 +8,7 @@ import type { ProyectoInicio } from '../../content/inicio';
 interface Props {
   etiqueta: string;
   titulo: string;
-  items: ProyectoInicio[];
+  items: Proyecto[];
 }
 const { etiqueta, titulo, items } = Astro.props;
 ---

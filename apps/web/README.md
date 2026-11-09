@@ -15,7 +15,7 @@ pnpm preview  # sirve dist/
 ```
 src/
   components/        Nav, Footer, WhatsApp, BotonLlamar, Seo, SchemaNegocio, Btn, Icon
-    sections/, ui/   componentes de la plantilla Marby, hoy sin usar (referencia visual)
+    sections/, ui/   componentes de Marby; PageHeader, AboutYears, AboutBeliefs, AboutVision y Team se usan en /nosotros/; Offices y HomeAbout siguen sin usarse
   layouts/Base.astro head, nav, pie, botón de WhatsApp, scripts
   lib/negocio.ts     datos del negocio, mensajes de WhatsApp (fuente única)
   lib/paginas.ts     registro de páginas: estado y si están construidas

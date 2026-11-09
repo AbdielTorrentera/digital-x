@@ -80,7 +80,7 @@ La plantilla trae cosas que chocan con las reglas. Al trabajar en cada sección:
 - **Imágenes de contenido como fondo CSS:** pasarlas a `<img>` con `alt`, `width` y `height`.
 - **Mapa de Google** en el detalle: quitarlo.
 - **Tarjeta de asesor, sección de equipo, testimonios y logos:** no se muestran sin datos reales y permiso.
-- **Formulario de contacto:** oculto hasta que el dueño decida publicarlo.
+- **Formulario de contacto:** no hay página de contacto (decisión del dueño); no se publica ningún formulario. El contacto es por WhatsApp y llamada.
 - **Badge de tienda y enlaces a Startfrom:** quitarlos (salvo el crédito de licencia).
 - **Animaciones y scroll suave (Lenis):** respetar `prefers-reduced-motion` y medir que no afecten el INP en móvil.
 - **Fotos de demo de Marby:** no están licenciadas; no pueden llegar a producción.

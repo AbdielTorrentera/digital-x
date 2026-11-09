@@ -1,5 +1,6 @@
 ---
-// Centred label + H1 used by About, Contact, Terms and Blog.
+// Etiqueta y H1 centrados: el PageHeader de la plantilla Marby, tal cual. Solo cambian el color (tokens --dx-*) y la
+// tipografía (las del proyecto). Medidas y animación, las del original.
 interface Props {
   label: string;
   title: string | string[];
@@ -13,7 +14,7 @@ const lines = Array.isArray(title) ? title : [title];
   <p class={labelClass} data-appear="mount">
     {label}
   </p>
-  <h1 class="t-h1 phead__title" data-appear="mount">
+  <h1 class="t-h1 phead__title" data-appear="mount" style="--appear-delay:0.2s">
     {lines.map((l, i) => (
       <>
         {l}
@@ -27,18 +28,17 @@ const lines = Array.isArray(title) ? title : [title];
     position: relative;
     z-index: 1;
     background: var(--dx-blanco);
-    padding: var(--esp-8) var(--margen);
+    padding: 80px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--esp-2);
   }
   .phead__title {
     text-align: center;
   }
-  @media (min-width: 1024px) {
+  @media (max-width: 1199.98px) {
     .phead {
-      padding-block: var(--esp-9);
+      padding-block: 40px;
     }
   }
 </style>

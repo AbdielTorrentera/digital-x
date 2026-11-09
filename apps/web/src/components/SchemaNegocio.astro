@@ -1,5 +1,5 @@
 ---
-import { negocio, zonas } from '../lib/negocio';
+import { idNegocio, negocio, zonas } from '../lib/negocio';
 import { sameAsDeRedes } from '../lib/jsonld';
 
 // JSON-LD del negocio (reglas-seo sección 12).
@@ -7,9 +7,10 @@ import { sameAsDeRedes } from '../lib/jsonld';
 const datos: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  '@id': `${negocio.url}/#negocio`,
+  '@id': idNegocio,
   name: negocio.nombre,
   url: `${negocio.url}/`,
+  foundingDate: negocio.fundacion,
   telephone: negocio.telefono.tel,
   areaServed: zonas.todas.map((zona) => ({ '@type': 'City', name: zona })),
   logo: new URL(negocio.logo, negocio.url).href,

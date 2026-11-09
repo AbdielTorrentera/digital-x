@@ -32,8 +32,11 @@ Versión: borrador de trabajo · 2026-10-23
 | Página | Title | H1 |
 | --- | --- | --- |
 | Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
+| Nosotros | `Nosotros: audio, video y tecnología en Puebla \| Digital X` (57 caracteres) | `Quiénes somos: Digital X, audio, video y tecnología en Puebla` |
 
 Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
+
+Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
 
 ### Resto de páginas
 `[PENDIENTE: SEO de cada página. Se define una por una, en este orden]`
@@ -87,7 +90,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
-- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), un grupo "Digital X" con Proyectos, Nosotros y Contacto, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
+- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
 
@@ -229,7 +232,8 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 
 ## 12. Datos estructurados (JSON-LD)
 
-- **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`).
+- **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`). `foundingDate` = `2018` (el año en que nació la idea).
+- **Nosotros:** un nodo `AboutPage` cuyo `about` y `mainEntity` apuntan por `@id` a `https://digitalx.mx/#negocio`: no se duplica el `ProfessionalService`. Más el `FAQPage` de sus preguntas, que salen del mismo arreglo que se muestra. Sin `Person` ni datos del dueño.
 - **Cada página de servicio:** nodo `Service` con `name`, `serviceType`, `description`, `provider` (referencia al negocio) y `areaServed`.
 - **`FAQPage`** solo en páginas que muestran las preguntas frecuentes en pantalla.
 - **`BreadcrumbList`** en subpáginas.

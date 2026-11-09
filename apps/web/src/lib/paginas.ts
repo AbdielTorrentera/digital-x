@@ -128,8 +128,7 @@ export const paginas: Pagina[] = [
   { url: '/proyectos/', titulo: 'Proyectos', estado: 'lanzamiento', construida: false },
   // [PENDIENTE: número mínimo de artículos para publicar el blog]
   { url: '/blog/', titulo: 'Blog', estado: 'pendiente', construida: false },
-  { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: false },
-  { url: '/contacto/', titulo: 'Contacto', estado: 'lanzamiento', construida: false },
+  { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: true },
   {
     url: '/condiciones-de-contratacion/',
     titulo: 'Condiciones de contratación',
@@ -179,7 +178,8 @@ export interface ItemMenu {
 }
 
 /**
- * Menú principal (panel de pantalla completa de Marby): Inicio · Servicios · Proyectos · Blog · Nosotros · Contacto.
+ * Menú principal (panel de pantalla completa de Marby): Inicio · Servicios · Proyectos · Blog · Nosotros. No hay página
+ * de contacto (decisión del dueño): el teléfono y WhatsApp viven en el pie y en los botones flotantes.
  * Enlaza páginas planeadas (en lanzamiento) aunque aún no estén construidas: llevan a la 404 en desarrollo y el build
  * de producción falla mientras quede alguna. Blog solo aparece cuando está publicado (hoy "pendiente de material").
  * El pie, en cambio, solo muestra páginas construidas.
@@ -190,7 +190,6 @@ export const menu: ItemMenu[] = [
   { url: '/proyectos/' },
   { url: '/blog/', soloPublicada: true },
   { url: '/nosotros/' },
-  { url: '/contacto/' },
 ]
   .map(({ url, soloPublicada }) => {
     const pagina = paginas.find((p) => p.url === url && (soloPublicada ? visible(p) : p.estado === 'lanzamiento'));
@@ -205,8 +204,8 @@ const paginasDelPie = (urls: string[]) =>
     .map((url) => paginas.find((p) => p.url === url && (url === '/blog/' ? visible(p) : p.estado === 'lanzamiento')))
     .filter(Boolean) as Pagina[];
 
-/** Grupo "Digital X" del pie: Proyectos, Nosotros y Contacto (y Blog cuando esté publicado). */
-export const enlacesEmpresa = paginasDelPie(['/proyectos/', '/blog/', '/nosotros/', '/contacto/']);
+/** Grupo "Digital X" del pie: Proyectos y Nosotros (y Blog cuando esté publicado). */
+export const enlacesEmpresa = paginasDelPie(['/proyectos/', '/blog/', '/nosotros/']);
 
 /** Línea inferior del pie, junto al ©: Condiciones de contratación y Política de privacidad. */
 export const enlacesLegales = paginasDelPie(['/condiciones-de-contratacion/', '/politica-de-privacidad/']);

@@ -1,6 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { aboutPageJsonLd, faqPageJsonLd, sameAsDeRedes, serializarJsonLd } from './jsonld.ts';
+import {
+  aboutPageJsonLd,
+  breadcrumbListJsonLd,
+  collectionPageJsonLd,
+  faqPageJsonLd,
+  sameAsDeRedes,
+  serializarJsonLd,
+  serviceJsonLd,
+} from './jsonld.ts';
 
 test('serializarJsonLd escapa lo que podría cerrar el script o inyectar HTML', () => {
   const salida = serializarJsonLd({ texto: '</script><img src=x onerror=alert(1)> & más' });
@@ -61,4 +69,62 @@ test('aboutPageJsonLd apunta por @id al negocio y no declara otro negocio', () =
   assert.deepEqual(datos.mainEntity, { '@id': 'https://digitalx.mx/#negocio' });
   const texto = JSON.stringify(datos);
   assert.ok(!texto.includes('ProfessionalService') && !texto.includes('Person'));
+});
+
+test('breadcrumbListJsonLd numera las migas y lleva la URL de cada una', () => {
+  const datos = breadcrumbListJsonLd([
+    { nombre: 'Inicio', url: 'https://digitalx.mx/' },
+    { nombre: 'Servicios de audio', url: 'https://digitalx.mx/servicios-de-audio/' },
+  ]);
+  assert.equal(datos['@type'], 'BreadcrumbList');
+  assert.deepEqual(
+    datos.itemListElement.map((m) => [m.position, m.name, m.item]),
+    [
+      [1, 'Inicio', 'https://digitalx.mx/'],
+      [2, 'Servicios de audio', 'https://digitalx.mx/servicios-de-audio/'],
+    ],
+  );
+});
+
+test('serviceJsonLd referencia al negocio por @id y solo lleva url si la página existe', () => {
+  const base = {
+    nombre: 'Transmisión en vivo',
+    tipo: 'Servicios de video',
+    descripcion: 'Tu evento en vivo por internet.',
+    idNegocio: 'https://digitalx.mx/#negocio',
+  };
+  const sinPagina = serviceJsonLd(base);
+  assert.equal(sinPagina['@type'], 'Service');
+  assert.deepEqual(sinPagina.provider, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.ok(!('url' in sinPagina));
+  assert.equal(
+    serviceJsonLd({ ...base, url: 'https://digitalx.mx/servicios-de-video/streaming/' }).url,
+    'https://digitalx.mx/servicios-de-video/streaming/',
+  );
+  assert.ok(!/ProfessionalService|address|"geo"/.test(JSON.stringify(sinPagina)));
+});
+
+test('collectionPageJsonLd lista los elementos en orden y apunta por @id al negocio', () => {
+  const datos = collectionPageJsonLd({
+    url: 'https://digitalx.mx/servicios/',
+    nombre: 'Servicios',
+    descripcion: 'Elige tu servicio.',
+    idNegocio: 'https://digitalx.mx/#negocio',
+    elementos: [
+      { name: 'Servicios de audio', url: 'https://digitalx.mx/servicios-de-audio/' },
+      { name: 'Servicios de video', url: 'https://digitalx.mx/servicios-de-video/' },
+    ],
+  });
+  assert.equal(datos['@type'], 'CollectionPage');
+  assert.equal(datos['@id'], 'https://digitalx.mx/servicios/#pagina');
+  assert.deepEqual(datos.about, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.equal(datos.mainEntity['@type'], 'ItemList');
+  assert.deepEqual(
+    datos.mainEntity.itemListElement.map((e) => [e['@type'], e.position, e.name]),
+    [
+      ['ListItem', 1, 'Servicios de audio'],
+      ['ListItem', 2, 'Servicios de video'],
+    ],
+  );
+  assert.ok(!/ProfessionalService|"address"|"geo"/.test(JSON.stringify(datos)));
 });

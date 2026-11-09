@@ -53,3 +53,69 @@ export const faqPageJsonLd = (preguntas: PreguntaFrecuente[]) => ({
     acceptedAnswer: { '@type': 'Answer', text: respuesta },
   })),
 });
+
+export interface Miga {
+  nombre: string;
+  /** URL absoluta de la página. */
+  url: string;
+}
+
+/** BreadcrumbList con las mismas migas que se ven en pantalla (reglas-seo sección 12). */
+export const breadcrumbListJsonLd = (migas: Miga[]) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: migas.map(({ nombre, url }, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: nombre,
+    item: url,
+  })),
+});
+
+export interface DatosServicio {
+  nombre: string;
+  /** Tipo de servicio: la categoría ("Servicios de audio"). */
+  tipo: string;
+  descripcion: string;
+  /** @id del negocio ya declarado en el sitio: el proveedor se referencia, no se duplica. */
+  idNegocio: string;
+  /** URL absoluta de su página; solo si ya está construida. */
+  url?: string;
+}
+
+/** Service (sin @context, para ir dentro de un ItemList). `areaServed` queda en el negocio (reglas-seo sección 12). */
+export const serviceJsonLd = ({ nombre, tipo, descripcion, idNegocio, url }: DatosServicio) => ({
+  '@type': 'Service',
+  name: nombre,
+  serviceType: tipo,
+  description: descripcion,
+  provider: { '@id': idNegocio },
+  ...(url ? { url } : {}),
+});
+
+export interface DatosCollectionPage {
+  /** URL absoluta de la página. */
+  url: string;
+  nombre: string;
+  descripcion: string;
+  /** @id del negocio ya declarado en el sitio (ProfessionalService): se referencia, no se duplica. */
+  idNegocio: string;
+  /** Lo que lista la página: cada uno es el contenido de un ListItem (`item`, o `name` y `url`). */
+  elementos: Record<string, unknown>[];
+}
+
+/** CollectionPage con un ItemList de lo que la página muestra; apunta por @id al negocio existente. */
+export const collectionPageJsonLd = ({ url, nombre, descripcion, idNegocio, elementos }: DatosCollectionPage) => ({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${url}#pagina`,
+  url,
+  name: nombre,
+  description: descripcion,
+  inLanguage: 'es-MX',
+  about: { '@id': idNegocio },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: elementos.map((elemento, i) => ({ '@type': 'ListItem', position: i + 1, ...elemento })),
+  },
+});

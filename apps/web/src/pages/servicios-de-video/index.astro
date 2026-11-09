@@ -1,0 +1,14 @@
+---
+import PaginaCategoria from '../../components/PaginaCategoria.astro';
+import { categorias } from '../../content/servicios';
+
+// ⚠ FOTO TEMPORAL (src/assets/temporales/, ver su README). Para poner una real: cambiar el import y el alt.
+import fotoPrincipal from '../../assets/temporales/temporal-conferencia-escenario-pantalla.jpg';
+
+const foto = {
+  src: fotoPrincipal,
+  alt: 'Presentador con micrófono en un escenario con pantalla grande y luces',
+};
+---
+
+<PaginaCategoria datos={categorias.video} foto={foto} />

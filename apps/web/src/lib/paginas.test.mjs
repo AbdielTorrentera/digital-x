@@ -86,7 +86,7 @@ test('archivosDe da las rutas posibles del archivo de cada página', () => {
 
 const servicios = paginas.filter((p) => p.categoria && !p.hub);
 
-test('hay 10 servicios, todos en "lanzamiento", y ninguno construido todavía', () => {
+test('hay 10 servicios, todos en "lanzamiento"', () => {
   assert.equal(servicios.length, 10);
   for (const p of servicios) assert.equal(p.estado, 'lanzamiento', p.url);
 });

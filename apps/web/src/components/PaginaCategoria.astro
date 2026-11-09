@@ -1,0 +1,374 @@
+---
+import Base from '../layouts/Base.astro';
+import Btn from './Btn.astro';
+import Foto from './Foto.astro';
+import Icon from './Icon.astro';
+import Migas from './Migas.astro';
+import Faq from './sections/Faq.astro';
+import type { DatosCategoria } from '../content/servicios';
+import type { Foto as FotoDatos } from '../content/inicio';
+import { enlaceAPagina } from '../lib/enlaces';
+import { collectionPageJsonLd, serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
+import { idNegocio, negocio, waUrl } from '../lib/negocio';
+import { serviciosDe } from '../lib/servicios';
+
+// Plantilla única de las 3 categorías (Audio, Video y Tecnología), con datos distintos: la página de detalle de la
+// plantilla Marby (migas, barra con el título, foto con ficha, navegación interna, secciones, tarjeta de contacto y
+// preguntas frecuentes). Se quitan la tarjeta de asesor, el mapa y la galería: no hay datos ni material. Los servicios
+// salen de paginas.ts: su nombre es enlace solo cuando su página está construida; si no, es texto.
+interface Props {
+  datos: DatosCategoria;
+  foto: FotoDatos;
+}
+const { datos, foto } = Astro.props;
+
+const absoluta = (ruta: string) => new URL(ruta, negocio.url).href;
+const servicios = serviciosDe(datos.categoria).map((servicio) => {
+  const frase = datos.servicios.items.find((item) => item.url === servicio.url)?.frase;
+  if (!frase) throw new Error(`Falta la frase de ${servicio.url} en content/servicios.ts.`);
+  return { ...servicio, frase };
+});
+
+const datosEstructurados = collectionPageJsonLd({
+  url: absoluta(datos.url),
+  nombre: datos.title,
+  descripcion: datos.descripcion,
+  idNegocio,
+  elementos: servicios.map((servicio) => ({
+    item: serviceJsonLd({
+      nombre: servicio.titulo,
+      tipo: datos.nombre,
+      descripcion: servicio.frase,
+      idNegocio,
+      url: servicio.construida ? absoluta(servicio.url) : undefined,
+    }),
+  })),
+});
+const whatsapp = waUrl(datos.cotizacion.mensaje);
+---
+
+<!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
+<Base title={datos.title} description={datos.descripcion} whatsapp={datos.cotizacion.mensaje}>
+  <section class="cat">
+    <div class="container cat__inner">
+      <Migas
+        items={[
+          { titulo: 'Inicio', url: '/' },
+          { titulo: datos.nombre, url: datos.url },
+        ]}
+      />
+      <div class="cat__nombre">
+        <h1 class="t-h1">{datos.h1}</h1>
+        <p class="t-caption" aria-hidden="true">
+          {datos.contador}
+        </p>
+      </div>
+      <div class="cat__arriba">
+        <Foto class="cat__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 60vw, 100vw" prioritaria />
+        <dl class="cat__ficha">
+          {datos.ficha.map((fila) => (
+            <div class="cat__fila">
+              <dt class="t-caption2">{fila.etiqueta}</dt>
+              <dd class="t-body">{fila.valor}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div class="cat__contenido">
+        <div class="cat__izquierda">
+          <nav class="salto" data-jump data-jump-offset="176" aria-label="En esta página">
+            <a class="salto__enlace t-body-sm is-active" href="#que-hacemos">
+              Qué hacemos
+            </a>
+            <a class="salto__enlace t-body-sm" href="#servicios">
+              Servicios
+            </a>
+            <a class="salto__enlace t-body-sm" href="#mas-servicios">
+              Te puede servir
+            </a>
+          </nav>
+          <div class="prose cat__bloque" id="que-hacemos" data-appear>
+            <h2>{datos.queHacemos.titulo}</h2>
+            {datos.queHacemos.parrafos.map((parrafo) => (
+              <p>{parrafo}</p>
+            ))}
+          </div>
+          <div class="cat__bloque" id="servicios" data-appear>
+            <h2 class="t-h2">{datos.servicios.titulo}</h2>
+            <ul class="srv">
+              {servicios.map((servicio) => (
+                <li class="srv__item">
+                  <span class="srv__icono">
+                    <Icon name="check" />
+                  </span>
+                  <h3 class="t-h3">
+                    {servicio.construida ? (
+                      <a class="srv__enlace" href={enlaceAPagina(servicio.url)}>
+                        {servicio.titulo}
+                      </a>
+                    ) : (
+                      servicio.titulo
+                    )}
+                  </h3>
+                  <p class="t-body">{servicio.frase}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="cat__bloque" id="mas-servicios" data-appear>
+            <h2 class="t-h2">{datos.tambien.titulo}</h2>
+            <ul class="cerca">
+              {datos.tambien.items.map((item) => (
+                <li>
+                  <a class="cerca__enlace" href={enlaceAPagina(item.url)}>
+                    <span class="cerca__titulo t-h3">{item.titulo}</span>
+                    <span class="t-body">{item.texto}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <aside class="cat__lateral">
+          <div class="cotiza sobre-negro">
+            <p class="t-caption2 c-gris">{datos.cotizacion.etiqueta}</p>
+            <p class="t-body c-blanco">{datos.cotizacion.texto}</p>
+            <Btn
+              label="Cotizar por WhatsApp"
+              href={whatsapp}
+              target="_blank"
+              rel="noopener"
+              aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  <Faq {...datos.faq} />
+  <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
+</Base>
+<style>
+  /* Alto de la barra del menú (fija) y de la barra de navegación interna: de ahí salen los desfases de abajo. */
+  .cat {
+    --nav-alto: 88px;
+    /* La barra mide 56 px, y 66 si un nombre se parte en dos líneas (360 px): se reserva lo del peor caso. */
+    --salto-alto: calc(var(--tactil) + var(--esp-5));
+    background: var(--dx-blanco);
+    padding-block: var(--esp-2) var(--esp-8);
+  }
+  .cat__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .cat__nombre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-4);
+    padding: var(--esp-3) var(--esp-4);
+    border-radius: var(--radio);
+    background: var(--dx-gris-claro);
+  }
+
+  /* Foto principal y ficha. <picture> no pinta caja: el <img> es el elemento del flujo. */
+  .cat__arriba {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .cat__foto :global(picture) {
+    display: contents;
+  }
+  .cat__foto :global(.cat__img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radio);
+  }
+  .cat__ficha {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .cat__fila {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    padding-block: var(--esp-3);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .cat__fila:last-child {
+    box-shadow: none;
+  }
+  .cat__fila dd {
+    margin: 0;
+  }
+
+  .cat__contenido {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  .cat__izquierda {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+
+  /* Navegación interna: los jump links de Marby. Se queda fija debajo del menú mientras se recorre la página. */
+  .salto {
+    position: sticky;
+    top: var(--nav-alto);
+    z-index: 2;
+    display: flex;
+    gap: var(--esp-1);
+    padding: var(--esp-1);
+    border-radius: var(--radio);
+    background: var(--dx-gris-claro);
+  }
+  .salto__enlace {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tactil);
+    padding: var(--esp-2);
+    border-radius: var(--radio-chico);
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
+    text-align: center;
+  }
+  .salto__enlace.is-active {
+    background: var(--dx-negro);
+    color: var(--dx-blanco);
+  }
+  /* Los títulos de sección no quedan bajo el menú ni bajo la barra interna al saltar a ellos. */
+  .cat__bloque {
+    scroll-margin-top: calc(var(--nav-alto) + var(--salto-alto) + var(--esp-4));
+  }
+  .cat__bloque > :global(h2),
+  .cat__bloque > .t-h2 {
+    margin-bottom: var(--esp-5);
+  }
+  .cat__bloque.prose > :global(h2) {
+    margin-bottom: 0;
+  }
+
+  /* Tarjetas de servicio (los highlights de Marby). Con página construida, el título es un enlace extendido a toda la
+     tarjeta (::after); sin ella, es texto. */
+  .srv {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-5);
+  }
+  .srv__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-2);
+    padding: var(--esp-4);
+    border: var(--linea) solid var(--dx-borde-tarjeta);
+    border-radius: var(--radio);
+    background: var(--dx-gris-claro);
+  }
+  .srv__icono {
+    display: grid;
+    place-items: center;
+    padding: var(--esp-2);
+    border-radius: var(--radio-chico);
+    background: var(--dx-blanco);
+  }
+  .srv__enlace {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .srv__enlace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* "También te puede servir": filas con línea, como la lista de lugares cercanos de Marby. */
+  .cerca {
+    display: flex;
+    flex-direction: column;
+  }
+  .cerca li {
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .cerca li:last-child {
+    box-shadow: none;
+  }
+  .cerca__enlace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    min-height: var(--tactil);
+    padding-block: var(--esp-3);
+  }
+  .cerca__titulo {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .cerca__enlace:hover .cerca__titulo {
+    text-decoration-thickness: var(--foco);
+  }
+
+  /* Tarjeta de cotización (la tarjeta oscura del lateral de Marby): la única acción principal de la página. */
+  .cotiza {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esp-4);
+    padding: var(--esp-5);
+    border-radius: var(--radio);
+  }
+
+  @media (min-width: 768px) {
+    .srv {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .cerca__enlace {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--esp-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .cat {
+      padding-block: var(--esp-4) var(--esp-9);
+    }
+    .cat__arriba {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--medianil);
+    }
+    .cat__foto {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .cat__ficha {
+      flex: none;
+      width: 340px;
+    }
+    .cat__contenido {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--medianil);
+    }
+    .cat__izquierda {
+      flex: 1 1 0;
+    }
+    .cat__lateral {
+      flex: none;
+      width: 340px;
+      position: sticky;
+      top: calc(var(--nav-alto) + var(--esp-4));
+    }
+  }
+</style>

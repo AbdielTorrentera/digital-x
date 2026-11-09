@@ -24,7 +24,7 @@ export interface Pagina {
 
 export const paginas: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
-  { url: '/servicios/', titulo: 'Servicios', estado: 'lanzamiento', construida: false },
+  { url: '/servicios/', titulo: 'Servicios', estado: 'lanzamiento', construida: true },
 
   // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Cada página se
   // publica cuando el dueño apruebe sus fotos y videos: hasta entonces `construida` es false y no se enlaza.
@@ -32,7 +32,7 @@ export const paginas: Pagina[] = [
     url: '/servicios-de-audio/',
     titulo: 'Audio',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'audio',
     hub: true,
   },
@@ -48,7 +48,7 @@ export const paginas: Pagina[] = [
     url: '/servicios-de-video/',
     titulo: 'Video',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'video',
     hub: true,
   },
@@ -92,7 +92,7 @@ export const paginas: Pagina[] = [
     url: '/servicios-de-tecnologia/',
     titulo: 'Tecnología',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'tecnologia',
     hub: true,
   },

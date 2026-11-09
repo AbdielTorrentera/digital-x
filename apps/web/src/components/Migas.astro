@@ -1,0 +1,61 @@
+---
+import { breadcrumbListJsonLd, serializarJsonLd } from '../lib/jsonld';
+import { negocio } from '../lib/negocio';
+
+// Migas de pan (estructura-sitio sección 4): Inicio › Categoría › Servicio. El BreadcrumbList (JSON-LD) sale de la
+// misma lista que se muestra, así nunca difieren. La última miga es la página actual y no es enlace.
+interface Props {
+  items: { titulo: string; url: string }[];
+}
+const { items } = Astro.props;
+const migas = items.map(({ titulo, url }) => ({ nombre: titulo, url: new URL(url, negocio.url).href }));
+---
+
+<nav class="migas" aria-label="Migas de pan">
+  <ol class="migas__lista">
+    {items.map((item, i) => (
+      <li class="migas__item t-body-sm">
+        {i < items.length - 1 ? (
+          <a class="migas__enlace" href={item.url}>
+            {item.titulo}
+          </a>
+        ) : (
+          <span class="migas__actual" aria-current="page">
+            {item.titulo}
+          </span>
+        )}
+      </li>
+    ))}
+  </ol>
+  <script type="application/ld+json" set:html={serializarJsonLd(breadcrumbListJsonLd(migas))} />
+</nav>
+<style>
+  .migas__lista {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--esp-2);
+  }
+  .migas__item {
+    display: flex;
+    align-items: center;
+    column-gap: var(--esp-2);
+  }
+  .migas__item + .migas__item::before {
+    content: '/';
+  }
+  /* Enlace subrayado (diseño §5.6) y con zona de toque de 48 px de alto, sin cambiar el tamaño de la letra. */
+  .migas__enlace {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tactil);
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .migas__enlace:hover {
+    text-decoration-thickness: var(--foco);
+  }
+  .migas__actual {
+    font-weight: 600;
+  }
+</style>

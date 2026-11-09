@@ -34,12 +34,15 @@ Versión: borrador de trabajo · 2026-10-23
 | Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
 | Nosotros | `Nosotros: audio, video y tecnología en Puebla \| Digital X` (57 caracteres) | `Quiénes somos: Digital X, audio, video y tecnología en Puebla` |
 | Condiciones de contratación | `Condiciones de contratación \| Digital X` (39 caracteres) | `Condiciones de contratación` |
+| Política de privacidad | `Política de privacidad \| Digital X` (34 caracteres) | `Política de privacidad` |
 
 Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
 
 Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
 
 Meta de Condiciones de contratación (139 caracteres): `Cómo contratar a Digital X: anticipo, pagos, cancelación, horas extra y viáticos en eventos, y cómo trabajamos los proyectos de tecnología.`
+
+Meta de Política de privacidad (132 caracteres): `Qué datos personales recibe Digital X cuando nos contactas por WhatsApp o teléfono, para qué los usamos y cómo ejercer tus derechos.`
 
 ### Resto de páginas
 `[PENDIENTE: SEO de cada página. Se define una por una, en este orden]`
@@ -272,7 +275,7 @@ Como no hay dirección pública, la consistencia se aplica a **nombre y teléfon
    - **PROHIBIDO** escribirles el texto, ofrecer descuentos o pagos por reseña, o pedirlas solo a clientes satisfechos.
    - Responder todas las reseñas.
 3. **Search Console:** verificar `digitalx.mx` y `digitalequis.com`; usar la herramienta de cambio de dirección; enviar el sitemap.
-4. **Analítica:** configurar GA4 con los eventos de la sección 11.
+4. **Analítica:** configurar GA4 con los eventos de la sección 11. ⚠ Activar GA4 o Vercel Analytics requiere antes actualizar `/politica-de-privacidad/` (cookies y analítica).
 5. **Directorios y redes:** mismos nombre y teléfono en Facebook, Instagram y directorios locales.
 6. **Dominio anterior:** renovarlo por varios años. Hoy sus servidores de nombres apuntan a un estacionamiento de Hostinger y no responde: regresarlos a GoDaddy (o al DNS que se elija) **antes** de lanzar, o las redirecciones 301 no funcionarán. Para no perder correos a las direcciones viejas, configurar reenvío de `@digitalequis.com` al correo nuevo.
 

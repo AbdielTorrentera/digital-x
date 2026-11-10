@@ -31,7 +31,9 @@ export type EnlaceRelacionado = { texto: string } & ({ slug: Slug } | { titulo: 
 
 /** Un bloque de una sección extra: un párrafo, una lista con viñetas o puntos con título ("Por hora: …"). */
 export type BloqueDeSeccion =
-  { parrafo: string } | { lista: string[] } | { puntos: { titulo: string; texto: string | TextoConEnlaces }[] };
+  | { parrafo: string | TextoConEnlaces }
+  | { lista: string[] }
+  | { puntos: { titulo: string; texto: string | TextoConEnlaces }[] };
 
 export interface SeccionExtra {
   /** Id de la sección y de su enlace en la navegación interna. */
@@ -42,8 +44,11 @@ export interface SeccionExtra {
   bloques: BloqueDeSeccion[];
 }
 
-/** Un párrafo con enlaces a servicios: trozos de texto y `{ slug, texto }` (su página si está publicada, o su tarjeta). */
-export type TextoConEnlaces = (string | { slug: Slug; texto: string })[];
+/**
+ * Un párrafo con enlaces: trozos de texto, `{ slug, texto }` (la página de un servicio si está publicada, o su tarjeta) y
+ * `{ url, texto }` (otra página del registro, como las condiciones de contratación).
+ */
+export type TextoConEnlaces = (string | { slug: Slug; texto: string } | { url: string; texto: string })[];
 
 /** El texto plano de un texto con enlaces (sin los enlaces). */
 const comoTexto = (texto: string | TextoConEnlaces): string =>
@@ -53,7 +58,7 @@ const comoTexto = (texto: string | TextoConEnlaces): string =>
 export const textosDeBloques = (bloques: BloqueDeSeccion[]): string[] =>
   bloques.flatMap((bloque) =>
     'parrafo' in bloque
-      ? [bloque.parrafo]
+      ? [comoTexto(bloque.parrafo)]
       : 'lista' in bloque
         ? bloque.lista
         : bloque.puntos.map((punto) => `${punto.titulo}: ${comoTexto(punto.texto)}`),
@@ -887,15 +892,148 @@ export const servicios: Record<Slug, ServicioContenido> = {
   },
 
   'paginas-web': {
-    descripcion: 'Diseño y desarrollo de páginas web y landing pages para negocios.',
+    descripcion: 'Diseño y desarrollo de páginas web y landing pages para negocios, con dominio y hosting aparte.',
     title: 'Diseño de páginas web en Puebla y Atlixco | Digital X',
-    meta: 'Diseño y desarrollo de páginas web y landing pages para negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.',
-    h1: 'Diseño de páginas web en Puebla y Atlixco',
+    meta: 'Diseño y desarrollo de páginas web y landing pages para negocios en Puebla y Atlixco. Dominio y hosting aparte. Cotiza por WhatsApp.',
+    h1: 'Diseño y desarrollo de páginas web en Puebla',
     para: 'Negocios',
     incluye: 'Páginas web y landing pages',
     mensaje: mensajesWhatsApp.paginasWeb,
+    serviceType: 'Diseño y desarrollo de páginas web y landing pages',
     pagina: {
+      ficha: [
+        { etiqueta: 'Tipos', valor: 'Landing page, página informativa o sitio con funciones' },
+        { etiqueta: 'Administración', valor: 'Parte administrable básica' },
+        { etiqueta: 'Dominio y hosting', valor: 'Aparte y a tu nombre' },
+      ],
+      descripcion: {
+        titulo: 'Tu página web, diseñada y desarrollada para tu negocio',
+        parrafos: [
+          'En Digital X diseñamos y desarrollamos páginas web y landing pages para negocios, profesionistas y organizaciones en Puebla, Atlixco, Izúcar de Matamoros y alrededores.',
+          'Empezamos por entender tu negocio, diseñamos la página, la desarrollamos y la publicamos. Cada proyecto se cotiza según su tamaño y sus funciones: cuéntanos qué necesitas y te respondemos con una propuesta.',
+        ],
+      },
+      incluye: [
+        'Levantamiento de requerimientos e información de tu negocio',
+        'Diseño de la página',
+        'Desarrollo de la página, adaptada a celular',
+        'Una parte administrable básica para que actualices algunos contenidos',
+        'Publicación del sitio',
+        'Hasta 3 ajustes pequeños al entregar',
+      ],
+      incluyeNota: [
+        'El dominio y el hosting se contratan aparte y quedan a tu nombre. El logo, los textos y las fotos los entregas tú; si lo prefieres, nosotros los ponemos con un costo aparte. El mantenimiento se cotiza aparte, y los cambios mayores después de la entrega no están incluidos.',
+      ],
+      secciones: [
+        {
+          id: 'tipos-de-pagina',
+          etiqueta: 'Tipos de página',
+          titulo: 'Tipos de página',
+          bloques: [
+            {
+              puntos: [
+                {
+                  titulo: 'Landing page',
+                  texto:
+                    'una sola página para presentar un servicio, un evento o una campaña, con botón de WhatsApp o formulario.',
+                },
+                {
+                  titulo: 'Página informativa',
+                  texto: 'varias secciones para presentar tu negocio, tus servicios y tus datos de contacto.',
+                },
+                {
+                  titulo: 'Sitio con funciones',
+                  texto: 'formularios, secciones especiales o integraciones, según lo que necesites.',
+                },
+              ],
+            },
+            {
+              parrafo: [
+                'Si lo que quieres es vender por internet, mira nuestra página de ',
+                { slug: 'tienda-en-linea', texto: 'tienda en línea' },
+                '. Si necesitas algo más a la medida, consulta ',
+                { slug: 'aplicaciones-moviles', texto: 'aplicaciones móviles' },
+                ' y ',
+                { slug: 'desarrollo-de-software', texto: 'desarrollo de software' },
+                '.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'posicionamiento',
+          etiqueta: 'Posicionamiento',
+          titulo: 'Posicionamiento en Google',
+          bloques: [
+            {
+              parrafo:
+                'Una página nueva no aparece sola arriba en los resultados de Google. Aparecer bien es un trabajo aparte y continuo, y no lo prometemos como parte del precio de la página. Sí dejamos tu página adaptada a celular y con una estructura clara.',
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'El número de secciones o páginas',
+                'Las funciones que necesites (formularios, integraciones, secciones especiales)',
+                'Si quieres que pongamos el logo, los textos o las fotos',
+                'El mantenimiento, si lo contratas',
+                'El dominio y el hosting, que van aparte',
+              ],
+            },
+            {
+              parrafo: [
+                'El pago se hace por etapas, como explican nuestras ',
+                { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+                '.',
+              ],
+            },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Tu negocio necesita algo más que una página?',
+        items: [
+          { slug: 'tienda-en-linea', texto: 'Si además quieres vender por internet' },
+          { slug: 'aplicaciones-moviles', texto: 'Una aplicación para el celular de tus clientes' },
+          { slug: 'desarrollo-de-software', texto: 'Un sistema para los procesos de tu negocio' },
+          { slug: 'video-con-drone', texto: 'Fotos y video aéreo de tu negocio para tu página' },
+          { slug: 'video-para-eventos', texto: 'Video de tus eventos para mostrar en tu página' },
+          proyectos,
+          condiciones('Cómo se paga un proyecto por etapas'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu página',
+        texto:
+          'Cuéntanos a qué se dedica tu negocio, si quieres una landing page o varias secciones y si ya tienes logo, textos, fotos y dominio.',
+      },
+      cierre: {
+        titulo: 'Que tu negocio se vea en internet',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos la página web de tu negocio.',
+      },
       faq: [
+        {
+          pregunta: '¿Cuánto tarda en hacerse?',
+          respuesta:
+            'Depende de cuántas secciones y funciones lleve, y de qué tan pronto nos entregues la información. El plazo se acuerda al cotizar.',
+        },
+        {
+          pregunta: '¿Pago una sola vez?',
+          respuesta: 'No. El dominio y el hosting se renuevan cada año.',
+        },
+        {
+          pregunta: '¿Puedo actualizar mi página yo mismo?',
+          respuesta: 'En parte: algunos contenidos los puedes actualizar tú; los demás cambios los hacemos nosotros.',
+        },
+        {
+          pregunta: '¿Puedo cambiarle todo después de la entrega?',
+          respuesta: 'No. Los cambios mayores no forman parte del proyecto.',
+        },
         {
           pregunta: '¿Qué diferencia hay entre una página web y una tienda en línea?',
           respuesta:

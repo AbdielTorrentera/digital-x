@@ -113,7 +113,7 @@ test('un servicio con la página construida trae todo su contenido (si no, el bu
   assert.ok(construidas.length > 0);
   for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
   // Y uno incompleto sí se detecta.
-  assert.ok(faltantesDePagina('paginas-web').length > 0);
+  assert.ok(faltantesDePagina('tienda-en-linea').length > 0);
 });
 
 test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
@@ -448,12 +448,152 @@ test('recorridos virtuales 360: sin relación con Google, marcas ni plataformas,
   assert.ok(!/\bdron\b/i.test(texto), '"dron"');
 });
 
+test('páginas web: SEO, ficha, qué incluye, secciones en orden, enlaces dentro de los párrafos y 5 FAQ sin repetir lo que dicen las secciones ni la nota', () => {
+  const c = servicios['paginas-web'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Diseño de páginas web en Puebla y Atlixco | Digital X');
+  assert.equal(c.h1, 'Diseño y desarrollo de páginas web en Puebla');
+  assert.equal(
+    c.meta,
+    'Diseño y desarrollo de páginas web y landing pages para negocios en Puebla y Atlixco. Dominio y hosting aparte. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Diseño y desarrollo de páginas web y landing pages');
+  assert.equal(
+    c.descripcion,
+    'Diseño y desarrollo de páginas web y landing pages para negocios, con dominio y hosting aparte.',
+  );
+  assert.equal(c.mensaje, mensajesWhatsApp.paginasWeb);
+  assert.equal(
+    mensajesWhatsApp.paginasWeb,
+    'Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __',
+  );
+  assert.deepEqual(pagina.ficha, [
+    { etiqueta: 'Tipos', valor: 'Landing page, página informativa o sitio con funciones' },
+    { etiqueta: 'Administración', valor: 'Parte administrable básica' },
+    { etiqueta: 'Dominio y hosting', valor: 'Aparte y a tu nombre' },
+  ]);
+  assert.equal(pagina.descripcion.parrafos.length, 2);
+  assert.deepEqual(pagina.incluye, [
+    'Levantamiento de requerimientos e información de tu negocio',
+    'Diseño de la página',
+    'Desarrollo de la página, adaptada a celular',
+    'Una parte administrable básica para que actualices algunos contenidos',
+    'Publicación del sitio',
+    'Hasta 3 ajustes pequeños al entregar',
+  ]);
+  assert.deepEqual(
+    pagina.secciones.map((s) => [s.id, s.etiqueta, s.titulo]),
+    [
+      ['tipos-de-pagina', 'Tipos de página', 'Tipos de página'],
+      ['posicionamiento', 'Posicionamiento', 'Posicionamiento en Google'],
+      ['precio', 'Precio', 'De qué depende el precio'],
+    ],
+  );
+  const [tipos, posicionamiento, precio] = pagina.secciones;
+  assert.deepEqual(
+    tipos.bloques[0].puntos.map((p) => p.titulo),
+    ['Landing page', 'Página informativa', 'Sitio con funciones'],
+  );
+  assert.equal(precio.bloques[0].lista.length, 5);
+  // Los párrafos de "Tipos de página" y de "precio" llevan enlaces: a tres servicios y a las condiciones de contratación.
+  assert.deepEqual(
+    tipos.bloques[1].parrafo.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['tienda-en-linea', 'aplicaciones-moviles', 'desarrollo-de-software'],
+  );
+  assert.equal(
+    textosDeBloques(tipos.bloques)[3],
+    'Si lo que quieres es vender por internet, mira nuestra página de tienda en línea. Si necesitas algo más a la medida, consulta aplicaciones móviles y desarrollo de software.',
+  );
+  assert.equal(
+    textosDeBloques(precio.bloques)[5],
+    'El pago se hace por etapas, como explican nuestras condiciones de contratación.',
+  );
+  const enlaceDeCondiciones = precio.bloques[1].parrafo.filter((t) => typeof t !== 'string');
+  assert.deepEqual(enlaceDeCondiciones, [
+    { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+  ]);
+  for (const { url } of enlaceDeCondiciones) assert.ok(urlsPlaneadas.includes(url), url);
+  assert.deepEqual(
+    pagina.tambien.items.map((i) => i.slug ?? i.url),
+    [
+      'tienda-en-linea',
+      'aplicaciones-moviles',
+      'desarrollo-de-software',
+      'video-con-drone',
+      'video-para-eventos',
+      '/proyectos/',
+      '/condiciones-de-contratacion/',
+    ],
+  );
+  assert.deepEqual(
+    pagina.faq.map((f) => f.pregunta),
+    [
+      '¿Cuánto tarda en hacerse?',
+      '¿Pago una sola vez?',
+      '¿Puedo actualizar mi página yo mismo?',
+      '¿Puedo cambiarle todo después de la entrega?',
+      '¿Qué diferencia hay entre una página web y una tienda en línea?',
+    ],
+  );
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      pagina.incluyeNota.map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+  // La sección de posicionamiento no promete nada: dice lo contrario, con las palabras aprobadas.
+  assert.match(
+    posicionamiento.bloques[0].parrafo,
+    /^Una página nueva no aparece sola arriba en los resultados de Google\./,
+  );
+});
+
+test('páginas web: sin precios, plazos, porcentajes, marcas ni promesas de posicionamiento, y "Google" solo en su sección', () => {
+  const c = servicios['paginas-web'];
+  const { secciones, ...resto } = c.pagina;
+  const sinPosicionamiento = JSON.stringify({
+    ...c,
+    pagina: { ...resto, secciones: secciones.filter((s) => s.id !== 'posicionamiento') },
+  });
+  assert.ok(!/google/i.test(sinPosicionamiento), '"Google" fuera de la sección de posicionamiento');
+  const texto = JSON.stringify(c);
+  assert.ok(!/\$|MXN|\bIVA\b|desde \d/i.test(texto), 'precio publicado');
+  assert.ok(!/%|por ciento|anticipo|\d+\s*pagos?/i.test(texto), 'porcentaje o cifra de pagos');
+  assert.ok(
+    !/primeros lugares|primer lugar|SEO|garantiz|garant[ií]a|posicionamiento garantizado/i.test(texto),
+    'promesa',
+  );
+  // La única cifra de toda la página es "Hasta 3 ajustes pequeños".
+  // (Sin la clave "h1" del JSON, que no es texto.)
+  assert.ok(
+    !/\d/.test(texto.replace('"h1":', '').replace('Hasta 3 ajustes pequeños al entregar', '')),
+    'cifra publicada',
+  );
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo publicado');
+  assert.ok(
+    !/wordpress|wix|shopify|woocommerce|squarespace|webflow|godaddy|hostinger|elementor|canva|figma|vercel|sanity|astro|react|cloudflare/i.test(
+      texto,
+    ),
+    'marca o plataforma',
+  );
+  assert.ok(!/\bdron\b/i.test(texto), '"dron"');
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
   assert.equal(preguntas('circuito-cerrado-para-eventos').length, 5);
   assert.equal(preguntas('video-para-eventos').length, 5);
-  assert.deepEqual(preguntas('paginas-web'), ['¿Qué diferencia hay entre una página web y una tienda en línea?']);
+  assert.equal(preguntas('paginas-web').length, 5);
+  assert.ok(preguntas('paginas-web').includes('¿Qué diferencia hay entre una página web y una tienda en línea?'));
   assert.equal(preguntas('desarrollo-de-software').length, 2);
   assert.deepEqual(preguntas('aplicaciones-moviles'), ['¿Las aplicaciones funcionan en Android y iPhone?']);
   const todas = entradas.flatMap(([, c]) => (c.pagina?.faq ?? []).map((f) => f.pregunta));

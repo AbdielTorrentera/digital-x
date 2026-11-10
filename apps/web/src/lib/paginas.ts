@@ -79,7 +79,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/paginas-web/',
     titulo: 'Páginas web',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'tecnologia',
   },
   {

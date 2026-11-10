@@ -148,7 +148,9 @@ const datosEstructurados = serviceJsonLd({
               <h2>{seccion.titulo}</h2>
               {seccion.bloques.map((bloque) =>
                 'parrafo' in bloque ? (
-                  <p>{bloque.parrafo}</p>
+                  <p>
+                    <TextoConEnlaces texto={bloque.parrafo} />
+                  </p>
                 ) : 'lista' in bloque ? (
                   <ul>
                     {bloque.lista.map((item) => (

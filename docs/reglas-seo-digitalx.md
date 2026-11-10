@@ -37,7 +37,7 @@ Versión: borrador de trabajo · 2026-10-23
 | Renta de audio y sonido | `Renta de audio para eventos en Puebla y Atlixco \| Digital X` (59 caracteres) | `Renta de audio y sonido para eventos en Puebla y Atlixco` |
 | Circuito cerrado para eventos | `Circuito cerrado para eventos en Puebla \| Digital X` (51 caracteres) | `Circuito cerrado para eventos en Puebla` |
 | Producción de videos para eventos | `Video para eventos y conferencias en Puebla \| Digital X` (55 caracteres) | `Video para eventos y conferencias en Puebla` |
-| Transmisión en vivo | `Streaming para eventos en Puebla y Atlixco \| Digital X` (54 caracteres) | `Streaming para eventos en Puebla y Atlixco` |
+| Transmisión en vivo | `Streaming para eventos en Puebla y Atlixco \| Digital X` (54 caracteres) | `Streaming y transmisión en vivo para eventos en Puebla` |
 | Video con drone | `Video con drone: eventos y negocios en Puebla \| Digital X` (57 caracteres) | `Video con drone: eventos y negocios en Puebla` |
 | Recorridos virtuales 360 | `Recorridos virtuales 360 para negocios en Puebla \| Digital X` (60 caracteres) | `Recorridos virtuales 360 para negocios en Puebla` |
 | Páginas web | `Diseño de páginas web en Puebla y Atlixco \| Digital X` (53 caracteres) | `Diseño de páginas web en Puebla y Atlixco` |
@@ -59,7 +59,7 @@ Meta de Circuito cerrado para eventos (145 caracteres): `Circuito cerrado y pant
 
 Meta de Producción de videos para eventos (152 caracteres): `Grabación de video para conferencias, eventos corporativos, talleres y ceremonias en Puebla y Atlixco. Entregamos el video editado. Cotiza por WhatsApp.`
 
-Meta de Transmisión en vivo (127 caracteres): `Transmisión en vivo (streaming) de tu evento por Facebook, YouTube y más en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+Meta de Transmisión en vivo (149 caracteres): `Streaming y transmisión en vivo de conferencias y eventos culturales y deportivos en Puebla y Atlixco, con una o varias cámaras. Cotiza por WhatsApp.`
 
 Meta de Video con drone (121 caracteres): `Video con drone: tomas aéreas e interiores para eventos y negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
 
@@ -138,7 +138,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Contenido duplicado:** ningún bloque de texto se repite entre páginas. El pilar "Personalización" no repite el de "Desempeño".
 - **Precios:** renta de audio no muestra cifras (decisión del dueño). Cualquier otro precio solo si el dueño lo confirmó (ej. "desde $5,000 MXN", `[PENDIENTE: confirmar a qué servicio aplica, circuito cerrado o producción de videos, y si incluye IVA]`).
 - **Circuito cerrado** va siempre con "para eventos", "en vivo" o "pantallas", y **sin mencionar seguridad ni vigilancia** en ninguna parte del sitio. Las pantallas (LED o televisores) y la planta de luz son de proveedores: se redacta "coordinamos", nunca "nuestras pantallas", "tenemos" ni "equipo propio". No se ofrece proyector: no se menciona.
-- **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida. **Excepción (decisión del dueño):** en Producción de videos para eventos se publica que la cobertura es de al menos dos personas y hasta tres cámaras. Nunca marcas de equipo.
+- **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida. **Excepción (decisión del dueño):** en Producción de videos para eventos se publica que la cobertura es de al menos dos personas y hasta tres cámaras. **Segunda excepción:** en Transmisión en vivo se puede decir "una o varias cámaras, según tu evento"; nunca "multicámara", cifras de cámaras ni "alta definición", y tampoco velocidades de internet. Nunca marcas de equipo. El internet y las pantallas son de proveedores: se coordinan (nunca "nuestro internet", "tenemos" ni "equipo propio").
 - **Drone:** no afirmar permisos, registros ni regulación sin verificarlos.
 
 ---
@@ -248,7 +248,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Renta de audio | `Hola, necesito renta de audio y sonido para un evento. Fecha: __ Lugar: __ Personas: __ Tipo de evento: __` |
 | Circuito cerrado | `Hola, quiero cotizar circuito cerrado (cámaras en vivo en pantallas) para un evento. Fecha: __ Lugar: __ Tipo de evento: __` |
 | Producción de videos para eventos | `Hola, quiero cotizar video para un evento o un video promocional. Fecha: __ Lugar: __ Tipo de evento o de video: __ Duración aprox.: __` |
-| Transmisión en vivo | `Hola, quiero transmitir un evento en vivo. Fecha: __ Lugar: __ Plataforma(s): __` |
+| Transmisión en vivo | `Hola, quiero cotizar una transmisión en vivo. Fecha: __ Lugar: __ Tipo de evento: __ Plataforma (Facebook, YouTube...): __ Duración aprox.: __` |
 | Video con drone | `Hola, me interesa video con drone. Fecha: __ Lugar: __ Qué necesito grabar: __` |
 | Recorridos virtuales 360 | `Hola, quiero cotizar un recorrido virtual 360. Lugar a recorrer: __ Para qué lo necesito: __` |
 | Páginas web | `Hola, quiero cotizar una página web. Negocio: __ Qué necesito: __` |

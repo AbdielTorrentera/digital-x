@@ -47,7 +47,7 @@ Versión: borrador de trabajo · 2026-10-23
 | Condiciones de contratación | `Condiciones de contratación \| Digital X` (39 caracteres) | `Condiciones de contratación` |
 | Política de privacidad | `Política de privacidad \| Digital X` (34 caracteres) | `Política de privacidad` |
 
-Meta del Inicio: `Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
+Meta del Inicio (137 caracteres): `Renta de audio, circuito cerrado para eventos, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.`
 
 Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
 
@@ -55,7 +55,7 @@ Meta de Servicios (143 caracteres): `Servicios para tu evento o tu negocio: audi
 
 Meta de Renta de audio y sonido (130 caracteres): `Renta de audio y sonido, y sonorización, con técnico durante todo tu evento en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
 
-Meta de Circuito cerrado para eventos (132 caracteres): `Circuito cerrado para eventos en Puebla y Atlixco: cámaras en vivo en pantallas; no es un sistema de seguridad. Cotiza por WhatsApp.`
+Meta de Circuito cerrado para eventos (145 caracteres): `Circuito cerrado y pantallas LED o TV para eventos en Puebla: cámaras en vivo con operador para que todos vean el escenario. Cotiza por WhatsApp.`
 
 Meta de Producción de videos para eventos (131 caracteres): `Grabación profesional de conferencias, ceremonias y eventos en Puebla y Atlixco, con entrega de video editado. Cotiza por WhatsApp.`
 
@@ -137,7 +137,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Páginas delgadas:** una página sin material propio (fotos, clips, caso) no se publica. Ver estado "Pendiente de material".
 - **Contenido duplicado:** ningún bloque de texto se repite entre páginas. El pilar "Personalización" no repite el de "Desempeño".
 - **Precios:** renta de audio no muestra cifras (decisión del dueño). Cualquier otro precio solo si el dueño lo confirmó (ej. "desde $5,000 MXN", `[PENDIENTE: confirmar a qué servicio aplica, circuito cerrado o producción de videos, y si incluye IVA]`).
-- **Circuito cerrado** se explica siempre junto con "pantallas para eventos" o "proyección en vivo", y se aclara que **no es un sistema de seguridad**. Las pantallas son rentadas: se redacta "coordinamos".
+- **Circuito cerrado** va siempre con "para eventos", "en vivo" o "pantallas", y **sin mencionar seguridad ni vigilancia** en ninguna parte del sitio. Las pantallas (LED o televisores) y la planta de luz son de proveedores: se redacta "coordinamos", nunca "nuestras pantallas", "tenemos" ni "equipo propio". No se ofrece proyector: no se menciona.
 - **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida.
 - **Drone:** no afirmar permisos, registros ni regulación sin verificarlos.
 
@@ -174,7 +174,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 Cada proyecto en `/proyectos/` se presenta como **ficha corta**, no como foto suelta. Solo trabajos reales y con permiso.
 
 Campos de cada ficha:
-1. **Título:** servicio + tipo de trabajo + lugar. Ej.: `Audio para evento cultural en Atlixco`, `Circuito cerrado en conferencia en Atlixco`.
+1. **Título:** servicio + tipo de trabajo + lugar. Ej.: `Audio para evento cultural en Atlixco`, `Circuito cerrado con pantallas en conferencia en Atlixco`.
 2. **Reto:** qué necesitaba el cliente.
 3. **Solución:** qué se hizo y con qué enfoque.
 4. **Resultado:** qué se logró.

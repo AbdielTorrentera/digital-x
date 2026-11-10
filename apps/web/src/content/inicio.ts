@@ -42,7 +42,7 @@ export const portada = {
   // H1, title y meta: exactos de reglas-seo sección 1.
   title: 'Audio, video y tecnología en Puebla y Atlixco | Digital X',
   descripcion:
-    'Renta de audio, circuito cerrado, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.',
+    'Renta de audio, circuito cerrado para eventos, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.',
   h1: 'Audio, video y tecnología para tus eventos y tu negocio en Puebla',
   // Debajo del H1 van las ciudades (reglas-seo sección 1): Puebla en el H1 y las demás en esta frase. Habla de todos los
   // servicios: audio y video para eventos; página web, app o software para negocios.

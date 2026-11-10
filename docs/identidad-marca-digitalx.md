@@ -116,7 +116,8 @@ Tipografías del sitio:
 - **Vocabulario obligatorio** (de `reglas-seo-digitalx.md`):
   - "iglesia" o "templo", no "casa de culto".
   - Pantallas para eventos: "**coordinamos**", nunca "tenemos".
-  - "Circuito cerrado" siempre junto con "proyección en vivo" o "pantallas para eventos", aclarando que no es un sistema de seguridad.
+  - "Circuito cerrado" siempre con "para eventos", "en vivo" o "pantallas", y **sin mencionar seguridad ni vigilancia** en ninguna parte del sitio.
+  - Las pantallas (LED o televisores) y la planta de luz son de proveedores: Digital X las coordina y van en la cotización. Nunca "nuestras pantallas", "tenemos" ni "equipo propio". No se ofrece proyector: no se menciona como opción.
 - Ortografía cuidada: acentos, signos de apertura (¿ ¡) y mayúsculas solo donde corresponde.
 
 ---

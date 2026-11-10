@@ -76,13 +76,20 @@ test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y 
 });
 
 test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página o a su tarjeta del catálogo', () => {
+  // Un servicio sin página (video-para-eventos) va a su tarjeta; uno construido, a su página.
+  assert.deepEqual(
+    partesDeSlugs(['renta-de-audio', 'video-para-eventos'])
+      .filter((p) => 'nombre' in p)
+      .map((p) => p.url),
+    ['/servicios/renta-de-audio/', '/servicios/#video-para-eventos'],
+  );
   const partes = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos']);
   const texto = partes.map((p) => p.literal ?? p.nombre).join('');
   // El primer nombre ya lleva una "y": la coma evita leerlo como "audio y (sonido y circuito cerrado)".
   assert.equal(texto, 'Renta de audio y sonido, y Circuito cerrado para eventos');
   assert.deepEqual(
     partes.filter((p) => 'nombre' in p).map((p) => p.url),
-    ['/servicios/renta-de-audio/', '/servicios/#circuito-cerrado-para-eventos'],
+    ['/servicios/renta-de-audio/', '/servicios/circuito-cerrado-para-eventos/'],
   );
   const tres = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos', 'video-para-eventos']);
   assert.equal(

@@ -4,7 +4,8 @@
  * imágenes: las fotos van en servicios-fotos.ts, para poder probar estos textos con node:test.
  * Fuentes: docs/estructura-sitio-digitalx.md sección 5, docs/reglas-seo-digitalx.md sección 1 (title y meta) y los
  * textos confirmados por el dueño. Solo hechos confirmados: sin precios, cifras, marcas, topes de personas ni datos del
- * equipo. El circuito cerrado se describe siempre como proyección en vivo y nunca como sistema de seguridad.
+ * equipo. El circuito cerrado se describe siempre como cámaras en vivo en pantallas para eventos, sin mencionar seguridad
+ * ni vigilancia. Las pantallas (LED o televisores) y la planta de luz son de proveedores: se coordinan, y no se ofrece proyector.
  */
 import type { PreguntaFrecuente } from '../lib/jsonld.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
@@ -162,33 +163,79 @@ export const servicios: Record<Slug, ServicioContenido> = {
         {
           pregunta: '¿También pueden proyectar, grabar o transmitir mi evento?',
           respuesta:
-            'Sí. Con circuito cerrado proyectamos tu evento en vivo en pantallas del lugar (no es un sistema de seguridad). Con producción de videos para eventos queda en video, y con transmisión en vivo lo ven por internet. Los puedes sumar al audio en la misma cotización.',
+            'Sí. Con circuito cerrado proyectamos tu evento en vivo en pantallas del lugar. Con producción de videos para eventos queda en video, y con transmisión en vivo lo ven por internet. Los puedes sumar al audio en la misma cotización.',
         },
       ],
     },
   },
 
   'circuito-cerrado-para-eventos': {
-    descripcion:
-      'Cámaras en vivo proyectadas en pantallas para que todos vean el escenario. No es un sistema de seguridad.',
+    descripcion: 'Cámaras en vivo proyectadas en pantallas para que todo tu público vea el escenario.',
     title: 'Circuito cerrado para eventos en Puebla | Digital X',
-    meta: 'Circuito cerrado para eventos en Puebla y Atlixco: cámaras en vivo en pantallas; no es un sistema de seguridad. Cotiza por WhatsApp.',
+    meta: 'Circuito cerrado y pantallas LED o TV para eventos en Puebla: cámaras en vivo con operador para que todos vean el escenario. Cotiza por WhatsApp.',
     h1: 'Circuito cerrado para eventos en Puebla',
     para: 'Conferencias, eventos culturales y deportivos',
     incluye: 'Cámaras y pantallas',
     mensaje: mensajesWhatsApp.circuitoCerrado,
-    // Texto migrado de la categoría Video, listo para cuando se apruebe la página.
     pagina: {
+      ficha: [
+        {
+          etiqueta: 'Qué es',
+          valor: 'Cámaras en vivo en pantallas durante tu evento, para que todos vean el escenario',
+        },
+        {
+          etiqueta: 'Para',
+          valor: 'Conferencias, eventos culturales y deportivos, e instituciones; también en exteriores',
+        },
+        { etiqueta: 'Pantallas', valor: 'Si las necesitas, las coordinamos; van incluidas en tu cotización' },
+      ],
       descripcion: {
+        titulo: 'Proyección en vivo de tu evento en pantallas',
         parrafos: [
-          'El circuito cerrado es proyección en vivo: cámaras cuya imagen se ve en pantallas para eventos dentro del mismo lugar. No es un sistema de seguridad. Si además quieres el video de tu evento, súmale la producción de videos para eventos.',
+          'El circuito cerrado para eventos es proyección en vivo: cámaras cuya imagen se ve en pantallas dentro del mismo lugar, para que todo tu público vea lo que pasa en el escenario.',
+          'Así todo tu público ve el escenario. Si además quieres el video de tu evento, súmale la producción de videos para eventos.',
         ],
+      },
+      incluye: [
+        'Personal que opera las cámaras durante tu evento',
+        'Una o varias cámaras en vivo, según tu evento',
+        'La imagen en vivo en las pantallas del lugar',
+        'Pantallas para eventos, si las necesitas: las coordinamos y van incluidas en tu cotización',
+        'Montaje e instalación del equipo',
+      ],
+      secciones: [
+        {
+          id: 'pantallas',
+          etiqueta: 'Pantallas',
+          titulo: 'Pantalla LED o televisor',
+          parrafos: [
+            'Coordinamos pantallas LED y televisores según tu lugar y tu evento. Un televisor puede quedarse corto si el salón es grande, y con mucha luz conviene una pantalla LED. Una pantalla más grande no siempre es mejor: lo importante es que todos la vean bien. Lo revisamos al cotizar.',
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres que tu evento también se escuche y se transmita?',
+        items: [
+          { slug: 'renta-de-audio', texto: 'Audio y sonorización para el mismo evento' },
+          { slug: 'video-para-eventos', texto: 'Video editado de tu evento' },
+          { slug: 'streaming-para-eventos', texto: 'Tu evento también por internet' },
+          proyectos,
+          condiciones('Cómo se aparta la fecha y cómo se paga'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu evento',
+        texto: 'Mándanos la fecha, el lugar y el tipo de evento.',
+      },
+      cierre: {
+        titulo: 'Que todo tu público vea el escenario',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos las cámaras y pantallas de tu evento.',
       },
       faq: [
         {
-          pregunta: '¿El circuito cerrado es lo mismo que las cámaras de seguridad?',
+          pregunta: '¿Para qué sirve el circuito cerrado en un evento?',
           respuesta:
-            'No. Es proyección en vivo: las cámaras captan tu evento y la imagen se ve al momento en pantallas del lugar, para que todo tu público vea lo que pasa en el escenario. No es un sistema de seguridad.',
+            'Para que todo tu público vea lo que pasa en el escenario: las cámaras captan tu evento en vivo y la imagen se ve al momento en pantallas del lugar.',
         },
         {
           pregunta: '¿Qué diferencia hay entre circuito cerrado y transmisión en vivo?',
@@ -197,8 +244,17 @@ export const servicios: Record<Slug, ServicioContenido> = {
         },
         {
           pregunta: '¿Ustedes ponen las pantallas?',
+          respuesta: 'Si las necesitas, sí. Las coordinamos junto con las cámaras y van incluidas en tu cotización.',
+        },
+        {
+          pregunta: '¿Las pantallas también llevan el audio de mi evento?',
           respuesta:
-            'Las pantallas para eventos las coordinamos nosotros, junto con las cámaras y la proyección en vivo, para que no tengas que buscar otro proveedor.',
+            'Si también contratas la renta de audio con nosotros, sí. Si el audio de tu evento es con otro proveedor, nos coordinamos con él para integrarlo.',
+        },
+        {
+          pregunta: '¿Qué necesita el lugar para el circuito cerrado?',
+          respuesta:
+            'Acceso a corriente eléctrica de 110 V. Si el lugar no tiene energía, lo revisamos al cotizar y, si hace falta, coordinamos una planta de luz con un proveedor.',
         },
       ],
     },

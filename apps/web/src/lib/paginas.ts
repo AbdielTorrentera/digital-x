@@ -43,7 +43,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/circuito-cerrado-para-eventos/',
     titulo: 'Circuito cerrado para eventos',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'video',
   },
   {

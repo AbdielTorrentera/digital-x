@@ -76,12 +76,12 @@ test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y 
 });
 
 test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página o a su tarjeta del catálogo', () => {
-  // Un servicio sin página (recorridos-virtuales-360) va a su tarjeta; uno construido, a su página.
+  // Un servicio sin página (paginas-web) va a su tarjeta; uno construido, a su página.
   assert.deepEqual(
-    partesDeSlugs(['renta-de-audio', 'recorridos-virtuales-360'])
+    partesDeSlugs(['renta-de-audio', 'paginas-web'])
       .filter((p) => 'nombre' in p)
       .map((p) => p.url),
-    ['/servicios/renta-de-audio/', '/servicios/#recorridos-virtuales-360'],
+    ['/servicios/renta-de-audio/', '/servicios/#paginas-web'],
   );
   const partes = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos']);
   const texto = partes.map((p) => p.literal ?? p.nombre).join('');

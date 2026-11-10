@@ -113,7 +113,7 @@ test('un servicio con la página construida trae todo su contenido (si no, el bu
   assert.ok(construidas.length > 0);
   for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
   // Y uno incompleto sí se detecta.
-  assert.ok(faltantesDePagina('recorridos-virtuales-360').length > 0);
+  assert.ok(faltantesDePagina('paginas-web').length > 0);
 });
 
 test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
@@ -349,6 +349,105 @@ test('video con drone: sin afirmaciones legales, autoridad, cifras de peso o bat
   assert.equal(texto.match(/restringid/gi)?.length, 1);
 });
 
+test('recorridos virtuales 360: SEO, ficha, qué incluye, secciones en orden y 5 FAQ sin repetir lo que dicen las secciones ni la nota', () => {
+  const c = servicios['recorridos-virtuales-360'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Recorridos virtuales 360 para negocios en Puebla | Digital X');
+  assert.ok(c.title.length <= 60);
+  assert.equal(c.h1, 'Recorridos virtuales 360 para negocios y espacios en Puebla');
+  assert.equal(
+    c.meta,
+    'Recorridos virtuales 360 con drone y cámara 360 para negocios, hoteles, restaurantes y escuelas en Puebla y Atlixco. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Recorridos virtuales y fotografía 360');
+  assert.equal(
+    c.descripcion,
+    'Recorridos virtuales con fotos 360 enlazadas para hoteles, restaurantes, escuelas, museos y negocios, con drone y cámara 360.',
+  );
+  assert.equal(c.incluye, 'Fotos 360 enlazadas');
+  assert.equal(c.mensaje, mensajesWhatsApp.recorridos360);
+  assert.deepEqual(
+    pagina.ficha.map((f) => f.etiqueta),
+    ['Qué es', 'Captura', 'Para'],
+  );
+  assert.equal(pagina.incluye.length, 5);
+  assert.deepEqual(
+    pagina.incluyeNota.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['video-con-drone', 'video-para-eventos'],
+  );
+  assert.deepEqual(
+    pagina.secciones.map((s) => s.id),
+    ['google-maps', 'para-que-sirve', 'como-lo-hacemos', 'precio'],
+  );
+  assert.equal(pagina.secciones[1].bloques[0].lista.length, 4);
+  assert.equal(pagina.secciones[2].bloques[0].lista.length, 4);
+  assert.equal(pagina.secciones[3].bloques[0].lista.length, 5);
+  assert.equal(pagina.faq.length, 5);
+  assert.deepEqual(pagina.faq[2], {
+    pregunta: '¿Lo puedo poner en mi página web?',
+    respuesta: 'Sí, según la plataforma que elijas.',
+  });
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      pagina.incluyeNota.map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('recorridos virtuales 360: sin relación con Google, marcas ni plataformas, sin prometer Google Maps, equipo propio, plazos ni precios', () => {
+  const c = servicios['recorridos-virtuales-360'];
+  // "Google" solo vive en la sección "Google Maps", que no promete que el recorrido completo aparezca allí.
+  const { secciones, ...resto } = c.pagina;
+  const sinGoogleMaps = JSON.stringify({
+    ...c,
+    pagina: { ...resto, secciones: secciones.filter((s) => s.id !== 'google-maps') },
+  });
+  assert.ok(!/google/i.test(sinGoogleMaps), '"Google" fuera de la sección Google Maps');
+  const googleMaps = JSON.stringify(secciones.find((s) => s.id === 'google-maps'));
+  assert.match(googleMaps, /no aparece automáticamente/);
+  assert.ok(
+    !/aparece(r[aá])? (el recorrido )?(completo )?en google|se publica(r[aá])? (el recorrido )?completo/i.test(
+      googleMaps,
+    ),
+    'promete el recorrido en Google Maps',
+  );
+  const texto = JSON.stringify(c);
+  assert.ok(
+    !/acreditad|certificad|confianza de google|socio de google|partner|agencia de google|verificad/i.test(texto),
+    'relación con Google',
+  );
+  assert.ok(
+    !/matterport|kuula|street ?view|3dvista|cloudpano|ricoh|theta|insta360|gopro|dji|my360|roundme|panoee|zillow/i.test(
+      texto,
+    ),
+    'marca o plataforma',
+  );
+  assert.ok(
+    !/nuestras? c[aá]maras? 360|c[aá]mara 360 propia|equipo propio|tenemos (una )?c[aá]mara/i.test(texto),
+    'equipo propio',
+  );
+  // "Cámara 360" siempre con "cuando el proyecto lo requiere" en el cuerpo de la página (la meta y la descripción corta, aparte).
+  const cuerpo = JSON.stringify(c.pagina);
+  assert.equal(
+    (cuerpo.match(/c[aá]mara 360/gi) ?? []).length,
+    (cuerpo.match(/c[aá]mara 360 cuando el proyecto lo requiere/gi) ?? []).length,
+    '"cámara 360" sin "cuando el proyecto lo requiere"',
+  );
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo publicado');
+  assert.ok(!/\$\s?\d|MXN|desde \d/i.test(texto), 'precio publicado');
+  assert.ok(!/boda|xv\b|quince|bautizo|fiesta|social/i.test(texto), 'eventos sociales');
+  assert.ok(!/\bdron\b/i.test(texto), '"dron"');
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
@@ -359,6 +458,20 @@ test('las preguntas migradas de las categorías están cada una en su servicio, 
   assert.deepEqual(preguntas('aplicaciones-moviles'), ['¿Las aplicaciones funcionan en Android y iPhone?']);
   const todas = entradas.flatMap(([, c]) => (c.pagina?.faq ?? []).map((f) => f.pregunta));
   assert.equal(new Set(todas).size, todas.length);
+});
+
+test('ninguna oración de los servicios o del catálogo está tal cual en el Inicio, Nosotros, condiciones ni privacidad', () => {
+  const otras = ['inicio.ts', 'nosotros.ts', 'condiciones.ts', 'privacidad.ts'].map((archivo) => [
+    archivo,
+    readFileSync(new URL(archivo, import.meta.url), 'utf8'),
+  ]);
+  const oraciones = bloques
+    .flatMap((b) => b.split(/(?<=[.!?])\s+/))
+    .map((o) => o.trim())
+    .filter((o) => o.split(/\s+/).length >= 7);
+  for (const oracion of oraciones) {
+    for (const [archivo, texto] of otras) assert.ok(!texto.includes(oracion), `"${oracion}" ya está en ${archivo}`);
+  }
 });
 
 test('ninguna oración se repite entre servicios ni con el catálogo (sin contenido duplicado)', () => {

@@ -64,7 +64,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/video-con-drone/',
     titulo: 'Video con drone',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'video',
   },
   {

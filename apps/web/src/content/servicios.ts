@@ -31,7 +31,7 @@ export type EnlaceRelacionado = { texto: string } & ({ slug: Slug } | { titulo: 
 
 /** Un bloque de una sección extra: un párrafo, una lista con viñetas o puntos con título ("Por hora: …"). */
 export type BloqueDeSeccion =
-  { parrafo: string } | { lista: string[] } | { puntos: { titulo: string; texto: string }[] };
+  { parrafo: string } | { lista: string[] } | { puntos: { titulo: string; texto: string | TextoConEnlaces }[] };
 
 export interface SeccionExtra {
   /** Id de la sección y de su enlace en la navegación interna. */
@@ -45,6 +45,10 @@ export interface SeccionExtra {
 /** Un párrafo con enlaces a servicios: trozos de texto y `{ slug, texto }` (su página si está publicada, o su tarjeta). */
 export type TextoConEnlaces = (string | { slug: Slug; texto: string })[];
 
+/** El texto plano de un texto con enlaces (sin los enlaces). */
+const comoTexto = (texto: string | TextoConEnlaces): string =>
+  typeof texto === 'string' ? texto : texto.map((trozo) => (typeof trozo === 'string' ? trozo : trozo.texto)).join('');
+
 /** El texto de los bloques de una sección, línea por línea (para revisar vocabulario y repeticiones en las pruebas). */
 export const textosDeBloques = (bloques: BloqueDeSeccion[]): string[] =>
   bloques.flatMap((bloque) =>
@@ -52,7 +56,7 @@ export const textosDeBloques = (bloques: BloqueDeSeccion[]): string[] =>
       ? [bloque.parrafo]
       : 'lista' in bloque
         ? bloque.lista
-        : bloque.puntos.map((punto) => `${punto.titulo}: ${punto.texto}`),
+        : bloque.puntos.map((punto) => `${punto.titulo}: ${comoTexto(punto.texto)}`),
   );
 
 /** Lo que lleva la página de un servicio. Solo se publica con todo lo obligatorio (ver `faltantesDePagina`). */
@@ -581,13 +585,159 @@ export const servicios: Record<Slug, ServicioContenido> = {
   },
 
   'video-con-drone': {
-    descripcion: 'Tomas aéreas e interiores con drone para eventos, negocios y espacios, en zonas permitidas.',
-    title: 'Video con drone: eventos y negocios en Puebla | Digital X',
-    meta: 'Video con drone: tomas aéreas e interiores para eventos y negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.',
-    h1: 'Video con drone: eventos y negocios en Puebla',
+    descripcion: 'Video y fotografía aérea con drone para eventos, empresas y espacios, en exteriores e interiores.',
+    title: 'Video y fotografía aérea con drone en Puebla | Digital X',
+    meta: 'Video y fotografía aérea con drone para eventos, empresas y espacios en Puebla y Atlixco. Entregamos video y fotos. Cotiza por WhatsApp.',
+    h1: 'Video y fotografía aérea con drone en Puebla',
     para: 'Eventos, negocios y espacios',
-    incluye: 'Tomas aéreas e interiores',
+    incluye: 'Video y fotografía aérea',
     mensaje: mensajesWhatsApp.drone,
+    serviceType: 'Video y fotografía aérea con drone',
+    pagina: {
+      ficha: [
+        { etiqueta: 'Tomas', valor: 'Video y fotografía aérea con drone' },
+        { etiqueta: 'Entrega', valor: 'Video editado, tomas sin editar o ambos, y fotografía aérea' },
+        { etiqueta: 'Para', valor: 'Eventos, empresas y espacios' },
+      ],
+      descripcion: {
+        titulo: 'Tomas aéreas para tu evento, tu negocio o tu espacio',
+        parrafos: [
+          'En Digital X grabamos video y fotografía aérea con drone para eventos, empresas y espacios en Puebla, Atlixco, Izúcar de Matamoros y alrededores, tanto en exteriores como en interiores.',
+          'Planeamos contigo las tomas que necesitas y revisamos el lugar antes de volar. Cada servicio se cotiza a la medida: cuéntanos qué quieres mostrar y te respondemos con una propuesta.',
+        ],
+      },
+      incluye: [
+        'Planeación de las tomas contigo',
+        'Revisión del lugar y de las condiciones antes de volar',
+        'Grabación con drone y piloto en el lugar, en exteriores o interiores',
+        'Tomas en los momentos clave de tu evento',
+        'Entrega del material: video editado, tomas sin editar o ambos, y fotografía aérea, según lo que acordemos en la cotización',
+      ],
+      incluyeNota: [
+        'La ',
+        { slug: 'video-para-eventos', texto: 'producción de videos para eventos' },
+        ', la ',
+        { slug: 'streaming-para-eventos', texto: 'transmisión en vivo' },
+        ' y el ',
+        { slug: 'circuito-cerrado-para-eventos', texto: 'circuito cerrado para eventos' },
+        ' son servicios aparte y se pueden combinar.',
+      ],
+      secciones: [
+        {
+          id: 'fotografia-aerea',
+          etiqueta: 'Fotografía aérea',
+          titulo: 'Fotografía aérea',
+          bloques: [
+            {
+              parrafo:
+                'Además de video, tomamos fotografía aérea con drone de eventos, instalaciones y espacios. Se puede entregar junto con el video o por separado.',
+            },
+          ],
+        },
+        {
+          id: 'para-que-sirve',
+          etiqueta: 'Para qué sirve',
+          titulo: 'Para qué sirve',
+          bloques: [
+            {
+              puntos: [
+                {
+                  titulo: 'Eventos',
+                  texto: 'conferencias, ceremonias y eventos culturales y deportivos, al aire libre o en salones.',
+                },
+                {
+                  titulo: 'Empresas y negocios',
+                  texto: 'presentar tus instalaciones y videos promocionales.',
+                },
+                {
+                  titulo: 'Espacios',
+                  texto: [
+                    'hoteles, restaurantes, escuelas y museos, que además se pueden combinar con un ',
+                    { slug: 'recorridos-virtuales-360', texto: 'recorrido virtual 360' },
+                    '.',
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'exteriores-e-interiores',
+          etiqueta: 'Exteriores e interiores',
+          titulo: 'Exteriores e interiores',
+          bloques: [
+            {
+              parrafo:
+                'Además de las tomas aéreas en exteriores, podemos grabar en interiores, como salones, pasillos y espacios cerrados, siempre que el lugar lo permita.',
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'La duración del servicio y el número de tomas o ubicaciones',
+                'Si es en exteriores, en interiores o ambos',
+                'Lo que necesites recibir: video editado, tomas sin editar, fotografías o una combinación',
+                'Si lo combinas con video de eventos, transmisión o un recorrido 360',
+                'El traslado al lugar',
+              ],
+            },
+            { parrafo: 'En la cotización, el traslado y los viáticos aparecen desglosados.' },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres combinar el drone con otros servicios?',
+        items: [
+          { slug: 'video-para-eventos', texto: 'Cobertura en video de conferencias y eventos' },
+          { slug: 'streaming-para-eventos', texto: 'Streaming de tu evento en vivo' },
+          { slug: 'circuito-cerrado-para-eventos', texto: 'Cámaras en vivo y pantallas para tu público' },
+          { slug: 'renta-de-audio', texto: 'Equipo de audio y sonorización con técnico' },
+          { slug: 'recorridos-virtuales-360', texto: 'Recorrido virtual 360 de tu espacio' },
+          proyectos,
+          condiciones('Anticipo y cancelación'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu video o tus fotos',
+        texto:
+          'Mándanos la fecha, el lugar, el tipo de evento o proyecto, si es interior o exterior y qué quieres mostrar.',
+      },
+      cierre: {
+        titulo: 'Que se vea tu espacio desde el aire',
+        texto:
+          'Escríbenos por WhatsApp o llámanos y cotizamos el video o la fotografía aérea de tu evento o tu espacio.',
+      },
+      faq: [
+        {
+          pregunta: '¿Se puede volar un drone en cualquier lugar?',
+          respuesta: 'No. Hay zonas restringidas, como las cercanas a aeropuertos.',
+        },
+        {
+          pregunta: '¿Se puede volar con lluvia o viento?',
+          respuesta:
+            'Con lluvia o viento fuerte no se puede volar. Si pasa el día del servicio, lo vemos contigo según el caso.',
+        },
+        {
+          pregunta: '¿Por qué las tomas se hacen en momentos clave?',
+          respuesta:
+            'Las baterías del drone duran poco, así que planeamos las tomas para los momentos clave en lugar de grabar todo el evento de corrido.',
+        },
+        {
+          pregunta: '¿Por qué contratar el servicio y no usar un drone propio?',
+          respuesta:
+            'Un buen resultado requiere experiencia y planeación. Nosotros nos encargamos del vuelo y de las tomas para que tú te concentres en tu evento o tu negocio.',
+        },
+        {
+          pregunta: '¿Hacen espectáculos de drones con luces?',
+          respuesta: 'No. Nuestro servicio es de video y fotografía aérea.',
+        },
+      ],
+    },
   },
 
   'recorridos-virtuales-360': {

@@ -1,0 +1,23 @@
+---
+import type { TextoConEnlaces } from '../../content/servicios';
+import { enlaceDeServicio } from '../../lib/servicios';
+
+// Un texto corrido con enlaces a servicios: la nota bajo "Qué incluye" y los puntos con título de las secciones. Un trozo
+// de texto se escribe tal cual; un `{ slug, texto }` es un enlace a la página del servicio si está publicada o, si no, a
+// su tarjeta del catálogo (/servicios/#slug). Un texto sin enlaces puede ser un `string`.
+interface Props {
+  texto: string | TextoConEnlaces;
+}
+const { texto } = Astro.props;
+const trozos = typeof texto === 'string' ? [texto] : texto;
+---
+
+{trozos.map((trozo) =>
+  typeof trozo === 'string' ? (
+    trozo
+  ) : (
+    <a class="link" href={enlaceDeServicio(trozo.slug)}>
+      {trozo.texto}
+    </a>
+  ),
+)}

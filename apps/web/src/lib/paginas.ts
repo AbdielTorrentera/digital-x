@@ -57,7 +57,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/streaming-para-eventos/',
     titulo: 'Transmisión en vivo',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'video',
   },
   {

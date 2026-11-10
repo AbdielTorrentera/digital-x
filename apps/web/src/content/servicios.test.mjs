@@ -323,15 +323,90 @@ test('las pantallas y la planta son de proveedores: sin "proyector", "nuestras p
   for (const [nombre, texto] of textosDelSitio) {
     assert.ok(!/proyector/i.test(texto), `proyector en ${nombre}`);
     assert.ok(
-      !/nuestras? pantallas?|tenemos (las |tus )?pantallas|equipo propio|nuestra planta/i.test(texto),
-      `pantallas propias en ${nombre}`,
+      !/nuestras? pantallas?|tenemos (las |tus )?pantallas|equipo propio|nuestra planta|nuestro internet|tenemos (el |tu |nuestro )?internet/i.test(
+        texto,
+      ),
+      `pantallas, planta o internet propios en ${nombre}`,
     );
+    assert.ok(!/multic[aá]mara|alta definici[oó]n/i.test(texto), `multicámara o alta definición en ${nombre}`);
   }
 });
 
-test('transmisión en vivo no menciona número de cámaras ni mezcla de cámaras', () => {
+test('transmisión en vivo: SEO, ficha, qué incluye, secciones, proyectos y 5 FAQ sin repetir lo que dicen las secciones ni la nota', () => {
+  const c = servicios['streaming-para-eventos'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Streaming para eventos en Puebla y Atlixco | Digital X');
+  assert.equal(c.title.length, 54);
+  assert.equal(c.h1, 'Streaming y transmisión en vivo para eventos en Puebla');
+  assert.equal(
+    c.meta,
+    'Streaming y transmisión en vivo de conferencias y eventos culturales y deportivos en Puebla y Atlixco, con una o varias cámaras. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Transmisión en vivo y streaming de eventos');
+  assert.equal(c.mensaje, mensajesWhatsApp.streaming);
+  assert.deepEqual(
+    pagina.ficha.map((f) => [f.etiqueta, f.valor]),
+    [
+      ['Plataformas', 'Facebook, YouTube y más'],
+      ['Cámaras', 'Una o varias, según tu evento'],
+      ['Para', 'Eventos, conferencias, escuelas e instituciones'],
+    ],
+  );
+  assert.deepEqual(pagina.incluye, [
+    'La transmisión en vivo de tu evento a una o varias páginas o plataformas',
+    'Una o varias cámaras, según tu evento, con personal que las opera',
+    'Audio de preferencia directo de la consola del evento, para una señal limpia',
+    'Revisión del lugar y pruebas antes del evento',
+    'Rótulos, logos o diseños en pantalla, según el paquete que contrates',
+  ]);
+  assert.deepEqual(
+    pagina.secciones.map((s) => s.id),
+    ['para-que-eventos', 'precio'],
+  );
+  assert.equal(pagina.secciones[0].bloques[0].lista.length, 7);
+  assert.equal(pagina.secciones[1].bloques[0].lista.length, 7);
+  assert.equal(pagina.faq.length, 5);
+  assert.deepEqual(
+    pagina.incluyeNota.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['video-para-eventos', 'circuito-cerrado-para-eventos'],
+  );
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      (pagina.incluyeNota ?? []).map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('transmisión en vivo: las cámaras son "una o varias", sin multicámara, alta definición, cifras, plazos, precios ni marcas', () => {
   const texto = JSON.stringify(servicios['streaming-para-eventos']);
-  assert.ok(!/multic[aá]mara|mezcla|\bcámaras\b/i.test(texto), texto);
+  assert.ok(
+    !/multic[aá]mara|alta definici[oó]n|mezcla|\bHD\b|4k|full hd/i.test(texto),
+    'multicámara o alta definición',
+  );
+  assert.ok(!/\b(dos|tres|cuatro|cinco|\d+)\s+c[aá]maras/i.test(texto), 'número de cámaras');
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses|personas|asistentes|mbps|megas)/i.test(texto), 'cifra publicada');
+  assert.ok(!/\$\s?\d|MXN|desde \d/i.test(texto), 'precio publicado');
+  assert.ok(!/sony|canon|blackmagic|panasonic|obs studio|vmix|restream|streamyard|zoom/i.test(texto), 'marca');
+  // "Cámara(s)" solo en las frases permitidas: la ficha, "una o varias cámaras, según tu evento" y "el número de cámaras"
+  // como factor del precio.
+  const sinPermitidas = texto
+    .replace(/una o varias c[aá]maras/gi, '')
+    .replace(/n[uú]mero de c[aá]maras/gi, '')
+    .replace(/"etiqueta":"Cámaras"/g, '')
+    .replace(/"valor":"Una o varias, según tu evento"/g, '');
+  assert.ok(
+    !/\bc[aá]maras?\b/i.test(sinPermitidas.replace(/circuito cerrado/gi, '')),
+    `cámaras fuera de las frases permitidas: ${sinPermitidas.match(/.{30}c[aá]maras?.{20}/i)}`,
+  );
 });
 
 test('"drone" se escribe así en todo el contenido, "aplicaciones móviles" no es "apps" y el software no es "a la medida"', () => {

@@ -41,7 +41,7 @@ Versión: borrador de trabajo · 2026-10-23
 | Video con drone | `Video y fotografía aérea con drone en Puebla \| Digital X` (56 caracteres) | `Video y fotografía aérea con drone en Puebla` |
 | Recorridos virtuales 360 | `Recorridos virtuales 360 para negocios en Puebla \| Digital X` (60 caracteres) | `Recorridos virtuales 360 para negocios y espacios en Puebla` |
 | Páginas web | `Diseño de páginas web en Puebla y Atlixco \| Digital X` (53 caracteres) | `Diseño y desarrollo de páginas web en Puebla` |
-| Tienda en línea | `Tiendas en línea para negocios en Puebla \| Digital X` (52 caracteres) | `Tiendas en línea para negocios en Puebla` |
+| Tienda en línea | `Tienda en línea en Puebla y Atlixco \| Digital X` (47 caracteres) | `Diseño y desarrollo de tiendas en línea en Puebla` |
 | Desarrollo de aplicaciones móviles | `Desarrollo de aplicaciones móviles en Puebla \| Digital X` (56 caracteres) | `Desarrollo de aplicaciones móviles en Puebla` |
 | Desarrollo de software | `Desarrollo de software para negocios en Puebla \| Digital X` (58 caracteres) | `Desarrollo de software para negocios en Puebla` |
 | Condiciones de contratación | `Condiciones de contratación \| Digital X` (39 caracteres) | `Condiciones de contratación` |
@@ -67,7 +67,7 @@ Meta de Recorridos virtuales 360 (137 caracteres): `Recorridos virtuales 360 con
 
 Meta de Páginas web (132 caracteres): `Diseño y desarrollo de páginas web y landing pages para negocios en Puebla y Atlixco. Dominio y hosting aparte. Cotiza por WhatsApp.`
 
-Meta de Tienda en línea (120 caracteres): `Diseño y desarrollo de tiendas en línea para vender por internet, en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+Meta de Tienda en línea (131 caracteres): `Diseño y desarrollo de tiendas en línea para negocios en Puebla y Atlixco: catálogo, carrito y pagos en línea. Cotiza por WhatsApp.`
 
 Meta de Desarrollo de aplicaciones móviles (142 caracteres): `Aplicaciones móviles para Android y iPhone, del levantamiento de requerimientos a la implementación, en Puebla y Atlixco. Cotiza por WhatsApp.`
 
@@ -142,6 +142,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Recorridos virtuales 360:** sin ninguna relación con Google (nada de "agencia de confianza de Google", "fotógrafo acreditado", "certificado por Google" ni similares), sin marcas de equipo ni nombres de plataformas. No se afirma equipo propio de cámara 360: se escribe "con cámara 360 cuando el proyecto lo requiere". Sobre Google Maps solo se dice que se pueden publicar fotos 360 del lugar; **nunca se promete que el recorrido completo aparezca en Google Maps**. Sin plazos ni precios, bodas, XV años ni fiestas.
 - **Drone:** PROHIBIDAS las afirmaciones legales: nada de "no requiere permiso", "cumplimos la norma", "autorizados", "certificados" ni "registrados", y ninguna mención a la AFAC ni a la autoridad aeronáutica. Sin peso, modelos, marcas ni duración de baterías con cifras. No se dice si se vuela o no sobre las personas. Solo "drone" (nunca "dron"; el plural es "drones"). La **única** mención de reglas de vuelo permitida es que hay zonas restringidas, como las cercanas a aeropuertos (FAQ de Video con drone). Sin bodas, XV años ni fiestas.
 - **Páginas web:** PROHIBIDO prometer posicionamiento en Google, "SEO incluido", "primeros lugares" o resultados garantizados: la sección "Posicionamiento en Google" dice que aparecer bien es un trabajo aparte y continuo que no se promete como parte del precio. **Sin precio por ahora** (decisión del dueño; ver `[PENDIENTE]` en estructura sección 7), sin plazos, sin porcentajes de pago (el pago es por etapas, como dicen las condiciones de contratación) y sin marcas de herramientas ni de plataformas. **Excepción de cifra:** "Hasta 3 ajustes pequeños al entregar" es la única cifra de la página.
+- **Tienda en línea:** PROHIBIDO prometer ventas, posicionamiento en Google o resultados garantizados. **No se nombran plataformas de tiendas ni pasarelas de pago ni marcas**: se escribe "la pasarela que elijas". **No se dice si la tienda es a la medida o está sobre una plataforma** (decisión pendiente; ver estructura sección 7): "plataforma" solo aparece en la pregunta "¿Cuál es la mejor plataforma para mi tienda?". **Sin precio**, sin plazos, sin porcentajes de pago (el pago es por etapas, según las condiciones de contratación). **Excepción de cifra:** "hasta 3 ajustes pequeños" es la única cifra de la página. Ninguna viñeta ni frase repite las de Páginas web, aunque sea corta.
 
 ---
 
@@ -256,7 +257,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Páginas web | `Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __` |
 | Desarrollo de aplicaciones móviles | `Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __` |
 | Desarrollo de software | `Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __` |
-| Tienda en línea | `Hola, quiero cotizar una tienda en línea. Negocio: __ Qué voy a vender: __` |
+| Tienda en línea | `Hola, quiero cotizar una tienda en línea. Qué vendo: __ Aprox. cuántos productos: __ ¿Ya tienes fotos y descripciones?: __ ¿Ya tienes dominio?: __` |
 
 - **Catálogo:** `/servicios/` usa el mensaje general; cada página de servicio usa el suyo.
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):

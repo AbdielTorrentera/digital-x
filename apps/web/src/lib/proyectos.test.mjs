@@ -4,6 +4,7 @@ import {
   MAXIMO_PROYECTOS,
   MINIMO_PROYECTOS,
   proyectosDeNosotros,
+  proyectosDeServicio,
   proyectosDelInicio,
   proyectosPublicables,
   titulosDeEjemplo,
@@ -61,4 +62,29 @@ test('titulosDeEjemplo lista solo los títulos de los proyectos de ejemplo', () 
   assert.deepEqual(titulosDeEjemplo([real(1), ejemplo(2), ejemplo(3)]), ['Ejemplo 2', 'Ejemplo 3']);
   assert.deepEqual(titulosDeEjemplo([real(1)]), []);
   assert.deepEqual(titulosDeEjemplo([]), []);
+});
+
+const usa = (proyecto, ...servicios) => ({ ...proyecto, servicios });
+
+test('proyectosDeServicio trae solo los que usaron ese servicio, con foto y con permiso o de ejemplo', () => {
+  const conPermiso = usa(real(1), 'Producción de videos para eventos');
+  const deEjemplo = usa({ ...ejemplo(2) }, 'Producción de videos para eventos', 'Video con drone');
+  const otroServicio = usa(real(3), 'Páginas web');
+  const sinPermiso = usa({ ...real(4), permiso: false }, 'Producción de videos para eventos');
+  const sinFoto = usa({ titulo: 'Sin foto', permiso: true }, 'Producción de videos para eventos');
+  assert.deepEqual(
+    proyectosDeServicio(
+      [conPermiso, deEjemplo, otroServicio, sinPermiso, sinFoto],
+      'Producción de videos para eventos',
+    ),
+    [conPermiso, deEjemplo],
+  );
+});
+
+test('proyectosDeServicio compara el nombre exacto, no uno parecido, y no pasa de 3', () => {
+  assert.deepEqual(proyectosDeServicio([usa(real(1), 'Producción de video')], 'Producción de videos para eventos'), []);
+  const cinco = [1, 2, 3, 4, 5].map((n) => usa(real(n), 'Video con drone'));
+  assert.equal(proyectosDeServicio(cinco, 'Video con drone').length, 3);
+  assert.equal(proyectosDeServicio(cinco, 'Video con drone', 2).length, 2);
+  assert.deepEqual(proyectosDeServicio([], 'Video con drone'), []);
 });

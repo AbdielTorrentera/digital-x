@@ -29,14 +29,31 @@ export type Slug = (typeof slugs)[number];
 /** Un enlace a otra página con su descripción ("También te puede servir"). Un servicio va por su slug. */
 export type EnlaceRelacionado = { texto: string } & ({ slug: Slug } | { titulo: string; url: string });
 
+/** Un bloque de una sección extra: un párrafo, una lista con viñetas o puntos con título ("Por hora: …"). */
+export type BloqueDeSeccion =
+  { parrafo: string } | { lista: string[] } | { puntos: { titulo: string; texto: string }[] };
+
 export interface SeccionExtra {
   /** Id de la sección y de su enlace en la navegación interna. */
   id: string;
   /** Texto del enlace en la navegación interna. */
   etiqueta: string;
   titulo: string;
-  parrafos: string[];
+  bloques: BloqueDeSeccion[];
 }
+
+/** Un párrafo con enlaces a servicios: trozos de texto y `{ slug, texto }` (su página si está publicada, o su tarjeta). */
+export type TextoConEnlaces = (string | { slug: Slug; texto: string })[];
+
+/** El texto de los bloques de una sección, línea por línea (para revisar vocabulario y repeticiones en las pruebas). */
+export const textosDeBloques = (bloques: BloqueDeSeccion[]): string[] =>
+  bloques.flatMap((bloque) =>
+    'parrafo' in bloque
+      ? [bloque.parrafo]
+      : 'lista' in bloque
+        ? bloque.lista
+        : bloque.puntos.map((punto) => `${punto.titulo}: ${punto.texto}`),
+  );
 
 /** Lo que lleva la página de un servicio. Solo se publica con todo lo obligatorio (ver `faltantesDePagina`). */
 export interface PaginaDeServicio {
@@ -46,6 +63,8 @@ export interface PaginaDeServicio {
   descripcion?: { titulo?: string; parrafos: string[] };
   /** Obligatoria: lo confirmado que incluye el servicio. */
   incluye?: string[];
+  /** Párrafo bajo la lista de lo que incluye, con enlaces a otros servicios. */
+  incluyeNota?: TextoConEnlaces;
   /** Secciones extra (por ejemplo, Sonorización); cada una suma su enlace a la navegación interna. */
   secciones?: SeccionExtra[];
   /** Obligatorio: servicios complementarios, /proyectos/ y condiciones de contratación. */
@@ -70,6 +89,8 @@ export interface ServicioContenido {
   incluye: string;
   /** Mensaje prellenado de WhatsApp de este servicio (negocio.ts). */
   mensaje: string;
+  /** Tipo de servicio del JSON-LD; sin él se usa la categoría ("Servicios de video"). */
+  serviceType?: string;
   pagina?: PaginaDeServicio;
 }
 
@@ -118,8 +139,11 @@ export const servicios: Record<Slug, ServicioContenido> = {
           id: 'sonorizacion',
           etiqueta: 'Sonorización',
           titulo: 'Sonorización para tu evento',
-          parrafos: [
-            'Nos encargamos de la sonorización: elegimos el equipo según tu evento y, cuando lo necesita, hacemos el montaje y la mezcla.',
+          bloques: [
+            {
+              parrafo:
+                'Nos encargamos de la sonorización: elegimos el equipo según tu evento y, cuando lo necesita, hacemos el montaje y la mezcla.',
+            },
           ],
         },
       ],
@@ -208,8 +232,11 @@ export const servicios: Record<Slug, ServicioContenido> = {
           id: 'pantallas',
           etiqueta: 'Pantallas',
           titulo: 'Pantalla LED o televisor',
-          parrafos: [
-            'Coordinamos pantallas LED y televisores según tu lugar y tu evento. Un televisor puede quedarse corto si el salón es grande, y con mucha luz conviene una pantalla LED. Una pantalla más grande no siempre es mejor: lo importante es que todos la vean bien. Lo revisamos al cotizar.',
+          bloques: [
+            {
+              parrafo:
+                'Coordinamos pantallas LED y televisores según tu lugar y tu evento. Un televisor puede quedarse corto si el salón es grande, y con mucha luz conviene una pantalla LED. Una pantalla más grande no siempre es mejor: lo importante es que todos la vean bien. Lo revisamos al cotizar.',
+            },
           ],
         },
       ],
@@ -262,19 +289,169 @@ export const servicios: Record<Slug, ServicioContenido> = {
 
   'video-para-eventos': {
     descripcion:
-      'Grabación profesional de conferencias, ceremonias y eventos; cubrimos los momentos clave y entregamos el video editado.',
-    title: 'Video para eventos en Puebla y Atlixco | Digital X',
-    meta: 'Grabación profesional de conferencias, ceremonias y eventos en Puebla y Atlixco, con entrega de video editado. Cotiza por WhatsApp.',
-    h1: 'Video para eventos en Puebla y Atlixco',
-    para: 'Conferencias, ceremonias y eventos',
+      'Grabación profesional de conferencias, ceremonias y eventos, y videos institucionales y promocionales. Entregamos el video editado.',
+    title: 'Video para eventos y conferencias en Puebla | Digital X',
+    meta: 'Grabación de video para conferencias, eventos corporativos, talleres y ceremonias en Puebla y Atlixco. Entregamos el video editado. Cotiza por WhatsApp.',
+    h1: 'Video para eventos y conferencias en Puebla',
+    para: 'Conferencias, talleres, eventos corporativos y ceremonias',
     incluye: 'Cobertura y video editado',
     mensaje: mensajesWhatsApp.produccionDeVideos,
+    serviceType: 'Producción de video para eventos, conferencias y videos institucionales',
     pagina: {
+      ficha: [
+        { etiqueta: 'Para', valor: 'Eventos, conferencias, empresas e instituciones' },
+        { etiqueta: 'Equipo', valor: 'Al menos dos personas y hasta tres cámaras' },
+        { etiqueta: 'Entrega', valor: 'Video editado; material sin editar si lo acordamos' },
+      ],
+      descripcion: {
+        titulo: 'Video de tus conferencias y eventos',
+        parrafos: [
+          'En Digital X grabamos tus conferencias, talleres, eventos corporativos, culturales y religiosos y ceremonias en Puebla, Atlixco, Izúcar de Matamoros y alrededores, y te entregamos el video editado. Cada cobertura se hace con un equipo de al menos dos personas y se cotiza a la medida.',
+          'También producimos videos institucionales, corporativos y promocionales para tu empresa o proyecto. Cuéntanos qué necesitas y te respondemos con una propuesta.',
+        ],
+      },
+      incluye: [
+        'Cobertura de los momentos clave que acordemos, como conferencias, entradas especiales o ceremonias',
+        'Un equipo de al menos dos personas',
+        'Una o varias cámaras, hasta tres ángulos, según tu evento',
+        'Audio directo de la consola del evento, cuando el lugar lo permite',
+        'Edición y entrega del video editado',
+      ],
+      incluyeNota: [
+        'Si lo acordamos al cotizar, también te entregamos el material sin editar. La ',
+        { slug: 'streaming-para-eventos', texto: 'transmisión en vivo' },
+        ' y el ',
+        { slug: 'circuito-cerrado-para-eventos', texto: 'circuito cerrado para eventos' },
+        ' son servicios aparte y se pueden sumar.',
+      ],
+      secciones: [
+        {
+          id: 'para-que-eventos',
+          etiqueta: 'Para qué eventos',
+          titulo: 'Para qué eventos',
+          bloques: [
+            {
+              lista: [
+                'Conferencias y congresos',
+                'Talleres y clases',
+                'Eventos corporativos',
+                'Eventos culturales',
+                'Eventos religiosos',
+                'Ceremonias',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'cobertura',
+          etiqueta: 'Cobertura',
+          titulo: 'Opciones de cobertura',
+          bloques: [
+            {
+              puntos: [
+                {
+                  titulo: 'Por hora',
+                  texto:
+                    'es la forma más común. Grabamos durante el tiempo contratado y cuidamos los momentos clave que acordemos.',
+                },
+                {
+                  titulo: 'Por un tiempo específico o solo momentos clave',
+                  texto: 'si necesitas otra modalidad, la valoramos al cotizar.',
+                },
+                {
+                  titulo: 'Una cámara o varios ángulos',
+                  texto:
+                    'en conferencias largas o eventos grandes, grabar desde varios ángulos (general, acercamiento y escenario) da un mejor resultado que una sola cámara fija.',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'video-institucional',
+          etiqueta: 'Institucional',
+          titulo: 'Video institucional, corporativo y promocional',
+          bloques: [
+            {
+              parrafo:
+                'Además de eventos, producimos videos institucionales, corporativos y promocionales para presentar tu empresa, tu servicio, un lugar o un lanzamiento. Se cotizan a la medida según lo que necesites mostrar, la duración y las tomas, que pueden incluir drone. Si tienes un evento, podemos combinar la cobertura con un video promocional.',
+            },
+          ],
+        },
+        {
+          id: 'entrega',
+          etiqueta: 'Entrega',
+          titulo: 'Qué recibes y cuándo',
+          bloques: [
+            {
+              parrafo:
+                'Recibes el video editado. El tiempo de edición depende de la duración del evento, de lo que se entregue y de la carga de trabajo; el plazo se acuerda al cotizar. Si quieres el material sin editar, dínoslo desde el inicio para incluirlo en la cotización.',
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'La duración de la cobertura',
+                'El número de cámaras y de personas',
+                'Si es por hora o por momentos clave',
+                'La edición y el tipo de video que necesites',
+                'Las tomas con drone, si las incluyes',
+                'El traslado al lugar',
+              ],
+            },
+            { parrafo: 'Cada cotización se hace a la medida y los viáticos se desglosan.' },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres sumar pantallas, transmisión o audio a tu evento?',
+        items: [
+          { slug: 'circuito-cerrado-para-eventos', texto: 'Tu evento en vivo en pantallas del lugar' },
+          { slug: 'streaming-para-eventos', texto: 'Transmisión por Facebook, YouTube y más' },
+          { slug: 'video-con-drone', texto: 'Tomas aéreas e interiores para tu video' },
+          { slug: 'renta-de-audio', texto: 'Audio y técnico de sonido para tu evento' },
+          proyectos,
+          condiciones('Anticipo, horas extra y cancelación'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu video',
+        texto: 'Mándanos la fecha, el lugar, el tipo de evento o de video y cuánto dura.',
+      },
+      cierre: {
+        titulo: 'Que tu evento quede en video',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos la cobertura de tu evento o tu video promocional.',
+      },
       faq: [
         {
-          pregunta: '¿Cómo obtengo un video de mi evento?',
+          pregunta: '¿Con un camarógrafo es suficiente?',
           respuesta:
-            'Con la producción de videos para eventos: grabamos tu evento y te entregamos el video editado. El tiempo de entrega depende de la carga de trabajo y de la urgencia; te lo confirmamos al cotizar.',
+            'Depende del evento. En conferencias largas o eventos grandes conviene grabar desde varios ángulos; lo definimos al cotizar.',
+        },
+        {
+          pregunta: '¿Mi celular graba igual?',
+          respuesta:
+            'No. Con poca luz, en el audio y en la estabilidad de la imagen se nota la diferencia frente a una cámara profesional.',
+        },
+        {
+          pregunta: '¿Cómo se escucha el audio en el video?',
+          respuesta:
+            'Cuando el lugar lo permite, tomamos el audio directo de la consola del evento para que se escuche limpio. Lo revisamos al cotizar.',
+        },
+        {
+          pregunta: '¿Es lo mismo que el circuito cerrado o la transmisión en vivo?',
+          respuesta:
+            'No. La grabación queda como un video para verlo después; el circuito cerrado para eventos muestra el evento en vivo en pantallas, y la transmisión en vivo lo lleva a internet.',
+        },
+        {
+          pregunta: '¿Pueden sumar tomas con drone?',
+          respuesta:
+            'Sí. El video con drone se puede sumar a la cobertura o a un video promocional, según el lugar y el clima.',
         },
       ],
     },

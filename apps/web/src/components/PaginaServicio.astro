@@ -8,12 +8,15 @@ import Migas from './Migas.astro';
 import NavInterna from './NavInterna.astro';
 import CierreContacto from './sections/CierreContacto.astro';
 import Faq from './sections/Faq.astro';
+import TarjetaProyecto from './ui/TarjetaProyecto.astro';
 import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
+import { proyectos as proyectosDelSitio } from '../content/proyectos';
 import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
 import { enlaceAPagina } from '../lib/enlaces';
 import { serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
 import { idNegocio, negocio, telUrl, waUrl, zonas } from '../lib/negocio';
 import { paginas } from '../lib/paginas';
+import { proyectosDeServicio } from '../lib/proyectos';
 import { enlaceDeServicio } from '../lib/servicios';
 
 // Plantilla de la página de un servicio: la página de detalle de la plantilla Marby (migas, barra con el título, foto
@@ -40,6 +43,7 @@ const tambien = p.tambien!;
 const cotizacion = p.cotizacion!;
 const cierre = p.cierre!;
 const secciones = p.secciones ?? [];
+const nota = p.incluyeNota;
 const galeria = foto.galeria?.some((s) => s.fotos.length > 0) ? foto.galeria : undefined;
 
 const categorias = { audio: 'Audio', video: 'Video', tecnologia: 'Tecnología' };
@@ -53,17 +57,22 @@ const enlaceDe = (item: EnlaceRelacionado) =>
     : { titulo: item.titulo, href: enlaceAPagina(item.url) };
 const relacionados = tambien.items.map((item) => ({ ...enlaceDe(item), texto: item.texto }));
 
+// Hasta 3 proyectos que usaron este servicio (de ejemplo, con la etiqueta EJEMPLO, mientras no haya reales). Sin ninguno,
+// la sección no se dibuja ni se enlaza.
+const proyectos = proyectosDeServicio(proyectosDelSitio, nombre);
+
 const salto = [
   { href: '#descripcion', etiqueta: 'Descripción' },
   { href: '#que-incluye', etiqueta: 'Qué incluye' },
   ...secciones.map((s) => ({ href: `#${s.id}`, etiqueta: s.etiqueta })),
+  ...(proyectos.length > 0 ? [{ href: '#proyectos', etiqueta: 'Proyectos' }] : []),
   { href: '#te-puede-servir', etiqueta: 'Te puede servir' },
 ];
 const nombreEnMinuscula = nombre.toLowerCase();
 const datosEstructurados = serviceJsonLd({
   url,
   nombre,
-  tipo: tipos[registro.categoria!],
+  tipo: c.serviceType ?? tipos[registro.categoria!],
   descripcion: c.descripcion,
   idNegocio,
   zonas: [...zonas.todas],
@@ -127,15 +136,57 @@ const datosEstructurados = serviceJsonLd({
                 </li>
               ))}
             </ul>
+            {nota && (
+              <p class="t-body srv__nota">
+                {nota.map((parte) =>
+                  typeof parte === 'string' ? (
+                    parte
+                  ) : (
+                    <a class="link" href={enlaceDeServicio(parte.slug)}>
+                      {parte.texto}
+                    </a>
+                  ),
+                )}
+              </p>
+            )}
           </div>
           {secciones.map((seccion) => (
             <div class="prose srv__bloque" id={seccion.id} data-appear>
               <h2>{seccion.titulo}</h2>
-              {seccion.parrafos.map((parrafo) => (
-                <p>{parrafo}</p>
-              ))}
+              {seccion.bloques.map((bloque) =>
+                'parrafo' in bloque ? (
+                  <p>{bloque.parrafo}</p>
+                ) : 'lista' in bloque ? (
+                  <ul>
+                    {bloque.lista.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <ul>
+                    {bloque.puntos.map((punto) => (
+                      <li>
+                        <strong>{punto.titulo}:</strong> {punto.texto}
+                      </li>
+                    ))}
+                  </ul>
+                ),
+              )}
             </div>
           ))}
+          {proyectos.length > 0 && (
+            <div class="srv__bloque" id="proyectos" data-appear>
+              <h2 class="t-h2">Proyectos</h2>
+              <ul class="srv__proyectos">
+                {proyectos.map((proyecto) => (
+                  <TarjetaProyecto
+                    proyecto={proyecto}
+                    sizes="(min-width: 1280px) 20vw, (min-width: 768px) 40vw, 100vw"
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
           <div class="srv__bloque" id="te-puede-servir" data-appear>
             <h2 class="t-h2">También te puede servir</h2>
             {tambien.intro && <p class="t-body srv__intro">{tambien.intro}</p>}
@@ -292,6 +343,19 @@ const datosEstructurados = serviceJsonLd({
     margin-top: calc(-1 * var(--esp-3));
     margin-bottom: var(--esp-4);
   }
+  .srv__nota {
+    margin-top: var(--esp-5);
+  }
+  /* Los puntos con título de las secciones ("Por hora: …") llevan el título en negrita de la fuente de textos. */
+  .srv__bloque :global(strong) {
+    font-weight: 600;
+  }
+  /* Proyectos: una columna en móvil, dos desde tableta y tres en pantallas anchas (la columna es más angosta que la página). */
+  .srv__proyectos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-5);
+  }
 
   /* Lo que incluye (los highlights de Marby): una fila por inclusión, con su palomita. */
   .inc {
@@ -358,6 +422,14 @@ const datosEstructurados = serviceJsonLd({
       align-items: baseline;
       justify-content: space-between;
       gap: var(--esp-5);
+    }
+    .srv__proyectos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1280px) {
+    .srv__proyectos {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   @media (min-width: 1024px) {

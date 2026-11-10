@@ -460,11 +460,124 @@ export const servicios: Record<Slug, ServicioContenido> = {
   'streaming-para-eventos': {
     descripcion: 'Transmisión en vivo (streaming) de tu evento por Facebook, YouTube y otras plataformas.',
     title: 'Streaming para eventos en Puebla y Atlixco | Digital X',
-    meta: 'Transmisión en vivo (streaming) de tu evento por Facebook, YouTube y más en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.',
-    h1: 'Streaming para eventos en Puebla y Atlixco',
+    meta: 'Streaming y transmisión en vivo de conferencias y eventos culturales y deportivos en Puebla y Atlixco, con una o varias cámaras. Cotiza por WhatsApp.',
+    h1: 'Streaming y transmisión en vivo para eventos en Puebla',
     para: 'Conferencias, eventos culturales y cultos',
     incluye: 'Facebook, YouTube y más',
     mensaje: mensajesWhatsApp.streaming,
+    serviceType: 'Transmisión en vivo y streaming de eventos',
+    pagina: {
+      ficha: [
+        { etiqueta: 'Plataformas', valor: 'Facebook, YouTube y más' },
+        { etiqueta: 'Cámaras', valor: 'Una o varias, según tu evento' },
+        { etiqueta: 'Para', valor: 'Eventos, conferencias, escuelas e instituciones' },
+      ],
+      descripcion: {
+        titulo: 'Transmisión de tu evento en vivo por internet',
+        parrafos: [
+          'En Digital X hacemos el streaming de tu evento: lo transmitimos en vivo a Facebook, YouTube y otras plataformas, en Puebla, Atlixco, Izúcar de Matamoros y alrededores. Puede ser desde algo sencillo hasta una transmisión más completa, con una o varias cámaras, según lo que necesite tu evento.',
+          'Cada transmisión se cotiza a la medida. Cuéntanos qué quieres transmitir y te respondemos con una propuesta.',
+        ],
+      },
+      incluye: [
+        'La transmisión en vivo de tu evento a una o varias páginas o plataformas',
+        'Una o varias cámaras, según tu evento, con personal que las opera',
+        'Audio de preferencia directo de la consola del evento, para una señal limpia',
+        'Revisión del lugar y pruebas antes del evento',
+        'Rótulos, logos o diseños en pantalla, según el paquete que contrates',
+      ],
+      incluyeNota: [
+        'Si hace falta, coordinamos el internet con un proveedor. La grabación de la transmisión se puede entregar con un costo extra. La ',
+        { slug: 'video-para-eventos', texto: 'producción de videos para eventos' },
+        ' y el ',
+        { slug: 'circuito-cerrado-para-eventos', texto: 'circuito cerrado para eventos' },
+        ' son servicios aparte y se pueden sumar.',
+      ],
+      secciones: [
+        {
+          id: 'para-que-eventos',
+          etiqueta: 'Para qué eventos',
+          titulo: 'Para qué eventos',
+          bloques: [
+            {
+              lista: [
+                'Conferencias y congresos',
+                'Talleres y clases',
+                'Eventos corporativos',
+                'Eventos culturales',
+                'Eventos religiosos',
+                'Eventos escolares',
+                'Eventos deportivos',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'La complejidad del evento y el número de cámaras',
+                'El audio que se necesite',
+                'Los rótulos o diseños en pantalla',
+                'Si incluyes tomas con drone',
+                'Las plataformas a las que se transmite',
+                'El internet, si hay que coordinarlo',
+                'El traslado al lugar',
+              ],
+            },
+            { parrafo: 'Los viáticos se desglosan en la cotización.' },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Tu evento también necesita audio, pantallas o video editado?',
+        items: [
+          { slug: 'renta-de-audio', texto: 'Sonido para el evento que vas a transmitir' },
+          { slug: 'circuito-cerrado-para-eventos', texto: 'Pantallas en vivo para quien está en el lugar' },
+          { slug: 'video-para-eventos', texto: 'Video editado de tu evento para verlo después' },
+          { slug: 'video-con-drone', texto: 'Tomas con drone para tu evento' },
+          proyectos,
+          condiciones('Pagos, viáticos y cancelación'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu transmisión',
+        texto: 'Mándanos la fecha, el lugar, el tipo de evento, la plataforma y cuánto dura.',
+      },
+      cierre: {
+        titulo: 'Que tu evento se vea en línea',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos la transmisión de tu evento.',
+      },
+      faq: [
+        {
+          pregunta: '¿Sirve el WiFi del lugar?',
+          respuesta:
+            'Lo ideal es internet por cable y con buena velocidad de subida, no solo de bajada; el WiFi de muchos lugares no alcanza. Si el lugar no tiene buena conexión, coordinamos el internet con un proveedor.',
+        },
+        {
+          pregunta: '¿Qué pasa si se cae el internet o la plataforma?',
+          respuesta: 'Puede pasar. Por eso acordamos contigo, antes del evento, qué hacer si algo falla.',
+        },
+        {
+          pregunta: '¿Puedo poner cualquier música?',
+          respuesta:
+            'No. Facebook o YouTube pueden silenciar o cortar la transmisión si hay música con derechos de autor.',
+        },
+        {
+          pregunta: '¿Se ve en el mismo instante?',
+          respuesta:
+            'Siempre hay unos segundos de retraso entre lo que pasa en el evento y lo que ve el público en línea.',
+        },
+        {
+          pregunta: '¿En qué plataformas se transmite?',
+          respuesta:
+            'En Facebook, YouTube y otras plataformas. Cuéntanos dónde quieres transmitir y te indicamos cómo conectarlo.',
+        },
+      ],
+    },
   },
 
   'video-con-drone': {

@@ -42,7 +42,7 @@ export const proyectos: Proyecto[] = [
     placeholder: true,
   },
   {
-    titulo: 'Transmisión multicámara con drone',
+    titulo: 'Transmisión en vivo con drone',
     municipio: 'Atlixco',
     servicios: ['Transmisión en vivo', 'Video con drone', 'Producción de videos para eventos'],
     foto: { src: fotoDrone, alt: 'Drone en vuelo sobre un campo con el cielo nublado' },

@@ -39,7 +39,7 @@ Versión: borrador de trabajo · 2026-10-23
 | Producción de videos para eventos | `Video para eventos y conferencias en Puebla \| Digital X` (55 caracteres) | `Video para eventos y conferencias en Puebla` |
 | Transmisión en vivo | `Streaming para eventos en Puebla y Atlixco \| Digital X` (54 caracteres) | `Streaming y transmisión en vivo para eventos en Puebla` |
 | Video con drone | `Video y fotografía aérea con drone en Puebla \| Digital X` (56 caracteres) | `Video y fotografía aérea con drone en Puebla` |
-| Recorridos virtuales 360 | `Recorridos virtuales 360 para negocios en Puebla \| Digital X` (60 caracteres) | `Recorridos virtuales 360 para negocios en Puebla` |
+| Recorridos virtuales 360 | `Recorridos virtuales 360 para negocios en Puebla \| Digital X` (60 caracteres) | `Recorridos virtuales 360 para negocios y espacios en Puebla` |
 | Páginas web | `Diseño de páginas web en Puebla y Atlixco \| Digital X` (53 caracteres) | `Diseño de páginas web en Puebla y Atlixco` |
 | Tienda en línea | `Tiendas en línea para negocios en Puebla \| Digital X` (52 caracteres) | `Tiendas en línea para negocios en Puebla` |
 | Desarrollo de aplicaciones móviles | `Desarrollo de aplicaciones móviles en Puebla \| Digital X` (56 caracteres) | `Desarrollo de aplicaciones móviles en Puebla` |
@@ -63,7 +63,7 @@ Meta de Transmisión en vivo (149 caracteres): `Streaming y transmisión en vivo
 
 Meta de Video con drone (136 caracteres): `Video y fotografía aérea con drone para eventos, empresas y espacios en Puebla y Atlixco. Entregamos video y fotos. Cotiza por WhatsApp.`
 
-Meta de Recorridos virtuales 360 (122 caracteres): `Recorridos virtuales 360 para hoteles, restaurantes, escuelas, museos y negocios en Puebla y Atlixco. Cotiza por WhatsApp.`
+Meta de Recorridos virtuales 360 (137 caracteres): `Recorridos virtuales 360 con drone y cámara 360 para negocios, hoteles, restaurantes y escuelas en Puebla y Atlixco. Cotiza por WhatsApp.`
 
 Meta de Páginas web (119 caracteres): `Diseño y desarrollo de páginas web y landing pages para negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
 
@@ -139,6 +139,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Precios:** renta de audio no muestra cifras (decisión del dueño). Cualquier otro precio solo si el dueño lo confirmó (ej. "desde $5,000 MXN", `[PENDIENTE: confirmar a qué servicio aplica, circuito cerrado o producción de videos, y si incluye IVA]`).
 - **Circuito cerrado** va siempre con "para eventos", "en vivo" o "pantallas", y **sin mencionar seguridad ni vigilancia** en ninguna parte del sitio. Las pantallas (LED o televisores) y la planta de luz son de proveedores: se redacta "coordinamos", nunca "nuestras pantallas", "tenemos" ni "equipo propio". No se ofrece proyector: no se menciona.
 - **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida. **Excepción (decisión del dueño):** en Producción de videos para eventos se publica que la cobertura es de al menos dos personas y hasta tres cámaras. **Segunda excepción:** en Transmisión en vivo se puede decir "una o varias cámaras, según tu evento"; nunca "multicámara", cifras de cámaras ni "alta definición", y tampoco velocidades de internet. Nunca marcas de equipo. El internet y las pantallas son de proveedores: se coordinan (nunca "nuestro internet", "tenemos" ni "equipo propio").
+- **Recorridos virtuales 360:** sin ninguna relación con Google (nada de "agencia de confianza de Google", "fotógrafo acreditado", "certificado por Google" ni similares), sin marcas de equipo ni nombres de plataformas. No se afirma equipo propio de cámara 360: se escribe "con cámara 360 cuando el proyecto lo requiere". Sobre Google Maps solo se dice que se pueden publicar fotos 360 del lugar; **nunca se promete que el recorrido completo aparezca en Google Maps**. Sin plazos ni precios, bodas, XV años ni fiestas.
 - **Drone:** PROHIBIDAS las afirmaciones legales: nada de "no requiere permiso", "cumplimos la norma", "autorizados", "certificados" ni "registrados", y ninguna mención a la AFAC ni a la autoridad aeronáutica. Sin peso, modelos, marcas ni duración de baterías con cifras. No se dice si se vuela o no sobre las personas. Solo "drone" (nunca "dron"; el plural es "drones"). La **única** mención de reglas de vuelo permitida es que hay zonas restringidas, como las cercanas a aeropuertos (FAQ de Video con drone). Sin bodas, XV años ni fiestas.
 
 ---
@@ -250,7 +251,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Producción de videos para eventos | `Hola, quiero cotizar video para un evento o un video promocional. Fecha: __ Lugar: __ Tipo de evento o de video: __ Duración aprox.: __` |
 | Transmisión en vivo | `Hola, quiero cotizar una transmisión en vivo. Fecha: __ Lugar: __ Tipo de evento: __ Plataforma (Facebook, YouTube...): __ Duración aprox.: __` |
 | Video con drone | `Hola, quiero cotizar video o fotografía aérea con drone. Fecha: __ Lugar: __ Tipo de evento o proyecto: __ Interior o exterior: __ Qué quiero mostrar: __` |
-| Recorridos virtuales 360 | `Hola, quiero cotizar un recorrido virtual 360. Lugar a recorrer: __ Para qué lo necesito: __` |
+| Recorridos virtuales 360 | `Hola, quiero cotizar un recorrido virtual 360. Fecha: __ Lugar: __ Tipo de espacio (hotel, restaurante, escuela, negocio...): __ Tamaño aprox.: __ Interior, exterior o aéreo: __` |
 | Páginas web | `Hola, quiero cotizar una página web. Negocio: __ Qué necesito: __` |
 | Desarrollo de aplicaciones móviles | `Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __` |
 | Desarrollo de software | `Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __` |

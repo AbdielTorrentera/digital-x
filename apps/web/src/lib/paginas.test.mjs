@@ -90,7 +90,7 @@ test('archivosDe da las rutas posibles del archivo de cada página', () => {
 
 const servicios = paginas.filter((p) => p.categoria);
 
-test('hay 10 servicios, todos en "lanzamiento", y solo renta de audio, circuito cerrado, video y streaming están construidos', () => {
+test('hay 10 servicios, todos en "lanzamiento", y solo renta de audio, circuito cerrado, video, streaming y drone están construidos', () => {
   assert.equal(servicios.length, 10);
   for (const p of servicios) assert.equal(p.estado, 'lanzamiento', p.url);
   assert.deepEqual(
@@ -100,6 +100,7 @@ test('hay 10 servicios, todos en "lanzamiento", y solo renta de audio, circuito 
       '/servicios/circuito-cerrado-para-eventos/',
       '/servicios/video-para-eventos/',
       '/servicios/streaming-para-eventos/',
+      '/servicios/video-con-drone/',
     ],
   );
 });

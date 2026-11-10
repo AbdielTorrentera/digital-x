@@ -113,7 +113,7 @@ test('un servicio con la página construida trae todo su contenido (si no, el bu
   assert.ok(construidas.length > 0);
   for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
   // Y uno incompleto sí se detecta.
-  assert.ok(faltantesDePagina('video-con-drone').length > 0);
+  assert.ok(faltantesDePagina('recorridos-virtuales-360').length > 0);
 });
 
 test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
@@ -264,6 +264,91 @@ test('video para eventos: sin eventos sociales, plazos, precios ni marcas de equ
   assert.ok(!/sony|canon|nikon|blackmagic|panasonic|dji|gopro|rode|sennheiser|shure/i.test(texto), 'marca de equipo');
 });
 
+test('video con drone: SEO, ficha, qué incluye, secciones en orden, enlace dentro de un punto y 5 FAQ sin repetir lo que dicen las secciones', () => {
+  const c = servicios['video-con-drone'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Video y fotografía aérea con drone en Puebla | Digital X');
+  assert.equal(c.title.length, 56);
+  assert.equal(c.h1, 'Video y fotografía aérea con drone en Puebla');
+  assert.equal(
+    c.meta,
+    'Video y fotografía aérea con drone para eventos, empresas y espacios en Puebla y Atlixco. Entregamos video y fotos. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Video y fotografía aérea con drone');
+  assert.equal(
+    c.descripcion,
+    'Video y fotografía aérea con drone para eventos, empresas y espacios, en exteriores e interiores.',
+  );
+  assert.equal(c.mensaje, mensajesWhatsApp.drone);
+  assert.deepEqual(
+    pagina.ficha.map((f) => f.etiqueta),
+    ['Tomas', 'Entrega', 'Para'],
+  );
+  assert.deepEqual(pagina.incluye, [
+    'Planeación de las tomas contigo',
+    'Revisión del lugar y de las condiciones antes de volar',
+    'Grabación con drone y piloto en el lugar, en exteriores o interiores',
+    'Tomas en los momentos clave de tu evento',
+    'Entrega del material: video editado, tomas sin editar o ambos, y fotografía aérea, según lo que acordemos en la cotización',
+  ]);
+  assert.deepEqual(
+    pagina.incluyeNota.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['video-para-eventos', 'streaming-para-eventos', 'circuito-cerrado-para-eventos'],
+  );
+  assert.deepEqual(
+    pagina.secciones.map((s) => s.id),
+    ['fotografia-aerea', 'para-que-sirve', 'exteriores-e-interiores', 'precio'],
+  );
+  // "Para qué sirve": 3 puntos y el tercero lleva el enlace al recorrido virtual 360 (su tarjeta, mientras no esté publicado).
+  const puntos = pagina.secciones[1].bloques[0].puntos;
+  assert.deepEqual(
+    puntos.map((p) => p.titulo),
+    ['Eventos', 'Empresas y negocios', 'Espacios'],
+  );
+  assert.deepEqual(
+    puntos[2].texto.filter((t) => typeof t !== 'string'),
+    [{ slug: 'recorridos-virtuales-360', texto: 'recorrido virtual 360' }],
+  );
+  assert.ok(textosDeBloques(pagina.secciones[1].bloques)[2].includes('recorrido virtual 360.'));
+  assert.equal(pagina.faq.length, 5);
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      pagina.incluyeNota.map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('video con drone: sin afirmaciones legales, autoridad, cifras de peso o baterías, vuelo sobre personas ni eventos sociales', () => {
+  const texto = JSON.stringify(servicios['video-con-drone']);
+  assert.ok(
+    !/permiso|autoriz|certific|registrad|AFAC|aeron[aá]utic|norma(tiva)?\b|cumpl/i.test(texto),
+    'afirmación legal',
+  );
+  assert.ok(
+    !/\d+\s*(g|gr|gramos|kg|kilos|min|minutos|horas|mah|km|metros|m)\b/i.test(texto),
+    'peso, batería o distancia con cifra',
+  );
+  assert.ok(
+    !/sobre (las |los )?(personas|invitados|asistentes|gente|p[uú]blico)|encima de/i.test(texto),
+    'vuelo sobre personas',
+  );
+  assert.ok(!/dji|mavic|phantom|inspire|mini ?[234]|autel|parrot|skydio/i.test(texto), 'marca o modelo');
+  assert.ok(!/boda|xv\b|quince|bautizo|fiesta|social/i.test(texto), 'eventos sociales');
+  assert.ok(!/\$\s?\d|MXN|desde \d/i.test(texto), 'precio publicado');
+  assert.ok(/\bdrone\b/.test(texto) && !/\bdron\b/i.test(texto), 'solo "drone"');
+  // La única mención de reglas de vuelo permitida: las zonas restringidas cercanas a aeropuertos.
+  assert.equal(texto.match(/restringid/gi)?.length, 1);
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
@@ -411,7 +496,8 @@ test('transmisión en vivo: las cámaras son "una o varias", sin multicámara, a
 
 test('"drone" se escribe así en todo el contenido, "aplicaciones móviles" no es "apps" y el software no es "a la medida"', () => {
   const todo = JSON.stringify([servicios, catalogo]);
-  assert.ok(!/\bdron(es)?\b/i.test(todo), '"dron" en el contenido');
+  // "drones" es el plural de "drone" (FAQ de espectáculos con luces): solo se prohíbe la forma suelta "dron".
+  assert.ok(!/\bdron\b/i.test(todo), '"dron" en el contenido');
   assert.ok(!/\bapps?\b/i.test(todo), '"apps" en el contenido');
   assert.ok(!/a la medida/i.test(JSON.stringify(servicios['desarrollo-de-software'])), 'software "a la medida"');
 });

@@ -9,6 +9,7 @@ import NavInterna from './NavInterna.astro';
 import CierreContacto from './sections/CierreContacto.astro';
 import Faq from './sections/Faq.astro';
 import TarjetaProyecto from './ui/TarjetaProyecto.astro';
+import TextoConEnlaces from './ui/TextoConEnlaces.astro';
 import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
 import { proyectos as proyectosDelSitio } from '../content/proyectos';
 import { catalogo, faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
@@ -138,15 +139,7 @@ const datosEstructurados = serviceJsonLd({
             </ul>
             {nota && (
               <p class="t-body srv__nota">
-                {nota.map((parte) =>
-                  typeof parte === 'string' ? (
-                    parte
-                  ) : (
-                    <a class="link" href={enlaceDeServicio(parte.slug)}>
-                      {parte.texto}
-                    </a>
-                  ),
-                )}
+                <TextoConEnlaces texto={nota} />
               </p>
             )}
           </div>
@@ -166,7 +159,7 @@ const datosEstructurados = serviceJsonLd({
                   <ul>
                     {bloque.puntos.map((punto) => (
                       <li>
-                        <strong>{punto.titulo}:</strong> {punto.texto}
+                        <strong>{punto.titulo}:</strong> <TextoConEnlaces texto={punto.texto} />
                       </li>
                     ))}
                   </ul>

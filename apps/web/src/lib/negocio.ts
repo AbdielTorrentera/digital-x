@@ -79,7 +79,8 @@ export const mensajesWhatsApp = {
     'Hola, quiero cotizar video o fotografía aérea con drone. Fecha: __ Lugar: __ Tipo de evento o proyecto: __ Interior o exterior: __ Qué quiero mostrar: __',
   recorridos360:
     'Hola, quiero cotizar un recorrido virtual 360. Fecha: __ Lugar: __ Tipo de espacio (hotel, restaurante, escuela, negocio...): __ Tamaño aprox.: __ Interior, exterior o aéreo: __',
-  paginasWeb: 'Hola, quiero cotizar una página web. Negocio: __ Qué necesito: __',
+  paginasWeb:
+    'Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __',
   aplicacionesMoviles: 'Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __',
   desarrolloDeSoftware: 'Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __',
   tiendaEnLinea: 'Hola, quiero cotizar una tienda en línea. Negocio: __ Qué voy a vender: __',

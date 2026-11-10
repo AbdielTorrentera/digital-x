@@ -40,7 +40,7 @@ Versión: borrador de trabajo · 2026-10-23
 | Transmisión en vivo | `Streaming para eventos en Puebla y Atlixco \| Digital X` (54 caracteres) | `Streaming y transmisión en vivo para eventos en Puebla` |
 | Video con drone | `Video y fotografía aérea con drone en Puebla \| Digital X` (56 caracteres) | `Video y fotografía aérea con drone en Puebla` |
 | Recorridos virtuales 360 | `Recorridos virtuales 360 para negocios en Puebla \| Digital X` (60 caracteres) | `Recorridos virtuales 360 para negocios y espacios en Puebla` |
-| Páginas web | `Diseño de páginas web en Puebla y Atlixco \| Digital X` (53 caracteres) | `Diseño de páginas web en Puebla y Atlixco` |
+| Páginas web | `Diseño de páginas web en Puebla y Atlixco \| Digital X` (53 caracteres) | `Diseño y desarrollo de páginas web en Puebla` |
 | Tienda en línea | `Tiendas en línea para negocios en Puebla \| Digital X` (52 caracteres) | `Tiendas en línea para negocios en Puebla` |
 | Desarrollo de aplicaciones móviles | `Desarrollo de aplicaciones móviles en Puebla \| Digital X` (56 caracteres) | `Desarrollo de aplicaciones móviles en Puebla` |
 | Desarrollo de software | `Desarrollo de software para negocios en Puebla \| Digital X` (58 caracteres) | `Desarrollo de software para negocios en Puebla` |
@@ -65,7 +65,7 @@ Meta de Video con drone (136 caracteres): `Video y fotografía aérea con drone 
 
 Meta de Recorridos virtuales 360 (137 caracteres): `Recorridos virtuales 360 con drone y cámara 360 para negocios, hoteles, restaurantes y escuelas en Puebla y Atlixco. Cotiza por WhatsApp.`
 
-Meta de Páginas web (119 caracteres): `Diseño y desarrollo de páginas web y landing pages para negocios en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
+Meta de Páginas web (132 caracteres): `Diseño y desarrollo de páginas web y landing pages para negocios en Puebla y Atlixco. Dominio y hosting aparte. Cotiza por WhatsApp.`
 
 Meta de Tienda en línea (120 caracteres): `Diseño y desarrollo de tiendas en línea para vender por internet, en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
 
@@ -141,6 +141,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **No se publican topes de personas ni datos del equipo** (número de personas que cubre el sonido, canales de la mezcladora, etc.). Ventajas permitidas: personal técnico capacitado, un solo proveedor, equipo y solución según tu evento o proyecto y cotización a la medida. **Excepción (decisión del dueño):** en Producción de videos para eventos se publica que la cobertura es de al menos dos personas y hasta tres cámaras. **Segunda excepción:** en Transmisión en vivo se puede decir "una o varias cámaras, según tu evento"; nunca "multicámara", cifras de cámaras ni "alta definición", y tampoco velocidades de internet. Nunca marcas de equipo. El internet y las pantallas son de proveedores: se coordinan (nunca "nuestro internet", "tenemos" ni "equipo propio").
 - **Recorridos virtuales 360:** sin ninguna relación con Google (nada de "agencia de confianza de Google", "fotógrafo acreditado", "certificado por Google" ni similares), sin marcas de equipo ni nombres de plataformas. No se afirma equipo propio de cámara 360: se escribe "con cámara 360 cuando el proyecto lo requiere". Sobre Google Maps solo se dice que se pueden publicar fotos 360 del lugar; **nunca se promete que el recorrido completo aparezca en Google Maps**. Sin plazos ni precios, bodas, XV años ni fiestas.
 - **Drone:** PROHIBIDAS las afirmaciones legales: nada de "no requiere permiso", "cumplimos la norma", "autorizados", "certificados" ni "registrados", y ninguna mención a la AFAC ni a la autoridad aeronáutica. Sin peso, modelos, marcas ni duración de baterías con cifras. No se dice si se vuela o no sobre las personas. Solo "drone" (nunca "dron"; el plural es "drones"). La **única** mención de reglas de vuelo permitida es que hay zonas restringidas, como las cercanas a aeropuertos (FAQ de Video con drone). Sin bodas, XV años ni fiestas.
+- **Páginas web:** PROHIBIDO prometer posicionamiento en Google, "SEO incluido", "primeros lugares" o resultados garantizados: la sección "Posicionamiento en Google" dice que aparecer bien es un trabajo aparte y continuo que no se promete como parte del precio. **Sin precio por ahora** (decisión del dueño; ver `[PENDIENTE]` en estructura sección 7), sin plazos, sin porcentajes de pago (el pago es por etapas, como dicen las condiciones de contratación) y sin marcas de herramientas ni de plataformas. **Excepción de cifra:** "Hasta 3 ajustes pequeños al entregar" es la única cifra de la página.
 
 ---
 
@@ -252,7 +253,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Transmisión en vivo | `Hola, quiero cotizar una transmisión en vivo. Fecha: __ Lugar: __ Tipo de evento: __ Plataforma (Facebook, YouTube...): __ Duración aprox.: __` |
 | Video con drone | `Hola, quiero cotizar video o fotografía aérea con drone. Fecha: __ Lugar: __ Tipo de evento o proyecto: __ Interior o exterior: __ Qué quiero mostrar: __` |
 | Recorridos virtuales 360 | `Hola, quiero cotizar un recorrido virtual 360. Fecha: __ Lugar: __ Tipo de espacio (hotel, restaurante, escuela, negocio...): __ Tamaño aprox.: __ Interior, exterior o aéreo: __` |
-| Páginas web | `Hola, quiero cotizar una página web. Negocio: __ Qué necesito: __` |
+| Páginas web | `Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __` |
 | Desarrollo de aplicaciones móviles | `Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __` |
 | Desarrollo de software | `Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __` |
 | Tienda en línea | `Hola, quiero cotizar una tienda en línea. Negocio: __ Qué voy a vender: __` |

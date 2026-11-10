@@ -742,13 +742,148 @@ export const servicios: Record<Slug, ServicioContenido> = {
 
   'recorridos-virtuales-360': {
     descripcion:
-      'Tomamos el material y publicamos tu recorrido virtual 360 en una plataforma de recorridos virtuales, para hoteles, restaurantes, escuelas, museos y negocios.',
+      'Recorridos virtuales con fotos 360 enlazadas para hoteles, restaurantes, escuelas, museos y negocios, con drone y cámara 360.',
     title: 'Recorridos virtuales 360 para negocios en Puebla | Digital X',
-    meta: 'Recorridos virtuales 360 para hoteles, restaurantes, escuelas, museos y negocios en Puebla y Atlixco. Cotiza por WhatsApp.',
-    h1: 'Recorridos virtuales 360 para negocios en Puebla',
+    meta: 'Recorridos virtuales 360 con drone y cámara 360 para negocios, hoteles, restaurantes y escuelas en Puebla y Atlixco. Cotiza por WhatsApp.',
+    h1: 'Recorridos virtuales 360 para negocios y espacios en Puebla',
     para: 'Hoteles, restaurantes, escuelas, museos y negocios',
-    incluye: 'Publicación en plataforma',
+    incluye: 'Fotos 360 enlazadas',
     mensaje: mensajesWhatsApp.recorridos360,
+    serviceType: 'Recorridos virtuales y fotografía 360',
+    pagina: {
+      ficha: [
+        { etiqueta: 'Qué es', valor: 'Fotos 360 enlazadas que se recorren desde el celular o la computadora' },
+        { etiqueta: 'Captura', valor: 'Con drone y, para interiores, con cámara 360 cuando el proyecto lo requiere' },
+        { etiqueta: 'Para', valor: 'Negocios, hoteles, restaurantes, escuelas y museos' },
+      ],
+      descripcion: {
+        titulo: 'Recorridos virtuales de tu negocio o tu espacio',
+        parrafos: [
+          'En Digital X creamos recorridos virtuales 360 para negocios, hoteles, restaurantes, escuelas, museos y otros espacios en Puebla, Atlixco, Izúcar de Matamoros y alrededores. Un recorrido virtual es un conjunto de fotos 360 enlazadas que tu cliente recorre desde el celular o la computadora antes de visitarte. No es un video.',
+          'Capturamos el material con drone y, para interiores, con cámara 360 cuando el proyecto lo requiere. Planeamos contigo el recorrido y te lo entregamos listo para compartir. Cada recorrido se cotiza a la medida.',
+        ],
+      },
+      incluye: [
+        'Planeación del recorrido contigo: qué puntos se capturan y cómo se enlazan',
+        'Captura del material en tu lugar, con drone y, para interiores, con cámara 360 cuando el proyecto lo requiere',
+        'Unión de las imágenes y enlace de los puntos',
+        'Puntos de información dentro del recorrido, si los necesitas',
+        'Entrega del recorrido con un enlace para compartir y, según la plataforma, un código para insertarlo en tu página web',
+      ],
+      incluyeNota: [
+        'La plataforma donde se aloja el recorrido tiene un costo aparte, según la que elijas. El ',
+        { slug: 'video-con-drone', texto: 'video con drone' },
+        ' y la ',
+        { slug: 'video-para-eventos', texto: 'producción de videos para eventos' },
+        ' son servicios aparte y se pueden combinar.',
+      ],
+      secciones: [
+        {
+          id: 'google-maps',
+          etiqueta: 'Google Maps',
+          titulo: 'Google Maps',
+          bloques: [
+            {
+              parrafo:
+                'Un recorrido no aparece automáticamente en Google. Lo que sí se puede publicar en Google Maps son fotos 360 de tu lugar: te apoyamos con su publicación y, si no tiene costo, va incluida en el servicio.',
+            },
+          ],
+        },
+        {
+          id: 'para-que-sirve',
+          etiqueta: 'Para qué sirve',
+          titulo: 'Para qué sirve',
+          bloques: [
+            {
+              lista: [
+                'Hoteles y restaurantes',
+                'Escuelas y museos',
+                'Negocios y oficinas',
+                'Inmuebles y espacios que quieres mostrar antes de que te visiten',
+              ],
+            },
+            { parrafo: 'No es solo para casas en venta: sirve para cualquier lugar que quieras mostrar.' },
+          ],
+        },
+        {
+          id: 'como-lo-hacemos',
+          etiqueta: 'Cómo lo hacemos',
+          titulo: 'Cómo lo hacemos',
+          bloques: [
+            {
+              lista: [
+                'Planeamos contigo los puntos del recorrido.',
+                'Capturamos con drone y, para interiores, con cámara 360 cuando el proyecto lo requiere, y unimos las imágenes.',
+                'Cuando el espacio se beneficia de una vista con altura, sumamos tomas aéreas con drone.',
+                'De ti necesitamos acceso al lugar en la fecha acordada, de preferencia con buena luz, y que nos indiques qué zonas quieres mostrar.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'El tamaño del espacio y el número de puntos de toma',
+                'Si es en interiores, exteriores, aéreo o una combinación',
+                'Los puntos de información que quieras agregar',
+                'Si lo combinas con video o fotografía aérea',
+                'El traslado al lugar',
+              ],
+            },
+            { parrafo: 'Con esos datos preparamos tu cotización, con los viáticos desglosados.' },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres sumar video o pantallas a tu proyecto?',
+        items: [
+          { slug: 'video-con-drone', texto: 'Video y fotografía aérea de tu espacio' },
+          { slug: 'video-para-eventos', texto: 'Video de eventos en tu lugar' },
+          { slug: 'streaming-para-eventos', texto: 'Transmite lo que pasa en tu lugar' },
+          { slug: 'circuito-cerrado-para-eventos', texto: 'Imagen en vivo en pantallas para tus eventos' },
+          proyectos,
+          condiciones('Qué pagar al inicio y cómo cancelar'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu recorrido',
+        texto:
+          'Mándanos la fecha, el lugar, el tipo de espacio, su tamaño aproximado y si es interior, exterior o aéreo.',
+      },
+      cierre: {
+        titulo: 'Que tu espacio se pueda visitar antes de llegar',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos el recorrido virtual de tu espacio.',
+      },
+      faq: [
+        {
+          pregunta: '¿Se puede hacer con cualquier celular?',
+          respuesta: 'No. Un recorrido profesional usa equipo especial y se unen las imágenes para que se vea bien.',
+        },
+        {
+          pregunta: '¿Cuántas fotos se necesitan?',
+          respuesta:
+            'Depende del tamaño del espacio. Con unas pocas fotos no se cubre todo: se necesitan varios puntos de toma y buena luz.',
+        },
+        {
+          pregunta: '¿Lo puedo poner en mi página web?',
+          respuesta: 'Sí, según la plataforma que elijas.',
+        },
+        {
+          pregunta: '¿Una vez hecho, dura para siempre?',
+          respuesta:
+            'Si tu lugar cambia, como una remodelación o nuevas instalaciones, conviene actualizar el recorrido.',
+        },
+        {
+          pregunta: '¿Es lo mismo que un video con drone?',
+          respuesta:
+            'No. El video es una grabación que se ve de corrido; el recorrido virtual son fotos enlazadas que la persona recorre a su ritmo.',
+        },
+      ],
+    },
   },
 
   'paginas-web': {

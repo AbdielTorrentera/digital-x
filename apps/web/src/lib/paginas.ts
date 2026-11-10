@@ -71,7 +71,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/recorridos-virtuales-360/',
     titulo: 'Recorridos virtuales 360',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'video',
   },
 

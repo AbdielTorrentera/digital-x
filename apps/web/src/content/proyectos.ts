@@ -32,7 +32,7 @@ export const proyectos: Proyecto[] = [
   {
     titulo: 'Conferencia empresarial',
     municipio: 'Puebla',
-    servicios: ['Audio', 'Circuito cerrado'],
+    servicios: ['Audio', 'Circuito cerrado para eventos'],
     foto: {
       src: fotoConferencia,
       alt: 'Presentador con micrófono en un escenario con pantalla grande y luces',

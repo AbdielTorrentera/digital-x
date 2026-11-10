@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
 import { catalogo, faltantesDePagina, servicios, slugs } from './servicios.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
 import { paginas, slugDe, urlsPlaneadas } from '../lib/paginas.ts';
@@ -75,7 +76,7 @@ test('las descripciones confirmadas por el dueño no cambian de redacción', () 
   );
   assert.equal(
     servicios['circuito-cerrado-para-eventos'].descripcion,
-    'Cámaras en vivo proyectadas en pantallas para que todos vean el escenario. No es un sistema de seguridad.',
+    'Cámaras en vivo proyectadas en pantallas para que todo tu público vea el escenario.',
   );
   assert.equal(
     servicios['desarrollo-de-software'].descripcion,
@@ -141,23 +142,43 @@ test('renta de audio: todo el contenido migrado, la sección Sonorización y sol
   }
 });
 
-test('circuito cerrado: página completa, 5 FAQ propias, sin secciones extra ni galería y sin hablar de grabar', () => {
+test('circuito cerrado: página completa, sección Pantalla LED o televisor, 5 FAQ propias y sin galería ni hablar de grabar', () => {
   const c = servicios['circuito-cerrado-para-eventos'];
   const pagina = c.pagina;
   assert.equal(pagina.ficha.length, 3);
   assert.equal(pagina.descripcion.parrafos.length, 2);
   assert.equal(pagina.faq.length, 5);
-  assert.ok(!pagina.secciones, 'no lleva secciones extra: serían las FAQ repetidas');
+  assert.deepEqual(
+    pagina.secciones.map((s) => [s.id, s.etiqueta, s.titulo]),
+    [['pantallas', 'Pantallas', 'Pantalla LED o televisor']],
+  );
+  // La explicación de LED o televisor vive solo en la sección: ninguna FAQ repite sus oraciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const deLaSeccion = new Set(pagina.secciones.flatMap((s) => s.parrafos.flatMap(oracionesDe)));
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!deLaSeccion.has(oracion), `FAQ repite: ${oracion}`);
+  }
+  assert.ok(!/LED|televisor/i.test(JSON.stringify(pagina.faq)), 'LED y televisores solo se explican en la sección');
   assert.equal(c.mensaje, mensajesWhatsApp.circuitoCerrado);
-  // La aclaración va a la vista (ficha) y en la descripción; las pantallas se "coordinan".
-  assert.match(pagina.ficha[0].valor, /no es un sistema de seguridad/);
-  assert.match(pagina.descripcion.parrafos[0], /No es un sistema de seguridad\./);
+  // Cámaras en vivo en pantallas para que todos vean el escenario, a la vista (ficha) y en la descripción.
+  assert.equal(
+    pagina.ficha[0].valor,
+    'Cámaras en vivo en pantallas durante tu evento, para que todos vean el escenario',
+  );
+  assert.equal(
+    pagina.descripcion.parrafos[0],
+    'El circuito cerrado para eventos es proyección en vivo: cámaras cuya imagen se ve en pantallas dentro del mismo lugar, para que todo tu público vea lo que pasa en el escenario.',
+  );
+  assert.equal(
+    c.meta,
+    'Circuito cerrado y pantallas LED o TV para eventos en Puebla: cámaras en vivo con operador para que todos vean el escenario. Cotiza por WhatsApp.',
+  );
   assert.ok(pagina.incluye.some((i) => /las coordinamos/.test(i)));
   // Lo que incluye es lo confirmado por el dueño, ni más ni menos.
   assert.deepEqual(pagina.incluye, [
     'Personal que opera las cámaras durante tu evento',
     'Una o varias cámaras en vivo, según tu evento',
-    'Proyección de la imagen en pantallas del lugar',
+    'La imagen en vivo en las pantallas del lugar',
     'Pantallas para eventos, si las necesitas: las coordinamos y van incluidas en tu cotización',
     'Montaje e instalación del equipo',
   ]);
@@ -193,7 +214,6 @@ test('ninguna oración se repite entre servicios ni con el catálogo (sin conten
   const oraciones = bloques
     .flatMap((b) => b.split(/(?<=[.!?])\s+/))
     .map((o) => o.trim())
-    // Las oraciones cortas (como "No es un sistema de seguridad.") se repiten a propósito junto a "circuito cerrado".
     .filter((o) => o.split(/\s+/).length >= 7);
   const vistas = new Map();
   for (const oracion of oraciones) vistas.set(oracion, (vistas.get(oracion) ?? 0) + 1);
@@ -201,14 +221,44 @@ test('ninguna oración se repite entre servicios ni con el catálogo (sin conten
   assert.deepEqual(repetidas, []);
 });
 
-test('el circuito cerrado se explica con pantallas y nunca con "ni graba" ni como cámaras de seguridad', () => {
+test('el circuito cerrado se explica con pantallas, sin "graba", seguridad ni vigilancia', () => {
   for (const texto of bloques) {
     assert.ok(!/no graba|ni graba/i.test(texto), `"graba" en: ${texto}`);
+    assert.ok(!/seguridad|vigilancia/i.test(texto), `seguridad o vigilancia en: ${texto}`);
     if (texto.startsWith('¿')) continue; // la pregunta solo nombra el servicio; su respuesta lo explica
-    assert.ok(!/cámaras de seguridad/i.test(texto), `cámaras de seguridad en: ${texto}`);
     if (/circuito cerrado/i.test(texto)) assert.match(texto, /pantallas/i, `circuito cerrado sin pantallas: ${texto}`);
   }
-  assert.match(servicios['circuito-cerrado-para-eventos'].descripcion, /No es un sistema de seguridad\.$/);
+});
+
+// Los textos del sitio viven en content/*.ts (y los mensajes de WhatsApp en lib/negocio.ts): se leen como texto, sin
+// comentarios, porque algunos importan imágenes y no se pueden cargar con node:test.
+const sinComentarios = (texto) => texto.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+const textosDelSitio = [
+  ...readdirSync(new URL('.', import.meta.url))
+    .filter((archivo) => archivo.endsWith('.ts'))
+    .map((archivo) => [`content/${archivo}`, new URL(archivo, import.meta.url)]),
+  ['lib/negocio.ts', new URL('../lib/negocio.ts', import.meta.url)],
+].map(([nombre, url]) => [nombre, sinComentarios(readFileSync(url, 'utf8'))]);
+
+test('en ningún texto del sitio aparece "vigilancia", ni "seguridad" junto a "circuito cerrado"', () => {
+  for (const [nombre, texto] of textosDelSitio) {
+    assert.ok(!/vigilancia/i.test(texto), `vigilancia en ${nombre}`);
+    assert.ok(!/sistema de seguridad|cámaras de seguridad/i.test(texto), `sistema de seguridad en ${nombre}`);
+    assert.ok(
+      !/circuito cerrado[\s\S]{0,200}seguridad|seguridad[\s\S]{0,200}circuito cerrado/i.test(texto),
+      `seguridad junto a circuito cerrado en ${nombre}`,
+    );
+  }
+});
+
+test('las pantallas y la planta son de proveedores: sin "proyector", "nuestras pantallas", "tenemos" ni "equipo propio"', () => {
+  for (const [nombre, texto] of textosDelSitio) {
+    assert.ok(!/proyector/i.test(texto), `proyector en ${nombre}`);
+    assert.ok(
+      !/nuestras? pantallas?|tenemos (las |tus )?pantallas|equipo propio|nuestra planta/i.test(texto),
+      `pantallas propias en ${nombre}`,
+    );
+  }
 });
 
 test('transmisión en vivo no menciona número de cámaras ni mezcla de cámaras', () => {

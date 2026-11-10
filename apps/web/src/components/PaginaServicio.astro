@@ -11,7 +11,7 @@ import Faq from './sections/Faq.astro';
 import TarjetaProyecto from './ui/TarjetaProyecto.astro';
 import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
 import { proyectos as proyectosDelSitio } from '../content/proyectos';
-import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
+import { catalogo, faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
 import { enlaceAPagina } from '../lib/enlaces';
 import { serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
 import { idNegocio, negocio, telUrl, waUrl, zonas } from '../lib/negocio';
@@ -46,8 +46,8 @@ const secciones = p.secciones ?? [];
 const nota = p.incluyeNota;
 const galeria = foto.galeria?.some((s) => s.fotos.length > 0) ? foto.galeria : undefined;
 
-const categorias = { audio: 'Audio', video: 'Video', tecnologia: 'Tecnología' };
-const tipos = { audio: 'Servicios de audio', video: 'Servicios de video', tecnologia: 'Servicios de tecnología' };
+// La categoría del servicio (su etiqueta y su nombre) sale de los datos del catálogo, no de constantes de este componente.
+const categoria = catalogo.secciones.find((seccion) => seccion.categoria === registro.categoria)!;
 const nombre = registro.titulo;
 const url = new URL(registro.url, negocio.url).href;
 
@@ -72,7 +72,7 @@ const nombreEnMinuscula = nombre.toLowerCase();
 const datosEstructurados = serviceJsonLd({
   url,
   nombre,
-  tipo: c.serviceType ?? tipos[registro.categoria!],
+  tipo: c.serviceType ?? categoria.titulo,
   descripcion: c.descripcion,
   idNegocio,
   zonas: [...zonas.todas],
@@ -99,7 +99,7 @@ const datosEstructurados = serviceJsonLd({
       <div class="srv__arriba">
         <div class="srv__foto">
           <Foto class="srv__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 60vw, 100vw" prioritaria />
-          <span class="srv__chip t-body-sm">{categorias[registro.categoria!]}</span>
+          <span class="srv__chip t-body-sm">{categoria.etiqueta}</span>
           {galeria && (
             <button class="srv__ver t-body-sm" type="button" data-galeria-abrir>
               Ver todas las fotos

@@ -592,13 +592,18 @@ export const catalogo = {
   h1: 'Servicios de audio, video y tecnología en Puebla',
   intro:
     'Trabajamos en Puebla, Atlixco, Izúcar de Matamoros y alrededores con tres áreas de servicio: audio para que tu evento se escuche, video para que se vea y se transmita, y tecnología para que tu negocio funcione en internet. Elige el servicio que necesitas o cuéntanos tu evento por WhatsApp y te decimos qué te conviene.',
-  /** Una sección por categoría, en el orden del catálogo. `id` es el ancla (/servicios/#audio) y `etiqueta`, su pestaña. */
+  /**
+   * Una sección por categoría, en el orden del catálogo. `id` es el ancla (/servicios/#audio), `etiqueta` su pestaña y el
+   * chip de la página de cada servicio, y `titulo` el tipo de servicio del JSON-LD cuando el servicio no trae el suyo.
+   */
   secciones: [
     {
       id: 'audio',
       categoria: 'audio',
       etiqueta: 'Audio',
       titulo: 'Servicios de audio',
+      // Servicio oficial sin página propia: se nombra en los textos corridos (Inicio y condiciones) pero no se enlaza.
+      sinPagina: ['sonorización'],
       para: 'Que tu evento se escuche claro, con personal técnico capacitado de principio a fin.',
     },
     {
@@ -615,7 +620,15 @@ export const catalogo = {
       titulo: 'Servicios de tecnología',
       para: 'Que encuentren tu negocio en internet, que vendas en línea y que tus procesos funcionen con software propio.',
     },
-  ] satisfies { id: string; categoria: Categoria; etiqueta: string; titulo: string; para: string }[],
+  ] satisfies {
+    id: string;
+    categoria: Categoria;
+    etiqueta: string;
+    titulo: string;
+    para: string;
+    /** Nombres de servicios de la categoría que no tienen página, en minúscula, para frases como "a, b y c". */
+    sinPagina?: string[];
+  }[],
   /** "¿Qué servicios necesito para mi evento?": cada escenario y los servicios que le convienen. */
   guia: {
     etiqueta: 'Guía para elegir',

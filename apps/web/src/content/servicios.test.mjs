@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { catalogo, faltantesDePagina, servicios, slugs } from './servicios.ts';
+import { catalogo, faltantesDePagina, servicios, slugs, textosDeBloques } from './servicios.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
 import { paginas, slugDe, urlsPlaneadas } from '../lib/paginas.ts';
 
@@ -16,7 +16,8 @@ const bloquesDe = ([, c]) => [
   ...(c.pagina?.ficha ?? []).map((f) => f.valor),
   ...(c.pagina?.descripcion?.parrafos ?? []),
   ...(c.pagina?.incluye ?? []),
-  ...(c.pagina?.secciones ?? []).flatMap((s) => s.parrafos),
+  ...(c.pagina?.secciones ?? []).flatMap((s) => textosDeBloques(s.bloques)),
+  (c.pagina?.incluyeNota ?? []).map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
   ...(c.pagina?.tambien?.items ?? []).map((t) => t.texto),
   c.pagina?.tambien?.intro ?? '',
   c.pagina?.cotizacion?.texto ?? '',
@@ -77,6 +78,10 @@ test('las descripciones confirmadas por el dueño no cambian de redacción', () 
   assert.equal(
     servicios['circuito-cerrado-para-eventos'].descripcion,
     'Cámaras en vivo proyectadas en pantallas para que todo tu público vea el escenario.',
+  );
+  assert.equal(
+    servicios['video-para-eventos'].descripcion,
+    'Grabación profesional de conferencias, ceremonias y eventos, y videos institucionales y promocionales. Entregamos el video editado.',
   );
   assert.equal(
     servicios['desarrollo-de-software'].descripcion,
@@ -154,7 +159,7 @@ test('circuito cerrado: página completa, sección Pantalla LED o televisor, 5 F
   );
   // La explicación de LED o televisor vive solo en la sección: ninguna FAQ repite sus oraciones.
   const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
-  const deLaSeccion = new Set(pagina.secciones.flatMap((s) => s.parrafos.flatMap(oracionesDe)));
+  const deLaSeccion = new Set(pagina.secciones.flatMap((s) => textosDeBloques(s.bloques).flatMap(oracionesDe)));
   for (const faq of pagina.faq) {
     for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!deLaSeccion.has(oracion), `FAQ repite: ${oracion}`);
   }
@@ -198,11 +203,72 @@ test('circuito cerrado: página completa, sección Pantalla LED o televisor, 5 F
   }
 });
 
+test('video para eventos: SEO, ficha, qué incluye, secciones en orden, proyectos y 5 FAQ sin repetir lo que dicen las secciones', () => {
+  const c = servicios['video-para-eventos'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Video para eventos y conferencias en Puebla | Digital X');
+  assert.equal(c.title.length, 55);
+  assert.equal(
+    c.meta,
+    'Grabación de video para conferencias, eventos corporativos, talleres y ceremonias en Puebla y Atlixco. Entregamos el video editado. Cotiza por WhatsApp.',
+  );
+  assert.equal(c.meta.length, 152);
+  assert.equal(c.h1, 'Video para eventos y conferencias en Puebla');
+  assert.equal(c.serviceType, 'Producción de video para eventos, conferencias y videos institucionales');
+  assert.deepEqual(
+    pagina.ficha.map((f) => [f.etiqueta, f.valor]),
+    [
+      ['Para', 'Eventos, conferencias, empresas e instituciones'],
+      ['Equipo', 'Al menos dos personas y hasta tres cámaras'],
+      ['Entrega', 'Video editado; material sin editar si lo acordamos'],
+    ],
+  );
+  assert.equal(pagina.incluye.length, 5);
+  assert.deepEqual(
+    pagina.secciones.map((s) => s.id),
+    ['para-que-eventos', 'cobertura', 'video-institucional', 'entrega', 'precio'],
+  );
+  assert.equal(pagina.secciones[0].bloques[0].lista.length, 6);
+  assert.equal(pagina.secciones[1].bloques[0].puntos.length, 3);
+  assert.equal(pagina.secciones[4].bloques[0].lista.length, 6);
+  assert.equal(pagina.faq.length, 5);
+  assert.equal(c.mensaje, mensajesWhatsApp.produccionDeVideos);
+  // La nota bajo "Qué incluye" enlaza a transmisión en vivo y a circuito cerrado para eventos.
+  assert.deepEqual(
+    pagina.incluyeNota.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['streaming-para-eventos', 'circuito-cerrado-para-eventos'],
+  );
+  // Ninguna FAQ repite oraciones de las secciones, de la descripción ni de lo que incluye.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      (pagina.incluyeNota ?? []).map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('video para eventos: sin eventos sociales, plazos, precios ni marcas de equipo', () => {
+  const texto = JSON.stringify(servicios['video-para-eventos']);
+  assert.ok(!/boda|xv\b|quince|bautizo|fiesta|social/i.test(texto), 'eventos sociales en la página');
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo de entrega publicado');
+  assert.ok(
+    !/\$\s?\d|MXN|precio de|desde \d/i.test(texto.replace(/De qué depende el precio/g, '')),
+    'precio publicado',
+  );
+  assert.ok(!/sony|canon|nikon|blackmagic|panasonic|dji|gopro|rode|sennheiser|shure/i.test(texto), 'marca de equipo');
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
   assert.equal(preguntas('circuito-cerrado-para-eventos').length, 5);
-  assert.deepEqual(preguntas('video-para-eventos'), ['¿Cómo obtengo un video de mi evento?']);
+  assert.equal(preguntas('video-para-eventos').length, 5);
   assert.deepEqual(preguntas('paginas-web'), ['¿Qué diferencia hay entre una página web y una tienda en línea?']);
   assert.equal(preguntas('desarrollo-de-software').length, 2);
   assert.deepEqual(preguntas('aplicaciones-moviles'), ['¿Las aplicaciones funcionan en Android y iPhone?']);
@@ -226,7 +292,9 @@ test('el circuito cerrado se explica con pantallas, sin "graba", seguridad ni vi
     assert.ok(!/no graba|ni graba/i.test(texto), `"graba" en: ${texto}`);
     assert.ok(!/seguridad|vigilancia/i.test(texto), `seguridad o vigilancia en: ${texto}`);
     if (texto.startsWith('¿')) continue; // la pregunta solo nombra el servicio; su respuesta lo explica
-    if (/circuito cerrado/i.test(texto)) assert.match(texto, /pantallas/i, `circuito cerrado sin pantallas: ${texto}`);
+    if (/circuito cerrado/i.test(texto)) {
+      assert.match(texto, /para eventos|en vivo|pantallas/i, `circuito cerrado suelto: ${texto}`);
+    }
   }
 });
 

@@ -50,7 +50,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/video-para-eventos/',
     titulo: 'Producción de videos para eventos',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'video',
   },
   {

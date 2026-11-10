@@ -1,3 +1,4 @@
+import { catalogo } from '../content/servicios.ts';
 import { paginas, slugDe, visible, type Categoria } from './paginas.ts';
 
 export interface ServicioDeCategoria {
@@ -41,13 +42,16 @@ const unir = (nombres: { nombre: string; url: string | null }[]): Parte[] =>
 
 /**
  * Los servicios de una categoría como frase, en minúscula para usarlos a mitad de oración. Cada nombre trae su URL solo
- * si la página está construida (si no, es texto). En Audio la sonorización va como texto, sin página propia (la cubre la
- * de renta de audio y sonido).
+ * si la página está construida (si no, es texto). Los servicios sin página propia (hoy, la sonorización de Audio) salen de
+ * los datos de la categoría (`sinPagina` en content/servicios.ts) y van como texto, sin enlace.
  */
 export const partesDeServicios = (categoria: Categoria): Parte[] =>
   unir([
     ...serviciosDe(categoria).map((s) => ({ nombre: s.titulo.toLowerCase(), url: s.construida ? s.url : null })),
-    ...(categoria === 'audio' ? [{ nombre: 'sonorización', url: null }] : []),
+    ...(catalogo.secciones.find((seccion) => seccion.categoria === categoria)?.sinPagina ?? []).map((nombre) => ({
+      nombre,
+      url: null,
+    })),
   ]);
 
 /** Servicios elegidos por su slug como frase, con el nombre del registro y `enlaceDeServicio` como enlace. */

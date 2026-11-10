@@ -12,6 +12,8 @@ interface Proyecto {
   permiso?: boolean;
   /** true mientras el proyecto es un EJEMPLO inventado para armar la página: nunca debe publicarse. */
   placeholder?: boolean;
+  /** Nombres de los servicios usados, como están en lib/paginas.ts. */
+  servicios?: string[];
 }
 
 /** Los que se pueden publicar: con foto y con permiso. */
@@ -27,6 +29,20 @@ export const proyectosDelInicio = <T extends Proyecto>(items: T[]): T[] => {
 /** Los de la página Nosotros: con foto y, o con permiso del cliente, o todavía de ejemplo (se ven con la etiqueta EJEMPLO). */
 export const proyectosDeNosotros = <T extends Proyecto>(items: T[]): T[] =>
   items.filter((proyecto) => Boolean(proyecto.foto) && (proyecto.permiso === true || proyecto.placeholder === true));
+
+/**
+ * Los de la página de un servicio: hasta `maximo`, con foto, que usaron ese servicio (su nombre exacto en `servicios`) y,
+ * o con permiso del cliente, o todavía de ejemplo (se ven con la etiqueta EJEMPLO). Sin ninguno, la sección no se dibuja.
+ */
+export const proyectosDeServicio = <T extends Proyecto>(items: T[], nombre: string, maximo = 3): T[] =>
+  items
+    .filter(
+      (proyecto) =>
+        Boolean(proyecto.foto) &&
+        (proyecto.permiso === true || proyecto.placeholder === true) &&
+        (proyecto.servicios ?? []).includes(nombre),
+    )
+    .slice(0, maximo);
 
 /** Títulos de los proyectos de ejemplo. En producción debe estar vacía (content/proyectos.ts lanza un error si no). */
 export const titulosDeEjemplo = <T extends Proyecto>(items: T[]): string[] =>

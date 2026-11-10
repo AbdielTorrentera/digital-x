@@ -191,6 +191,53 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 - [x] **Fase 4:** los nombres de servicio dentro de las tarjetas del Inicio enlazan a su página solo si está construida. La tarjeta pasó de `<a>` a `<article>` con el título como enlace extendido a toda la tarjeta (`::after`) y los nombres como enlaces por encima (`position: relative; z-index: 1`); los demás quedan como texto. El aspecto no cambia. Hoy están construidas `renta-de-audio`, `circuito-cerrado-para-eventos` y `video-para-eventos`.
 - [ ] Reemplazar los 3 proyectos de ejemplo de `content/proyectos.ts` por proyectos reales (con foto y permiso del cliente) y pasarlos a Sanity en la fase 3, con esa misma forma: título, municipio, servicios, foto, texto corto y permiso.
 
+**Fase 3 (Sanity): servicios**
+
+Los servicios se editarán desde Sanity (agregar un servicio o cambiar lo que incluye sin tocar código). Hoy los componentes no llevan nada específico de un servicio (ni `if` por slug ni secciones fijas por servicio): `PaginaServicio.astro`, `TarjetaServicio.astro`, `Servicios.astro` (Inicio) y el catálogo leen todo de datos. Los tipos de `content/servicios.ts` están pensados para pasar 1 a 1 a un esquema de Sanity.
+
+*Cómo se mapea cada dato a Sanity*
+
+| Hoy (archivo y campo) | En Sanity | Nota |
+| --- | --- | --- |
+| `lib/paginas.ts`: `url` (`/servicios/{slug}/`) | `servicio.slug` (tipo `slug`, único) | La URL se arma con el slug. Validación: minúsculas, guiones, sin acentos (sección 2). |
+| `lib/paginas.ts`: `titulo` | `servicio.nombre` (`string`) | Es el nombre oficial del servicio y el texto de los enlaces. |
+| `lib/paginas.ts`: `categoria` | `servicio.categoria` (referencia a `categoriaDeServicios`) | |
+| Posición en el arreglo de `paginas.ts` | `servicio.orden` (`number`) | Define el orden del catálogo, el número [01] y la lista de nombres del Inicio y de las condiciones. |
+| `lib/paginas.ts`: `construida` (y `estado: 'lanzamiento'`) | `servicio.publicada` (`boolean`) | No se puede marcar sin que el contenido esté completo (lo que hoy revisa `faltantesDePagina`). |
+| `descripcion`, `title`, `meta`, `h1`, `para`, `incluye`, `serviceType` | Campos `string` o `text` del mismo nombre | `serviceType` es opcional. Los límites de `title` (60) y de `meta` (155) van como validación del campo. |
+| `mensaje` (clave de `mensajesWhatsApp` en `negocio.ts`) | `servicio.mensajeWhatsApp` (`text`) | El texto del mensaje pasa de `negocio.ts` al servicio; el mensaje general queda en los ajustes del negocio. |
+| `pagina.ficha` | `servicio.ficha`: arreglo de objetos `{ etiqueta, valor }` | Exactamente 3 filas (validación). |
+| `pagina.descripcion` | Objeto `{ titulo, parrafos }`; `parrafos` es un arreglo de `text` | |
+| `pagina.incluye` | Arreglo de `string` | |
+| `pagina.incluyeNota` (texto con enlaces) | Arreglo de objetos de dos tipos: `trozoTexto { texto }` y `trozoServicio { servicio, texto }` | `servicio` es una **referencia** al documento `servicio`; el enlace sale de su `publicada` (su página) o de su tarjeta (`/servicios/#slug`), como hoy en `enlaceDeServicio`. No se usa Portable Text para conservar esta forma. |
+| `pagina.secciones` (`id`, `etiqueta`, `titulo`, `bloques`) | Arreglo de objetos `{ id, etiqueta, titulo, bloques }` | `id` sale del título (campo `slug`). |
+| `bloques`: `{ parrafo }`, `{ lista }`, `{ puntos }` | Arreglo con tres tipos de objeto: `bloqueParrafo { texto }`, `bloqueLista { items: string[] }` y `bloquePuntos { items: { titulo, texto }[] }` | El orden del arreglo es el orden en la página. |
+| `pagina.tambien` (`intro`, `items`) | Objeto `{ intro, items }`; cada item es `relacionadoServicio { servicio, texto }` (referencia) o `relacionadoPagina { titulo, ruta, texto }` | `ruta` solo acepta páginas del registro (`/proyectos/`, `/condiciones-de-contratacion/`): validación personalizada. |
+| `pagina.cotizacion`, `pagina.cierre` | Objetos `{ etiqueta, texto }` y `{ titulo, texto }` | |
+| `pagina.faq` | Arreglo de objetos `{ pregunta, respuesta }` | El `FAQPage` se sigue armando de la misma lista que se ve. |
+| `servicios-fotos.ts`: foto principal (`src`, `alt`) | `servicio.foto`: `image` con un campo `alt` obligatorio | Se pide en WebP o AVIF con `auto=format` y nombre descriptivo (SEO sección 6); `width` y `height` salen del archivo. |
+| `servicios-fotos.ts`: `galeria` | Arreglo de objetos `{ titulo, fotos }`; `fotos` es un arreglo de `image` con `alt` | Si queda vacío, la galería y su botón no se dibujan. |
+| `servicios-fotos.ts`: `fotoCierre`, `fotoPortada` | Documento único `ajustesDeServicios` (o campos del catálogo) | Son compartidas por todos los servicios. |
+| Protección de fotos `temporal-*` | Un campo `foto.esTemporal` (`boolean`) o una regla de publicación | Sin archivos `temporal-` el build ya no puede detectarlas por el nombre; la regla debe impedir publicar con foto temporal. |
+| `catalogo.secciones` (`id`, `categoria`, `etiqueta`, `titulo`, `para`, `sinPagina`) | Documento `categoriaDeServicios` | `sinPagina` es el arreglo de nombres sin página (hoy, la sonorización de Audio). `etiqueta` es también el chip de cada servicio y `titulo` el `serviceType` por defecto. |
+| `catalogo` (`title`, `descripcion`, `h1`, `intro`, `cierre`) | Documento único `catalogo` | Su title y su meta no cambian sin aprobación (SEO sección 1). |
+| `catalogo.guia` (`escenario`, `slugs`) | Dentro de `catalogo`: arreglo de objetos `{ escenario, servicios }`; `servicios` es un arreglo de **referencias** a `servicio` | |
+| `content/proyectos.ts`: `servicios` (nombres en texto) | `proyecto.servicios`: arreglo de **referencias** a `servicio` | La página de cada servicio trae hasta 3 proyectos que lo referencian (`references(^._id)`); hoy los compara por el nombre exacto. |
+
+*Cómo se agrega un servicio*
+
+1. **Hoy** depende de tres archivos:
+   - `lib/paginas.ts`: una entrada nueva (`url`, `titulo`, `estado`, `construida: false`, `categoria`) en la posición que debe ocupar.
+   - `content/servicios.ts`: el slug en `slugs` y su entrada en `servicios` (`faltantesDePagina` dice qué falta para publicarla), más su mensaje en `negocio.ts` (y en reglas-seo sección 11).
+   - `content/servicios-fotos.ts`: su foto y, si hay, su galería.
+   - Para publicarlo, `construida: true`. Las listas del catálogo, el Inicio, las condiciones y la guía salen de esos datos.
+2. **En la fase 3** se crea el documento `servicio` en Sanity, se llena y se publica (`publicada`) cuando pasa las validaciones; un webhook dispara el rebuild. No se toca código, `paginas.ts` ni `servicios-fotos.ts`. `paginas.ts` queda solo con las páginas de código (Inicio, Nosotros, condiciones y privacidad, catálogo, Proyectos y Blog); `pages/servicios/[slug].astro` genera una página por cada servicio publicado en Sanity y los tipos `Slug` y `slugs` desaparecen (se generan con los tipos de Sanity).
+
+*Pruebas que pasan a ser validaciones del esquema*
+
+- Las pruebas de `content/servicios.test.mjs` que fijan textos o formato de un servicio pasan a ser **validaciones del esquema de Sanity** en la fase 3: límites de `title` (60) y de `meta` (155), zona y cierre de la meta, ficha de 3 filas, "Qué incluye" exacto de un servicio, orden y `id` de las secciones, y los barridos de vocabulario ("seguridad", "vigilancia", "proyector", "nuestras pantallas", "tenemos pantallas", "equipo propio", eventos sociales, plazos, precios, marcas, "dron", "apps" y "a la medida" en software).
+- Las que comparan varios textos (oraciones repetidas entre páginas, o entre las secciones y las FAQ de un servicio) no caben en la validación de un campo: pasan a una verificación del build sobre los datos que llegan de Sanity.
+
 ---
 
 ## 8. Criterios de aceptación

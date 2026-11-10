@@ -113,7 +113,7 @@ test('un servicio con la página construida trae todo su contenido (si no, el bu
   assert.ok(construidas.length > 0);
   for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
   // Y uno incompleto sí se detecta.
-  assert.ok(faltantesDePagina('tienda-en-linea').length > 0);
+  assert.ok(faltantesDePagina('aplicaciones-moviles').length > 0);
 });
 
 test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
@@ -587,12 +587,154 @@ test('páginas web: sin precios, plazos, porcentajes, marcas ni promesas de posi
   assert.ok(!/\bdron\b/i.test(texto), '"dron"');
 });
 
+test('tienda en línea: SEO, ficha, qué incluye, secciones en orden, enlaces dentro de los párrafos y 5 FAQ sin repetir lo que dicen las secciones ni la nota', () => {
+  const c = servicios['tienda-en-linea'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Tienda en línea en Puebla y Atlixco | Digital X');
+  assert.ok(c.title.length <= 60);
+  assert.equal(c.h1, 'Diseño y desarrollo de tiendas en línea en Puebla');
+  assert.equal(
+    c.meta,
+    'Diseño y desarrollo de tiendas en línea para negocios en Puebla y Atlixco: catálogo, carrito y pagos en línea. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Diseño y desarrollo de tiendas en línea');
+  assert.equal(
+    c.descripcion,
+    'Diseño y desarrollo de tiendas en línea para negocios que quieren vender por internet, con dominio y hosting aparte.',
+  );
+  assert.equal(c.mensaje, mensajesWhatsApp.tiendaEnLinea);
+  assert.equal(
+    mensajesWhatsApp.tiendaEnLinea,
+    'Hola, quiero cotizar una tienda en línea. Qué vendo: __ Aprox. cuántos productos: __ ¿Ya tienes fotos y descripciones?: __ ¿Ya tienes dominio?: __',
+  );
+  assert.deepEqual(pagina.ficha, [
+    { etiqueta: 'Funciones', valor: 'Catálogo, carrito, pagos en línea y pedidos' },
+    { etiqueta: 'Administración', valor: 'Tú administras tus productos' },
+    { etiqueta: 'Dominio y hosting', valor: 'Van aparte, a tu nombre' },
+  ]);
+  assert.equal(pagina.descripcion.parrafos.length, 2);
+  assert.deepEqual(pagina.incluye, [
+    'Levantamiento de requerimientos: qué vendes, a quién y cómo',
+    'Diseño y desarrollo de la tienda, adaptada a celular',
+    'Catálogo de productos que tú administras',
+    'Carrito de compras',
+    'Pagos en línea con la pasarela que elijas',
+    'Panel para ver tus pedidos',
+    'Opciones de envío o entrega, según lo que necesites',
+    'Publicación de la tienda y hasta 3 ajustes pequeños cuando te la entregamos',
+  ]);
+  assert.deepEqual(
+    pagina.secciones.map((s) => [s.id, s.etiqueta, s.titulo]),
+    [
+      ['que-necesitas', 'Qué necesitas', 'Qué necesitas para abrir una tienda en línea'],
+      ['tienda-o-pagina', 'Tienda o página web', '¿Tienda en línea o página web?'],
+      ['precio', 'Precio', 'De qué depende el precio'],
+    ],
+  );
+  const [necesitas, tiendaOPagina, precio] = pagina.secciones;
+  assert.equal(necesitas.bloques[0].lista.length, 4);
+  assert.equal(precio.bloques[0].lista.length, 5);
+  // Los párrafos de "¿Tienda en línea o página web?" y de "precio" llevan enlaces: a páginas web y a las condiciones.
+  assert.deepEqual(
+    tiendaOPagina.bloques[0].parrafo.filter((t) => typeof t !== 'string'),
+    [{ slug: 'paginas-web', texto: 'página web' }],
+  );
+  const enlaceDeCondiciones = precio.bloques[1].parrafo.filter((t) => typeof t !== 'string');
+  assert.deepEqual(enlaceDeCondiciones, [
+    { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+  ]);
+  for (const { url } of enlaceDeCondiciones) assert.ok(urlsPlaneadas.includes(url), url);
+  assert.deepEqual(
+    pagina.tambien.items.map((i) => i.slug ?? i.url),
+    [
+      'paginas-web',
+      'aplicaciones-moviles',
+      'desarrollo-de-software',
+      'video-con-drone',
+      'video-para-eventos',
+      '/proyectos/',
+      '/condiciones-de-contratacion/',
+    ],
+  );
+  assert.deepEqual(
+    pagina.faq.map((f) => f.pregunta),
+    [
+      '¿Puedo administrar mis productos yo mismo?',
+      '¿Con qué medio de pago cobro?',
+      '¿Cómo se hacen los envíos?',
+      '¿Cuál es la mejor plataforma para mi tienda?',
+      '¿Cuánto tarda en estar lista?',
+    ],
+  );
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      pagina.incluyeNota.map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('tienda en línea: sin viñetas ni frases iguales a las de páginas web, aunque sean cortas', () => {
+  const textos = (slug) =>
+    [
+      ...servicios[slug].pagina.incluye,
+      ...servicios[slug].pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      // Solo los enlaces a servicios: el de Proyectos es el mismo texto en todas las páginas.
+      ...servicios[slug].pagina.tambien.items.filter((i) => 'slug' in i).map((i) => i.texto),
+    ].map((t) => t.trim());
+  const deWeb = new Set(textos('paginas-web'));
+  for (const texto of textos('tienda-en-linea')) assert.ok(!deWeb.has(texto), `ya está en páginas web: ${texto}`);
+});
+
+test('tienda en línea: sin precios, plazos, porcentajes, marcas ni promesas, sin decir si es a la medida o sobre una plataforma', () => {
+  const c = servicios['tienda-en-linea'];
+  const texto = JSON.stringify(c);
+  assert.ok(!/\$|MXN|\bIVA\b|desde \d/i.test(texto), 'precio publicado');
+  assert.ok(!/%|por ciento|anticipo|\d+\s*pagos?/i.test(texto), 'porcentaje o cifra de pagos');
+  assert.ok(!/google|posicionamiento|SEO|garantiz|garant[ií]a/i.test(texto), 'promesa de posicionamiento');
+  assert.ok(!/ventas|vender m[aá]s|aument|increment|resultados/i.test(texto), 'promesa de ventas');
+  // La única cifra de toda la página es "hasta 3 ajustes pequeños".
+  assert.ok(
+    !/\d/.test(
+      texto
+        .replace('"h1":', '')
+        .replace('Publicación de la tienda y hasta 3 ajustes pequeños cuando te la entregamos', ''),
+    ),
+    'cifra publicada',
+  );
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo publicado');
+  assert.ok(
+    !/shopify|woocommerce|wix|squarespace|prestashop|magento|tiendanube|mercado ?(pago|libre)|paypal|stripe|conekta|openpay|clip\b|oxxo|visa|mastercard|amazon|wordpress|vercel|sanity|astro|react/i.test(
+      texto,
+    ),
+    'marca, plataforma o pasarela',
+  );
+  assert.ok(!/a la medida|propia|propio|desde cero|open source/i.test(texto), 'dice cómo se construye la tienda');
+  // "Plataforma" solo en la pregunta de la mejor plataforma, sin decir cuál ni si hay una propia.
+  const { faq, ...resto } = c.pagina;
+  const sinFaqDePlataforma = JSON.stringify({
+    ...c,
+    pagina: { ...resto, faq: faq.filter((f) => !/plataforma/i.test(f.pregunta)) },
+  });
+  assert.ok(!/plataforma/i.test(sinFaqDePlataforma), '"plataforma" fuera de su pregunta');
+  assert.ok(!/\bdron\b/i.test(texto), '"dron"');
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
   assert.equal(preguntas('circuito-cerrado-para-eventos').length, 5);
   assert.equal(preguntas('video-para-eventos').length, 5);
   assert.equal(preguntas('paginas-web').length, 5);
+  assert.equal(preguntas('tienda-en-linea').length, 5);
   assert.ok(preguntas('paginas-web').includes('¿Qué diferencia hay entre una página web y una tienda en línea?'));
   assert.equal(preguntas('desarrollo-de-software').length, 2);
   assert.deepEqual(preguntas('aplicaciones-moviles'), ['¿Las aplicaciones funcionan en Android y iPhone?']);

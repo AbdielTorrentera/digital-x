@@ -69,7 +69,7 @@ Meta de Páginas web (132 caracteres): `Diseño y desarrollo de páginas web y l
 
 Meta de Tienda en línea (131 caracteres): `Diseño y desarrollo de tiendas en línea para negocios en Puebla y Atlixco: catálogo, carrito y pagos en línea. Cotiza por WhatsApp.`
 
-Meta de Desarrollo de aplicaciones móviles (142 caracteres): `Aplicaciones móviles para Android y iPhone, del levantamiento de requerimientos a la implementación, en Puebla y Atlixco. Cotiza por WhatsApp.`
+Meta de Desarrollo de aplicaciones móviles (142 caracteres): `Desarrollo de aplicaciones móviles para iPhone y Android: registros, clientes, reservas y catálogos, en Puebla y Atlixco. Cotiza por WhatsApp.`
 
 Meta de Desarrollo de software (117 caracteres): `Desarrollo de software para los procesos propios de tu negocio en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
 
@@ -143,6 +143,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 - **Drone:** PROHIBIDAS las afirmaciones legales: nada de "no requiere permiso", "cumplimos la norma", "autorizados", "certificados" ni "registrados", y ninguna mención a la AFAC ni a la autoridad aeronáutica. Sin peso, modelos, marcas ni duración de baterías con cifras. No se dice si se vuela o no sobre las personas. Solo "drone" (nunca "dron"; el plural es "drones"). La **única** mención de reglas de vuelo permitida es que hay zonas restringidas, como las cercanas a aeropuertos (FAQ de Video con drone). Sin bodas, XV años ni fiestas.
 - **Páginas web:** PROHIBIDO prometer posicionamiento en Google, "SEO incluido", "primeros lugares" o resultados garantizados: la sección "Posicionamiento en Google" dice que aparecer bien es un trabajo aparte y continuo que no se promete como parte del precio. **Sin precio por ahora** (decisión del dueño; ver `[PENDIENTE]` en estructura sección 7), sin plazos, sin porcentajes de pago (el pago es por etapas, como dicen las condiciones de contratación) y sin marcas de herramientas ni de plataformas. **Excepción de cifra:** "Hasta 3 ajustes pequeños al entregar" es la única cifra de la página.
 - **Tienda en línea:** PROHIBIDO prometer ventas, posicionamiento en Google o resultados garantizados. **No se nombran plataformas de tiendas ni pasarelas de pago ni marcas**: se escribe "la pasarela que elijas". **No se dice si la tienda es a la medida o está sobre una plataforma** (decisión pendiente; ver estructura sección 7): "plataforma" solo aparece en la pregunta "¿Cuál es la mejor plataforma para mi tienda?". **Sin precio**, sin plazos, sin porcentajes de pago (el pago es por etapas, según las condiciones de contratación). **Excepción de cifra:** "hasta 3 ajustes pequeños" es la única cifra de la página. Ninguna viñeta ni frase repite las de Páginas web, aunque sea corta.
+- **Aplicaciones móviles:** PROHIBIDO nombrar lenguajes, herramientas, plataformas de desarrollo ni marcas, y tampoco apps o empresas conocidas (Uber, Instagram, Apple, Google): las tiendas se llaman "tiendas de aplicaciones". **Sin precio ni "desde"** (ni en texto, title ni datos estructurados), sin plazos ni cifras. PROHIBIDO prometer descargas, ventas, ingresos o resultados, y mencionar demos previas o "te mostramos la app antes de pagar". No se usa "pedidos" como ejemplo de aplicación: los ejemplos son registros, control de clientes, reservas y catálogos. Sin porcentajes de pago (el pago es por etapas, según las condiciones de contratación). **Vocabulario:** el servicio se llama "aplicaciones móviles"; en texto corrido se permite "app" en singular, pero no "apps". Ninguna viñeta ni frase repite las de Páginas web o Tienda en línea, aunque sea corta, y las preguntas frecuentes tampoco repiten preguntas de otras páginas.
 
 ---
 
@@ -255,7 +256,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Video con drone | `Hola, quiero cotizar video o fotografía aérea con drone. Fecha: __ Lugar: __ Tipo de evento o proyecto: __ Interior o exterior: __ Qué quiero mostrar: __` |
 | Recorridos virtuales 360 | `Hola, quiero cotizar un recorrido virtual 360. Fecha: __ Lugar: __ Tipo de espacio (hotel, restaurante, escuela, negocio...): __ Tamaño aprox.: __ Interior, exterior o aéreo: __` |
 | Páginas web | `Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __` |
-| Desarrollo de aplicaciones móviles | `Hola, quiero cotizar una aplicación móvil. Qué necesito resolver: __` |
+| Desarrollo de aplicaciones móviles | `Hola, quiero cotizar una aplicación móvil. Para qué la necesito (registros, clientes, reservas, catálogo...): __ ¿Quiénes la usarían?: __ ¿Ya tienes alguna página, app o sistema?: __` |
 | Desarrollo de software | `Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __` |
 | Tienda en línea | `Hola, quiero cotizar una tienda en línea. Qué vendo: __ Aprox. cuántos productos: __ ¿Ya tienes fotos y descripciones?: __ ¿Ya tienes dominio?: __` |
 

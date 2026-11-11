@@ -1183,20 +1183,141 @@ export const servicios: Record<Slug, ServicioContenido> = {
   },
 
   'aplicaciones-moviles': {
-    descripcion:
-      'Aplicaciones móviles según lo que necesite tu proyecto, para Android y iPhone, del levantamiento de requerimientos a la implementación.',
+    descripcion: 'Aplicaciones móviles a la medida para iPhone y Android: registros, clientes, reservas y catálogos.',
     title: 'Desarrollo de aplicaciones móviles en Puebla | Digital X',
-    meta: 'Aplicaciones móviles para Android y iPhone, del levantamiento de requerimientos a la implementación, en Puebla y Atlixco. Cotiza por WhatsApp.',
+    meta: 'Desarrollo de aplicaciones móviles para iPhone y Android: registros, clientes, reservas y catálogos, en Puebla y Atlixco. Cotiza por WhatsApp.',
     h1: 'Desarrollo de aplicaciones móviles en Puebla',
     para: 'Negocios e instituciones',
-    incluye: 'Android y iPhone',
+    incluye: 'iPhone y Android',
     mensaje: mensajesWhatsApp.aplicacionesMoviles,
+    serviceType: 'Desarrollo de aplicaciones móviles a la medida',
     pagina: {
+      ficha: [
+        { etiqueta: 'Plataformas', valor: 'iPhone y Android' },
+        { etiqueta: 'Para', valor: 'Negocios e instituciones' },
+        { etiqueta: 'Entrega', valor: 'Implementación y capacitación' },
+      ],
+      descripcion: {
+        titulo: 'Tu aplicación móvil, de la idea a la implementación',
+        parrafos: [
+          'En Digital X desarrollamos aplicaciones móviles a la medida para negocios en Puebla, Atlixco, Izúcar de Matamoros y alrededores, para iPhone y Android.',
+          'Empezamos por entender qué necesitas que haga tu app y quién la va a usar; después la desarrollamos, la implementamos y capacitamos a tu equipo. Cada app se cotiza según lo que necesite hacer: cuéntanos tu idea y te respondemos con una propuesta.',
+        ],
+      },
+      incluye: [
+        'Levantamiento de requerimientos: qué debe hacer la app y quién la va a usar',
+        'Desarrollo de una aplicación multiplataforma, que funciona en iPhone y Android',
+        'Implementación',
+        'Capacitación para usarla',
+        'Publicación en las tiendas de aplicaciones, si lo requieres',
+      ],
+      incluyeNota: [
+        'Las cuentas de desarrollador de las tiendas de aplicaciones tienen costo; cómo se cubre se define en cada proyecto. El mantenimiento y las actualizaciones se cotizan aparte, y la promoción de la app para conseguir descargas no está incluida.',
+      ],
+      secciones: [
+        {
+          id: 'tipos-de-aplicaciones',
+          etiqueta: 'Tipos de aplicaciones',
+          titulo: 'Qué tipo de aplicaciones hacemos',
+          bloques: [
+            { parrafo: 'Aplicaciones sencillas para tu negocio, como:' },
+            {
+              lista: [
+                'Registros: de visitas, de actividades, de datos o de lo que necesites llevar en orden',
+                'Control de clientes',
+                'Reservas',
+                'Catálogos de productos o servicios',
+              ],
+            },
+            { parrafo: 'Si tu idea es grande, podemos empezar con una versión sencilla y crecerla después.' },
+          ],
+        },
+        {
+          id: 'app-o-pagina-web',
+          etiqueta: 'App o página web',
+          titulo: '¿App o página web?',
+          bloques: [
+            {
+              parrafo: [
+                'Una app móvil no es una ',
+                { slug: 'paginas-web', texto: 'página web' },
+                ' en el celular: es un desarrollo distinto y más costoso. Si lo que buscas es presentar tu negocio o vender por internet, quizá te convenga más una página web o una ',
+                { slug: 'tienda-en-linea', texto: 'tienda en línea' },
+                '. Cuéntanos tu caso y te decimos qué opción te conviene.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'Las pantallas y funciones que necesites',
+                'Si necesitas conexión con otros sistemas o con una página web',
+                'La publicación en las tiendas de aplicaciones',
+                'El mantenimiento de la app, si lo contratas',
+                'El traslado, si se requiere una reunión presencial',
+              ],
+            },
+            {
+              parrafo: [
+                'El pago de una aplicación es por etapas; las ',
+                { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+                ' explican cómo funciona.',
+              ],
+            },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres acompañar tu aplicación con otros servicios?',
+        items: [
+          { slug: 'paginas-web', texto: 'Si lo que necesitas es presentar tu negocio en una página' },
+          { slug: 'tienda-en-linea', texto: 'Una tienda en línea para vender tus productos' },
+          {
+            slug: 'desarrollo-de-software',
+            texto: 'Un sistema para llevar los procesos de tu negocio junto con tu app',
+          },
+          { slug: 'video-con-drone', texto: 'Video aéreo para presentar tu proyecto' },
+          { slug: 'video-para-eventos', texto: 'Un video promocional para presentar tu aplicación' },
+          proyectos,
+          condiciones('Cómo se pagan las etapas de tu aplicación'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu aplicación',
+        texto:
+          'Cuéntanos para qué necesitas la app, quiénes la usarían y si ya tienes una página, una app o un sistema.',
+      },
+      cierre: {
+        titulo: 'Que tu idea se convierta en una aplicación',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos la aplicación móvil de tu negocio.',
+      },
       faq: [
         {
-          pregunta: '¿Las aplicaciones funcionan en Android y iPhone?',
+          pregunta: '¿La gente descargará mi app cuando esté lista?',
           respuesta:
-            'Se pueden desarrollar multiplataforma, para Android y iPhone. Lo definimos según lo que necesite tu proyecto.',
+            'No sola. Sin promoción casi nadie encuentra una app nueva, por eso conviene planear cómo vas a darla a conocer.',
+        },
+        {
+          pregunta: '¿Subirla a las tiendas es inmediato?',
+          respuesta: 'No. Las tiendas de aplicaciones revisan cada app antes de publicarla y pueden pedir cambios.',
+        },
+        {
+          pregunta: '¿Una vez hecha ya no cuesta más?',
+          respuesta: 'Una app necesita actualizaciones cuando cambian los sistemas de los celulares.',
+        },
+        {
+          pregunta: '¿Qué necesito para empezar?',
+          respuesta:
+            'Una idea clara de qué debe hacer la app y quién la va a usar. Si todavía no la tienes, la definimos contigo.',
+        },
+        {
+          pregunta: '¿Cuánto tarda en estar lista mi app?',
+          respuesta: 'Depende de las pantallas y las funciones; te damos el plazo al cotizar.',
         },
       ],
     },

@@ -113,7 +113,7 @@ test('un servicio con la página construida trae todo su contenido (si no, el bu
   assert.ok(construidas.length > 0);
   for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
   // Y uno incompleto sí se detecta.
-  assert.ok(faltantesDePagina('aplicaciones-moviles').length > 0);
+  assert.ok(faltantesDePagina('desarrollo-de-software').length > 0);
 });
 
 test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
@@ -728,6 +728,140 @@ test('tienda en línea: sin precios, plazos, porcentajes, marcas ni promesas, si
   assert.ok(!/\bdron\b/i.test(texto), '"dron"');
 });
 
+test('aplicaciones móviles: SEO, ficha, qué incluye, secciones en orden, enlaces dentro de los párrafos y 5 FAQ sin repetir lo que dicen las secciones ni la nota', () => {
+  const c = servicios['aplicaciones-moviles'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Desarrollo de aplicaciones móviles en Puebla | Digital X');
+  assert.equal(c.h1, 'Desarrollo de aplicaciones móviles en Puebla');
+  assert.equal(
+    c.meta,
+    'Desarrollo de aplicaciones móviles para iPhone y Android: registros, clientes, reservas y catálogos, en Puebla y Atlixco. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Desarrollo de aplicaciones móviles a la medida');
+  assert.equal(
+    c.descripcion,
+    'Aplicaciones móviles a la medida para iPhone y Android: registros, clientes, reservas y catálogos.',
+  );
+  // La fila "Incluye" de la tarjeta va en el mismo orden que la ficha, la meta y la descripción corta: iPhone y Android.
+  assert.equal(c.incluye, 'iPhone y Android');
+  assert.equal(c.mensaje, mensajesWhatsApp.aplicacionesMoviles);
+  assert.equal(
+    mensajesWhatsApp.aplicacionesMoviles,
+    'Hola, quiero cotizar una aplicación móvil. Para qué la necesito (registros, clientes, reservas, catálogo...): __ ¿Quiénes la usarían?: __ ¿Ya tienes alguna página, app o sistema?: __',
+  );
+  assert.deepEqual(pagina.ficha, [
+    { etiqueta: 'Plataformas', valor: 'iPhone y Android' },
+    { etiqueta: 'Para', valor: 'Negocios e instituciones' },
+    { etiqueta: 'Entrega', valor: 'Implementación y capacitación' },
+  ]);
+  assert.equal(pagina.descripcion.parrafos.length, 2);
+  assert.deepEqual(pagina.incluye, [
+    'Levantamiento de requerimientos: qué debe hacer la app y quién la va a usar',
+    'Desarrollo de una aplicación multiplataforma, que funciona en iPhone y Android',
+    'Implementación',
+    'Capacitación para usarla',
+    'Publicación en las tiendas de aplicaciones, si lo requieres',
+  ]);
+  assert.deepEqual(
+    pagina.secciones.map((s) => [s.id, s.etiqueta, s.titulo]),
+    [
+      ['tipos-de-aplicaciones', 'Tipos de aplicaciones', 'Qué tipo de aplicaciones hacemos'],
+      ['app-o-pagina-web', 'App o página web', '¿App o página web?'],
+      ['precio', 'Precio', 'De qué depende el precio'],
+    ],
+  );
+  const [tipos, appOPagina, precio] = pagina.secciones;
+  assert.equal(tipos.bloques[1].lista.length, 4);
+  assert.equal(precio.bloques[0].lista.length, 5);
+  // Los párrafos de "¿App o página web?" y de "precio" llevan enlaces: a páginas web y tienda en línea, y a las condiciones.
+  assert.deepEqual(
+    appOPagina.bloques[0].parrafo.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['paginas-web', 'tienda-en-linea'],
+  );
+  const enlaceDeCondiciones = precio.bloques[1].parrafo.filter((t) => typeof t !== 'string');
+  assert.deepEqual(enlaceDeCondiciones, [
+    { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+  ]);
+  for (const { url } of enlaceDeCondiciones) assert.ok(urlsPlaneadas.includes(url), url);
+  assert.deepEqual(
+    pagina.tambien.items.map((i) => i.slug ?? i.url),
+    [
+      'paginas-web',
+      'tienda-en-linea',
+      'desarrollo-de-software',
+      'video-con-drone',
+      'video-para-eventos',
+      '/proyectos/',
+      '/condiciones-de-contratacion/',
+    ],
+  );
+  assert.deepEqual(
+    pagina.faq.map((f) => f.pregunta),
+    [
+      '¿La gente descargará mi app cuando esté lista?',
+      '¿Subirla a las tiendas es inmediato?',
+      '¿Una vez hecha ya no cuesta más?',
+      '¿Qué necesito para empezar?',
+      '¿Cuánto tarda en estar lista mi app?',
+    ],
+  );
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      pagina.incluyeNota.map((t) => (typeof t === 'string' ? t : t.texto)).join(''),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(faq.respuesta)) assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('aplicaciones móviles: sin viñetas ni frases iguales a las de páginas web ni de tienda en línea, aunque sean cortas', () => {
+  const textos = (slug) =>
+    [
+      ...servicios[slug].pagina.incluye,
+      ...servicios[slug].pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      // Solo los enlaces a servicios: el de Proyectos es el mismo texto en todas las páginas.
+      ...servicios[slug].pagina.tambien.items.filter((i) => 'slug' in i).map((i) => i.texto),
+    ].map((t) => t.trim());
+  const deOtras = new Set([...textos('paginas-web'), ...textos('tienda-en-linea')]);
+  for (const texto of textos('aplicaciones-moviles'))
+    assert.ok(!deOtras.has(texto), `ya está en otra página: ${texto}`);
+});
+
+test('aplicaciones móviles: sin precios, plazos, marcas, demos ni promesas, y las tiendas son "tiendas de aplicaciones"', () => {
+  const c = servicios['aplicaciones-moviles'];
+  const texto = JSON.stringify(c);
+  assert.ok(!/\$|MXN|\bIVA\b|\bdesde\b/i.test(texto), 'precio publicado');
+  assert.ok(!/%|por ciento|anticipo|\d+\s*pagos?/i.test(texto), 'porcentaje o cifra de pagos');
+  assert.ok(!/\d/.test(texto.replace('"h1":', '')), 'cifra publicada');
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo publicado');
+  assert.ok(
+    !/uber|instagram|apple|google|facebook|tiktok|whatsapp web/i.test(texto.replace(/Cotiza por WhatsApp/g, '')),
+    'app o marca conocida',
+  );
+  assert.ok(
+    !/swift|kotlin|flutter|react|ionic|xamarin|java\b|javascript|xcode|android studio|firebase|app store|play store|google play|testflight/i.test(
+      texto,
+    ),
+    'lenguaje, herramienta o tienda con nombre',
+  );
+  assert.ok(!/pedidos?\b/i.test(texto), '"pedidos" como ejemplo');
+  assert.ok(!/\bdemos?\b|demostraci|te mostramos|antes de pagar/i.test(texto), 'demo previa');
+  assert.ok(
+    !/garantiz|garant[ií]a|aseguramos|conseguir[aá]s|ingresos|ventas|aumenta|resultados/i.test(texto),
+    'promesa',
+  );
+  // "Descargas" solo en la nota (promoción no incluida) y en la FAQ que aclara que no llegan solas.
+  assert.ok(!/\bapps\b/i.test(texto), '"apps"');
+  assert.ok(!/\bdron\b/i.test(texto), '"dron"');
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
@@ -737,7 +871,7 @@ test('las preguntas migradas de las categorías están cada una en su servicio, 
   assert.equal(preguntas('tienda-en-linea').length, 5);
   assert.ok(preguntas('paginas-web').includes('¿Qué diferencia hay entre una página web y una tienda en línea?'));
   assert.equal(preguntas('desarrollo-de-software').length, 2);
-  assert.deepEqual(preguntas('aplicaciones-moviles'), ['¿Las aplicaciones funcionan en Android y iPhone?']);
+  assert.equal(preguntas('aplicaciones-moviles').length, 5);
   const todas = entradas.flatMap(([, c]) => (c.pagina?.faq ?? []).map((f) => f.pregunta));
   assert.equal(new Set(todas).size, todas.length);
 });
@@ -893,7 +1027,8 @@ test('"drone" se escribe así en todo el contenido, "aplicaciones móviles" no e
   const todo = JSON.stringify([servicios, catalogo]);
   // "drones" es el plural de "drone" (FAQ de espectáculos con luces): solo se prohíbe la forma suelta "dron".
   assert.ok(!/\bdron\b/i.test(todo), '"dron" en el contenido');
-  assert.ok(!/\bapps?\b/i.test(todo), '"apps" en el contenido');
+  // El singular "app" sí se usa en texto corrido (aplicaciones móviles); solo se prohíbe el plural "apps".
+  assert.ok(!/\bapps\b/i.test(todo), '"apps" en el contenido');
   assert.ok(!/a la medida/i.test(JSON.stringify(servicios['desarrollo-de-software'])), 'software "a la medida"');
 });
 

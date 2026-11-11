@@ -6,7 +6,9 @@ import type { Foto as FotoDatos } from '../../content/inicio';
 import type { Proyecto } from '../../content/proyectos';
 
 // Fila de tarjetas que avanza sola: el Team de la plantilla Marby, con proyectos en lugar de personas (foto, número,
-// título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/.
+// título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/. Es el
+// carrusel de proyectos de Nosotros y de las páginas de categoría: recibe la lista (Nosotros, todos; una categoría, los
+// suyos), su título y la foto de fondo.
 // Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas. En lugar de una
 // animación CSS (que no deja deslizar), la fila es un contenedor con scroll horizontal nativo que un pequeño script
 // hace avanzar a 50 px por segundo, como la plantilla: se desliza con el dedo, la rueda, el trackpad o arrastrando, y
@@ -45,7 +47,7 @@ const copias = 2 + Math.ceil(1240 / ancho);
     <div
       class="ticker"
       role="region"
-      aria-label="Proyectos"
+      aria-label={titulo}
       tabindex="0"
       data-ticker
       data-appear

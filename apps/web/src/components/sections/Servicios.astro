@@ -154,10 +154,45 @@ const TituloTarjeta = nivelTarjeta;
     text-decoration: underline;
     text-underline-offset: var(--esp-1);
   }
-  /* En escritorio y tableta ancha, la foto alterna de lado: tarjeta par con la foto a la derecha. */
+  /* Con `alternar`, en escritorio y tableta ancha NO hay apilado: son filas normales (sin sticky) en las que la foto va
+     a un lado y al otro (la tarjeta par, con la foto a la derecha). Foto y tarjeta miden lo mismo: al menos 500 px (el alto
+     del original) y, si un servicio trae más texto, la fila crece en vez de cortarlo; ambas se igualan a la más alta. La
+     foto no aporta su alto natural a la fila (contain: size): lo da la tarjeta. Entre filas, la escala de espaciado
+     (diseño §2: entre tarjetas en escritorio, --esp-6). */
   @media (min-width: 810px) {
+    .services[data-alternar] {
+      padding-block: var(--esp-6) var(--esp-8);
+    }
+    .services[data-alternar] .services__stack {
+      gap: var(--esp-6);
+    }
+    .services[data-alternar] .svc {
+      position: static;
+      height: auto;
+      min-height: 500px;
+      align-items: stretch;
+      gap: var(--esp-5);
+    }
     .services[data-alternar] .svc:nth-child(even) {
       flex-direction: row-reverse;
+    }
+    /* Foto y tarjeta, cada una exactamente la mitad de la fila (menos la mitad del hueco): así llenan el ancho y quedan
+       alineadas con el resto de la página, sin importar el relleno de la tarjeta. */
+    .services[data-alternar] .svc :global(.svc__img) {
+      flex: 0 0 calc((100% - var(--esp-5)) / 2);
+      height: auto;
+      min-height: 500px;
+      contain: size;
+    }
+    .services[data-alternar] .svc__card {
+      flex: 0 0 calc((100% - var(--esp-5)) / 2);
+      height: auto;
+      min-height: 500px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .services[data-alternar] {
+      padding-block: var(--esp-7) var(--esp-9);
     }
   }
   .svc__card {
@@ -169,8 +204,7 @@ const TituloTarjeta = nivelTarjeta;
     align-items: flex-start;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid var(--dx-borde-tarjeta);
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
     overflow: hidden;
   }
   .svc__progress {

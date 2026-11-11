@@ -14,9 +14,11 @@
   /* Única excepción a la paleta: verde oficial de WhatsApp (identidad sección 2). */
   --dx-whatsapp: #25d366;
 
+  /* Fondo de las tarjetas de servicio: el gris de la plantilla Marby original (--ink-50, commit 6a6f883d). Excepción a la
+     paleta de marca decidida por el dueño; solo para ese fondo (el texto sigue en negro). */
+  --dx-gris-tarjeta: #f5f5f6;
+
   /* Derivados del negro (sin colores nuevos): capa para texto sobre fotos y sombras. */
-  /* Borde de las tarjetas sobre fondo blanco: negro al 45 % da #8C8C8C, 3.45:1 (WCAG 1.4.11 pide 3:1). */
-  --dx-borde-tarjeta: color-mix(in srgb, var(--dx-negro) 45%, transparent);
   --dx-capa-oscura: color-mix(in srgb, var(--dx-negro) 60%, transparent);
   --dx-sombra: color-mix(in srgb, var(--dx-negro) 25%, transparent);
   /* Fotos de fondo bajo texto blanco: 60 % negro (= brightness 0.4) da >= 5.7:1 aun con fotos blancas. */

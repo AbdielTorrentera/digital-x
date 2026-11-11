@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { catalogo, faltantesDePagina, servicios, slugs, textosDeBloques } from './servicios.ts';
+import { categorias, guia } from './categorias.ts';
+import { faltantesDePagina, servicios, slugs, textosDeBloques } from './servicios.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
 import { menu, paginas, slugDe, urlsPlaneadas } from '../lib/paginas.ts';
 import { lista } from '../lib/servicios.ts';
@@ -28,9 +29,7 @@ const bloquesDe = ([, c]) => [
 ];
 const bloques = [
   ...entradas.flatMap(bloquesDe),
-  catalogo.intro,
-  ...catalogo.secciones.map((s) => s.para),
-  catalogo.cierre.texto,
+  ...categorias.flatMap((c) => [c.para, c.intro, c.cierre.texto]),
 ].filter(Boolean);
 
 test('los servicios del contenido son los del registro de páginas, en el mismo orden', () => {
@@ -61,17 +60,6 @@ test('cada meta nombra la zona (Puebla o Atlixco) e invita a cotizar por WhatsAp
   }
 });
 
-test('title y meta del catálogo no cambian (reglas-seo sección 1)', () => {
-  assert.equal(catalogo.title, 'Servicios de audio, video y tecnología en Puebla | Digital X');
-  assert.ok(catalogo.title.length <= 60);
-  assert.equal(
-    catalogo.descripcion,
-    'Servicios para tu evento o tu negocio: audio, video y tecnología en Puebla, Atlixco e Izúcar de Matamoros. Elige el tuyo y cotiza por WhatsApp.',
-  );
-  assert.ok(catalogo.descripcion.length <= 155);
-  assert.ok(catalogo.h1.includes('Puebla'));
-});
-
 test('las descripciones confirmadas por el dueño no cambian de redacción', () => {
   assert.equal(
     servicios['renta-de-audio'].descripcion,
@@ -91,20 +79,9 @@ test('las descripciones confirmadas por el dueño no cambian de redacción', () 
   );
 });
 
-test('el catálogo tiene una sección por categoría, con el id al que enlazan el Inicio y el pie', () => {
-  assert.deepEqual(
-    catalogo.secciones.map((s) => s.id),
-    ['audio', 'video', 'tecnologia'],
-  );
-  assert.deepEqual(
-    catalogo.secciones.map((s) => s.categoria),
-    ['audio', 'video', 'tecnologia'],
-  );
-});
-
-test('cada servicio de la guía "¿Qué servicios necesito?" existe y cada escenario recomienda al menos uno', () => {
-  assert.equal(catalogo.guia.items.length, 5);
-  for (const { escenario, slugs: recomendados } of catalogo.guia.items) {
+test('cada servicio de la guía "¿Qué servicios necesito?" (lista para activarse) existe y cada escenario recomienda al menos uno', () => {
+  assert.equal(guia.items.length, 5);
+  for (const { escenario, slugs: recomendados } of guia.items) {
     assert.ok(recomendados.length > 0, escenario);
     for (const slug of recomendados) assert.ok(slugs.includes(slug), `${slug} no es un servicio`);
   }
@@ -1194,7 +1171,7 @@ test('"a la medida" se usa en los textos de la página de software, pero nunca c
   const nombres = [
     ...registro.map((p) => p.titulo),
     ...menu.map((i) => i.titulo),
-    ...catalogo.secciones.flatMap((s) => [s.titulo, s.etiqueta, ...(s.sinPagina ?? [])]),
+    ...categorias.flatMap((c) => [c.titulo, c.etiqueta, ...(c.sinPagina ?? [])]),
     ...Object.values(lista),
   ];
   assert.ok(nombres.length > 0);
@@ -1207,7 +1184,7 @@ test('"a la medida" se usa en los textos de la página de software, pero nunca c
 });
 
 test('"drone" se escribe así en todo el contenido y "aplicaciones móviles" no es "apps"', () => {
-  const todo = JSON.stringify([servicios, catalogo]);
+  const todo = JSON.stringify([servicios, categorias, guia]);
   // "drones" es el plural de "drone" (FAQ de espectáculos con luces): solo se prohíbe la forma suelta "dron".
   assert.ok(!/\bdron\b/i.test(todo), '"dron" en el contenido');
   // El singular "app" sí se usa en texto corrido (aplicaciones móviles); solo se prohíbe el plural "apps".
@@ -1221,7 +1198,7 @@ test('ningún texto lleva [PENDIENTE, precios ni dinero, y las pantallas se "coo
   }
 });
 
-test('WhatsApp: cada servicio usa su propio mensaje y el catálogo, el general', () => {
+test('WhatsApp: cada servicio usa su propio mensaje', () => {
   const esperado = {
     'renta-de-audio': 'rentaDeAudio',
     'circuito-cerrado-para-eventos': 'circuitoCerrado',
@@ -1236,5 +1213,4 @@ test('WhatsApp: cada servicio usa su propio mensaje y el catálogo, el general',
   };
   for (const [slug, clave] of Object.entries(esperado))
     assert.equal(servicios[slug].mensaje, mensajesWhatsApp[clave], slug);
-  assert.equal(catalogo.cierre.mensaje, mensajesWhatsApp.general);
 });

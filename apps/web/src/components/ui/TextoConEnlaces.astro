@@ -3,10 +3,10 @@ import type { TextoConEnlaces } from '../../lib/texto';
 import { enlaceAPagina } from '../../lib/enlaces';
 import { enlaceDeServicio } from '../../lib/servicios';
 
-// Un texto corrido con enlaces: la nota bajo "Qué incluye", los párrafos y los puntos con título de las secciones, y las respuestas de las preguntas frecuentes. Un trozo
-// de texto se escribe tal cual; un `{ slug, texto }` es un enlace a la página del servicio si está publicada o, si no, a
-// su tarjeta del catálogo (/servicios/#slug); un `{ url, texto }` es un enlace a otra página del registro (validada con
-// `enlaceAPagina`). Un texto sin enlaces puede ser un `string`.
+// Un texto corrido con enlaces: la nota bajo "Qué incluye", los párrafos y los puntos con título de las secciones, y las
+// respuestas de las preguntas frecuentes. Un trozo de texto se escribe tal cual; un `{ slug, texto }` es un enlace a la
+// página del servicio si está publicada y, si no, solo texto; un `{ url, texto }` es un enlace a otra página del registro
+// (validada con `enlaceAPagina`). Un texto sin enlaces puede ser un `string`.
 interface Props {
   texto: string | TextoConEnlaces;
 }
@@ -14,12 +14,14 @@ const { texto } = Astro.props;
 const trozos = typeof texto === 'string' ? [texto] : texto;
 ---
 
-{trozos.map((trozo) =>
-  typeof trozo === 'string' ? (
-    trozo
-  ) : (
-    <a class="link" href={'slug' in trozo ? enlaceDeServicio(trozo.slug) : enlaceAPagina(trozo.url)}>
+{trozos.map((trozo) => {
+  if (typeof trozo === 'string') return trozo;
+  const href = 'slug' in trozo ? enlaceDeServicio(trozo.slug) : enlaceAPagina(trozo.url);
+  return href ? (
+    <a class="link" href={href}>
       {trozo.texto}
     </a>
-  ),
-)}
+  ) : (
+    trozo.texto
+  );
+})}

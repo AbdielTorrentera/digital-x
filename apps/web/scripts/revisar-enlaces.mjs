@@ -1,6 +1,6 @@
 /**
  * Revisa que los enlaces internos de apps/web/dist apunten a archivos que existen (buenas prácticas §5), y que las
- * anclas (`/servicios/#audio`, `#que-incluye`) apunten a un `id` que exista en la página de destino. Un `href="#"` falla.
+ * anclas (`/#servicios`, `#que-incluye`) apunten a un `id` que exista en la página de destino. Un `href="#"` falla.
  * Excepción: un enlace a una página planeada (en paginas.ts con estado "lanzamiento") se acepta aunque todavía no esté
  * construida (y su ancla no se puede revisar); con cualquier otra URL que no exista, falla. El build de producción es
  * quien prohíbe las planeadas.
@@ -58,7 +58,7 @@ const idsDe = (archivo) => {
   if (!idsEnCache.has(archivo)) idsEnCache.set(archivo, idsDeHtml(readFileSync(archivo, 'utf8')));
   return idsEnCache.get(archivo);
 };
-// El archivo HTML de una URL del sitio ("/servicios/" → dist/servicios/index.html).
+// El archivo HTML de una URL del sitio ("/video/" → dist/video/index.html).
 const archivoDe = (rutaUrl) => {
   const base = join(dist, decodeURIComponent(rutaUrl));
   return [join(base, 'index.html'), base, `${base}.html`].find(existe);
@@ -91,6 +91,11 @@ for (const archivo of htmlDe(dist)) {
           new URL(sinHash, `https://sitio.local${paginaUrl}`).pathname;
     if (sinHash) revisados++;
     if (!sinHash && !ancla) continue;
+    // /servicios/ (el catálogo) ya no existe: ni la ruta ni sus anclas se enlazan desde ninguna página.
+    if (absoluto === '/servicios/') {
+      rotos.push(`${paginaUrl}  →  ${enlace}  (/servicios/ ya no existe: usa la categoría o el servicio)`);
+      continue;
+    }
     if (sinHash && !resuelve(absoluto)) {
       (esPaginaPlaneada(absoluto) ? planeados : rotos).push(`${paginaUrl}  →  ${enlace}`);
       continue;

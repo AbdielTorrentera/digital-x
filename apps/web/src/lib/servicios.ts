@@ -1,4 +1,4 @@
-import { catalogo } from '../content/servicios.ts';
+import { categorias } from '../content/categorias.ts';
 import { paginas, slugDe, visible, type Categoria } from './paginas.ts';
 
 export interface ServicioDeCategoria {
@@ -16,13 +16,13 @@ export const serviciosDe = (categoria: Categoria): ServicioDeCategoria[] =>
     .map((p) => ({ titulo: p.titulo, url: p.url, slug: slugDe(p.url), construida: visible(p) }));
 
 /**
- * Enlace a un servicio desde el contenido: su página si ya está construida y, si no, su tarjeta en el catálogo
- * (/servicios/#slug). Así ningún enlace lleva a una página que no existe.
+ * Enlace a un servicio desde el contenido: su página si ya está construida y, si no, `null`: sin página no hay enlace
+ * (su nombre se muestra como texto). Así ningún enlace lleva a una página que no existe.
  */
-export const enlaceDeServicio = (slug: string): string => {
+export const enlaceDeServicio = (slug: string): string | null => {
   const servicio = paginas.find((p) => p.categoria && slugDe(p.url) === slug);
   if (!servicio) throw new Error(`"${slug}" no es un servicio del registro (src/lib/paginas.ts).`);
-  return visible(servicio) ? servicio.url : `/servicios/#${slug}`;
+  return visible(servicio) ? servicio.url : null;
 };
 
 /** Un trozo de una frase con nombres de servicios: texto suelto, o el nombre de un servicio con su enlace (si lo hay). */
@@ -43,18 +43,18 @@ const unir = (nombres: { nombre: string; url: string | null }[]): Parte[] =>
 /**
  * Los servicios de una categoría como frase, en minúscula para usarlos a mitad de oración. Cada nombre trae su URL solo
  * si la página está construida (si no, es texto). Los servicios sin página propia (hoy, la sonorización de Audio) salen de
- * los datos de la categoría (`sinPagina` en content/servicios.ts) y van como texto, sin enlace.
+ * los datos de la categoría (`sinPagina` en content/categorias.ts) y van como texto, sin enlace.
  */
 export const partesDeServicios = (categoria: Categoria): Parte[] =>
   unir([
     ...serviciosDe(categoria).map((s) => ({ nombre: s.titulo.toLowerCase(), url: s.construida ? s.url : null })),
-    ...(catalogo.secciones.find((seccion) => seccion.categoria === categoria)?.sinPagina ?? []).map((nombre) => ({
+    ...(categorias.find((c) => c.id === categoria)?.sinPagina ?? []).map((nombre) => ({
       nombre,
       url: null,
     })),
   ]);
 
-/** Servicios elegidos por su slug como frase, con el nombre del registro y `enlaceDeServicio` como enlace. */
+/** Servicios elegidos por su slug como frase, con el nombre del registro y `enlaceDeServicio` como enlace (o sin él). */
 export const partesDeSlugs = (slugs: string[]): Parte[] =>
   unir(
     slugs.map((slug) => {
@@ -63,6 +63,20 @@ export const partesDeSlugs = (slugs: string[]): Parte[] =>
       return { nombre: servicio.titulo, url: enlaceDeServicio(slug) };
     }),
   );
+
+const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
+
+/**
+ * El párrafo de la tarjeta de una categoría en el Inicio: para quién es y, en la misma frase, los nombres de sus
+ * servicios (el primero con mayúscula inicial, cada uno enlazado solo si su página está construida).
+ */
+export const parrafoDeCategoria = (categoria: { id: Categoria; para: string }): Parte[] => [
+  { literal: `${categoria.para} ` },
+  ...partesDeServicios(categoria.id).map((parte, i) =>
+    i === 0 && 'nombre' in parte ? { ...parte, nombre: capital(parte.nombre) } : parte,
+  ),
+  { literal: '.' },
+];
 
 const comoTexto = (partes: Parte[]) => partes.map((p) => ('literal' in p ? p.literal : p.nombre)).join('');
 

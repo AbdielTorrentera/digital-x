@@ -1,0 +1,71 @@
+---
+import Foto from '../Foto.astro';
+import type { Cliente } from '../../content/categorias';
+import { clientesConPermiso } from '../../lib/categorias';
+
+// "Con quiénes hemos trabajado" de una categoría. Solo dibuja los clientes con permiso (`permiso: true`); sin ninguno, no
+// se dibuja nada (ni un título vacío ni un [PENDIENTE]). Con logo, el logo con su `alt`; sin logo, el nombre en texto.
+// Nunca se inventan clientes: los datos salen de content/categorias.ts (en la fase 3, de Sanity).
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  clientes: Cliente[];
+}
+const { etiqueta, titulo, clientes } = Astro.props;
+const visibles = clientesConPermiso(clientes);
+---
+
+{visibles.length > 0 && (
+  <section class="clientes">
+    <div class="container clientes__inner">
+      <div class="clientes__head">
+        <p class="t-caption2">{etiqueta}</p>
+        <h2 class="t-h2">{titulo}</h2>
+      </div>
+      <ul class="clientes__lista">
+        {visibles.map((cliente) => (
+          <li class="clientes__item">
+            {cliente.logo ? (
+              <Foto class="clientes__logo" src={cliente.logo.src} alt={cliente.logo.alt} sizes="160px" />
+            ) : (
+              <span class="t-h5">{cliente.nombre}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+<style>
+  .clientes {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-7);
+  }
+  .clientes__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .clientes__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-3);
+  }
+  .clientes__lista {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--esp-5) var(--esp-7);
+  }
+  .clientes__item {
+    display: flex;
+    align-items: center;
+    min-height: var(--tactil);
+  }
+  .clientes :global(.clientes__logo) {
+    width: auto;
+    max-width: 160px;
+    max-height: 56px;
+    object-fit: contain;
+  }
+</style>

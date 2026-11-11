@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import Migas from './Migas.astro';
+import CierreContacto from './sections/CierreContacto.astro';
+import ClientesDeCategoria from './sections/ClientesDeCategoria.astro';
+import Faq from './sections/Faq.astro';
+import Proyectos from './sections/Proyectos.astro';
+import Servicios from './sections/Servicios.astro';
+import { categorias } from '../content/categorias';
+import { proyectos as proyectosDelSitio } from '../content/proyectos';
+import { servicios } from '../content/servicios';
+import { fotoCierre, fotos } from '../content/servicios-fotos';
+import { collectionPageJsonLd, serializarJsonLd } from '../lib/jsonld';
+import { idNegocio, mensajesWhatsApp, negocio, telUrl, waUrl } from '../lib/negocio';
+import { slugDe, serviciosConstruidos, type Categoria } from '../lib/paginas';
+import { proyectosDeCategoria } from '../lib/proyectos';
+import type { Slug } from '../content/servicios';
+
+// Plantilla de la página de una categoría (/audio/, /video/ y /tecnologia/), la misma para las tres: migas, H1 e
+// introducción; las tarjetas de servicio del Inicio (sections/Servicios.astro), una por servicio construido y con la foto
+// alternando de lado en escritorio; proyectos de la categoría; clientes con permiso; preguntas frecuentes y el cierre.
+// Los proyectos, los clientes y las preguntas solo se dibujan si hay. Todo sale de content/categorias.ts y del registro
+// de servicios; nada es específico de una categoría. Solo se genera para una categoría con dos o más servicios
+// construidos (pages/[categoria].astro).
+// Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1.
+interface Props {
+  id: Categoria;
+}
+const { id } = Astro.props;
+const categoria = categorias.find((c) => c.id === id)!;
+const construidos = serviciosConstruidos(id);
+const nombreEnMinuscula = categoria.etiqueta.toLowerCase();
+
+const tarjetas = construidos.map((pagina, i) => {
+  const slug = slugDe(pagina.url) as Slug;
+  return {
+    contador: `/${i + 1}`,
+    titulo: pagina.titulo,
+    href: pagina.url,
+    ariaLabel: `Ver ${pagina.titulo.toLowerCase()}`,
+    foto: fotos[slug],
+    parrafo: [{ literal: servicios[slug].descripcion }],
+    boton: 'Ver servicio',
+  };
+});
+
+// Hasta 4 proyectos que usaron algún servicio de la categoría (de ejemplo, con la etiqueta EJEMPLO, mientras no haya
+// reales). Sin ninguno, la sección no se dibuja.
+const proyectos = proyectosDeCategoria(
+  proyectosDelSitio,
+  construidos.map((p) => p.titulo),
+);
+const url = new URL(`/${categoria.slug}/`, negocio.url).href;
+const datosEstructurados = collectionPageJsonLd({
+  url,
+  nombre: categoria.title,
+  descripcion: categoria.meta,
+  idNegocio,
+  elementos: construidos.map((p) => ({ name: p.titulo, url: new URL(p.url, negocio.url).href })),
+});
+---
+
+<Base title={categoria.title} description={categoria.meta} whatsapp={mensajesWhatsApp.general}>
+  <section class="cabeza">
+    <div class="container cabeza__inner">
+      <Migas
+        items={[
+          { titulo: 'Inicio', url: '/' },
+          { titulo: categoria.etiqueta, url: `/${categoria.slug}/` },
+        ]}
+      />
+      <h1 class="t-h1">{categoria.h1}</h1>
+      <p class="t-body cabeza__intro">{categoria.intro}</p>
+    </div>
+  </section>
+  <Servicios etiquetaTarjeta={categoria.etiqueta} items={tarjetas} alternar nivelTarjeta="h2" />
+  {proyectos.length > 0 && (
+    <Proyectos etiqueta="Proyectos" titulo={`Proyectos de ${nombreEnMinuscula}`} items={proyectos} />
+  )}
+  <ClientesDeCategoria etiqueta="Clientes" titulo="Con quiénes hemos trabajado" clientes={categoria.clientes} />
+  {categoria.faq.length > 0 && (
+    <Faq
+      etiqueta="Preguntas frecuentes"
+      titulo={`Preguntas frecuentes sobre ${nombreEnMinuscula}`}
+      texto={`Lo que más nos preguntan sobre ${nombreEnMinuscula}.`}
+      items={categoria.faq}
+    />
+  )}
+  <CierreContacto
+    foto={fotoCierre}
+    titulo={categoria.cierre.titulo}
+    texto={categoria.cierre.texto}
+    whatsapp={{ etiqueta: 'Cotizar por WhatsApp', href: waUrl(mensajesWhatsApp.general) }}
+    llamar={{ etiqueta: 'Llamar', href: telUrl, numero: negocio.telefono.pantalla }}
+  />
+  <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
+</Base>
+<style>
+  .cabeza {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-2) var(--esp-6);
+  }
+  .cabeza__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
+  }
+  .cabeza__intro {
+    max-width: 70ch;
+  }
+  @media (min-width: 1024px) {
+    .cabeza {
+      padding-block: var(--esp-4) var(--esp-7);
+    }
+  }
+</style>

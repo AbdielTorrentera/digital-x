@@ -7,16 +7,36 @@ import Features from '../components/sections/Features.astro';
 import Cobertura from '../components/sections/Cobertura.astro';
 import Faq from '../components/sections/Faq.astro';
 import LlamadoFinal from '../components/sections/LlamadoFinal.astro';
+import { categoriasConDestino } from '../lib/categorias';
 import { mensajesWhatsApp } from '../lib/negocio';
 import { proyectosDelInicio } from '../lib/proyectos';
+import { parrafoDeCategoria } from '../lib/servicios';
 import { cierre, cobertura, faq, porQue, portada, proyectos, servicios } from '../content/inicio';
 const proyectosVisibles = proyectosDelInicio(proyectos.items);
+// Una tarjeta por categoría con al menos un servicio construido. Con un solo servicio construido, la tarjeta lleva directo a él.
+const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servicioUnico }, i) => ({
+  contador: `/${i + 1}`,
+  titulo: categoria.etiqueta,
+  href,
+  ariaLabel: directo
+    ? `Ver ${servicioUnico!.titulo.toLowerCase()}`
+    : `Ver servicios de ${categoria.etiqueta.toLowerCase()}`,
+  foto: servicios.fotos[categoria.id],
+  parrafo: parrafoDeCategoria(categoria),
+  boton: directo ? 'Ver servicio' : 'Ver servicios',
+}));
 ---
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
 <Base title={portada.title} description={portada.descripcion} whatsapp={mensajesWhatsApp.general}>
   <Hero titulo={portada.h1} texto={portada.texto} boton={portada.boton} foto={portada.foto} />
-  <Servicios {...servicios} />
+  <Servicios
+    id="servicios"
+    etiqueta={servicios.etiqueta}
+    titulo={servicios.titulo}
+    etiquetaTarjeta={servicios.etiquetaTarjeta}
+    items={tarjetas}
+  />
   {proyectosVisibles.length > 0 && (
     <Proyectos etiqueta={proyectos.etiqueta} titulo={proyectos.titulo} items={proyectosVisibles} />
   )}

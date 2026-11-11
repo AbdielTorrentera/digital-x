@@ -1,0 +1,16 @@
+---
+import PaginaCategoria from '../components/PaginaCategoria.astro';
+import { paginas, visible } from '../lib/paginas';
+
+// Una página por categoría (/audio/, /video/ y /tecnologia/), generada SOLO si la categoría tiene dos o más servicios
+// construidos (lib/paginas.ts, `paginasDeCategoria`). Con un solo servicio, la categoría no tiene página: el menú, el
+// Inicio y el pie llevan directo a ese servicio. Nada de esto se escribe a mano: sale de los datos.
+export function getStaticPaths() {
+  return paginas
+    .filter((pagina) => pagina.paginaDe && visible(pagina))
+    .map((pagina) => ({ params: { categoria: pagina.url.slice(1, -1) }, props: { id: pagina.paginaDe! } }));
+}
+const { id } = Astro.props;
+---
+
+<PaginaCategoria id={id} />

@@ -37,15 +37,17 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
   assert.ok(urlsPublicadas.every((url) => urlsConstruidas.includes(url)));
 });
 
-test('el pie enlaza las 3 secciones del catálogo, en orden', () => {
+test('el pie enlaza las 3 categorías, en orden, cada una a su destino: su página o su único servicio', () => {
   assert.deepEqual(categoriasDeServicios, [
-    { titulo: 'Servicios de audio', url: '/servicios/#audio' },
-    { titulo: 'Servicios de video', url: '/servicios/#video' },
-    { titulo: 'Servicios de tecnología', url: '/servicios/#tecnologia' },
+    { titulo: 'Servicios de audio', url: '/servicios/renta-de-audio/' },
+    { titulo: 'Servicios de video', url: '/video/' },
+    { titulo: 'Servicios de tecnología', url: '/tecnologia/' },
   ]);
-  // Ya no son páginas: cada una es una sección de /servicios/, que sí está en lanzamiento.
-  for (const { url } of categoriasDeServicios)
-    assert.ok(urlsPlaneadas.includes(url.split('#')[0]), `${url} no está en lanzamiento`);
+  // Todo lo que el pie enlaza está en lanzamiento y construido: ya no hay catálogo ni anclas a /servicios/.
+  for (const { url } of categoriasDeServicios) {
+    assert.ok(urlsPublicadas.includes(url), `${url} no está publicada`);
+    assert.ok(!url.startsWith('/servicios/#'), url);
+  }
 });
 
 test('el grupo "Digital X" del pie enlaza Proyectos y Nosotros, y los legales van aparte', () => {
@@ -68,24 +70,39 @@ test('el grupo "Digital X" del pie enlaza Proyectos y Nosotros, y los legales va
     assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
 });
 
-test('el menú enlaza páginas planeadas, en este orden, y nunca una pendiente de material', () => {
+test('el menú es Inicio · Audio · Video · Tecnología · Nosotros, generado de los datos, sin "Servicios" ni páginas sin construir', () => {
   assert.deepEqual(
-    menu.map((i) => i.url),
-    ['/', '/servicios/', '/proyectos/', '/nosotros/'],
+    menu.map((i) => [i.titulo, i.url]),
+    [
+      ['Inicio', '/'],
+      ['Audio', '/servicios/renta-de-audio/'],
+      ['Video', '/video/'],
+      ['Tecnología', '/tecnologia/'],
+      ['Nosotros', '/nosotros/'],
+    ],
   );
-  for (const { url } of menu) assert.ok(urlsPlaneadas.includes(url), `${url} está en el menú sin estar en lanzamiento`);
+  // Cada entrada solo aparece cuando su página está construida: nunca una pendiente ni una planeada sin construir.
+  for (const { url } of menu) {
+    const pagina = paginas.find((p) => p.url === url);
+    assert.ok(pagina, `${url} no está en el registro`);
+    assert.ok(visible(pagina), `${url} está en el menú sin estar construida`);
+  }
   assert.ok(!menu.some((i) => i.url === '/blog/'), 'Blog no se publica todavía');
+  assert.ok(!menu.some((i) => i.url === '/proyectos/'), 'Proyectos entra cuando se construya');
+  assert.ok(!menu.some((i) => i.url === '/servicios/'), 'ya no hay página de Servicios');
 });
 
 test('archivosDe da las rutas posibles del archivo de cada página', () => {
   assert.deepEqual(archivosDe('/'), ['index.astro', 'index/index.astro']);
-  assert.deepEqual(archivosDe('/servicios/'), ['servicios.astro', 'servicios/index.astro']);
+  assert.deepEqual(archivosDe('/nosotros/'), ['nosotros.astro', 'nosotros/index.astro']);
   // Los servicios salen de la ruta dinámica pages/servicios/[slug].astro.
   assert.deepEqual(archivosDe('/servicios/renta-de-audio/'), [
     'servicios/renta-de-audio.astro',
     'servicios/renta-de-audio/index.astro',
     'servicios/[slug].astro',
   ]);
+  // Y las categorías con página, de pages/[categoria].astro.
+  assert.deepEqual(archivosDe('/video/'), ['video.astro', 'video/index.astro', '[categoria].astro']);
 });
 
 const servicios = paginas.filter((p) => p.categoria);
@@ -164,6 +181,7 @@ test('urlsPlaneadas son las de lanzamiento (construidas o no) y urlsSinConstruir
   for (const p of paginas.filter((x) => x.estado === 'pendiente')) assert.ok(!urlsPlaneadas.includes(p.url));
 });
 
-test('"Ver servicios" de la 404 va a la sección del Inicio mientras /servicios/ no exista', () => {
-  assert.equal(urlVerServicios, urlsPublicadas.includes('/servicios/') ? '/servicios/' : '/#servicios');
+test('"Ver servicios" (portada y 404) va a la sección de servicios del Inicio: /servicios/ ya no existe', () => {
+  assert.equal(urlVerServicios, '/#servicios');
+  assert.ok(!paginas.some((p) => p.url === '/servicios/'));
 });

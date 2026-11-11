@@ -58,9 +58,9 @@ test('paginasConPendientes sin páginas devuelve una lista vacía', () => {
 test('urlDeArchivoHtml convierte la ruta del HTML en la URL pública', () => {
   assert.equal(urlDeArchivoHtml('index.html'), '/');
   assert.equal(urlDeArchivoHtml('404.html'), '/404/');
-  assert.equal(urlDeArchivoHtml('servicios/index.html'), '/servicios/');
+  assert.equal(urlDeArchivoHtml('nosotros/index.html'), '/nosotros/');
   assert.equal(urlDeArchivoHtml('servicios/renta-de-audio/index.html'), '/servicios/renta-de-audio/');
-  assert.equal(urlDeArchivoHtml('servicios\\index.html'), '/servicios/');
+  assert.equal(urlDeArchivoHtml('nosotros\\index.html'), '/nosotros/');
 });
 
 test('nombresDeFotosTemporales agrupa por foto original las variantes de tamaño y formato', () => {
@@ -75,7 +75,7 @@ test('nombresDeFotosTemporales agrupa por foto original las variantes de tamaño
   assert.deepEqual(nombresDeFotosTemporales(['index.html']), []);
 });
 
-const sinConstruir = ['/servicios/renta-de-audio/', '/servicios/'];
+const sinConstruir = ['/servicios/renta-de-audio/', '/proyectos/'];
 
 test('enlacesANoConstruidas lista cada enlace interno a una página planeada que no está construida', () => {
   const paginas = [
@@ -83,39 +83,39 @@ test('enlacesANoConstruidas lista cada enlace interno a una página planeada que
       url: '/',
       html: '<a href="/servicios/renta-de-audio/">Renta de audio y sonido</a><a href="/">Inicio</a>',
     },
-    { url: '/404/', html: '<a href="/servicios/">Ver servicios</a>' },
+    { url: '/404/', html: '<a href="/proyectos/">Ver proyectos</a>' },
   ];
   assert.deepEqual(enlacesANoConstruidas(paginas, sinConstruir), [
     { pagina: '/', enlace: '/servicios/renta-de-audio/' },
-    { pagina: '/404/', enlace: '/servicios/' },
+    { pagina: '/404/', enlace: '/proyectos/' },
   ]);
 });
 
 test('enlacesANoConstruidas detecta el enlace aunque lleve ancla, parámetros o sea relativo', () => {
   const paginas = [
-    { url: '/', html: '<a href=\'/servicios/#audio\'>a</a><a href="/servicios/?x=1">b</a><a href="servicios/">c</a>' },
+    { url: '/', html: '<a href=\'/proyectos/#audio\'>a</a><a href="/proyectos/?x=1">b</a><a href="proyectos/">c</a>' },
   ];
   assert.deepEqual(
     enlacesANoConstruidas(paginas, sinConstruir).map((e) => e.enlace),
-    ['/servicios/#audio', '/servicios/?x=1', 'servicios/'],
+    ['/proyectos/#audio', '/proyectos/?x=1', 'proyectos/'],
   );
 });
 
 test('enlacesANoConstruidas ignora externos, esquemas, anclas, páginas construidas y código', () => {
   const html = [
-    '<a href="https://digitalx.mx/servicios/">externo</a>',
-    '<a href="//digitalx.mx/servicios/">sin protocolo</a>',
+    '<a href="https://digitalx.mx/proyectos/">externo</a>',
+    '<a href="//digitalx.mx/proyectos/">sin protocolo</a>',
     '<a href="tel:+522441244913">llamar</a>',
     '<a href="#servicios">ancla</a>',
     '<a href="/#servicios">inicio con ancla</a>',
-    '<!-- <a href="/servicios/">comentario</a> -->',
-    '<script>const a = \'<a href="/servicios/">x</a>\';</script>',
+    '<!-- <a href="/proyectos/">comentario</a> -->',
+    '<script>const a = \'<a href="/proyectos/">x</a>\';</script>',
   ].join('');
   assert.deepEqual(enlacesANoConstruidas([{ url: '/', html }], sinConstruir), []);
   assert.deepEqual(enlacesANoConstruidas([], sinConstruir), []);
 });
 
 test('enlacesANoConstruidas no repite el mismo enlace de una misma página', () => {
-  const html = '<a href="/servicios/">uno</a><a href="/servicios/">dos</a>';
+  const html = '<a href="/proyectos/">uno</a><a href="/proyectos/">dos</a>';
   assert.equal(enlacesANoConstruidas([{ url: '/', html }], sinConstruir).length, 1);
 });

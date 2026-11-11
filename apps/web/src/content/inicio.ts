@@ -23,19 +23,6 @@ export interface Foto {
   alt: string;
 }
 
-/** Una tarjeta de la sección de servicios: una categoría (Audio, Video o Tecnología) que enlaza a su sección del catálogo. */
-export interface Categoria {
-  contador: string;
-  titulo: 'Audio' | 'Video' | 'Tecnología';
-  /** Sus servicios (nombres desde el registro de páginas) van detrás de `para`, en la misma frase. */
-  categoria: IdCategoria;
-  /** Para quién es. */
-  para: string;
-  /** Sección del catálogo (/servicios/#audio, #video o #tecnologia). */
-  url: string;
-  foto: Foto;
-}
-
 const whatsappGeneral = waUrl(mensajesWhatsApp.general);
 
 export const portada = {
@@ -48,7 +35,7 @@ export const portada = {
   // servicios: audio y video para eventos; página web, app o software para negocios.
   texto:
     'Un solo proveedor en Puebla, Atlixco e Izúcar de Matamoros para el audio y el video de tu evento, y para la página web, la app o el software de tu negocio.',
-  // Baja a la sección de servicios (/#servicios) y, cuando exista, a /servicios/.
+  // Baja a la sección de servicios del Inicio (/#servicios).
   boton: { etiqueta: 'Ver servicios', href: urlVerServicios },
   // [PENDIENTE: video de portada. Sin clip, la foto sirve igual en móvil y en escritorio.]
   foto: {
@@ -57,50 +44,32 @@ export const portada = {
   } satisfies Foto,
 };
 
-// Tres tarjetas, una por categoría (Audio, Video y Tecnología), como la sección Services de Marby: cada tarjeta entera
-// es un enlace a su sección del catálogo (/servicios/#audio). El texto dice para quién es y nombra los servicios de la
-// categoría (los 10 oficiales, cada uno una sola vez): un nombre es enlace a su página solo si ya está construida.
-// [PENDIENTE: el dueño debe confirmar las frases de las tarjetas.] Sin cifras, marcas ni capacidades.
+// Tarjetas de servicios del Inicio, una por categoría (Audio, Video y Tecnología), como la sección Services de Marby: cada
+// tarjeta entera es un enlace al destino de su categoría (su página de categoría o, si solo tiene un servicio construido,
+// ese servicio; ver `destinoDeCategoria`). El texto sale de content/categorias.ts: para quién es y los nombres de sus
+// servicios (los 10 oficiales, cada uno una sola vez): un nombre es enlace a su página solo si ya está construida.
+// Aquí solo viven las fotos, que son imágenes. [PENDIENTE: el dueño debe confirmar las frases de las tarjetas.] Sin
+// cifras, marcas ni capacidades.
 export const servicios = {
   etiqueta: 'Servicios',
   titulo: 'Servicios de audio, video y tecnología en Puebla',
   /** Etiqueta pequeña de cada tarjeta. */
   etiquetaTarjeta: 'Servicios',
-  items: [
-    {
-      contador: '/1',
-      titulo: 'Audio',
-      categoria: 'audio',
-      para: 'Para quienes organizan fiestas, conferencias, eventos culturales y cultos, con personal técnico de principio a fin.',
-      url: '/servicios/#audio',
-      foto: {
-        src: fotoAudio,
-        alt: 'Bocinas de sonido profesional colgadas del techo de un recinto, en blanco y negro',
-      },
+  /** La foto de la tarjeta de cada categoría. */
+  fotos: {
+    audio: {
+      src: fotoAudio,
+      alt: 'Bocinas de sonido profesional colgadas del techo de un recinto, en blanco y negro',
     },
-    {
-      contador: '/2',
-      titulo: 'Video',
-      categoria: 'video',
-      para: 'Para que tu evento se vea y se transmita, y para mostrar tu negocio o institución.',
-      url: '/servicios/#video',
-      foto: {
-        src: fotoVideo,
-        alt: 'Cámara de video sobre un trípode grabando una sesión en un salón',
-      },
+    video: {
+      src: fotoVideo,
+      alt: 'Cámara de video sobre un trípode grabando una sesión en un salón',
     },
-    {
-      contador: '/3',
-      titulo: 'Tecnología',
-      categoria: 'tecnologia',
-      para: 'Para negocios e instituciones que necesitan presencia y herramientas en línea.',
-      url: '/servicios/#tecnologia',
-      foto: {
-        src: fotoTecnologia,
-        alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla',
-      },
+    tecnologia: {
+      src: fotoTecnologia,
+      alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla',
     },
-  ] satisfies Categoria[],
+  } satisfies Record<IdCategoria, Foto>,
 };
 
 export const proyectos = {

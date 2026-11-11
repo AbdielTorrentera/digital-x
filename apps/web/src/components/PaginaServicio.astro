@@ -12,11 +12,12 @@ import TarjetaProyecto from './ui/TarjetaProyecto.astro';
 import TextoConEnlaces from './ui/TextoConEnlaces.astro';
 import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
 import { proyectos as proyectosDelSitio } from '../content/proyectos';
-import { catalogo, faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
+import { categorias } from '../content/categorias';
+import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
 import { enlaceAPagina } from '../lib/enlaces';
 import { serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
 import { idNegocio, negocio, telUrl, waUrl, zonas } from '../lib/negocio';
-import { paginas } from '../lib/paginas';
+import { paginas, visible } from '../lib/paginas';
 import { proyectosDeServicio } from '../lib/proyectos';
 import { enlaceDeServicio } from '../lib/servicios';
 
@@ -47,16 +48,21 @@ const secciones = p.secciones ?? [];
 const nota = p.incluyeNota;
 const galeria = foto.galeria?.some((s) => s.fotos.length > 0) ? foto.galeria : undefined;
 
-// La categoría del servicio (su etiqueta y su nombre) sale de los datos del catálogo, no de constantes de este componente.
-const categoria = catalogo.secciones.find((seccion) => seccion.categoria === registro.categoria)!;
+// La categoría del servicio (su etiqueta y su nombre) sale de los datos de las categorías, no de constantes de este
+// componente. Su miga solo existe si la categoría tiene página propia (con un solo servicio construido no la tiene).
+const categoria = categorias.find((c) => c.id === registro.categoria)!;
+const paginaDeCategoria = paginas.find((p) => p.paginaDe === registro.categoria && visible(p));
 const nombre = registro.titulo;
 const url = new URL(registro.url, negocio.url).href;
 
+// Un servicio sin página no se enlaza: se omite de la lista (sus datos siguen completos).
 const enlaceDe = (item: EnlaceRelacionado) =>
   'slug' in item
     ? { titulo: paginas.find((x) => x.url === `/servicios/${item.slug}/`)!.titulo, href: enlaceDeServicio(item.slug) }
     : { titulo: item.titulo, href: enlaceAPagina(item.url) };
-const relacionados = tambien.items.map((item) => ({ ...enlaceDe(item), texto: item.texto }));
+const relacionados = tambien.items
+  .map((item) => ({ ...enlaceDe(item), texto: item.texto }))
+  .filter((item): item is { titulo: string; href: string; texto: string } => item.href !== null);
 
 // Hasta 3 proyectos que usaron este servicio (de ejemplo, con la etiqueta EJEMPLO, mientras no haya reales). Sin ninguno,
 // la sección no se dibuja ni se enlaza.
@@ -87,7 +93,7 @@ const datosEstructurados = serviceJsonLd({
       <Migas
         items={[
           { titulo: 'Inicio', url: '/' },
-          { titulo: 'Servicios', url: '/servicios/' },
+          ...(paginaDeCategoria ? [{ titulo: categoria.etiqueta, url: paginaDeCategoria.url }] : []),
           { titulo: nombre, url: registro.url },
         ]}
       />

@@ -6,12 +6,16 @@
  * construida. Marcar `construida: true` al crear su archivo en src/pages/ (el build falla
  * si se marca sin que el archivo exista). Los servicios no tienen archivo propio: los genera
  * pages/servicios/[slug].astro, y el build también falla si uno construido no trae su contenido completo
- * en content/servicios.ts.
+ * en content/servicios.ts. Las páginas de categoría (/audio/, /video/ y /tecnologia/) tampoco: las genera
+ * pages/[categoria].astro desde content/categorias.ts, y solo existen cuando la categoría tiene dos o más servicios
+ * construidos (ver `destinoDeCategoria`).
  *
  * Páginas planeadas: las de estado 'lanzamiento' que aún no se construyen. Se pueden enlazar
  * desde el contenido (en desarrollo llevan a la 404), pero el build de producción falla
  * mientras exista un enlace a una (ver astro.config.mjs). Las 'pendiente' nunca se enlazan.
  */
+import { categorias } from '../content/categorias.ts';
+
 export type Categoria = 'audio' | 'video' | 'tecnologia';
 
 export interface Pagina {
@@ -19,18 +23,20 @@ export interface Pagina {
   titulo: string;
   estado: 'lanzamiento' | 'pendiente';
   construida: boolean;
-  /** Solo los servicios: la sección del catálogo (/servicios/#audio, #video o #tecnologia) donde aparecen */
+  /** Solo los servicios: la categoría a la que pertenecen (Audio, Video o Tecnología). */
   categoria?: Categoria;
+  /** Solo las páginas de categoría (/audio/, /video/ y /tecnologia/): la categoría de la que son página. */
+  paginaDe?: Categoria;
 }
 
-export const paginas: Pagina[] = [
+/** Páginas fijas y servicios. Las páginas de categoría se derivan de estos y de content/categorias.ts (abajo). */
+const base: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
-  { url: '/servicios/', titulo: 'Servicios', estado: 'lanzamiento', construida: true },
 
-  // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Un solo catálogo
-  // (/servicios/) y una página por servicio (/servicios/{slug}/), generada por pages/servicios/[slug].astro solo
-  // cuando `construida` es true. Cada una se publica cuando el dueño apruebe sus fotos y videos: hasta entonces no se
-  // enlaza y el catálogo la muestra como texto. El orden de aquí es el del catálogo y el de los textos del Inicio.
+  // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Una página por
+  // servicio (/servicios/{slug}/), generada por pages/servicios/[slug].astro solo cuando `construida` es true. Cada una
+  // se publica cuando el dueño apruebe sus fotos y videos: hasta entonces no se enlaza y su nombre es texto. El orden de
+  // aquí es el de las categorías y el de los textos del Inicio.
   {
     url: '/servicios/renta-de-audio/',
     titulo: 'Renta de audio y sonido',
@@ -118,14 +124,43 @@ export const paginas: Pagina[] = [
 ];
 
 export const visible = (p: Pagina) => p.estado === 'lanzamiento' && p.construida;
-const porUrl = (url: string) => paginas.find((p) => p.url === url && visible(p));
+
+/** Los servicios de una categoría que ya tienen página, en el orden del registro. */
+export const serviciosConstruidos = (id: Categoria): Pagina[] => base.filter((p) => p.categoria === id && visible(p));
+
+/** Con cuántos servicios construidos una categoría tiene su propia página. Con uno solo, el enlace va a ese servicio. */
+export const MINIMO_PARA_PAGINA = 2;
+
+/**
+ * Las páginas de categoría que existen hoy: las categorías con dos o más servicios construidos. Se calcula cada vez, así
+ * que sigue al registro (publicar o retirar un servicio cambia la lista sin tocar nada más).
+ */
+export const paginasDeCategoria = (): Pagina[] =>
+  categorias
+    .filter((c) => serviciosConstruidos(c.id).length >= MINIMO_PARA_PAGINA)
+    .map((c) => ({ url: `/${c.slug}/`, titulo: c.etiqueta, estado: 'lanzamiento', construida: true, paginaDe: c.id }));
+
+/**
+ * A dónde lleva una categoría en el menú, el Inicio y el pie: su página si tiene dos o más servicios construidos; el
+ * servicio, si solo tiene uno (entonces no hay página de categoría); `null` si no tiene ninguno (no se muestra).
+ */
+export const destinoDeCategoria = (id: Categoria): string | null => {
+  const construidos = serviciosConstruidos(id);
+  if (construidos.length === 0) return null;
+  if (construidos.length === 1) return construidos[0].url;
+  return `/${categorias.find((c) => c.id === id)!.slug}/`;
+};
+
+/** Todas las páginas: fijas, servicios y las de categoría que existen hoy. */
+export const paginas: Pagina[] = [...base, ...paginasDeCategoria()];
 
 /** Rutas relativas a src/pages/ que debe tener una página para estar construida. */
 export const archivosDe = (url: string) => {
   const ruta = url === '/' ? 'index' : url.slice(1, -1);
   const archivos = [`${ruta}.astro`, `${ruta}/index.astro`];
-  // Los servicios (/servicios/{slug}/) salen todos de una sola ruta dinámica.
+  // Los servicios (/servicios/{slug}/) salen todos de una sola ruta dinámica, y las categorías de otra.
   if (/^\/servicios\/[^/]+\/$/.test(url)) archivos.push('servicios/[slug].astro');
+  if (paginas.some((p) => p.paginaDe && p.url === url)) archivos.push('[categoria].astro');
   return archivos;
 };
 
@@ -146,16 +181,17 @@ export const urlsSinConstruir = paginas.filter((p) => p.estado === 'lanzamiento'
 export interface CategoriaDelPie {
   /** Texto del enlace: "Servicios de audio", "Servicios de video" o "Servicios de tecnología". */
   titulo: string;
-  /** Sección del catálogo: /servicios/#audio, #video o #tecnologia (el id existe en pages/servicios/index.astro). */
+  /** A dónde lleva (`destinoDeCategoria`): la página de la categoría o su único servicio construido. */
   url: string;
 }
 
-/** Las 3 categorías de servicios del pie. Ya no son páginas: cada una lleva a su sección del catálogo. */
-export const categoriasDeServicios: CategoriaDelPie[] = [
-  { titulo: 'Servicios de audio', url: '/servicios/#audio' },
-  { titulo: 'Servicios de video', url: '/servicios/#video' },
-  { titulo: 'Servicios de tecnología', url: '/servicios/#tecnologia' },
-];
+/** Las categorías de servicios del pie, con su destino. Una categoría sin ningún servicio construido no se muestra. */
+export const construirCategoriasDelPie = (): CategoriaDelPie[] =>
+  categorias.flatMap((c) => {
+    const url = destinoDeCategoria(c.id);
+    return url ? [{ titulo: c.titulo, url }] : [];
+  });
+export const categoriasDeServicios: CategoriaDelPie[] = construirCategoriasDelPie();
 
 export interface ItemMenu {
   titulo: string;
@@ -163,27 +199,33 @@ export interface ItemMenu {
 }
 
 /**
- * Menú principal (panel de pantalla completa de Marby): Inicio · Servicios · Proyectos · Blog · Nosotros. No hay página
- * de contacto (decisión del dueño): el teléfono y WhatsApp viven en el pie y en los botones flotantes.
- * Enlaza páginas planeadas (en lanzamiento) aunque aún no estén construidas: llevan a la 404 en desarrollo y el build
- * de producción falla mientras quede alguna. Blog solo aparece cuando está publicado (hoy "pendiente de material").
- * El pie, en cambio, solo muestra páginas construidas.
+ * Menú principal (barra negra en escritorio y panel de pantalla completa de Marby en móvil): Inicio · una entrada por
+ * categoría (Audio, Video, Tecnología) · Proyectos · Blog · Nosotros. No hay página de contacto (decisión del dueño): el
+ * teléfono y WhatsApp viven en el pie y en los botones flotantes.
+ * Se genera desde el registro y desde las categorías: **una entrada solo aparece cuando su página está construida**
+ * (nunca enlaza una página sin construir), y una categoría lleva a su página o, si solo tiene un servicio, a ese servicio.
+ * Hoy: Inicio · Audio · Video · Tecnología · Nosotros. Proyectos y Blog entran cuando se construyan.
  */
-export const menu: ItemMenu[] = [
-  { url: '/' },
-  { url: '/servicios/' },
-  { url: '/proyectos/' },
-  { url: '/blog/', soloPublicada: true },
-  { url: '/nosotros/' },
-]
-  .map(({ url, soloPublicada }) => {
-    const pagina = paginas.find((p) => p.url === url && (soloPublicada ? visible(p) : p.estado === 'lanzamiento'));
-    return pagina && { titulo: pagina.titulo, url: pagina.url };
-  })
-  .filter(Boolean) as ItemMenu[];
+export const construirMenu = (): ItemMenu[] => {
+  const pagina = (url: string): ItemMenu[] => {
+    const p = paginas.find((x) => x.url === url && visible(x));
+    return p ? [{ titulo: p.titulo, url: p.url }] : [];
+  };
+  return [
+    ...pagina('/'),
+    ...categorias.flatMap((c) => {
+      const url = destinoDeCategoria(c.id);
+      return url ? [{ titulo: c.etiqueta, url }] : [];
+    }),
+    ...pagina('/proyectos/'),
+    ...pagina('/blog/'),
+    ...pagina('/nosotros/'),
+  ];
+};
+export const menu: ItemMenu[] = construirMenu();
 
-// Como el menú, el pie enlaza páginas planeadas aunque aún no estén construidas (el build de producción falla mientras
-// quede alguna). El Blog solo entra cuando esté publicado.
+// El pie enlaza páginas planeadas aunque aún no estén construidas (el build de producción falla mientras quede alguna).
+// El Blog solo entra cuando esté publicado.
 const paginasDelPie = (urls: string[]) =>
   urls
     .map((url) => paginas.find((p) => p.url === url && (url === '/blog/' ? visible(p) : p.estado === 'lanzamiento')))
@@ -195,5 +237,5 @@ export const enlacesEmpresa = paginasDelPie(['/proyectos/', '/blog/', '/nosotros
 /** Línea inferior del pie, junto al ©: Condiciones de contratación y Política de privacidad. */
 export const enlacesLegales = paginasDelPie(['/condiciones-de-contratacion/', '/politica-de-privacidad/']);
 
-/** Destino de "Ver servicios" en la 404: la página de Servicios cuando exista; mientras, la sección del Inicio. */
-export const urlVerServicios = porUrl('/servicios/')?.url ?? '/#servicios';
+/** Destino de "Ver servicios" (portada y 404): la sección de servicios del Inicio. */
+export const urlVerServicios = '/#servicios';

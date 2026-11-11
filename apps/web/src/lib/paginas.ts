@@ -86,7 +86,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/tienda-en-linea/',
     titulo: 'Tienda en línea',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'tecnologia',
   },
   {

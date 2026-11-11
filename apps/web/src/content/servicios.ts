@@ -1044,13 +1044,142 @@ export const servicios: Record<Slug, ServicioContenido> = {
   },
 
   'tienda-en-linea': {
-    descripcion: 'Diseño y desarrollo de tiendas en línea para vender por internet.',
-    title: 'Tiendas en línea para negocios en Puebla | Digital X',
-    meta: 'Diseño y desarrollo de tiendas en línea para vender por internet, en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.',
-    h1: 'Tiendas en línea para negocios en Puebla',
+    descripcion:
+      'Diseño y desarrollo de tiendas en línea para negocios que quieren vender por internet, con dominio y hosting aparte.',
+    title: 'Tienda en línea en Puebla y Atlixco | Digital X',
+    meta: 'Diseño y desarrollo de tiendas en línea para negocios en Puebla y Atlixco: catálogo, carrito y pagos en línea. Cotiza por WhatsApp.',
+    h1: 'Diseño y desarrollo de tiendas en línea en Puebla',
     para: 'Negocios que venden por internet',
     incluye: 'Diseño y desarrollo',
     mensaje: mensajesWhatsApp.tiendaEnLinea,
+    serviceType: 'Diseño y desarrollo de tiendas en línea',
+    pagina: {
+      ficha: [
+        { etiqueta: 'Funciones', valor: 'Catálogo, carrito, pagos en línea y pedidos' },
+        { etiqueta: 'Administración', valor: 'Tú administras tus productos' },
+        { etiqueta: 'Dominio y hosting', valor: 'Van aparte, a tu nombre' },
+      ],
+      descripcion: {
+        titulo: 'Tu tienda en línea, con catálogo, carrito y pagos',
+        parrafos: [
+          'En Digital X diseñamos y desarrollamos tiendas en línea para negocios que quieren empezar a vender por internet en Puebla, Atlixco, Izúcar de Matamoros y alrededores.',
+          'Te acompañamos desde conocer tu negocio y tus productos hasta publicar tu tienda. Cada proyecto se cotiza según el tamaño de tu catálogo y las funciones que necesites: cuéntanos qué vendes y te respondemos con una propuesta.',
+        ],
+      },
+      incluye: [
+        'Levantamiento de requerimientos: qué vendes, a quién y cómo',
+        'Diseño y desarrollo de la tienda, adaptada a celular',
+        'Catálogo de productos que tú administras',
+        'Carrito de compras',
+        'Pagos en línea con la pasarela que elijas',
+        'Panel para ver tus pedidos',
+        'Opciones de envío o entrega, según lo que necesites',
+        'Publicación de la tienda y hasta 3 ajustes pequeños cuando te la entregamos',
+      ],
+      incluyeNota: [
+        'Dominio y hosting van aparte, a tu nombre. Las pasarelas de pago cobran una comisión por cada venta, aparte de nuestro servicio. Si quieres, precargamos tus productos con un costo adicional. El mantenimiento también se cotiza por separado.',
+      ],
+      secciones: [
+        {
+          id: 'que-necesitas',
+          etiqueta: 'Qué necesitas',
+          titulo: 'Qué necesitas para abrir una tienda en línea',
+          bloques: [
+            {
+              lista: [
+                'Tus productos con nombre, descripción, precio y fotos',
+                'Cómo vas a cobrar y cómo vas a entregar o enviar',
+                'Tu logo y los datos de tu negocio',
+                'Quién va a atender los pedidos',
+              ],
+            },
+            { parrafo: 'Si todavía no tienes algo de esto, lo vemos contigo al cotizar.' },
+          ],
+        },
+        {
+          id: 'tienda-o-pagina',
+          etiqueta: 'Tienda o página web',
+          titulo: '¿Tienda en línea o página web?',
+          bloques: [
+            {
+              parrafo: [
+                'Si quieres presentar tu negocio y recibir mensajes por WhatsApp, puede bastar con una ',
+                { slug: 'paginas-web', texto: 'página web' },
+                '. Si quieres que tus clientes elijan productos, los paguen y tú recibas el pedido, lo que necesitas es una tienda en línea. Si no estás seguro, cuéntanos tu caso y te recomendamos una.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'El número de productos y su variedad',
+                'Las funciones que necesites (pagos, envíos, panel de pedidos)',
+                'Si quieres que precarguemos tus productos',
+                'El mantenimiento de la tienda, si lo contratas',
+                'El dominio y el hosting, aparte de la tienda',
+              ],
+            },
+            {
+              parrafo: [
+                'Como en nuestros otros proyectos de tecnología, el pago es por etapas; los detalles están en las ',
+                { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+                '.',
+              ],
+            },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres complementar tu tienda en línea?',
+        items: [
+          { slug: 'paginas-web', texto: 'Si primero necesitas presentar tu negocio en internet' },
+          { slug: 'aplicaciones-moviles', texto: 'Una aplicación móvil que complemente tu tienda' },
+          { slug: 'desarrollo-de-software', texto: 'Un sistema para llevar el control interno de tu negocio' },
+          { slug: 'video-con-drone', texto: 'Tomas aéreas de tu local o tus instalaciones para tu tienda' },
+          { slug: 'video-para-eventos', texto: 'Video promocional de tus productos o de tu negocio' },
+          proyectos,
+          condiciones('Cómo se pagan las etapas de tu tienda'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu tienda',
+        texto:
+          'Cuéntanos qué vendes, cuántos productos tienes aproximadamente y si ya cuentas con fotos, descripciones y dominio.',
+      },
+      cierre: {
+        titulo: 'Que tus productos estén en internet',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos la tienda en línea de tu negocio.',
+      },
+      faq: [
+        {
+          pregunta: '¿Puedo administrar mis productos yo mismo?',
+          respuesta: 'Sí. Desde tu tienda puedes agregar, editar y quitar productos.',
+        },
+        {
+          pregunta: '¿Con qué medio de pago cobro?',
+          respuesta: 'Con la pasarela de pago que tú elijas; nosotros la conectamos a tu tienda.',
+        },
+        {
+          pregunta: '¿Cómo se hacen los envíos?',
+          respuesta: 'Depende de tu negocio: configuramos las opciones de envío o de entrega que necesites.',
+        },
+        {
+          pregunta: '¿Cuál es la mejor plataforma para mi tienda?',
+          respuesta:
+            'Depende de lo que vendas, cuántos productos tengas y cómo quieras administrarla. Te recomendamos la opción adecuada al cotizar.',
+        },
+        {
+          pregunta: '¿Cuánto tarda en estar lista?',
+          respuesta:
+            'Depende del número de productos, de las funciones y de qué tan pronto nos entregues la información. Lo acordamos al cotizar.',
+        },
+      ],
+    },
   },
 
   'aplicaciones-moviles': {

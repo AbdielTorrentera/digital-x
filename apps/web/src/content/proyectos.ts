@@ -1,7 +1,7 @@
 /**
  * Proyectos del sitio: UN solo arreglo para todas las páginas (Inicio y Nosotros; luego /proyectos/). Esta es la forma
  * que tendrá el esquema de Sanity en la fase 3; hasta entonces vive aquí, sin Sanity.
- * Los 3 proyectos de abajo son EJEMPLOS (`placeholder: true`): sin clientes, marcas, fechas ni cifras, con fotos
+ * Los 4 proyectos de abajo son EJEMPLOS (`placeholder: true`): sin clientes, marcas, fechas ni cifras, con fotos
  * temporales. Se muestran con la etiqueta "EJEMPLO" y el build de producción falla mientras existan.
  * [PENDIENTE: reemplazarlos por proyectos reales, con foto y permiso del cliente.]
  */
@@ -59,6 +59,18 @@ export const proyectos: Proyecto[] = [
       alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla',
     },
     texto: 'Diseño y desarrollo de un sitio web para presentar los servicios de un negocio local.',
+    permiso: false,
+    placeholder: true,
+  },
+  {
+    titulo: 'App de reservas para un negocio local',
+    municipio: 'Atlixco',
+    servicios: ['Desarrollo de aplicaciones móviles'],
+    foto: {
+      src: fotoSitioWeb,
+      alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla',
+    },
+    texto: 'Aplicación móvil para llevar las reservas de un negocio local, desarrollada para iPhone y Android.',
     permiso: false,
     placeholder: true,
   },

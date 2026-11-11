@@ -93,7 +93,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/aplicaciones-moviles/',
     titulo: 'Desarrollo de aplicaciones móviles',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'tecnologia',
   },
   {

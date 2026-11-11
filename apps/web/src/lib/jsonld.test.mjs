@@ -40,6 +40,16 @@ test('faqPageJsonLd lleva cada pregunta y respuesta tal como se muestran', () =>
   });
 });
 
+test('faqPageJsonLd publica el texto plano de una respuesta con enlaces, igual a lo que se lee en pantalla', () => {
+  const respuesta = [
+    'Como explican nuestras ',
+    { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+    '.',
+  ];
+  const datos = faqPageJsonLd([{ pregunta: '¿Cómo se paga?', respuesta }]);
+  assert.equal(datos.mainEntity[0].acceptedAnswer.text, 'Como explican nuestras condiciones de contratación.');
+});
+
 test('faqPageJsonLd no publica dirección ni coordenadas', () => {
   const texto = JSON.stringify(faqPageJsonLd([{ pregunta: 'P', respuesta: 'R' }]));
   assert.ok(!/address|streetAddress|"geo"/.test(texto));

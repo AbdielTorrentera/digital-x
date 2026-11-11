@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { catalogo, faltantesDePagina, servicios, slugs, textosDeBloques } from './servicios.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
-import { paginas, slugDe, urlsPlaneadas } from '../lib/paginas.ts';
+import { menu, paginas, slugDe, urlsPlaneadas } from '../lib/paginas.ts';
+import { lista } from '../lib/servicios.ts';
+import { comoTexto } from '../lib/texto.ts';
 
 const registro = paginas.filter((p) => p.categoria);
 const entradas = Object.entries(servicios);
@@ -22,7 +24,7 @@ const bloquesDe = ([, c]) => [
   c.pagina?.tambien?.intro ?? '',
   c.pagina?.cotizacion?.texto ?? '',
   c.pagina?.cierre?.texto ?? '',
-  ...(c.pagina?.faq ?? []).flatMap((f) => [f.pregunta, f.respuesta]),
+  ...(c.pagina?.faq ?? []).flatMap((f) => [f.pregunta, comoTexto(f.respuesta)]),
 ];
 const bloques = [
   ...entradas.flatMap(bloquesDe),
@@ -85,7 +87,7 @@ test('las descripciones confirmadas por el dueño no cambian de redacción', () 
   );
   assert.equal(
     servicios['desarrollo-de-software'].descripcion,
-    'Sistemas hechos para los procesos propios de tu negocio.',
+    'Software a la medida para que los procesos de tu negocio funcionen, desde el levantamiento de requerimientos hasta la implementación.',
   );
 });
 
@@ -112,8 +114,15 @@ test('un servicio con la página construida trae todo su contenido (si no, el bu
   const construidas = registro.filter((p) => p.construida);
   assert.ok(construidas.length > 0);
   for (const p of construidas) assert.deepEqual(faltantesDePagina(slugDe(p.url)), [], p.url);
-  // Y uno incompleto sí se detecta.
-  assert.ok(faltantesDePagina('desarrollo-de-software').length > 0);
+  // Y uno incompleto sí se detecta. Ya están los 10 servicios completos: a uno se le quita un campo solo durante la prueba.
+  const pagina = servicios['renta-de-audio'].pagina;
+  const { cierre } = pagina;
+  try {
+    delete pagina.cierre;
+    assert.deepEqual(faltantesDePagina('renta-de-audio'), ['cierre']);
+  } finally {
+    pagina.cierre = cierre;
+  }
 });
 
 test('renta de audio: todo el contenido migrado, la sección Sonorización y solo lo confirmado en "qué incluye"', () => {
@@ -837,7 +846,8 @@ test('aplicaciones móviles: sin viñetas ni frases iguales a las de páginas we
 test('aplicaciones móviles: sin precios, plazos, marcas, demos ni promesas, y las tiendas son "tiendas de aplicaciones"', () => {
   const c = servicios['aplicaciones-moviles'];
   const texto = JSON.stringify(c);
-  assert.ok(!/\$|MXN|\bIVA\b|\bdesde\b/i.test(texto), 'precio publicado');
+  // "Desde" solo se prohíbe como precio ("desde $…"), igual que en software.
+  assert.ok(!/\$|MXN|\bIVA\b|desde\s+(\$|\d|un precio|el precio|el costo|un costo)/i.test(texto), 'precio publicado');
   assert.ok(!/%|por ciento|anticipo|\d+\s*pagos?/i.test(texto), 'porcentaje o cifra de pagos');
   assert.ok(!/\d/.test(texto.replace('"h1":', '')), 'cifra publicada');
   assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo publicado');
@@ -862,6 +872,163 @@ test('aplicaciones móviles: sin precios, plazos, marcas, demos ni promesas, y l
   assert.ok(!/\bdron\b/i.test(texto), '"dron"');
 });
 
+test('desarrollo de software: SEO, ficha, qué incluye, secciones en orden, enlaces en títulos, párrafos y FAQ, y 5 FAQ sin repetir lo que dicen las secciones ni la nota', () => {
+  const c = servicios['desarrollo-de-software'];
+  const pagina = c.pagina;
+  assert.equal(c.title, 'Desarrollo de software a la medida en Puebla | Digital X');
+  assert.ok(c.title.length <= 60);
+  assert.equal(c.h1, 'Desarrollo de software a la medida en Puebla');
+  assert.equal(
+    c.meta,
+    'Desarrollo de software a la medida para negocios en Puebla y Atlixco: sistemas para registros, clientes, reservas y catálogos. Cotiza por WhatsApp.',
+  );
+  assert.ok(c.meta.length <= 155);
+  assert.equal(c.serviceType, 'Desarrollo de software a la medida para negocios');
+  assert.equal(c.incluye, 'Sistemas web');
+  assert.equal(c.para, 'Negocios con procesos propios');
+  assert.equal(c.mensaje, mensajesWhatsApp.desarrolloDeSoftware);
+  assert.equal(
+    mensajesWhatsApp.desarrolloDeSoftware,
+    'Hola, quiero cotizar un software a la medida. Qué proceso quiero resolver: __ ¿Cuántas personas lo usarían?: __ ¿Hoy lo llevo en papel, hojas de cálculo u otro sistema?: __',
+  );
+  assert.deepEqual(pagina.ficha, [
+    { etiqueta: 'Tipo', valor: 'Sistemas web, desde el navegador' },
+    { etiqueta: 'Para', valor: 'Negocios con procesos propios' },
+    { etiqueta: 'Entrega', valor: 'Sistema implementado y equipo capacitado' },
+  ]);
+  assert.equal(pagina.descripcion.parrafos.length, 2);
+  assert.deepEqual(pagina.incluye, [
+    'Levantamiento de requerimientos: entender el proceso que quieres resolver',
+    'Desarrollo del sistema, de preferencia web, para usarlo desde el navegador',
+    'Implementación en tu negocio',
+    'Capacitación para tu equipo',
+  ]);
+  assert.deepEqual(
+    pagina.secciones.map((s) => [s.id, s.etiqueta, s.titulo]),
+    [
+      ['que-es', 'Qué es', 'Qué es un software a la medida'],
+      ['que-puede-hacer', 'Qué puede hacer', 'Qué puede hacer'],
+      ['software-app-o-pagina-web', 'Cuál te conviene', '¿Software, app o página web?'],
+      ['precio', 'Precio', 'De qué depende el precio'],
+    ],
+  );
+  const [, puede, cual, precio] = pagina.secciones;
+  assert.equal(puede.bloques[0].lista.length, 5);
+  assert.equal(precio.bloques[0].lista.length, 6);
+  // Los títulos de los puntos de "¿Software, app o página web?" llevan los enlaces a las otras páginas de tecnología.
+  const [web, app, software] = cual.bloques[0].puntos;
+  assert.deepEqual(
+    web.titulo.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['paginas-web', 'tienda-en-linea'],
+  );
+  assert.deepEqual(
+    app.titulo.filter((t) => typeof t !== 'string').map((t) => t.slug),
+    ['aplicaciones-moviles'],
+  );
+  assert.equal(software.titulo, 'Software a la medida');
+  assert.equal(
+    software.texto,
+    'Organiza lo que pasa dentro de tu negocio, como los registros, los clientes, las reservas o el catálogo.',
+  );
+  assert.deepEqual(
+    textosDeBloques(cual.bloques)[0],
+    'Página web o tienda en línea: Presentan tu negocio o venden tus productos en internet.',
+  );
+  // El pago y las condiciones: un enlace en el párrafo de "precio" y otro en la respuesta de la FAQ 3.
+  const condiciones = { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' };
+  assert.deepEqual(
+    precio.bloques[1].parrafo.filter((t) => typeof t !== 'string'),
+    [condiciones],
+  );
+  assert.deepEqual(
+    pagina.faq[2].respuesta.filter((t) => typeof t !== 'string'),
+    [condiciones],
+  );
+  assert.ok(urlsPlaneadas.includes(condiciones.url));
+  assert.equal(
+    comoTexto(pagina.faq[2].respuesta),
+    'Tu información siempre es tuya. El sistema se entrega en los términos de tu contrato, como explican nuestras condiciones de contratación.',
+  );
+  assert.deepEqual(
+    pagina.tambien.items.map((i) => i.slug ?? i.url),
+    [
+      'aplicaciones-moviles',
+      'paginas-web',
+      'tienda-en-linea',
+      'video-con-drone',
+      'video-para-eventos',
+      '/proyectos/',
+      '/condiciones-de-contratacion/',
+    ],
+  );
+  assert.deepEqual(
+    pagina.faq.map((f) => f.pregunta),
+    [
+      '¿Mi negocio necesita un software a la medida?',
+      '¿Pueden pasar al sistema lo que ya tengo en hojas de cálculo?',
+      '¿Quién es dueño del sistema y de mi información?',
+      '¿Cuánto tarda en estar listo el sistema?',
+      '¿Qué necesito para empezar mi sistema?',
+    ],
+  );
+  // Ninguna FAQ repite oraciones de la descripción, de lo que incluye, de la nota ni de las secciones.
+  const oracionesDe = (t) => t.split(/(?<=[.!?])\s+/).map((o) => o.trim());
+  const delResto = new Set(
+    [
+      ...pagina.descripcion.parrafos,
+      ...pagina.incluye,
+      ...pagina.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      comoTexto(pagina.incluyeNota),
+    ].flatMap(oracionesDe),
+  );
+  for (const faq of pagina.faq) {
+    for (const oracion of oracionesDe(comoTexto(faq.respuesta)))
+      assert.ok(!delResto.has(oracion), `FAQ repite: ${oracion}`);
+  }
+});
+
+test('desarrollo de software: sin viñetas, frases ni preguntas iguales a las de aplicaciones, páginas web ni tienda en línea, aunque sean cortas', () => {
+  const textos = (slug) => {
+    const p = servicios[slug].pagina;
+    return [
+      ...p.incluye,
+      ...p.secciones.flatMap((s) => textosDeBloques(s.bloques)),
+      // Solo los enlaces a servicios: el de Proyectos es el mismo texto en todas las páginas.
+      ...p.tambien.items.filter((i) => 'slug' in i).map((i) => i.texto),
+      ...p.faq.flatMap((f) => [f.pregunta, comoTexto(f.respuesta)]),
+      p.cotizacion.texto,
+      p.cierre.texto,
+    ].map((t) => t.trim());
+  };
+  const deOtras = new Set(['paginas-web', 'tienda-en-linea', 'aplicaciones-moviles'].flatMap(textos));
+  for (const texto of textos('desarrollo-de-software'))
+    assert.ok(!deOtras.has(texto), `ya está en otra página: ${texto}`);
+});
+
+test('desarrollo de software: sin precios, plazos, ERP, IA, CRM, demos, marcas ni promesas de ahorros, ventas o resultados', () => {
+  const c = servicios['desarrollo-de-software'];
+  const texto = JSON.stringify(c);
+  // "Desde" solo se prohíbe como precio ("desde $…"): "desde el navegador" o "desde el levantamiento…" son texto normal.
+  assert.ok(!/\$|MXN|\bIVA\b|desde\s+(\$|\d|un precio|el precio|el costo|un costo)/i.test(texto), 'precio publicado');
+  assert.ok(!/%|por ciento|anticipo|\d+\s*pagos?/i.test(texto), 'porcentaje o cifra de pagos');
+  assert.ok(!/\d/.test(texto.replace('"h1":', '')), 'cifra publicada');
+  assert.ok(!/\d+\s*(d[ií]as|horas|semanas|meses)/i.test(texto), 'plazo publicado');
+  assert.ok(!/\bERP\b|inteligencia artificial|\bIA\b|\bCRM\b/.test(texto), 'ERP, inteligencia artificial o CRM');
+  assert.ok(!/\bdemos?\b|demostraci|te mostramos|antes de pagar/i.test(texto), 'demo previa');
+  assert.ok(
+    !/ahorr|garantiz|garant[ií]a|aseguramos|ventas|ingresos|resultados|aumenta|increment|rentabilidad/i.test(texto),
+    'promesa',
+  );
+  assert.ok(
+    !/\b(sap|odoo|salesforce|excel|microsoft|google|apple|python|php|laravel|django|postgres|mysql|firebase|aws|azure|oracle|java|javascript|react|angular|vue|node|wordpress)\b/i.test(
+      texto,
+    ),
+    'lenguaje, herramienta, plataforma o marca',
+  );
+  assert.ok(!/\bapps\b/i.test(texto), '"apps"');
+  assert.ok(!/\bdron\b/i.test(texto), '"dron"');
+});
+
 test('las preguntas migradas de las categorías están cada una en su servicio, sin repetirse', () => {
   const preguntas = (slug) => (servicios[slug].pagina?.faq ?? []).map((f) => f.pregunta);
   assert.equal(preguntas('renta-de-audio').length, 4);
@@ -870,7 +1037,7 @@ test('las preguntas migradas de las categorías están cada una en su servicio, 
   assert.equal(preguntas('paginas-web').length, 5);
   assert.equal(preguntas('tienda-en-linea').length, 5);
   assert.ok(preguntas('paginas-web').includes('¿Qué diferencia hay entre una página web y una tienda en línea?'));
-  assert.equal(preguntas('desarrollo-de-software').length, 2);
+  assert.equal(preguntas('desarrollo-de-software').length, 5);
   assert.equal(preguntas('aplicaciones-moviles').length, 5);
   const todas = entradas.flatMap(([, c]) => (c.pagina?.faq ?? []).map((f) => f.pregunta));
   assert.equal(new Set(todas).size, todas.length);
@@ -1023,13 +1190,28 @@ test('transmisión en vivo: las cámaras son "una o varias", sin multicámara, a
   );
 });
 
-test('"drone" se escribe así en todo el contenido, "aplicaciones móviles" no es "apps" y el software no es "a la medida"', () => {
+test('"a la medida" se usa en los textos de la página de software, pero nunca como nombre de un servicio', () => {
+  const nombres = [
+    ...registro.map((p) => p.titulo),
+    ...menu.map((i) => i.titulo),
+    ...catalogo.secciones.flatMap((s) => [s.titulo, s.etiqueta, ...(s.sinPagina ?? [])]),
+    ...Object.values(lista),
+  ];
+  assert.ok(nombres.length > 0);
+  for (const nombre of nombres)
+    assert.ok(!/a la medida/i.test(nombre), `"a la medida" en un nombre de servicio: ${nombre}`);
+  assert.equal(paginas.find((p) => p.url === '/servicios/desarrollo-de-software/').titulo, 'Desarrollo de software');
+  // Es la búsqueda principal: la página lo dice en su title, su H1, su meta y su descripción corta.
+  const c = servicios['desarrollo-de-software'];
+  for (const texto of [c.title, c.h1, c.meta, c.descripcion]) assert.match(texto, /a la medida/i);
+});
+
+test('"drone" se escribe así en todo el contenido y "aplicaciones móviles" no es "apps"', () => {
   const todo = JSON.stringify([servicios, catalogo]);
   // "drones" es el plural de "drone" (FAQ de espectáculos con luces): solo se prohíbe la forma suelta "dron".
   assert.ok(!/\bdron\b/i.test(todo), '"dron" en el contenido');
   // El singular "app" sí se usa en texto corrido (aplicaciones móviles); solo se prohíbe el plural "apps".
   assert.ok(!/\bapps\b/i.test(todo), '"apps" en el contenido');
-  assert.ok(!/a la medida/i.test(JSON.stringify(servicios['desarrollo-de-software'])), 'software "a la medida"');
 });
 
 test('ningún texto lleva [PENDIENTE, precios ni dinero, y las pantallas se "coordinan"', () => {

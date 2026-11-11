@@ -40,6 +40,14 @@ test('enlaceDeServicio lleva a la página si está construida y, si no, a su tar
     const slug = p.url.split('/')[2];
     assert.equal(enlaceDeServicio(slug), p.construida ? p.url : `/servicios/#${slug}`, slug);
   }
+  // Ya están los 10 servicios construidos: uno se marca como no construido solo durante la prueba.
+  const registro = paginas.find((p) => p.url === '/servicios/desarrollo-de-software/');
+  registro.construida = false;
+  try {
+    assert.equal(enlaceDeServicio('desarrollo-de-software'), '/servicios/#desarrollo-de-software');
+  } finally {
+    registro.construida = true;
+  }
   assert.throws(() => enlaceDeServicio('inventado'), /no es un servicio/);
 });
 
@@ -76,13 +84,19 @@ test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y 
 });
 
 test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página o a su tarjeta del catálogo', () => {
-  // Un servicio sin página (desarrollo-de-software) va a su tarjeta; uno construido, a su página.
-  assert.deepEqual(
+  // Un servicio construido va a su página; uno sin página (se marca así solo durante la prueba), a su tarjeta.
+  const urlsDe = () =>
     partesDeSlugs(['renta-de-audio', 'desarrollo-de-software'])
       .filter((p) => 'nombre' in p)
-      .map((p) => p.url),
-    ['/servicios/renta-de-audio/', '/servicios/#desarrollo-de-software'],
-  );
+      .map((p) => p.url);
+  assert.deepEqual(urlsDe(), ['/servicios/renta-de-audio/', '/servicios/desarrollo-de-software/']);
+  const registro = paginas.find((p) => p.url === '/servicios/desarrollo-de-software/');
+  registro.construida = false;
+  try {
+    assert.deepEqual(urlsDe(), ['/servicios/renta-de-audio/', '/servicios/#desarrollo-de-software']);
+  } finally {
+    registro.construida = true;
+  }
   const partes = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos']);
   const texto = partes.map((p) => p.literal ?? p.nombre).join('');
   // El primer nombre ya lleva una "y": la coma evita leerlo como "audio y (sonido y circuito cerrado)".

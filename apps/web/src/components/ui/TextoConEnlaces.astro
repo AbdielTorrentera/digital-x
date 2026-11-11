@@ -1,9 +1,9 @@
 ---
-import type { TextoConEnlaces } from '../../content/servicios';
+import type { TextoConEnlaces } from '../../lib/texto';
 import { enlaceAPagina } from '../../lib/enlaces';
 import { enlaceDeServicio } from '../../lib/servicios';
 
-// Un texto corrido con enlaces: la nota bajo "Qué incluye", los párrafos y los puntos con título de las secciones. Un trozo
+// Un texto corrido con enlaces: la nota bajo "Qué incluye", los párrafos y los puntos con título de las secciones, y las respuestas de las preguntas frecuentes. Un trozo
 // de texto se escribe tal cual; un `{ slug, texto }` es un enlace a la página del servicio si está publicada o, si no, a
 // su tarjeta del catálogo (/servicios/#slug); un `{ url, texto }` es un enlace a otra página del registro (validada con
 // `enlaceAPagina`). Un texto sin enlaces puede ser un `string`.

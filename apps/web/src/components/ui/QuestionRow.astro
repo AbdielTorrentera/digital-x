@@ -1,9 +1,13 @@
 ---
 import Icon from '../Icon.astro';
+import TextoConEnlaces from './TextoConEnlaces.astro';
+import type { TextoConEnlaces as Texto } from '../../lib/texto';
+
+// La respuesta es texto o texto con enlaces (un enlace dentro de la respuesta lleva a su destino sin abrir ni cerrar la fila).
 interface Props {
   n: number;
   q: string;
-  a: string;
+  a: string | Texto;
 }
 const { n, q, a } = Astro.props;
 const id = `faq-${n}-${q.length}`;
@@ -16,7 +20,9 @@ const id = `faq-${n}-${q.length}`;
     <h3 class="qrow__q t-h6">{q}</h3>
     <div class="qrow__panel" id={id} data-acc-panel>
       <div>
-        <p class="t-body qrow__a">{a}</p>
+        <p class="t-body qrow__a">
+          <TextoConEnlaces texto={a} />
+        </p>
       </div>
     </div>
   </div>

@@ -1,3 +1,5 @@
+import { comoTexto, type TextoConEnlaces } from './texto.ts';
+
 /**
  * Datos estructurados (JSON-LD, reglas-seo sección 12).
  * Se escapan `<`, `>` y `&` para que ningún texto pueda cerrar el `<script>` ni inyectar HTML, aunque algún día
@@ -40,7 +42,8 @@ export const aboutPageJsonLd = ({ url, nombre, descripcion, idNegocio }: DatosAb
 
 export interface PreguntaFrecuente {
   pregunta: string;
-  respuesta: string;
+  /** Texto, o texto con enlaces (en los datos estructurados va solo el texto, tal como se lee en pantalla). */
+  respuesta: string | TextoConEnlaces;
 }
 
 /** FAQPage con las mismas preguntas y respuestas que se muestran en pantalla (reglas-seo sección 12). */
@@ -50,7 +53,7 @@ export const faqPageJsonLd = (preguntas: PreguntaFrecuente[]) => ({
   mainEntity: preguntas.map(({ pregunta, respuesta }) => ({
     '@type': 'Question',
     name: pregunta,
-    acceptedAnswer: { '@type': 'Answer', text: respuesta },
+    acceptedAnswer: { '@type': 'Answer', text: comoTexto(respuesta) },
   })),
 });
 

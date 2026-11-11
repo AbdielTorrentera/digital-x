@@ -83,7 +83,8 @@ export const mensajesWhatsApp = {
     'Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __',
   aplicacionesMoviles:
     'Hola, quiero cotizar una aplicación móvil. Para qué la necesito (registros, clientes, reservas, catálogo...): __ ¿Quiénes la usarían?: __ ¿Ya tienes alguna página, app o sistema?: __',
-  desarrolloDeSoftware: 'Hola, quiero cotizar un proyecto de software. Qué necesito resolver: __',
+  desarrolloDeSoftware:
+    'Hola, quiero cotizar un software a la medida. Qué proceso quiero resolver: __ ¿Cuántas personas lo usarían?: __ ¿Hoy lo llevo en papel, hojas de cálculo u otro sistema?: __',
   tiendaEnLinea:
     'Hola, quiero cotizar una tienda en línea. Qué vendo: __ Aprox. cuántos productos: __ ¿Ya tienes fotos y descripciones?: __ ¿Ya tienes dominio?: __',
 } as const;

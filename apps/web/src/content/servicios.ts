@@ -10,6 +10,9 @@
 import type { PreguntaFrecuente } from '../lib/jsonld.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
 import type { Categoria } from '../lib/paginas.ts';
+import { comoTexto, type TextoConEnlaces } from '../lib/texto.ts';
+
+export type { TextoConEnlaces };
 
 /** Los 10 servicios, en el orden del catálogo (el mismo de lib/paginas.ts). Una prueba revisa que coincidan. */
 export const slugs = [
@@ -33,7 +36,7 @@ export type EnlaceRelacionado = { texto: string } & ({ slug: Slug } | { titulo: 
 export type BloqueDeSeccion =
   | { parrafo: string | TextoConEnlaces }
   | { lista: string[] }
-  | { puntos: { titulo: string; texto: string | TextoConEnlaces }[] };
+  | { puntos: { titulo: string | TextoConEnlaces; texto: string | TextoConEnlaces }[] };
 
 export interface SeccionExtra {
   /** Id de la sección y de su enlace en la navegación interna. */
@@ -44,16 +47,6 @@ export interface SeccionExtra {
   bloques: BloqueDeSeccion[];
 }
 
-/**
- * Un párrafo con enlaces: trozos de texto, `{ slug, texto }` (la página de un servicio si está publicada, o su tarjeta) y
- * `{ url, texto }` (otra página del registro, como las condiciones de contratación).
- */
-export type TextoConEnlaces = (string | { slug: Slug; texto: string } | { url: string; texto: string })[];
-
-/** El texto plano de un texto con enlaces (sin los enlaces). */
-const comoTexto = (texto: string | TextoConEnlaces): string =>
-  typeof texto === 'string' ? texto : texto.map((trozo) => (typeof trozo === 'string' ? trozo : trozo.texto)).join('');
-
 /** El texto de los bloques de una sección, línea por línea (para revisar vocabulario y repeticiones en las pruebas). */
 export const textosDeBloques = (bloques: BloqueDeSeccion[]): string[] =>
   bloques.flatMap((bloque) =>
@@ -61,7 +54,7 @@ export const textosDeBloques = (bloques: BloqueDeSeccion[]): string[] =>
       ? [comoTexto(bloque.parrafo)]
       : 'lista' in bloque
         ? bloque.lista
-        : bloque.puntos.map((punto) => `${punto.titulo}: ${comoTexto(punto.texto)}`),
+        : bloque.puntos.map((punto) => `${comoTexto(punto.titulo)}: ${comoTexto(punto.texto)}`),
   );
 
 /** Lo que lleva la página de un servicio. Solo se publica con todo lo obligatorio (ver `faltantesDePagina`). */
@@ -1324,29 +1317,166 @@ export const servicios: Record<Slug, ServicioContenido> = {
   },
 
   'desarrollo-de-software': {
-    descripcion: 'Sistemas hechos para los procesos propios de tu negocio.',
-    title: 'Desarrollo de software para negocios en Puebla | Digital X',
-    meta: 'Desarrollo de software para los procesos propios de tu negocio en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.',
-    h1: 'Desarrollo de software para negocios en Puebla',
+    descripcion:
+      'Software a la medida para que los procesos de tu negocio funcionen, desde el levantamiento de requerimientos hasta la implementación.',
+    title: 'Desarrollo de software a la medida en Puebla | Digital X',
+    meta: 'Desarrollo de software a la medida para negocios en Puebla y Atlixco: sistemas para registros, clientes, reservas y catálogos. Cotiza por WhatsApp.',
+    h1: 'Desarrollo de software a la medida en Puebla',
     para: 'Negocios con procesos propios',
-    incluye: 'Sistemas',
+    incluye: 'Sistemas web',
     mensaje: mensajesWhatsApp.desarrolloDeSoftware,
+    serviceType: 'Desarrollo de software a la medida para negocios',
     pagina: {
+      ficha: [
+        { etiqueta: 'Tipo', valor: 'Sistemas web, desde el navegador' },
+        { etiqueta: 'Para', valor: 'Negocios con procesos propios' },
+        { etiqueta: 'Entrega', valor: 'Sistema implementado y equipo capacitado' },
+      ],
       descripcion: {
+        titulo: 'Software hecho para cómo trabaja tu negocio',
         parrafos: [
-          'Trabajamos por etapas: primero entendemos qué necesitas resolver, después planeamos y diseñamos, y desarrollamos por partes que recibes conforme avanzan.',
+          'En Digital X desarrollamos software a la medida para negocios en Puebla, Atlixco, Izúcar de Matamoros y alrededores: un sistema hecho para tu forma de trabajar, en lugar de adaptarte a un programa genérico.',
+          'Empezamos por entender el proceso que quieres resolver; después lo desarrollamos, lo implementamos y capacitamos a tu equipo. Cada proyecto se cotiza según lo que necesite hacer: cuéntanos qué proceso quieres mejorar y te respondemos con una propuesta.',
         ],
+      },
+      incluye: [
+        'Levantamiento de requerimientos: entender el proceso que quieres resolver',
+        'Desarrollo del sistema, de preferencia web, para usarlo desde el navegador',
+        'Implementación en tu negocio',
+        'Capacitación para tu equipo',
+      ],
+      incluyeNota: [
+        'El hosting o los servidores donde funciona el sistema van aparte, igual que las licencias o servicios de terceros que necesite. El mantenimiento se cotiza por separado, y no se incluyen cambios mayores una vez entregado el sistema.',
+      ],
+      secciones: [
+        {
+          id: 'que-es',
+          etiqueta: 'Qué es',
+          titulo: 'Qué es un software a la medida',
+          bloques: [
+            {
+              parrafo:
+                'Es un sistema que se construye para tu negocio. En lugar de usar un programa genérico que no hace exactamente lo que necesitas, desarrollamos una herramienta que se adapta a tus procesos: cómo llevas tus registros, atiendes a tus clientes o administras tu información.',
+            },
+          ],
+        },
+        {
+          id: 'que-puede-hacer',
+          etiqueta: 'Qué puede hacer',
+          titulo: 'Qué puede hacer',
+          bloques: [
+            {
+              lista: [
+                'Llevar registros ordenados de lo que hoy anotas en papel o en hojas de cálculo',
+                'Controlar a tus clientes y su seguimiento',
+                'Administrar reservas o citas',
+                'Mantener un catálogo de productos o servicios con un panel para administrarlo',
+                'Generar reportes sencillos con tu información',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'software-app-o-pagina-web',
+          etiqueta: 'Cuál te conviene',
+          titulo: '¿Software, app o página web?',
+          bloques: [
+            {
+              puntos: [
+                {
+                  titulo: [
+                    { slug: 'paginas-web', texto: 'Página web' },
+                    ' o ',
+                    { slug: 'tienda-en-linea', texto: 'tienda en línea' },
+                  ],
+                  texto: 'Presentan tu negocio o venden tus productos en internet.',
+                },
+                {
+                  titulo: [{ slug: 'aplicaciones-moviles', texto: 'Aplicación móvil' }],
+                  texto: 'Se instala en el celular de tus clientes o de tu equipo.',
+                },
+                {
+                  titulo: 'Software a la medida',
+                  texto:
+                    'Organiza lo que pasa dentro de tu negocio, como los registros, los clientes, las reservas o el catálogo.',
+                },
+              ],
+            },
+            { parrafo: '¿Dudas cuál te conviene? Cuéntanos tu caso y te orientamos.' },
+          ],
+        },
+        {
+          id: 'precio',
+          etiqueta: 'Precio',
+          titulo: 'De qué depende el precio',
+          bloques: [
+            {
+              lista: [
+                'Las funciones o módulos que necesites',
+                'Cuántas personas lo van a usar',
+                'Si quieres pasar la información que ya tienes en hojas de cálculo',
+                'La conexión con otros sistemas o con tu página web',
+                'El hosting y las licencias de terceros',
+                'El traslado, si la reunión es presencial',
+              ],
+            },
+            {
+              parrafo: [
+                'Cada etapa del sistema tiene su pago; los detalles están en las ',
+                { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+                '.',
+              ],
+            },
+          ],
+        },
+      ],
+      tambien: {
+        intro: '¿Quieres complementar tu software con otros servicios?',
+        items: [
+          { slug: 'aplicaciones-moviles', texto: 'Si necesitas llevar tu proceso al celular' },
+          { slug: 'paginas-web', texto: 'Una página web para dar a conocer tu negocio' },
+          { slug: 'tienda-en-linea', texto: 'Un catálogo con carrito y pagos en línea' },
+          { slug: 'video-con-drone', texto: 'Tomas aéreas de tus instalaciones para presentar tu negocio' },
+          { slug: 'video-para-eventos', texto: 'Un video institucional para presentar tu empresa' },
+          proyectos,
+          condiciones('Cómo se pagan las etapas de tu sistema'),
+        ],
+      },
+      cotizacion: {
+        etiqueta: 'Cotiza tu software',
+        texto:
+          'Cuéntanos qué proceso quieres resolver, cuántas personas lo usarían y si hoy lo llevas en papel, en hojas de cálculo o en otro sistema.',
+      },
+      cierre: {
+        titulo: 'Platícanos el proceso que quieres resolver',
+        texto: 'Escríbenos por WhatsApp o llámanos y cotizamos el software a la medida de tu negocio.',
       },
       faq: [
         {
-          pregunta: '¿Cómo se paga un proyecto de tecnología?',
+          pregunta: '¿Mi negocio necesita un software a la medida?',
           respuesta:
-            'Por etapas. La planeación y el diseño se pagan por adelantado, y el desarrollo se paga etapa por etapa. Recibes lo de cada etapa cuando queda liquidada. El detalle está en nuestras condiciones de contratación.',
+            'Si hoy llevas tus registros, clientes o reservas en papel, en hojas de cálculo o en mensajes, y eso te quita tiempo o genera errores, puede ayudarte. Cuéntanos tu caso y te decimos si te conviene o si basta con una página web o una aplicación.',
         },
         {
-          pregunta: '¿Pueden hacer un sistema para los procesos de mi negocio?',
+          pregunta: '¿Pueden pasar al sistema lo que ya tengo en hojas de cálculo?',
+          respuesta: 'Sí. Se cotiza como una función más del sistema.',
+        },
+        {
+          pregunta: '¿Quién es dueño del sistema y de mi información?',
+          respuesta: [
+            'Tu información siempre es tuya. El sistema se entrega en los términos de tu contrato, como explican nuestras ',
+            { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
+            '.',
+          ],
+        },
+        {
+          pregunta: '¿Cuánto tarda en estar listo el sistema?',
+          respuesta: 'Depende de las funciones y de qué tan claro esté el proceso; el plazo lo definimos al cotizar.',
+        },
+        {
+          pregunta: '¿Qué necesito para empezar mi sistema?',
           respuesta:
-            'Sí. Con desarrollo de software hacemos sistemas para los procesos propios de tu negocio. Cuéntanos qué quieres resolver y te proponemos cómo hacerlo.',
+            'Saber qué proceso quieres resolver y quién lo va a usar. Si aún no está claro, lo aterrizamos contigo en la primera sesión.',
         },
       ],
     },

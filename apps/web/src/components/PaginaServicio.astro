@@ -161,7 +161,10 @@ const datosEstructurados = serviceJsonLd({
                   <ul>
                     {bloque.puntos.map((punto) => (
                       <li>
-                        <strong>{punto.titulo}:</strong> <TextoConEnlaces texto={punto.texto} />
+                        <strong>
+                          <TextoConEnlaces texto={punto.titulo} />:
+                        </strong>{' '}
+                        <TextoConEnlaces texto={punto.texto} />
                       </li>
                     ))}
                   </ul>

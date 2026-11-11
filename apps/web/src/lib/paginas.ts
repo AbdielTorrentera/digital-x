@@ -100,7 +100,7 @@ export const paginas: Pagina[] = [
     url: '/servicios/desarrollo-de-software/',
     titulo: 'Desarrollo de software',
     estado: 'lanzamiento',
-    construida: false,
+    construida: true,
     categoria: 'tecnologia',
   },
 

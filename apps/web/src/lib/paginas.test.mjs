@@ -90,7 +90,7 @@ test('archivosDe da las rutas posibles del archivo de cada página', () => {
 
 const servicios = paginas.filter((p) => p.categoria);
 
-test('hay 10 servicios, todos en "lanzamiento", y solo los de audio y video, páginas web, tienda en línea y aplicaciones móviles están construidos', () => {
+test('hay 10 servicios, todos en "lanzamiento", y todos están construidos', () => {
   assert.equal(servicios.length, 10);
   for (const p of servicios) assert.equal(p.estado, 'lanzamiento', p.url);
   assert.deepEqual(
@@ -105,6 +105,7 @@ test('hay 10 servicios, todos en "lanzamiento", y solo los de audio y video, pá
       '/servicios/paginas-web/',
       '/servicios/tienda-en-linea/',
       '/servicios/aplicaciones-moviles/',
+      '/servicios/desarrollo-de-software/',
     ],
   );
 });

@@ -5,6 +5,7 @@ import {
   enlacesEmpresa,
   enlacesLegales,
   categoriasDeServicios,
+  construirEnlacesEmpresa,
   menu,
   paginas,
   urlsConstruidas,
@@ -50,13 +51,10 @@ test('el pie enlaza las 3 categorías, en orden, cada una a su destino: su pági
   }
 });
 
-test('el grupo "Digital X" del pie enlaza Proyectos y Nosotros, y los legales van aparte', () => {
+test('el pie se genera de las páginas construidas: hoy el grupo "Digital X" solo trae Nosotros y los legales van aparte', () => {
   assert.deepEqual(
     enlacesEmpresa.map((p) => [p.titulo, p.url]),
-    [
-      ['Proyectos', '/proyectos/'],
-      ['Nosotros', '/nosotros/'],
-    ],
+    [['Nosotros', '/nosotros/']],
   );
   assert.deepEqual(
     enlacesLegales.map((p) => [p.titulo, p.url]),
@@ -65,9 +63,30 @@ test('el grupo "Digital X" del pie enlaza Proyectos y Nosotros, y los legales va
       ['Política de privacidad', '/politica-de-privacidad/'],
     ],
   );
-  // Nunca el Blog mientras esté pendiente, y todo lo que el pie enlaza está en lanzamiento.
-  for (const { url } of [...enlacesEmpresa, ...enlacesLegales])
-    assert.ok(urlsPlaneadas.includes(url), `${url} no está en lanzamiento`);
+  // Nunca una página sin construir (ni Proyectos ni Blog mientras no existan): todo lo que el pie enlaza está construido.
+  for (const { url } of [...enlacesEmpresa, ...enlacesLegales, ...categoriasDeServicios]) {
+    const pagina = paginas.find((p) => p.url === url);
+    assert.ok(pagina && visible(pagina), `${url} está en el pie sin estar construida`);
+  }
+  assert.ok(!enlacesEmpresa.some((p) => p.url === '/proyectos/' || p.url === '/blog/'));
+});
+
+test('Proyectos y Blog aparecen en el pie solos cuando se construyen', () => {
+  const proyectos = paginas.find((p) => p.url === '/proyectos/');
+  assert.ok(proyectos && !proyectos.construida);
+  proyectos.construida = true;
+  try {
+    assert.deepEqual(
+      construirEnlacesEmpresa().map((p) => p.url),
+      ['/proyectos/', '/nosotros/'],
+    );
+  } finally {
+    proyectos.construida = false;
+  }
+  assert.deepEqual(
+    construirEnlacesEmpresa().map((p) => p.url),
+    ['/nosotros/'],
+  );
 });
 
 test('el menú es Inicio · Audio · Video · Tecnología · Nosotros, generado de los datos, sin "Servicios" ni páginas sin construir', () => {

@@ -224,18 +224,19 @@ export const construirMenu = (): ItemMenu[] => {
 };
 export const menu: ItemMenu[] = construirMenu();
 
-// El pie enlaza páginas planeadas aunque aún no estén construidas (el build de producción falla mientras quede alguna).
-// El Blog solo entra cuando esté publicado.
+// El pie, como el menú, se genera desde el registro y **solo muestra páginas construidas**: Proyectos y Blog aparecen
+// solos cuando existan. Nunca enlaza una página sin construir.
 const paginasDelPie = (urls: string[]) =>
-  urls
-    .map((url) => paginas.find((p) => p.url === url && (url === '/blog/' ? visible(p) : p.estado === 'lanzamiento')))
-    .filter(Boolean) as Pagina[];
+  urls.map((url) => paginas.find((p) => p.url === url && visible(p))).filter(Boolean) as Pagina[];
 
-/** Grupo "Digital X" del pie: Proyectos y Nosotros (y Blog cuando esté publicado). */
-export const enlacesEmpresa = paginasDelPie(['/proyectos/', '/blog/', '/nosotros/']);
+/** Grupo "Digital X" del pie: Proyectos, Blog y Nosotros, los que estén construidos. */
+export const construirEnlacesEmpresa = (): Pagina[] => paginasDelPie(['/proyectos/', '/blog/', '/nosotros/']);
+export const enlacesEmpresa = construirEnlacesEmpresa();
 
 /** Línea inferior del pie, junto al ©: Condiciones de contratación y Política de privacidad. */
-export const enlacesLegales = paginasDelPie(['/condiciones-de-contratacion/', '/politica-de-privacidad/']);
+export const construirEnlacesLegales = (): Pagina[] =>
+  paginasDelPie(['/condiciones-de-contratacion/', '/politica-de-privacidad/']);
+export const enlacesLegales = construirEnlacesLegales();
 
 /** Destino de "Ver servicios" (portada y 404): la sección de servicios del Inicio. */
 export const urlVerServicios = '/#servicios';

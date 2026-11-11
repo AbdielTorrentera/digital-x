@@ -179,7 +179,7 @@ export const urlsPlaneadas = paginas.filter((p) => p.estado === 'lanzamiento').m
 export const urlsSinConstruir = paginas.filter((p) => p.estado === 'lanzamiento' && !p.construida).map((p) => p.url);
 
 export interface CategoriaDelPie {
-  /** Texto del enlace: "Servicios de audio", "Servicios de video" o "Servicios de tecnología". */
+  /** Texto del enlace: "Audio", "Video" o "Tecnología" (la columna ya se llama "Servicios"). */
   titulo: string;
   /** A dónde lleva (`destinoDeCategoria`): la página de la categoría o su único servicio construido. */
   url: string;
@@ -189,7 +189,7 @@ export interface CategoriaDelPie {
 export const construirCategoriasDelPie = (): CategoriaDelPie[] =>
   categorias.flatMap((c) => {
     const url = destinoDeCategoria(c.id);
-    return url ? [{ titulo: c.titulo, url }] : [];
+    return url ? [{ titulo: c.etiqueta, url }] : [];
   });
 export const categoriasDeServicios: CategoriaDelPie[] = construirCategoriasDelPie();
 

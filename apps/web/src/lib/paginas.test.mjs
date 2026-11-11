@@ -38,11 +38,11 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
   assert.ok(urlsPublicadas.every((url) => urlsConstruidas.includes(url)));
 });
 
-test('el pie enlaza las 3 categorías, en orden, cada una a su destino: su página o su único servicio', () => {
+test('el pie enlaza las 3 categorías como "Audio", "Video" y "Tecnología" (sin "Servicios de"), cada una a su destino', () => {
   assert.deepEqual(categoriasDeServicios, [
-    { titulo: 'Servicios de audio', url: '/servicios/renta-de-audio/' },
-    { titulo: 'Servicios de video', url: '/video/' },
-    { titulo: 'Servicios de tecnología', url: '/tecnologia/' },
+    { titulo: 'Audio', url: '/servicios/renta-de-audio/' },
+    { titulo: 'Video', url: '/video/' },
+    { titulo: 'Tecnología', url: '/tecnologia/' },
   ]);
   // Todo lo que el pie enlaza está en lanzamiento y construido: ya no hay catálogo ni anclas a /servicios/.
   for (const { url } of categoriasDeServicios) {

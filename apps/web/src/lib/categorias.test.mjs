@@ -59,7 +59,7 @@ test('la regla sigue a los servicios: con 0, 1 y 2 construidos cambia el destino
     assert.equal(destinoDeCategoria('video'), null);
     assert.ok(!paginasDeCategoria().some((p) => p.paginaDe === 'video'));
     assert.ok(!construirMenu().some((i) => i.titulo === 'Video'), 'sin servicios no hay entrada en el menú');
-    assert.ok(!construirCategoriasDelPie().some((c) => c.titulo === 'Servicios de video'));
+    assert.ok(!construirCategoriasDelPie().some((c) => c.titulo === 'Video'));
     assert.ok(!categoriasConDestino().some((c) => c.categoria.id === 'video'));
   });
   conConstruidos('video', 1, () => {

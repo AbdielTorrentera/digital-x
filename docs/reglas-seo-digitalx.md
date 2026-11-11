@@ -33,7 +33,9 @@ Versión: borrador de trabajo · 2026-10-23
 | --- | --- | --- |
 | Inicio | `Audio, video y tecnología en Puebla y Atlixco \| Digital X` (57 caracteres) | `Audio, video y tecnología para tus eventos y tu negocio en Puebla` |
 | Nosotros | `Nosotros: audio, video y tecnología en Puebla \| Digital X` (57 caracteres) | `Quiénes somos: Digital X, audio, video y tecnología en Puebla` |
-| Servicios | `Servicios de audio, video y tecnología en Puebla \| Digital X` (60 caracteres) | `Servicios de audio, video y tecnología en Puebla` |
+| Video (categoría, `/video/`) | `Servicios de video en Puebla y Atlixco \| Digital X` (50 caracteres) | `Servicios de video para eventos y negocios en Puebla` |
+| Tecnología (categoría, `/tecnologia/`) | `Servicios de tecnología en Puebla y Atlixco \| Digital X` (55 caracteres) | `Servicios de tecnología para negocios en Puebla` |
+| Audio (categoría, `/audio/`: solo si Audio llega a dos servicios construidos) | `Servicios de audio en Puebla y Atlixco \| Digital X` (50 caracteres) | `Servicios de audio para eventos en Puebla` |
 | Renta de audio y sonido | `Renta de audio para eventos en Puebla y Atlixco \| Digital X` (59 caracteres) | `Renta de audio y sonido para eventos en Puebla y Atlixco` |
 | Circuito cerrado para eventos | `Circuito cerrado para eventos en Puebla \| Digital X` (51 caracteres) | `Circuito cerrado para eventos en Puebla` |
 | Producción de videos para eventos | `Video para eventos y conferencias en Puebla \| Digital X` (55 caracteres) | `Video para eventos y conferencias en Puebla` |
@@ -51,7 +53,11 @@ Meta del Inicio (137 caracteres): `Renta de audio, circuito cerrado para eventos
 
 Meta de Nosotros (152 caracteres): `Conoce Digital X: audio, video y tecnología para eventos y negocios en Puebla, Atlixco e Izúcar de Matamoros. Un solo proveedor, cotización a la medida.`
 
-Meta de Servicios (143 caracteres): `Servicios para tu evento o tu negocio: audio, video y tecnología en Puebla, Atlixco e Izúcar de Matamoros. Elige el tuyo y cotiza por WhatsApp.`
+Meta de Video, categoría (138 caracteres): `Circuito cerrado para eventos, producción de videos, streaming, video con drone y recorridos 360 en Puebla y Atlixco. Cotiza por WhatsApp.`
+
+Meta de Tecnología, categoría (131 caracteres): `Páginas web, tienda en línea, aplicaciones móviles y desarrollo de software para negocios en Puebla y Atlixco. Cotiza por WhatsApp.`
+
+Meta de Audio, categoría (128 caracteres; solo si se genera): `Renta de audio y sonido, y sonorización, para eventos en Puebla y Atlixco, con personal técnico capacitado. Cotiza por WhatsApp.`
 
 Meta de Renta de audio y sonido (130 caracteres): `Renta de audio y sonido, y sonorización, con técnico durante todo tu evento en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.`
 
@@ -77,9 +83,11 @@ Meta de Condiciones de contratación (139 caracteres): `Cómo contratar a Digita
 
 Meta de Política de privacidad (132 caracteres): `Qué datos personales recibe Digital X cuando nos contactas por WhatsApp o teléfono, para qué los usamos y cómo ejercer tus derechos.`
 
-### Metadatos de los servicios
+### Metadatos de las categorías y los servicios
 
-- Los 10 servicios tienen su página en `/servicios/{slug}/`. Sus **titles** y **descripciones cortas** (las de la tarjeta del catálogo y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
+- **No hay página `/servicios/`.** Las categorías con dos o más servicios construidos tienen su página (`/video/`, `/tecnologia/`, y `/audio/` cuando corresponda) con el patrón `Servicios de {área} en Puebla y Atlixco | Digital X`; los textos viven en `apps/web/src/content/categorias.ts`. Sus metas, H1 e introducciones están aprobados por el dueño, y no repiten oraciones de las páginas de servicio.
+
+- Los 10 servicios tienen su página en `/servicios/{slug}/`. Sus **titles** y **descripciones cortas** (las de las tarjetas y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
 - La **meta** de cada servicio se redacta aparte de su descripción: servicio + zona (Puebla, Atlixco o alrededores) + "Cotiza por WhatsApp", sin datos nuevos y de 155 caracteres como máximo. Las metas y los H1 de arriba están aprobados por el dueño.
 - En renta de audio se usan juntas las palabras "audio" y "sonido" (incluye sonorización), también en el H1.
 - Falta definir por servicio, al aprobar cada página: palabra clave principal, secciones, FAQ propias y enlaces internos.
@@ -116,8 +124,8 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 
 ## 4. Enlazado interno y pie de página
 
-- Cada **página de servicio** enlaza a: `/servicios/` (el catálogo, donde está su categoría), `/proyectos/` y un servicio complementario. Si el complementario aún no está publicado, el enlace va a su tarjeta del catálogo (`/servicios/#slug`).
-- El **catálogo** (`/servicios/`) enlaza a todas las páginas de servicio publicadas; las categorías (Audio, Video y Tecnología) son secciones suyas, no páginas.
+- Cada **página de servicio** enlaza a: su categoría (en las migas: Inicio › {Categoría} › {Servicio}, o Inicio › {Servicio} si la categoría no tiene página), `/proyectos/` y un servicio complementario. Un servicio que aún no está publicado **no se enlaza**: su nombre sale como texto y se omite de "También te puede servir".
+- Las **páginas de categoría** (`/video/`, `/tecnologia/`; `/audio/` cuando Audio tenga dos servicios construidos) enlazan a todas las páginas de servicio publicadas de su categoría. **No existe `/servicios/`**: ningún enlace del sitio apunta a esa ruta ni a sus anclas (`pnpm check:enlaces` lo verifica). Con un solo servicio construido, la categoría no tiene página y el menú, el Inicio y el pie enlazan directo a ese servicio.
 - Textos de enlace **descriptivos**. PROHIBIDO: "ver más", "clic aquí", "leer más", "contacto" como único texto de un enlace de servicio.
 - Enlaces cruzados obligatorios: renta de audio ↔ circuito cerrado, producción de videos y transmisión en vivo ("¿quieres también proyectar, grabar o transmitir tu evento?").
 - **Pie de página geográfico:** un texto fijo, igual en todo el sitio, con las zonas de los dos grupos. Ejemplo:
@@ -125,7 +133,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
-- **Enlaces del pie** (todos desde `paginas.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología, que llevan a las secciones `/servicios/#audio`, `#video` y `#tecnologia`), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil), todos aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
+- **Enlaces del pie** (todos desde `paginas.ts` y `content/categorias.ts`): las 3 categorías de servicios (Servicios de audio, Servicios de video y Servicios de tecnología), cada una a su destino (su página de categoría o su único servicio construido), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil). Los del grupo "Digital X" y los legales, aunque aún no estén construidos (el build de producción falla mientras no existan). Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
 
@@ -220,7 +228,7 @@ Si falta un campo, `[PENDIENTE: ...]`. Casos de software: anónimos si no hay pe
 - **`robots.txt`**: no bloquear nada importante.
 - **`noindex`:** páginas de agradecimiento, resultados de búsqueda interna y cualquier entorno de pruebas. En Vercel, toda versión que no sea producción (`VERCEL_ENV` distinto de `production`) lleva `noindex` y `robots.txt` bloqueado. El Studio (`admin.digitalx.mx`) lleva `noindex` siempre.
 - ⚠ **Antes de lanzar:** quitar el `noindex` y el bloqueo de robots del entorno de pruebas, y verificarlo.
-- **404** con `noindex`, el texto "Al parecer lo que estás buscando se ha movido o no existe." y dos botones: "Ver servicios" (a `/#servicios` hasta que exista `/servicios/`) y "Regresar al inicio".
+- **404** con `noindex`, el texto "Al parecer lo que estás buscando se ha movido o no existe." y dos botones: "Ver servicios" (a `/#servicios`, la sección de servicios del Inicio) y "Regresar al inicio".
 - **Open Graph** y Twitter Card básicos en cada página (título, descripción, imagen).
 - **Un solo sistema de SEO** (un solo plugin o módulo; no duplicar etiquetas).
 - Las redirecciones 301 siguen la sección 6 de `estructura-sitio-digitalx.md`.
@@ -261,7 +269,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 | Desarrollo de software | `Hola, quiero cotizar un software a la medida. Qué proceso quiero resolver: __ ¿Cuántas personas lo usarían?: __ ¿Hoy lo llevo en papel, hojas de cálculo u otro sistema?: __` |
 | Tienda en línea | `Hola, quiero cotizar una tienda en línea. Qué vendo: __ Aprox. cuántos productos: __ ¿Ya tienes fotos y descripciones?: __ ¿Ya tienes dominio?: __` |
 
-- **Catálogo:** `/servicios/` usa el mensaje general; cada página de servicio usa el suyo.
+- **Categorías:** las páginas de categoría usan el mensaje general; cada página de servicio usa el suyo.
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):
   - Enlace `tel:+522441244913`, solo ícono, `aria-label` `Llamar a Digital X`.
   - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de al menos 56 px, fondo negro (`--dx-negro`) con ícono blanco, para que WhatsApp (verde) siga siendo la acción principal.
@@ -275,10 +283,10 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 
 - **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`). `foundingDate` = `2018` (el año en que nació la idea).
 - **Nosotros:** un nodo `AboutPage` cuyo `about` y `mainEntity` apuntan por `@id` a `https://digitalx.mx/#negocio`: no se duplica el `ProfessionalService`. Más el `FAQPage` de sus preguntas, que salen del mismo arreglo que se muestra. Sin `Person` ni datos del dueño.
-- **Catálogo (`/servicios/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de los servicios **publicados**; mientras no haya ninguno, la página no lleva `ItemList` (uno vacío no sirve). Más el `BreadcrumbList` (Inicio › Servicios). No lleva `FAQPage`: su guía "¿Qué servicios necesito para mi evento?" son casos, no preguntas.
+- **Páginas de categoría (`/video/`, `/tecnologia/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de sus servicios **publicados**, más el `BreadcrumbList` (Inicio › Categoría) y, cuando haya preguntas, el `FAQPage` (hoy vacío: no se genera). Desaparece el `ItemList` de `/servicios/` con la página; ninguna otra página lleva `ItemList`.
 - **Cada página de servicio:** nodo `Service` (con `@id` `{url}#servicio`) con `name`, `serviceType` (la categoría), `description`, `url`, `provider` (referencia al negocio por `@id`) y `areaServed`.
 - **`FAQPage`** solo en páginas que muestran las preguntas frecuentes en pantalla.
-- **`BreadcrumbList`** en el catálogo y en las páginas de servicio (las mismas migas que se ven).
+- **`BreadcrumbList`** en las páginas de categoría y en las de servicio (las mismas migas que se ven).
 - **`BlogPosting`** en cada artículo del blog, con `headline`, `datePublished`, `dateModified`, `author` e `image`, todos coincidiendo con lo visible.
 - **PROHIBIDO:**
   - Publicar `address`/`streetAddress` o **coordenadas (`geo`)**. El negocio opera sin dirección pública; las coordenadas revelarían un domicilio.

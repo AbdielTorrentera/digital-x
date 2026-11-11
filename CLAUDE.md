@@ -60,7 +60,7 @@ Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstr
 - `brand/` es la fuente única de logos e íconos; lo copiado en `apps/web` se actualiza desde ahí, nunca al revés.
 - Mux en plan gratuito: se acepta su marca en el reproductor; no proponer quitarla.
 
-**Qué va en Sanity:** proyectos, artículos del blog, preguntas frecuentes, testimonios (solo con permiso), servicios, datos de contacto y SEO de proyectos y artículos. **Qué va en código:** diseño, layout, navegación, páginas legales y SEO de las páginas fijas.
+**Qué va en Sanity:** proyectos, artículos del blog, preguntas frecuentes, testimonios (solo con permiso), servicios, categorías de servicios (Audio, Video y Tecnología, con su SEO, preguntas y clientes con permiso), datos de contacto y SEO de proyectos y artículos. **Qué va en código:** diseño, layout, navegación, páginas legales y SEO de las páginas fijas.
 
 ## Comandos
 

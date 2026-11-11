@@ -129,7 +129,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 | | Primario | Secundario | Enlace de texto |
 | --- | --- | --- | --- |
 | Sobre fondo claro | Negro, texto blanco | Contorno negro, texto negro | Negro, subrayado |
-| Sobre fondo negro | Amarillo, texto negro; *hover* amarillo dorado | Contorno blanco, texto blanco | Blanco, subrayado; *hover* amarillo |
+| Sobre fondo negro | Amarillo, texto negro; *hover* amarillo dorado | Contorno blanco, texto blanco, fondo transparente (variante `contorno`); *hover* y foco: relleno blanco translúcido | Blanco, subrayado; *hover* amarillo |
 
 - **Área táctil de al menos 48 × 48 px** (más estricta que el mínimo de WCAG, por la regla de SEO §10). Separación mínima entre dos objetivos táctiles: 8 px.
 - **El botón es el de la plantilla Marby, tal cual:** 28 px de alto, etiqueta de 12 px en mayúsculas y flecha que gira 45° al pasar el cursor. Su zona de toque se agranda a 48 px de forma invisible (`::after`), sin cambiar el tamaño que se ve. Primario: negro sobre fondo claro y amarillo sobre negro. Secundario: gris, sin contorno.
@@ -138,13 +138,20 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 - Botones solo con ícono: `aria-label` obligatorio.
 - Estados: normal, *hover* (la flecha gira) y foco visible.
 
+### Cierre de contacto
+
+- Bloque de cierre de la página (Nosotros, las categorías y las 10 páginas de servicio): foto oscura con velo (`--dx-capa-oscura`) y **una sola columna centrada**: título, texto y, debajo, los botones. **Sin caja con borde** ni panel de vidrio.
+- **Dos botones lado a lado y centrados**, con jerarquía clara: "Cotizar por WhatsApp" es el principal (**amarillo, el único con relleno**) y "Llamar" es el secundario, **de contorno blanco** con texto blanco y fondo transparente (variante `contorno` de `Btn`); al pasar el cursor o con foco se rellena de blanco translúcido. Mismo alto (28 px, 48 px de área táctil) y misma tipografía que el principal, para que se vean como pareja. En pantallas angostas pueden apilarse si no caben.
+- **No se muestra el número de teléfono**: el botón "Llamar" lleva `aria-label` con el número ("Llamar a Digital X: +52 …") y el teléfono sigue en el pie.
+- Ancho de texto limitado a unos 60 caracteres, para que no se estire en pantallas grandes.
+
 ### Tarjetas
 
 - Relleno: `--esp-4` en móvil, `--esp-5` en escritorio. Separación entre tarjetas siempre mayor que su relleno.
 - En móvil, una columna; en tableta, dos; en escritorio, tres o cuatro según el contenido.
 - Si la tarjeta entera es clicable, el enlace es la tarjeta (con `aria-label`) o va en el título y se extiende a toda la tarjeta; no hay enlaces anidados.
 - No todas las tarjetas tienen el mismo peso: si una es la recomendada o la principal, se distingue.
-- **Tarjetas apiladas (servicios del Inicio).** Son la sección Services de la plantilla Marby, tal cual: tres tarjetas del mismo alto; cada una se fija debajo del header (`position: sticky`) y la siguiente se desliza encima. Solo CSS. Cada tarjeta entera es un solo enlace (a la página de su categoría) y el botón que lleva es decorativo.
+- **Tarjetas apiladas (servicios del Inicio).** Son la sección Services de la plantilla Marby, tal cual: tres tarjetas del mismo alto; cada una se fija debajo del header (`position: sticky`) y la siguiente se desliza encima. Solo CSS. Cada tarjeta entera es un solo enlace (a la página de su categoría) y el botón que lleva es decorativo. El mismo componente (`sections/Servicios.astro`, configurable) se reutiliza en las páginas de categoría, con un bloque por servicio y, en escritorio, la foto alternando de lado (izquierda, derecha, izquierda…); en móvil se comporta igual que en el Inicio.
   - Con `prefers-reduced-motion: reduce` las tarjetas se muestran una debajo de otra, sin que se fijen ni se encimen.
   - Excepción a las medidas de esta sección: las tarjetas conservan las del original (alto fijo de 500 px y relleno de 20 px en escritorio). En móvil y tableta (menos de 810 px) el alto es el del contenido y la foto se adapta al alto de la pantalla (`clamp(120px, 24dvh, 260px)`): la tarjeta pegada, con su botón completo, debe caber entera en la pantalla (se prueba a 360 × 640, 375 × 667, 390 × 844 y 768 × 1024). Si no cabe, se reduce primero la foto y después el relleno; nunca se quita el efecto de apilado.
   - Para que la tarjeta se distinga del fondo blanco lleva un borde de 1 px con `--dx-borde-tarjeta` (negro al 45 %, 3.45:1 sobre blanco; WCAG 1.4.11 pide 3:1). El color de fondo de la tarjeta no cambia.
@@ -177,13 +184,13 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 
 ## 7. Navegación
 
-- **Menú de la plantilla Marby, tal cual, en todos los tamaños.** Barra fija y translúcida (blanco al 85 % con `backdrop-filter: blur(12px)` y una línea inferior de 1 px; sin soporte de `backdrop-filter`, blanco al 95 %) con el botón (chip negro de 32 × 28 px, solo ícono de tres líneas, `aria-label` "Abrir menú") y el logo de Digital X donde Marby pone su texto. El logo y el botón son siempre negros, con contraste suficiente sobre la barra en cualquier sección: el peor caso, con una sección negra detrás, da una barra de #D9D9D9 y 14.8:1 con el logo. No cambian de color según la sección (el cambio a blanco de la plantilla se quitó junto con su script). El chip abre un panel claro a pantalla completa: botón X (`aria-label` "Cerrar menú") arriba, enlaces grandes y centrados con entrada escalonada, las redes debajo (solo si existen) y el botón "Cotizar por WhatsApp". Sin desplegables.
-- Solo el botón abre el menú (no toda la barra). Se mantienen foco atrapado en el panel, Escape para cerrar, bloqueo del scroll y regreso del foco al botón de abrir.
-- La llamada directa no está en el header ni en el menú: es un botón flotante solo ícono, encima del de WhatsApp, en celular y tableta (SEO §11).
-- El alto de la barra es el del logo más 20 px de relleno arriba y abajo (88 px a 360 px; el original mide 68 px con su texto). El panel del menú abierto no es hijo de la barra y se ve igual.
-- La página actual se marca en el menú con algo más que el color (subrayado o indicador) y `aria-current="page"`.
-- Migas de pan en subpáginas (ver estructura §4).
-- `[PENDIENTE: color del header (blanco o negro). Hoy es blanco translúcido con logo negro; confirmar al verlo con la portada oscura]`.
+- **Encabezado: barra NEGRA** (`--dx-negro`) en todas las páginas y tamaños, fija (`position: sticky`), **sin translucidez ni desenfoque**, con el **logo blanco** (`Logo` en `currentColor`, idéntico a `brand/svg/digitalx-logo-blanco.svg`; identidad §1). Texto blanco (21:1 sobre negro) y foco amarillo (`--foco-color` sobre fondos oscuros, ≥ 3:1).
+- **Escritorio (desde 1024 px):** el **menú va a la vista en la barra**, a la derecha del logo: Inicio · Audio · Video · Tecnología · Nosotros, y Proyectos y Blog cuando estén construidas (generado desde `lib/paginas.ts`; estructura §4). Texto `t-body-sm` en blanco, con zona de toque de 48 px de alto. La página actual se marca con **subrayado de 2 px** y `aria-current="page"`; en un servicio, la entrada de su categoría lleva subrayado y `aria-current="true"`. Se muestra completo desde 1024 px (el corte de "Escritorio", §1) porque a 1024 px sobran unos 380 px entre el logo y el menú, y sigue cabiendo con Blog. Sin JavaScript, el menú de escritorio funciona (son enlaces).
+- **Móvil y tableta (menos de 1024 px): menú hamburguesa.** La misma barra negra con el botón de la plantilla Marby, que abre el panel a pantalla completa. **El botón es un chip blanco de 32 × 28 px con el ícono negro de tres líneas** (contraste 21:1 sobre la barra negra; `aria-label`, `aria-expanded` y `aria-controls`; zona de toque de 48 × 48 px). El panel abierto es claro, con las mismas entradas que la barra, la X para cerrar y "Cotizar por WhatsApp"; la entrada actual va subrayada.
+- Solo el botón abre el panel (no toda la barra). Se mantienen foco atrapado en el panel, Escape para cerrar, bloqueo del scroll y regreso del foco al botón de abrir. Sin JavaScript el botón no se muestra y la navegación queda en el pie.
+- La llamada directa no está en el header ni en el menú: es un botón flotante solo ícono, encima del de WhatsApp, en celular y tableta (SEO §11). Los botones flotantes no cambian.
+- El alto de la barra es el del logo más 20 px de relleno arriba y abajo (unos 81 px).
+- Migas de pan en subpáginas (ver estructura §4): Inicio › {Categoría} › {Servicio}.
 
 ---
 
@@ -228,10 +235,8 @@ Objetivo: **WCAG 2.2 nivel AA**.
 
 ## 11. Pendientes
 
-- [ ] Color del header (blanco o negro).
 - [ ] Confirmar el juego de íconos (se mantiene el de Marby mientras tanto).
 - [ ] Colores de estado para formularios (ver marca §2), si se publica el formulario.
-- [ ] Estilo del menú de escritorio: acercarlo al de Marby cuando haya páginas de servicio en el desplegable.
 ---
 
 ## 12. Criterios de aceptación

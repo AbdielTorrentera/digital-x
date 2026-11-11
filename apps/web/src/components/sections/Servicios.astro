@@ -2,35 +2,63 @@
 import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
 import { enlaceAPagina } from '../../lib/enlaces';
-import { partesDeServicios } from '../../lib/servicios';
-import type { Categoria } from '../../content/inicio';
+import type { Parte } from '../../lib/servicios';
+import type { Foto as FotoDeContenido } from '../../content/inicio';
 
-// Servicios por categoría: la sección Services de la plantilla Marby, tal cual. Tres tarjetas del mismo alto; cada una
-// se fija arriba (position: sticky) y la siguiente se desliza encima. La tarjeta ENTERA lleva a su sección del catálogo
-// (/servicios/#audio): el título es el enlace y se extiende a toda la tarjeta (::after), para no anidar enlaces. Los
-// nombres de servicio van por encima y son enlaces solo si su página está construida; si no, son texto. El botón es un
-// <span> decorativo. Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas
-// (aria-label, movimiento reducido). Medidas y animaciones, las del original.
-interface Props {
-  etiqueta: string;
+// Tarjetas de servicio: la sección Services de la plantilla Marby. Tarjetas del mismo alto; cada una se fija arriba
+// (position: sticky) y la siguiente se desliza encima. La tarjeta ENTERA lleva a su destino: el título es el enlace y se
+// extiende a toda la tarjeta (::after), para no anidar enlaces. Los nombres que van dentro del párrafo van por encima y
+// son enlaces solo si traen URL. El botón es un <span> decorativo. Solo cambian los textos, los colores (tokens --dx-*),
+// las tipografías y lo que exigen las reglas (aria-label, movimiento reducido). Medidas y animaciones, las del original.
+// Es configurable y no sabe de qué son las tarjetas: el Inicio la usa con las categorías y las páginas de categoría
+// (/video/, /tecnologia/) con los servicios de la categoría, con la foto alternando de lado en escritorio (`alternar`).
+export interface Tarjeta {
+  /** Número de la tarjeta ("/1"). */
+  contador: string;
   titulo: string;
-  etiquetaTarjeta: string;
-  items: Categoria[];
+  /** A dónde lleva la tarjeta entera. */
+  href: string;
+  /** Texto accesible del enlace. */
+  ariaLabel: string;
+  foto: FotoDeContenido;
+  /** El párrafo, en trozos: texto suelto y nombres (con enlace si traen URL). */
+  parrafo: Parte[];
+  /** Texto del botón decorativo ("Ver servicio", "Ver servicios"). */
+  boton: string;
 }
-const { etiqueta, titulo, etiquetaTarjeta, items } = Astro.props;
-const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);
+interface Props {
+  /** Encabezado de la sección; sin él, la página ya tiene su H1 y la sección no dibuja encabezado. */
+  etiqueta?: string;
+  titulo?: string;
+  /** Pequeña etiqueta de cada tarjeta. */
+  etiquetaTarjeta: string;
+  items: Tarjeta[];
+  /** En escritorio, la foto va a un lado y al otro alternando (izquierda, derecha, izquierda…). */
+  alternar?: boolean;
+  /** Nivel del título de cada tarjeta: h3 bajo el encabezado de la sección; h2 cuando no hay encabezado. */
+  nivelTarjeta?: 'h2' | 'h3';
+  id?: string;
+}
+const { etiqueta, titulo, etiquetaTarjeta, items, alternar = false, nivelTarjeta = 'h3', id } = Astro.props;
+const TituloTarjeta = nivelTarjeta;
 ---
 
-<section class="services" id="servicios">
+<section class="services" id={id} data-alternar={alternar ? '' : undefined}>
   <div class="container services__inner">
-    <div class="services__head">
-      <p class="t-caption2" data-appear>
-        {etiqueta}
-      </p>
-      <h2 class="t-h2" data-appear style="--appear-delay:0.1s">
-        {titulo}
-      </h2>
-    </div>
+    {(etiqueta || titulo) && (
+      <div class="services__head">
+        {etiqueta && (
+          <p class="t-caption2" data-appear>
+            {etiqueta}
+          </p>
+        )}
+        {titulo && (
+          <h2 class="t-h2" data-appear style="--appear-delay:0.1s">
+            {titulo}
+          </h2>
+        )}
+      </div>
+    )}
     <div class="services__stack">
       {items.map((s, i) => (
         <article
@@ -45,33 +73,26 @@ const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1
               <span class="svc__count">{s.contador}</span>
             </div>
             <p class="t-body-sm">{etiquetaTarjeta}</p>
-            <h3 class="t-h3">
-              <a
-                class="svc__enlace"
-                href={enlaceAPagina(s.url)}
-                aria-label={`Ver servicios de ${s.titulo.toLowerCase()}`}
-              >
+            <TituloTarjeta class="t-h3">
+              <a class="svc__enlace" href={enlaceAPagina(s.href)} aria-label={s.ariaLabel}>
                 {s.titulo}
               </a>
-            </h3>
+            </TituloTarjeta>
             <div class="svc__text">
               <p class="t-body">
-                {s.para}{' '}
-                {partesDeServicios(s.categoria).map((parte, j) => {
+                {s.parrafo.map((parte) => {
                   if ('literal' in parte) return parte.literal;
-                  const nombre = j === 0 ? capital(parte.nombre) : parte.nombre;
                   return parte.url ? (
                     <a class="svc__nombre" href={enlaceAPagina(parte.url)}>
-                      {nombre}
+                      {parte.nombre}
                     </a>
                   ) : (
-                    nombre
+                    parte.nombre
                   );
                 })}
-                .
               </p>
             </div>
-            <Btn label="Ver servicios" variant="secondary" />
+            <Btn label={s.boton} variant="secondary" />
           </div>
         </article>
       ))}
@@ -83,7 +104,7 @@ const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1
     background: var(--dx-blanco);
     padding-block: 80px;
     /* "Ver servicios" (portada y 404) llega aquí (/#servicios): el header fijo no debe tapar el título. */
-    scroll-margin-top: 68px;
+    scroll-margin-top: var(--nav-alto);
   }
   .services__inner {
     display: flex;
@@ -133,6 +154,47 @@ const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1
     text-decoration: underline;
     text-underline-offset: var(--esp-1);
   }
+  /* Con `alternar`, en escritorio y tableta ancha NO hay apilado: son filas normales (sin sticky) en las que la foto va
+     a un lado y al otro (la tarjeta par, con la foto a la derecha). Foto y tarjeta miden lo mismo: al menos 500 px (el alto
+     del original) y, si un servicio trae más texto, la fila crece en vez de cortarlo; ambas se igualan a la más alta. La
+     foto no aporta su alto natural a la fila (contain: size): lo da la tarjeta. Entre filas, la escala de espaciado
+     (diseño §2: entre tarjetas en escritorio, --esp-6). */
+  @media (min-width: 810px) {
+    .services[data-alternar] {
+      padding-block: var(--esp-6) var(--esp-8);
+    }
+    .services[data-alternar] .services__stack {
+      gap: var(--esp-6);
+    }
+    .services[data-alternar] .svc {
+      position: static;
+      height: auto;
+      min-height: 500px;
+      align-items: stretch;
+      gap: var(--esp-5);
+    }
+    .services[data-alternar] .svc:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+    /* Foto y tarjeta, cada una exactamente la mitad de la fila (menos la mitad del hueco): así llenan el ancho y quedan
+       alineadas con el resto de la página, sin importar el relleno de la tarjeta. */
+    .services[data-alternar] .svc :global(.svc__img) {
+      flex: 0 0 calc((100% - var(--esp-5)) / 2);
+      height: auto;
+      min-height: 500px;
+      contain: size;
+    }
+    .services[data-alternar] .svc__card {
+      flex: 0 0 calc((100% - var(--esp-5)) / 2);
+      height: auto;
+      min-height: 500px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .services[data-alternar] {
+      padding-block: var(--esp-7) var(--esp-9);
+    }
+  }
   .svc__card {
     flex: 1 1 0;
     min-width: 0;
@@ -142,8 +204,7 @@ const capital = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1
     align-items: flex-start;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid var(--dx-borde-tarjeta);
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
     overflow: hidden;
   }
   .svc__progress {

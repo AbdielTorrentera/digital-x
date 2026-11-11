@@ -35,16 +35,16 @@ test('serviciosDe marca como construido solo el servicio cuya página ya existe 
   }
 });
 
-test('enlaceDeServicio lleva a la página si está construida y, si no, a su tarjeta del catálogo', () => {
+test('enlaceDeServicio lleva a la página si está construida y, si no, no hay enlace (null)', () => {
   for (const p of paginas.filter((x) => x.categoria)) {
     const slug = p.url.split('/')[2];
-    assert.equal(enlaceDeServicio(slug), p.construida ? p.url : `/servicios/#${slug}`, slug);
+    assert.equal(enlaceDeServicio(slug), p.construida ? p.url : null, slug);
   }
   // Ya están los 10 servicios construidos: uno se marca como no construido solo durante la prueba.
   const registro = paginas.find((p) => p.url === '/servicios/desarrollo-de-software/');
   registro.construida = false;
   try {
-    assert.equal(enlaceDeServicio('desarrollo-de-software'), '/servicios/#desarrollo-de-software');
+    assert.equal(enlaceDeServicio('desarrollo-de-software'), null);
   } finally {
     registro.construida = true;
   }
@@ -83,8 +83,8 @@ test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y 
   for (const categoria of ['audio', 'video', 'tecnologia']) assert.equal(unido(categoria), lista[categoria]);
 });
 
-test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página o a su tarjeta del catálogo', () => {
-  // Un servicio construido va a su página; uno sin página (se marca así solo durante la prueba), a su tarjeta.
+test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página; sin página, queda como texto', () => {
+  // Un servicio construido va a su página; uno sin página (se marca así solo durante la prueba), sin enlace.
   const urlsDe = () =>
     partesDeSlugs(['renta-de-audio', 'desarrollo-de-software'])
       .filter((p) => 'nombre' in p)
@@ -93,7 +93,7 @@ test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página 
   const registro = paginas.find((p) => p.url === '/servicios/desarrollo-de-software/');
   registro.construida = false;
   try {
-    assert.deepEqual(urlsDe(), ['/servicios/renta-de-audio/', '/servicios/#desarrollo-de-software']);
+    assert.deepEqual(urlsDe(), ['/servicios/renta-de-audio/', null]);
   } finally {
     registro.construida = true;
   }

@@ -1,5 +1,5 @@
 /**
- * Contenido de /servicios/ (el catálogo) y de cada servicio (/servicios/{slug}/). Textos locales, mientras no estén en
+ * Contenido de cada servicio (/servicios/{slug}/). Textos locales, mientras no estén en
  * Sanity. El nombre de cada servicio y su estado (construida) viven en lib/paginas.ts: aquí solo va lo demás. Sin
  * imágenes: las fotos van en servicios-fotos.ts, para poder probar estos textos con node:test.
  * Fuentes: docs/estructura-sitio-digitalx.md sección 5, docs/reglas-seo-digitalx.md sección 1 (title y meta) y los
@@ -9,7 +9,6 @@
  */
 import type { PreguntaFrecuente } from '../lib/jsonld.ts';
 import { mensajesWhatsApp } from '../lib/negocio.ts';
-import type { Categoria } from '../lib/paginas.ts';
 import { comoTexto, type TextoConEnlaces } from '../lib/texto.ts';
 
 export type { TextoConEnlaces };
@@ -1498,71 +1497,4 @@ export const faltantesDePagina = (slug: Slug): string[] => {
   if (!pagina?.cotizacion) faltan.push('cotizacion');
   if (!pagina?.cierre) faltan.push('cierre');
   return faltan;
-};
-
-/** El catálogo: /servicios/. Title y meta son los de reglas-seo sección 1 y no cambian. */
-export const catalogo = {
-  title: 'Servicios de audio, video y tecnología en Puebla | Digital X',
-  descripcion:
-    'Servicios para tu evento o tu negocio: audio, video y tecnología en Puebla, Atlixco e Izúcar de Matamoros. Elige el tuyo y cotiza por WhatsApp.',
-  h1: 'Servicios de audio, video y tecnología en Puebla',
-  intro:
-    'Trabajamos en Puebla, Atlixco, Izúcar de Matamoros y alrededores con tres áreas de servicio: audio para que tu evento se escuche, video para que se vea y se transmita, y tecnología para que tu negocio funcione en internet. Elige el servicio que necesitas o cuéntanos tu evento por WhatsApp y te decimos qué te conviene.',
-  /**
-   * Una sección por categoría, en el orden del catálogo. `id` es el ancla (/servicios/#audio), `etiqueta` su pestaña y el
-   * chip de la página de cada servicio, y `titulo` el tipo de servicio del JSON-LD cuando el servicio no trae el suyo.
-   */
-  secciones: [
-    {
-      id: 'audio',
-      categoria: 'audio',
-      etiqueta: 'Audio',
-      titulo: 'Servicios de audio',
-      // Servicio oficial sin página propia: se nombra en los textos corridos (Inicio y condiciones) pero no se enlaza.
-      sinPagina: ['sonorización'],
-      para: 'Que tu evento se escuche claro, con personal técnico capacitado de principio a fin.',
-    },
-    {
-      id: 'video',
-      categoria: 'video',
-      etiqueta: 'Video',
-      titulo: 'Servicios de video',
-      para: 'Que tu evento se vea en pantallas, se transmita en vivo y quede en video, y que tu lugar se vea desde el aire o en 360.',
-    },
-    {
-      id: 'tecnologia',
-      categoria: 'tecnologia',
-      etiqueta: 'Tecnología',
-      titulo: 'Servicios de tecnología',
-      para: 'Que encuentren tu negocio en internet, que vendas en línea y que tus procesos funcionen con software propio.',
-    },
-  ] satisfies {
-    id: string;
-    categoria: Categoria;
-    etiqueta: string;
-    titulo: string;
-    para: string;
-    /** Nombres de servicios de la categoría que no tienen página, en minúscula, para frases como "a, b y c". */
-    sinPagina?: string[];
-  }[],
-  /** "¿Qué servicios necesito para mi evento?": cada escenario y los servicios que le convienen. */
-  guia: {
-    etiqueta: 'Guía para elegir',
-    titulo: '¿Qué servicios necesito para mi evento?',
-    items: [
-      {
-        escenario: 'Conferencia o evento corporativo',
-        slugs: ['renta-de-audio', 'circuito-cerrado-para-eventos', 'video-para-eventos'],
-      },
-      { escenario: 'Evento con mucho público', slugs: ['renta-de-audio', 'circuito-cerrado-para-eventos'] },
-      { escenario: 'Evento que quieres compartir en línea', slugs: ['streaming-para-eventos', 'renta-de-audio'] },
-      { escenario: 'Dar a conocer un lugar o negocio', slugs: ['video-con-drone', 'recorridos-virtuales-360'] },
-      { escenario: 'Presencia en internet', slugs: ['paginas-web', 'tienda-en-linea'] },
-    ] satisfies { escenario: string; slugs: Slug[] }[],
-  },
-  cierre: {
-    titulo: '¿No sabes qué servicio necesitas?',
-    texto: 'Dinos la fecha, el lugar y lo que quieres lograr, y armamos tu cotización.',
-    mensaje: mensajesWhatsApp.general,
-  },
 };

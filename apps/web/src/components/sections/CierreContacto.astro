@@ -3,17 +3,20 @@ import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
 import type { ImageMetadata } from 'astro';
 
-// Cierre de la página (Nosotros, el catálogo de servicios y la página de cada servicio): el bloque de contacto del pie de
-// la plantilla Marby (foto oscura con velo, título, texto y un
-// panel de vidrio), SIN formulario: el panel lleva dos botones, WhatsApp (principal) y Llamar (secundario), y el
-// número a la vista. Distinto del llamado final blanco del Inicio. Cambian los textos, los colores (tokens --dx-*), las
-// tipografías y el velo, más oscuro para que el texto blanco cumpla contraste. Medidas y animaciones, las de la plantilla.
+// Cierre de la página (Nosotros, las categorías y la página de cada servicio): el bloque de contacto del pie de la
+// plantilla Marby (foto oscura con velo), SIN formulario. Una sola columna centrada: título, texto y, debajo, dos botones
+// lado a lado. WhatsApp es el principal (el único con relleno amarillo); Llamar es secundario, de contorno blanco, del
+// mismo alto y tipografía, para que se vean como pareja sin restarle protagonismo al principal. En pantallas angostas se
+// apilan si no caben. El número de teléfono no se muestra aquí (vive en el pie): el botón lo lleva en su aria-label.
+// Distinto del llamado final blanco del Inicio. Cambian los textos, los colores (tokens --dx-*), las tipografías y el velo,
+// más oscuro para que el texto blanco cumpla contraste. Medidas y animaciones, las de la plantilla.
 interface Props {
   /** Foto de fondo (decorativa). */
   foto: ImageMetadata;
   titulo: string;
   texto: string;
   whatsapp: { etiqueta: string; href: string };
+  /** `numero` solo se usa en el aria-label del botón; no se muestra. */
   llamar: { etiqueta: string; href: string; numero: string };
 }
 const { foto, titulo, texto, whatsapp, llamar } = Astro.props;
@@ -23,35 +26,26 @@ const { foto, titulo, texto, whatsapp, llamar } = Astro.props;
   <Foto class="contact__bg" src={foto} alt="" sizes="100vw" />
   <div class="contact__scrim" aria-hidden="true"></div>
   <div class="container contact__inner">
-    <div class="contact__head">
-      <div class="contact__title">
-        <h2 class="t-h2 c-blanco" data-appear>
-          {titulo}
-        </h2>
-      </div>
-      <p class="t-body c-blanco contact__text balance" data-appear style="--appear-delay:0.1s">
-        {texto}
-      </p>
-    </div>
-    <div class="contact__row">
-      <div class="contact__panel glass" data-appear style="--appear-delay:0.2s">
-        <div class="contact__botones">
-          <Btn
-            label={whatsapp.etiqueta}
-            href={whatsapp.href}
-            target="_blank"
-            rel="noopener"
-            aria-label={`${whatsapp.etiqueta} (se abre en una pestaña nueva)`}
-          />
-          <Btn
-            label={llamar.etiqueta}
-            href={llamar.href}
-            variant="secondary"
-            aria-label={`${llamar.etiqueta} a Digital X: ${llamar.numero}`}
-          />
-        </div>
-        <p class="t-body c-blanco contact__numero">{llamar.numero}</p>
-      </div>
+    <h2 class="t-h2 c-blanco contact__title" data-appear>
+      {titulo}
+    </h2>
+    <p class="t-body c-blanco contact__text balance" data-appear style="--appear-delay:0.1s">
+      {texto}
+    </p>
+    <div class="contact__botones" data-appear style="--appear-delay:0.2s">
+      <Btn
+        label={whatsapp.etiqueta}
+        href={whatsapp.href}
+        target="_blank"
+        rel="noopener"
+        aria-label={`${whatsapp.etiqueta} (se abre en una pestaña nueva)`}
+      />
+      <Btn
+        label={llamar.etiqueta}
+        href={llamar.href}
+        variant="contorno"
+        aria-label={`${llamar.etiqueta} a Digital X: ${llamar.numero}`}
+      />
     </div>
   </div>
 </section>
@@ -79,64 +73,28 @@ const { foto, titulo, texto, whatsapp, llamar } = Astro.props;
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
   }
+  /* Una sola columna centrada; el texto no se estira en pantallas grandes (~60 caracteres). */
   .contact__inner {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 40px;
-  }
-  .contact__head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+    align-items: center;
     gap: 20px;
+    text-align: center;
   }
   .contact__title {
-    flex: 1;
-    max-width: 460px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    max-width: 20ch;
   }
   .contact__text {
-    flex: 1;
-    max-width: 460px;
+    max-width: 60ch;
   }
-  .contact__row {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .contact__panel {
-    width: 460px;
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
-  }
-  /* Dos botones lado a lado; en pantallas muy angostas pasan uno debajo del otro. */
+  /* Dos botones lado a lado; en pantallas angostas pasan uno debajo del otro. */
   .contact__botones {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 12px 20px;
-  }
-  @media (max-width: 809.98px) {
-    .contact__head {
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-    }
-    .contact__title,
-    .contact__text {
-      max-width: none;
-      width: 100%;
-    }
-    .contact__panel {
-      width: 100%;
-    }
+    padding-top: 20px;
   }
 </style>

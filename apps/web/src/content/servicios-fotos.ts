@@ -1,5 +1,5 @@
 /**
- * Fotos de los servicios (el catálogo y la página de cada uno). Aparte de servicios.ts porque importan imágenes y
+ * Fotos de los servicios (la página de cada uno y las tarjetas de las páginas de categoría). Aparte de servicios.ts porque importan imágenes y
  * los textos se prueban con node:test.
  *
  * ⚠ FOTOS TEMPORALES (src/assets/temporales/, ver su README). Hay repetidas entre servicios porque son provisionales.
@@ -65,9 +65,3 @@ export const fotos: Record<Slug, FotoDeServicio> = {
 
 /** Foto oscura del cierre de contacto (catálogo y páginas de servicio). Es decorativa: sin alt. */
 export const fotoCierre = fotoSalon;
-
-/** Portada del catálogo. */
-export const fotoPortada: Foto = {
-  src: fotoSalon,
-  alt: 'Salón para eventos con escenario, pantalla grande, bocinas y luces, y mesas preparadas',
-};

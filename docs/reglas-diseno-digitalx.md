@@ -103,6 +103,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 
 - **Proporción aproximada por pantalla:** 60 % fondo (negro o blanco), 30 % neutros (gris claro, textos, tarjetas), **10 % amarillo** (botones, acentos, detalles).
 - **Un solo color de acento.** El amarillo marca lo que se debe tocar o mirar primero; si todo es amarillo, nada destaca.
+- **El amarillo como resalte, solo sobre fondos oscuros.** Subrayados de la página actual, *hover*, foco y selección de texto usan el amarillo únicamente sobre negro o fotos oscuras; **sobre blanco o gris claro, el resalte es negro** (subrayado o peso, y selección en negro con texto blanco). Nunca amarillo sobre fondo claro (identidad §3).
 - **El color nunca es la única señal.** Estados, errores, etiquetas obligatorias y categorías llevan además ícono o texto.
 - **Prohibidos los degradados detrás de texto.** El texto sobre foto lleva la capa oscura `--dx-capa-oscura` (60 %).
 - **Contraste de elementos que no son texto** (bordes de campos y botones, íconos que comunican algo, indicador de foco): mínimo **3:1** contra su fondo. Las líneas divisoras decorativas no necesitan cumplirlo.
@@ -129,7 +130,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 | | Primario | Secundario | Enlace de texto |
 | --- | --- | --- | --- |
 | Sobre fondo claro | Negro, texto blanco | Contorno negro, texto negro | Negro, subrayado |
-| Sobre fondo negro | Amarillo, texto negro; *hover* amarillo dorado | Contorno blanco, texto blanco | Blanco, subrayado; *hover* amarillo |
+| Sobre fondo negro | Amarillo, texto negro; *hover* amarillo dorado | Contorno blanco, texto blanco, fondo transparente (variante `contorno`); *hover* y foco: relleno blanco translúcido | Blanco, subrayado; *hover* amarillo |
 
 - **Área táctil de al menos 48 × 48 px** (más estricta que el mínimo de WCAG, por la regla de SEO §10). Separación mínima entre dos objetivos táctiles: 8 px.
 - **El botón es el de la plantilla Marby, tal cual:** 28 px de alto, etiqueta de 12 px en mayúsculas y flecha que gira 45° al pasar el cursor. Su zona de toque se agranda a 48 px de forma invisible (`::after`), sin cambiar el tamaño que se ve. Primario: negro sobre fondo claro y amarillo sobre negro. Secundario: gris, sin contorno.
@@ -138,16 +139,25 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 - Botones solo con ícono: `aria-label` obligatorio.
 - Estados: normal, *hover* (la flecha gira) y foco visible.
 
+### Cierre de contacto
+
+- Bloque de cierre de la página (Nosotros, las categorías y las 10 páginas de servicio): foto oscura con velo (`--dx-capa-oscura`) y **una sola columna centrada**: título, texto y, debajo, los botones. **Sin caja con borde** ni panel de vidrio.
+- **Dos botones lado a lado y centrados**, con jerarquía clara: "Cotizar por WhatsApp" es el principal (**amarillo, el único con relleno**) y "Llamar" es el secundario, **de contorno blanco** con texto blanco y fondo transparente (variante `contorno` de `Btn`); al pasar el cursor o con foco se rellena de blanco translúcido. Mismo alto (28 px, 48 px de área táctil) y misma tipografía que el principal, para que se vean como pareja. En pantallas angostas pueden apilarse si no caben.
+- **No se muestra el número de teléfono**: el botón "Llamar" lleva `aria-label` con el número ("Llamar a Digital X: +52 …") y el teléfono sigue en el pie.
+- Ancho de texto limitado a unos 60 caracteres, para que no se estire en pantallas grandes.
+
 ### Tarjetas
 
 - Relleno: `--esp-4` en móvil, `--esp-5` en escritorio. Separación entre tarjetas siempre mayor que su relleno.
 - En móvil, una columna; en tableta, dos; en escritorio, tres o cuatro según el contenido.
 - Si la tarjeta entera es clicable, el enlace es la tarjeta (con `aria-label`) o va en el título y se extiende a toda la tarjeta; no hay enlaces anidados.
 - No todas las tarjetas tienen el mismo peso: si una es la recomendada o la principal, se distingue.
-- **Tarjetas apiladas (servicios del Inicio).** Son la sección Services de la plantilla Marby, tal cual: tres tarjetas del mismo alto; cada una se fija debajo del header (`position: sticky`) y la siguiente se desliza encima. Solo CSS. Cada tarjeta entera es un solo enlace (a la página de su categoría) y el botón que lleva es decorativo.
-  - Con `prefers-reduced-motion: reduce` las tarjetas se muestran una debajo de otra, sin que se fijen ni se encimen.
-  - Excepción a las medidas de esta sección: las tarjetas conservan las del original (alto fijo de 500 px y relleno de 20 px en escritorio). En móvil y tableta (menos de 810 px) el alto es el del contenido y la foto se adapta al alto de la pantalla (`clamp(120px, 24dvh, 260px)`): la tarjeta pegada, con su botón completo, debe caber entera en la pantalla (se prueba a 360 × 640, 375 × 667, 390 × 844 y 768 × 1024). Si no cabe, se reduce primero la foto y después el relleno; nunca se quita el efecto de apilado.
-  - Para que la tarjeta se distinga del fondo blanco lleva un borde de 1 px con `--dx-borde-tarjeta` (negro al 45 %, 3.45:1 sobre blanco; WCAG 1.4.11 pide 3:1). El color de fondo de la tarjeta no cambia.
+- **Tarjetas de servicio (Inicio y páginas de categoría).** Son la sección Services de la plantilla Marby (`sections/Servicios.astro`, un solo componente configurable). **Sin contorno**, con el **gris de la plantilla original** (`--dx-gris-tarjeta`, `#F5F5F6`, su `--ink-50`; excepción a la paleta decidida por el dueño, solo para este fondo; el texto sigue en negro) y esquinas de 8 px. Cada tarjeta entera es un solo enlace (a la página de su categoría o de su servicio) y el botón que lleva es decorativo.
+  - **Inicio (apilado):** tres tarjetas del mismo alto; cada una se fija debajo del header (`position: sticky`) y la siguiente se desliza encima. Solo CSS. Separación de 20 px y alto fijo de 500 px, como el original.
+  - **Páginas de categoría (`alternar`):** en escritorio y tableta ancha (810 px o más) **no hay apilado**: son filas normales (sin `sticky`) en las que la foto va a un lado y al otro (izquierda, derecha, izquierda…). Foto y tarjeta ocupan cada una la mitad de la fila, **alto mínimo de 500 px** (`min-height`; si un servicio trae más texto, la fila crece y ambas se igualan a la más alta) y quedan alineadas con los bordes del contenido. Separación entre filas con la escala: **`--esp-6` (32 px)**, y entre foto y tarjeta `--esp-5` (24 px). En móvil y tableta (menos de 810 px) se comporta igual que el Inicio.
+  - Con `prefers-reduced-motion: reduce` las tarjetas del apilado se muestran una debajo de otra, sin que se fijen ni se encimen.
+  - Excepción a las medidas de esta sección: las tarjetas conservan las del original (relleno de 20 px en escritorio). En móvil y tableta (menos de 810 px) el alto es el del contenido y la foto se adapta al alto de la pantalla (`clamp(120px, 24dvh, 260px)`): la tarjeta pegada, con su botón completo, debe caber entera en la pantalla (se prueba a 360 × 640, 375 × 667, 390 × 844 y 768 × 1024). Si no cabe, se reduce primero la foto y después el relleno; nunca se quita el efecto de apilado.
+  - Los `<source>` de `<picture>` no se dibujan (`source { display: none }` en el reset): dentro de un flex, cada uno ocupaba un lugar y un hueco.
 
 ### Formularios (cuando se publiquen)
 
@@ -177,13 +187,14 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 
 ## 7. Navegación
 
-- **Menú de la plantilla Marby, tal cual, en todos los tamaños.** Barra fija y translúcida (blanco al 85 % con `backdrop-filter: blur(12px)` y una línea inferior de 1 px; sin soporte de `backdrop-filter`, blanco al 95 %) con el botón (chip negro de 32 × 28 px, solo ícono de tres líneas, `aria-label` "Abrir menú") y el logo de Digital X donde Marby pone su texto. El logo y el botón son siempre negros, con contraste suficiente sobre la barra en cualquier sección: el peor caso, con una sección negra detrás, da una barra de #D9D9D9 y 14.8:1 con el logo. No cambian de color según la sección (el cambio a blanco de la plantilla se quitó junto con su script). El chip abre un panel claro a pantalla completa: botón X (`aria-label` "Cerrar menú") arriba, enlaces grandes y centrados con entrada escalonada, las redes debajo (solo si existen) y el botón "Cotizar por WhatsApp". Sin desplegables.
-- Solo el botón abre el menú (no toda la barra). Se mantienen foco atrapado en el panel, Escape para cerrar, bloqueo del scroll y regreso del foco al botón de abrir.
-- La llamada directa no está en el header ni en el menú: es un botón flotante solo ícono, encima del de WhatsApp, en celular y tableta (SEO §11).
-- El alto de la barra es el del logo más 20 px de relleno arriba y abajo (88 px a 360 px; el original mide 68 px con su texto). El panel del menú abierto no es hijo de la barra y se ve igual.
-- La página actual se marca en el menú con algo más que el color (subrayado o indicador) y `aria-current="page"`.
-- Migas de pan en subpáginas (ver estructura §4).
-- `[PENDIENTE: color del header (blanco o negro). Hoy es blanco translúcido con logo negro; confirmar al verlo con la portada oscura]`.
+- **Encabezado: barra NEGRA** (`--dx-negro`) en todas las páginas y tamaños, fija (`position: sticky`), **sin translucidez ni desenfoque**, con el **logo blanco** (`Logo` en `currentColor`, idéntico a `brand/svg/digitalx-logo-blanco.svg`; identidad §1). Texto blanco (21:1 sobre negro) y foco amarillo (`--foco-color` sobre fondos oscuros, ≥ 3:1).
+- **Escritorio (desde 1024 px):** el **menú va a la vista en la barra**, a la derecha del logo: Inicio · Audio · Video · Tecnología · Nosotros, y Proyectos y Blog cuando estén construidas (generado desde `lib/paginas.ts`; estructura §4). Texto de **16 px** en blanco, con zona de toque de 48 px de alto y separación de `--esp-6`. La página actual se marca con **subrayado amarillo de 2 px** y `aria-current="page"`; en un servicio, la entrada de su categoría lleva el mismo subrayado y `aria-current="true"`. *Hover* y foco también en amarillo (texto y subrayado; el contorno de foco ya es amarillo sobre fondos oscuros). Se muestra completo desde 1024 px (el corte de "Escritorio", §1): las 5 entradas de hoy ocupan unos 400 px y con Proyectos y Blog unos 600 px, dentro de los ~700 px libres entre el logo y el borde. Sin JavaScript, el menú de escritorio funciona (son enlaces).
+- **Móvil y tableta (menos de 1024 px): menú hamburguesa.** La misma barra negra con el botón de la plantilla Marby, que abre el panel a pantalla completa. **El botón es un chip blanco de 32 × 28 px con el ícono negro de tres líneas** (contraste 21:1 sobre la barra negra; `aria-label`, `aria-expanded` y `aria-controls`; zona de toque de 48 × 48 px). El panel abierto es **claro** (gris), con las mismas entradas que la barra, la X para cerrar y "Cotizar por WhatsApp". **Sin amarillo** (fondo claro): la entrada actual (`aria-current`, también la de la categoría del servicio) y el *hover* se marcan con subrayado negro.
+- Solo el botón abre el panel (no toda la barra). Se mantienen foco atrapado en el panel, Escape para cerrar, bloqueo del scroll y regreso del foco al botón de abrir. Sin JavaScript el botón no se muestra y la navegación queda en el pie.
+- La llamada directa no está en el header ni en el menú: es un botón flotante solo ícono, encima del de WhatsApp, en celular y tableta (SEO §11). Los botones flotantes no cambian.
+- El alto de la barra es el del logo más 20 px de relleno arriba y abajo (unos 81 px).
+- Migas de pan en subpáginas (ver estructura §4): Inicio › {Categoría} › {Servicio}.
+- **Regla general del resalte:** el amarillo de marca (`--dx-amarillo`) se usa como resalte (subrayado, *hover*, foco, selección de texto) **solo sobre fondos oscuros** (la barra negra, el cierre, el pie y las secciones `.sobre-negro`); sobre blanco o gris claro, el resalte es negro. La selección de texto es negro con texto blanco por defecto y amarillo con texto negro dentro de `.sobre-negro` (`::selection` en `global.css`).
 
 ---
 
@@ -192,7 +203,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 - Solo se animan `transform` y `opacity` (no tamaños, márgenes ni posiciones), para no afectar el rendimiento.
 - Duraciones: 150 ms (*hover*, botones), 250 ms (menús, acordeones), hasta 400 ms (entradas de sección). Nada más lento.
 - Las animaciones de entrada son sutiles (desplazamiento máximo de 24 px) y se ejecutan **una sola vez**.
-- **Las animaciones originales de la plantilla Marby se conservan tal cual (con `prefers-reduced-motion`); los límites de esta sección aplican a componentes nuevos.** Excepción por decisión del dueño: la fila de proyectos de Nosotros (el Team de Marby) avanza sola como en la plantilla (unos 50 px por segundo, en ciclo continuo y sin salto visible) y **no lleva botón de pausa**. Es un contenedor con desplazamiento horizontal nativo: se desliza con el dedo en móvil y con la rueda, el trackpad o el arrastre en escritorio. El avance se detiene mientras la persona toca, arrastra, desliza, pasa el cursor o enfoca una tarjeta, y se reanuda unos 3 segundos después de soltar. Las copias que hacen el ciclo están ocultas a lectores de pantalla y nunca reciben foco. Con `prefers-reduced-motion` (o sin JavaScript) no se mueve sola, las copias se ocultan y la fila se desliza a mano o con el teclado.
+- **Las animaciones originales de la plantilla Marby se conservan tal cual (con `prefers-reduced-motion`); los límites de esta sección aplican a componentes nuevos.** Excepción por decisión del dueño: la fila de proyectos (el Team de Marby, en Nosotros y en las páginas de categoría) **no lleva botón de pausa** y cada proyecto aparece **una sola vez** (sin copias). **Si las tarjetas caben en el ancho, se muestran fijas**, sin avance ni arrastre. **Si lo exceden, es un carrusel deslizable**: contenedor con desplazamiento horizontal nativo (con el dedo en móvil; con la rueda, el trackpad o el arrastre en escritorio) que además avanza solo a unos 50 px por segundo **de ida y vuelta** (al llegar a un extremo se detiene un momento y regresa), de modo que nunca se ven repetidas dos tarjetas a la vez. El avance se detiene mientras la persona toca, arrastra, desliza, pasa el cursor o enfoca una tarjeta, y se reanuda unos 3 segundos después de soltar. Con `prefers-reduced-motion` (o sin JavaScript) no se mueve sola y la fila se desliza a mano o con el teclado.
 - Con `prefers-reduced-motion`, se desactivan animaciones, carruseles automáticos, el desplazamiento suave y la reproducción automática de video.
 - **Prohibido:** secuestrar el scroll, carruseles nuevos que avanzan solos sin botón de pausa (la fila de proyectos de Nosotros es la excepción descrita arriba), parpadeos de más de 3 veces por segundo y video con sonido automático.
 - En pantallas táctiles el desplazamiento es el nativo del sistema (sin desplazamiento suave por JavaScript).
@@ -228,10 +239,8 @@ Objetivo: **WCAG 2.2 nivel AA**.
 
 ## 11. Pendientes
 
-- [ ] Color del header (blanco o negro).
 - [ ] Confirmar el juego de íconos (se mantiene el de Marby mientras tanto).
 - [ ] Colores de estado para formularios (ver marca §2), si se publica el formulario.
-- [ ] Estilo del menú de escritorio: acercarlo al de Marby cuando haya páginas de servicio en el desplegable.
 ---
 
 ## 12. Criterios de aceptación

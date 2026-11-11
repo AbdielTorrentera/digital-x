@@ -5,16 +5,17 @@ import Icon from '../Icon.astro';
 import type { Foto as FotoDatos } from '../../content/inicio';
 import type { Proyecto } from '../../content/proyectos';
 
-// Fila de tarjetas que avanza sola: el Team de la plantilla Marby, con proyectos en lugar de personas (foto, número,
-// título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/.
-// Solo cambian los textos, los colores (tokens --dx-*), las tipografías y lo que exigen las reglas. En lugar de una
-// animación CSS (que no deja deslizar), la fila es un contenedor con scroll horizontal nativo que un pequeño script
-// hace avanzar a 50 px por segundo, como la plantilla: se desliza con el dedo, la rueda, el trackpad o arrastrando, y
-// el avance se detiene mientras la persona toca, arrastra, pasa el cursor o hace foco, y se reanuda 3 segundos
-// después. El ciclo es continuo (la fila se repite las veces necesarias y el script salta entre copias idénticas). Las copias
-// quedan fuera del foco y de los lectores de pantalla. Con movimiento reducido no avanza sola, pero se desliza a
-// mano. La foto no depende del cursor en pantallas táctiles. La protección contra los ejemplos vive en
-// content/proyectos.ts.
+// Fila de tarjetas de proyectos: el Team de la plantilla Marby, con proyectos en lugar de personas (foto, número,
+// título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/. Es el
+// carrusel de proyectos de Nosotros y de las páginas de categoría: recibe la lista (Nosotros, todos; una categoría, los
+// suyos), su título y la foto de fondo. Cada proyecto aparece UNA sola vez (sin copias): si las tarjetas caben en el
+// ancho, se muestran fijas, sin avance ni arrastre; si lo exceden, la fila es un contenedor con scroll horizontal nativo
+// que se desliza con el dedo, la rueda, el trackpad o arrastrando, y un pequeño script la hace avanzar a 50 px por segundo
+// de ida y vuelta (al llegar a un extremo se detiene un momento y regresa), sin botón de pausa. El avance se detiene
+// mientras la persona toca, arrastra, pasa el cursor o hace foco, y se reanuda 3 segundos después. Con movimiento reducido
+// (o sin JavaScript) no avanza sola, pero se desliza a mano. Solo cambian los textos, los colores (tokens --dx-*), las
+// tipografías y lo que exigen las reglas. La foto no depende del cursor en pantallas táctiles. La protección contra los
+// ejemplos vive en content/proyectos.ts.
 interface Props {
   etiqueta: string;
   titulo: string;
@@ -23,10 +24,6 @@ interface Props {
   boton: { etiqueta: string; href: string };
 }
 const { etiqueta, titulo, foto, items, boton } = Astro.props;
-// Copias de la fila para el ciclo continuo: la antes, la real y las que hagan falta para que, al avanzar un ciclo, aún
-// quede fila a la derecha en la pantalla más ancha (el contenedor mide 1240 px como máximo).
-const ancho = Math.max(items.length, 1) * (278 + 20);
-const copias = 2 + Math.ceil(1240 / ancho);
 ---
 
 <section class="team sobre-negro">
@@ -45,65 +42,51 @@ const copias = 2 + Math.ceil(1240 / ancho);
     <div
       class="ticker"
       role="region"
-      aria-label="Proyectos"
+      aria-label={titulo}
       tabindex="0"
       data-ticker
       data-appear
       style="--appear-delay:0.3s"
     >
       <div class="ticker__track">
-        {Array.from({ length: copias }, (_, copia) => (
-          <div class="ticker__set" aria-hidden={copia !== 1 ? 'true' : undefined}>
-            {items.map((p, i) => (
-              <a
-                class="member"
-                href={boton.href}
-                aria-label={`Ver proyectos: ${p.titulo}`}
-                tabindex={copia !== 1 ? -1 : undefined}
-              >
-                <Foto
-                  class="member__photo"
-                  src={p.foto.src}
-                  alt={copia === 1 ? p.foto.alt : ''}
-                  sizes="278px"
-                  widths={[278, 556, 834]}
-                />
-                <div class="member__blur" aria-hidden="true" />
-                <div class="member__body">
-                  <div class="member__name">
-                    <p class="t-caption c-blanco">{String(i + 1).padStart(2, '0')}</p>
-                    <h3 class="t-h4 c-blanco">{p.titulo}</h3>
-                    <p class="t-caption c-blanco">{p.texto}</p>
-                  </div>
-                  <div class="member__meta">
-                    <p class="t-caption c-blanco">{p.servicios.join(' · ')}</p>
-                    <p class="t-caption c-blanco member__city">
-                      <Icon name="pin" size="boton" />
-                      {p.municipio}
-                    </p>
-                  </div>
+        <div class="ticker__set">
+          {items.map((p, i) => (
+            <a class="member" href={boton.href} aria-label={`Ver proyectos: ${p.titulo}`}>
+              <Foto class="member__photo" src={p.foto.src} alt={p.foto.alt} sizes="278px" widths={[278, 556, 834]} />
+              <div class="member__blur" aria-hidden="true" />
+              <div class="member__body">
+                <div class="member__name">
+                  <p class="t-caption c-blanco">{String(i + 1).padStart(2, '0')}</p>
+                  <h3 class="t-h4 c-blanco">{p.titulo}</h3>
+                  <p class="t-caption c-blanco">{p.texto}</p>
                 </div>
-                {p.placeholder && <span class="member__ejemplo">EJEMPLO</span>}
-              </a>
-            ))}
-          </div>
-        ))}
+                <div class="member__meta">
+                  <p class="t-caption c-blanco">{p.servicios.join(' · ')}</p>
+                  <p class="t-caption c-blanco member__city">
+                    <Icon name="pin" size="boton" />
+                    {p.municipio}
+                  </p>
+                </div>
+              </div>
+              {p.placeholder && <span class="member__ejemplo">EJEMPLO</span>}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
     <div class="team__boton" data-appear style="--appear-delay:0.4s">
       <Btn label={boton.etiqueta} href={boton.href} />
     </div>
     <script>
-      // Hace avanzar la fila de proyectos y la deja deslizar a mano.
+      // Hace avanzar la fila de proyectos cuando no caben en el ancho, y la deja deslizar a mano.
       const VELOCIDAD = 50; // px por segundo, como en la plantilla
       const ESPERA = 3000; // ms que el avance espera después de que la persona suelta
+      const PAUSA_EXTREMO = 1500; // ms que la fila se detiene al llegar a un extremo antes de regresar
       const reducido = window.matchMedia('(prefers-reduced-motion: reduce)');
 
       document.querySelectorAll<HTMLElement>('[data-ticker]').forEach((fila) => {
-        const copias = fila.querySelectorAll<HTMLElement>('.ticker__set');
-        if (copias.length < 3) return;
-
-        let ancho = 0; // ancho de una copia: lo que mide un ciclo completo
+        let desborda = false; // ¿las tarjetas exceden el ancho? Si no, la fila queda fija
+        let direccion = 1;
         let pos = 0;
         let hover = false;
         let foco = false;
@@ -112,52 +95,53 @@ const copias = 2 + Math.ceil(1240 / ancho);
         let visible = false;
         let reanudaEn = 0;
         let ultimo = 0;
-        let raf = 0;
         let movido = 0;
         let inicioX = 0;
         let inicioScroll = 0;
 
         const esperar = () => (reanudaEn = performance.now() + ESPERA);
-        const colocar = () => {
-          // La copia real es la del medio: se empieza ahí y se puede ir a ambos lados sin llegar a un borde.
-          ancho = copias[0].offsetWidth;
-          fila.scrollLeft = ancho;
-          pos = ancho;
-        };
-        // Saltar una copia a otra es invisible: son idénticas.
-        const envolver = () => {
-          const x = fila.scrollLeft;
-          if (x >= 2 * ancho) fila.scrollLeft = x - ancho;
-          else if (x <= 0) fila.scrollLeft = x + ancho;
+        const maximo = () => fila.scrollWidth - fila.clientWidth;
+        // Solo hay carrusel si las tarjetas exceden el ancho; si caben, se muestran fijas (sin avance ni arrastre).
+        const medir = () => {
+          desborda = maximo() > 1;
+          fila.classList.toggle('is-desborda', desborda);
+          if (desborda) {
+            fila.setAttribute('tabindex', '0');
+          } else {
+            fila.removeAttribute('tabindex');
+            fila.scrollLeft = 0;
+            pos = 0;
+          }
         };
 
         const cuadro = (t: number) => {
-          raf = requestAnimationFrame(cuadro);
+          requestAnimationFrame(cuadro);
           const dt = Math.min(t - ultimo, 100);
           ultimo = t;
-          if (!ancho || !visible) return;
+          if (!desborda || !visible || reducido.matches) return;
           if (hover || foco || tocando || arrastrando || t < reanudaEn) {
             pos = fila.scrollLeft; // la persona mueve la fila: el avance sigue desde donde quedó
-            if (!tocando) envolver();
             return;
           }
-          pos += (VELOCIDAD * dt) / 1000;
-          if (pos >= 2 * ancho) pos -= ancho;
+          pos += (direccion * VELOCIDAD * dt) / 1000;
+          const tope = maximo();
+          if (pos >= tope) {
+            pos = tope;
+            direccion = -1;
+            reanudaEn = t + PAUSA_EXTREMO;
+          } else if (pos <= 0) {
+            pos = 0;
+            direccion = 1;
+            reanudaEn = t + PAUSA_EXTREMO;
+          }
           fila.scrollLeft = pos;
         };
 
-        const iniciar = () => {
-          colocar();
-          ultimo = performance.now();
-          raf = requestAnimationFrame(cuadro);
-        };
-        const detener = () => {
-          cancelAnimationFrame(raf);
-          fila.scrollLeft = 0;
-        };
-        const aplicar = () => (reducido.matches ? detener() : iniciar());
-
         new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(fila);
+        new ResizeObserver(medir).observe(fila);
+        medir();
+        ultimo = performance.now();
+        requestAnimationFrame(cuadro);
 
         // Mientras la persona usa la fila, el avance se detiene.
         fila.addEventListener('mouseenter', () => (hover = true));
@@ -180,9 +164,9 @@ const copias = 2 + Math.ceil(1240 / ancho);
         fila.addEventListener('wheel', esperar, { passive: true });
         fila.addEventListener('keydown', esperar);
 
-        // Arrastre con el mouse (con el dedo, el navegador ya desliza solo).
+        // Arrastre con el mouse (con el dedo, el navegador ya desliza solo). Solo si hay algo que deslizar.
         fila.addEventListener('pointerdown', (e) => {
-          if (e.pointerType !== 'mouse' || e.button !== 0) return;
+          if (!desborda || e.pointerType !== 'mouse' || e.button !== 0) return;
           arrastrando = true;
           movido = 0;
           inicioX = e.clientX;
@@ -192,8 +176,6 @@ const copias = 2 + Math.ceil(1240 / ancho);
             const dx = m.clientX - inicioX;
             movido = Math.max(movido, Math.abs(dx));
             fila.scrollLeft = inicioScroll - dx;
-            envolver();
-            inicioScroll = fila.scrollLeft + dx;
           };
           const terminar = () => {
             arrastrando = false;
@@ -220,12 +202,6 @@ const copias = 2 + Math.ceil(1240 / ancho);
           true,
         );
         fila.addEventListener('dragstart', (e) => e.preventDefault());
-
-        addEventListener('resize', () => {
-          if (!reducido.matches) colocar();
-        });
-        reducido.addEventListener('change', aplicar);
-        aplicar();
       });
     </script>
   </div>
@@ -265,16 +241,19 @@ const copias = 2 + Math.ceil(1240 / ancho);
     flex-direction: column;
     gap: 20px;
   }
-  /* Contenedor con scroll horizontal nativo: avanza solo (script) y se desliza a mano. Sin barra visible. */
+  /* Contenedor con scroll horizontal nativo. Si las tarjetas caben, se ven fijas; si lo exceden (`is-desborda`), avanza
+     solo (script) y se desliza a mano. Sin barra visible. */
   .ticker {
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
     border-radius: 10px;
-    cursor: grab;
     -webkit-user-select: none;
     user-select: none;
+  }
+  .ticker.is-desborda {
+    cursor: grab;
   }
   .ticker::-webkit-scrollbar {
     display: none;
@@ -289,16 +268,6 @@ const copias = 2 + Math.ceil(1240 / ancho);
   .ticker__set {
     display: flex;
     gap: 20px;
-    padding-right: 20px;
-  }
-  /* Movimiento reducido (o sin JavaScript): la fila no avanza sola, solo se desliza a mano, y se ocultan las copias. */
-  @media (prefers-reduced-motion: reduce) {
-    .ticker__set[aria-hidden='true'] {
-      display: none;
-    }
-  }
-  :global(html:not(.js)) .ticker__set[aria-hidden='true'] {
-    display: none;
   }
 
   .member {

@@ -3,40 +3,51 @@ import Btn from './Btn.astro';
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
 import { negocio, waUrl } from '../lib/negocio';
-import { menu } from '../lib/paginas';
+import { destinoDeCategoria, menu, paginas } from '../lib/paginas';
 
 const actual = Astro.url.pathname;
 const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
+// La entrada de la página actual lleva aria-current="page"; la de la categoría de un servicio, aria-current="true" (la
+// sección en la que estás). Un servicio de Audio, que es el único de su categoría, es la página exacta de la entrada Audio.
+const servicioActual = paginas.find((p) => p.categoria && p.url === actual);
+const destinoActual = servicioActual?.categoria ? destinoDeCategoria(servicioActual.categoria) : null;
+const estado = (url: string) => (actual === url ? 'page' : destinoActual === url ? 'true' : undefined);
 ---
 
 <!--
-  Menú de la plantilla Marby, tal cual. Barra fija y translúcida (blanco al 85 % con desenfoque, para que lo que pasa por
-  detrás no estorbe al logo), con el botón (chip negro, solo ícono) que abre un panel claro a pantalla completa: arriba
-  la marca y la X, enlaces grandes y centrados con entrada escalonada, y debajo las redes (solo si existen) y "Cotizar
-  por WhatsApp". El logo de Digital X ocupa el lugar del texto de Marby y, igual que el botón, es siempre negro. Se
-  quitaron el botón de consulta de la barra y el "clic en cualquier parte abre el menú" (accesibilidad). Solo cambian los
-  textos, los colores, las tipografías y lo que exigen las reglas.
+  Menú de la plantilla Marby: barra fija NEGRA con el logo blanco (identidad §1) y, desde 1024 px, el menú a la vista en
+  la barra (Inicio · categorías · Nosotros…) con la página actual subrayada. Debajo de 1024 px, el botón (chip blanco con
+  el ícono negro, para contrastar sobre negro) abre el panel claro a pantalla completa: arriba la marca y la X, enlaces
+  grandes y centrados con entrada escalonada, y debajo las redes (solo si existen) y "Cotizar por WhatsApp". Las
+  entradas salen de la misma lista (lib/paginas.ts, `menu`) en la barra y en el panel. Solo el botón abre el panel (no
+  toda la barra: accesibilidad). Solo cambian los textos, los colores, las tipografías y lo que exigen las reglas.
 -->
-<header class="nav" data-nav>
+<header class="nav sobre-negro" data-nav>
   <div class="nav__bar">
-    <div class="nav__col nav__col--menu">
-      <button
-        class="chip"
-        type="button"
-        aria-label="Abrir menú"
-        aria-expanded="false"
-        aria-controls="menu"
-        data-menu-open
-      >
-        <Icon name="menu" size="boton" />
-      </button>
-    </div>
-    <a class="nav__col nav__col--tag" href="/" aria-label="Digital X, inicio">
-      <span class="nav__tag">
-        <Logo />
-      </span>
+    <a class="nav__logo" href="/" aria-label="Digital X, inicio">
+      <Logo />
     </a>
-    <div class="nav__col nav__col--cta" aria-hidden="true"></div>
+    <nav class="nav__menu" aria-label="Principal">
+      <ul class="nav__lista">
+        {menu.map((item) => (
+          <li>
+            <a class="nav__enlace t-body" href={item.url} aria-current={estado(item.url)}>
+              {item.titulo}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <button
+      class="chip chip--claro"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="menu"
+      data-menu-open
+    >
+      <Icon name="menu" size="boton" />
+    </button>
   </div>
 </header>
 
@@ -62,12 +73,7 @@ const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
   </div>
   <nav class="menu__list" aria-label="Principal">
     {menu.map((item, i) => (
-      <a
-        class="menu__item t-h2"
-        href={item.url}
-        aria-current={actual === item.url ? 'page' : undefined}
-        style={`--d:${retardos[i] ?? 0.45}s`}
-      >
+      <a class="menu__item t-h2" href={item.url} aria-current={estado(item.url)} style={`--d:${retardos[i] ?? 0.45}s`}>
         {item.titulo}
       </a>
     ))}
@@ -94,52 +100,85 @@ const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
 </div>
 
 <style>
-  /* Blanco translúcido con desenfoque; la línea inferior (dentro del alto, sin sumarle) separa la barra del contenido.
-     Sin soporte de backdrop-filter, blanco casi opaco. El panel del menú no es hijo de la barra: no le afecta. */
+  /* Barra negra, fija y sin translucidez (la clase sobre-negro pone el fondo, el texto blanco y el foco amarillo). El
+     panel del menú no es hijo de la barra: no le afecta. */
   .nav {
     position: sticky;
     top: 0;
     z-index: 5;
-    background: color-mix(in srgb, var(--dx-blanco) 85%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    box-shadow: inset 0 -1px 0 var(--dx-gris-claro);
-  }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .nav {
-      background: color-mix(in srgb, var(--dx-blanco) 95%, transparent);
-    }
   }
   .nav__bar {
     max-width: 1240px;
     margin-inline: auto;
     padding: 20px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
     gap: 20px;
   }
-  .nav__col {
-    flex: 1 1 0;
-    display: flex;
-  }
-  .nav__col--tag {
+  .nav__logo {
     position: relative;
-    justify-content: center;
+    display: inline-flex;
+    color: var(--dx-blanco);
   }
   /* Zona de toque del logo de al menos 48 px de alto, sin cambiar su tamaño visible. */
-  .nav__col--tag::after {
+  .nav__logo::after {
     content: '';
     position: absolute;
     inset: calc((var(--tactil) - 100%) / -2) 0;
   }
-  .nav__col--cta {
-    justify-content: flex-end;
+  /* El menú de la barra solo se muestra desde 1024 px (escritorio, diseño §1): cabe completo con el logo y con Blog. */
+  .nav__menu {
+    display: none;
   }
-  .nav__tag {
-    text-align: center;
-    color: var(--dx-negro);
+  .nav__lista {
+    display: flex;
+    align-items: center;
+    gap: var(--esp-1) var(--esp-6);
+  }
+  /* Texto de 16 px (cabe a 1024 px con las entradas de hoy y con Proyectos y Blog). El amarillo de marca marca la página
+     actual y el hover o el foco: solo sobre el negro de la barra (diseño §7). */
+  .nav__enlace {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--dx-blanco);
+    text-underline-offset: 8px;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--dx-amarillo);
+  }
+  /* Zona de toque de al menos 48 px de alto, sin cambiar el tamaño de la letra. */
+  .nav__enlace::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--tactil) - 100%) / -2) -8px;
+  }
+  /* La página actual (y la sección en la que estás) se marca con subrayado amarillo, no solo con color (diseño §7). */
+  .nav__enlace[aria-current] {
+    text-decoration-line: underline;
+  }
+  .nav__enlace:focus-visible {
+    color: var(--dx-amarillo);
+    text-decoration-line: underline;
+  }
+  @media (hover: hover) {
+    .nav__enlace:hover {
+      color: var(--dx-amarillo);
+      text-decoration-line: underline;
+    }
+  }
+  @media (min-width: 1024px) {
+    .nav__menu {
+      display: block;
+    }
+    .nav__bar [data-menu-open] {
+      display: none;
+    }
   }
 
+  /* Botón del panel: chip negro sobre el panel claro; en la barra negra pasa a blanco con el ícono negro (21:1). */
   .chip {
     position: relative;
     display: grid;
@@ -151,6 +190,10 @@ const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
     background: var(--dx-negro);
     color: var(--dx-blanco);
     cursor: pointer;
+  }
+  .chip--claro {
+    background: var(--dx-blanco);
+    color: var(--dx-negro);
   }
   /* Zona de toque de 48 × 48 px, centrada y sin efecto visual (diseño §6, SEO §10). */
   .chip::after {
@@ -169,28 +212,6 @@ const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
   /* Sin JavaScript el panel no se puede abrir: el botón no se muestra y la navegación queda en el pie. */
   :global(html:not(.js)) [data-menu-open] {
     display: none;
-  }
-
-  @media (max-width: 809.98px) {
-    .nav__bar {
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav__col--menu {
-      order: 2;
-      justify-content: flex-end;
-    }
-    .nav__col--tag {
-      order: 1;
-      justify-content: flex-start;
-    }
-    .nav__tag {
-      width: 100%;
-      text-align: left;
-    }
-    .nav__col--cta {
-      display: none;
-    }
   }
 
   /* ---------- panel del menú ---------- */
@@ -288,7 +309,9 @@ const retardos = [0.15, 0.15, 0.25, 0.35, 0.45];
       color var(--spring-04-dur) var(--spring-04),
       border-color var(--spring-04-dur) var(--spring-04);
   }
-  .menu__item[aria-current='page'] {
+  /* El panel tiene fondo claro: aquí el resalte es negro, no amarillo (diseño §7). La entrada de la página actual y la de
+     la categoría del servicio (aria-current="true") se subrayan. */
+  .menu__item[aria-current] {
     border-color: var(--dx-negro);
   }
   @media (hover: hover) and (min-width: 810px) {

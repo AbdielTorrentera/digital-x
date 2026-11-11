@@ -44,6 +44,21 @@ export const proyectosDeServicio = <T extends Proyecto>(items: T[], nombre: stri
     )
     .slice(0, maximo);
 
+/**
+ * Los de la página de una categoría: hasta `maximo`, con foto, que usaron algún servicio de esa categoría (los nombres
+ * exactos de sus servicios) y, o con permiso del cliente, o todavía de ejemplo (se ven con la etiqueta EJEMPLO). Sin
+ * ninguno, la sección no se dibuja.
+ */
+export const proyectosDeCategoria = <T extends Proyecto>(items: T[], nombres: string[], maximo = 4): T[] =>
+  items
+    .filter(
+      (proyecto) =>
+        Boolean(proyecto.foto) &&
+        (proyecto.permiso === true || proyecto.placeholder === true) &&
+        (proyecto.servicios ?? []).some((nombre) => nombres.includes(nombre)),
+    )
+    .slice(0, maximo);
+
 /** Títulos de los proyectos de ejemplo. En producción debe estar vacía (content/proyectos.ts lanza un error si no). */
 export const titulosDeEjemplo = <T extends Proyecto>(items: T[]): string[] =>
   items.filter((proyecto) => proyecto.placeholder === true).map((proyecto) => proyecto.titulo ?? '(sin título)');

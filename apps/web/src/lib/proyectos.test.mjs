@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   MAXIMO_PROYECTOS,
   MINIMO_PROYECTOS,
+  proyectosDeCategoria,
   proyectosDeNosotros,
   proyectosDeServicio,
   proyectosDelInicio,
@@ -87,4 +88,22 @@ test('proyectosDeServicio compara el nombre exacto, no uno parecido, y no pasa d
   assert.equal(proyectosDeServicio(cinco, 'Video con drone').length, 3);
   assert.equal(proyectosDeServicio(cinco, 'Video con drone', 2).length, 2);
   assert.deepEqual(proyectosDeServicio([], 'Video con drone'), []);
+});
+
+test('proyectosDeCategoria trae los que usaron algún servicio de la categoría, con foto y con permiso o de ejemplo, y no pasa de 4', () => {
+  const nombres = ['Video con drone', 'Transmisión en vivo'];
+  const deLaCategoria = usa(real(1), 'Producción de videos para eventos', 'Video con drone');
+  const deEjemplo = usa({ ...ejemplo(2) }, 'Transmisión en vivo');
+  const deOtra = usa(real(3), 'Páginas web');
+  const sinPermiso = usa({ ...real(4), permiso: false }, 'Video con drone');
+  const sinFoto = usa({ titulo: 'Sin foto', permiso: true }, 'Video con drone');
+  assert.deepEqual(proyectosDeCategoria([deLaCategoria, deEjemplo, deOtra, sinPermiso, sinFoto], nombres), [
+    deLaCategoria,
+    deEjemplo,
+  ]);
+  const seis = [1, 2, 3, 4, 5, 6].map((n) => usa(real(n), 'Video con drone'));
+  assert.equal(proyectosDeCategoria(seis, nombres).length, 4);
+  assert.deepEqual(proyectosDeCategoria([], nombres), []);
+  // Un nombre parecido no cuenta: el nombre debe ser el exacto del registro.
+  assert.deepEqual(proyectosDeCategoria([usa(real(1), 'Video')], nombres), []);
 });

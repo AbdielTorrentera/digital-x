@@ -22,8 +22,11 @@ test('una URL que no está en el registro tampoco se enlaza', () => {
   assert.equal(esPaginaPlaneada('/inventada/'), false);
 });
 
-test('un enlace con ancla se valida por su ruta: /servicios/#audio se enlaza, una ruta inventada con ancla no', () => {
-  assert.equal(enlaceAPagina('/servicios/#audio'), '/servicios/#audio');
+test('un enlace con ancla se valida por su ruta: /#servicios se enlaza, una ruta inventada con ancla no', () => {
+  assert.equal(enlaceAPagina('/#servicios'), '/#servicios');
+  // /servicios/ ya no existe (los servicios cuelgan de /servicios/{slug}/): ni la ruta ni sus anclas se pueden enlazar.
+  assert.throws(() => enlaceAPagina('/servicios/'), /no se puede enlazar/);
+  assert.throws(() => enlaceAPagina('/servicios/#audio'), /no se puede enlazar/);
   assert.equal(enlaceAPagina('/servicios/video-con-drone/#que-incluye'), '/servicios/video-con-drone/#que-incluye');
   assert.throws(() => enlaceAPagina('/inventada/#audio'), /no se puede enlazar/);
   assert.throws(() => enlaceAPagina('/blog/#x'), /no se puede enlazar/);

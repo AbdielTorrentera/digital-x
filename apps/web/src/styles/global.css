@@ -232,7 +232,8 @@ p.centrado,
  * Medidas y movimiento del original: 28 px de alto, etiqueta en mayúsculas, flecha de 16 px que gira 45° al pasar el
  * cursor. Solo cambian los colores (tokens --dx-*), la tipografía y lo que exigen las reglas: la zona de toque se
  * agranda a 48 px con ::after, sin cambiar el tamaño visible. Primario: negro sobre claro y amarillo sobre negro
- * (--btn-fondo/--btn-texto, tokens.css). Secundario: gris, sin contorno.
+ * (--btn-fondo/--btn-texto, tokens.css). Secundario: gris, sin contorno. Contorno: para fondos oscuros, blanco sin
+ * relleno (el amarillo sigue siendo el único botón relleno); al pasar el cursor o con foco se rellena de blanco translúcido.
  */
 .btn {
   position: relative;
@@ -282,6 +283,20 @@ p.centrado,
 .btn--secondary {
   background: var(--dx-gris-medio);
   color: var(--dx-negro);
+}
+.btn--contorno {
+  background: transparent;
+  color: var(--dx-blanco);
+  box-shadow: inset 0 0 0 1px var(--dx-blanco);
+  transition: background-color var(--dur-media) var(--ease);
+}
+.btn--contorno:focus-visible {
+  background: color-mix(in srgb, var(--dx-blanco) 20%, transparent);
+}
+@media (hover: hover) {
+  .btn--contorno:hover {
+    background: color-mix(in srgb, var(--dx-blanco) 20%, transparent);
+  }
 }
 .btn--icon {
   background: var(--dx-gris-claro);

@@ -31,7 +31,7 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
       <ul class="nav__lista">
         {menu.map((item) => (
           <li>
-            <a class="nav__enlace t-body-sm" href={item.url} aria-current={estado(item.url)}>
+            <a class="nav__enlace t-body" href={item.url} aria-current={estado(item.url)}>
               {item.titulo}
             </a>
           </li>
@@ -134,15 +134,20 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
   .nav__lista {
     display: flex;
     align-items: center;
-    gap: 4px 28px;
+    gap: var(--esp-1) var(--esp-6);
   }
+  /* Texto de 16 px (cabe a 1024 px con las entradas de hoy y con Proyectos y Blog). El amarillo de marca marca la página
+     actual y el hover o el foco: solo sobre el negro de la barra (diseño §7). */
   .nav__enlace {
     position: relative;
     display: inline-flex;
     align-items: center;
+    font-size: 1rem;
+    line-height: 1.2;
     color: var(--dx-blanco);
     text-underline-offset: 8px;
     text-decoration-thickness: 2px;
+    text-decoration-color: var(--dx-amarillo);
   }
   /* Zona de toque de al menos 48 px de alto, sin cambiar el tamaño de la letra. */
   .nav__enlace::after {
@@ -150,12 +155,17 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
     position: absolute;
     inset: calc((var(--tactil) - 100%) / -2) -8px;
   }
-  /* La página actual (y la sección en la que estás) se marca con subrayado, no solo con color (diseño §7). */
+  /* La página actual (y la sección en la que estás) se marca con subrayado amarillo, no solo con color (diseño §7). */
   .nav__enlace[aria-current] {
+    text-decoration-line: underline;
+  }
+  .nav__enlace:focus-visible {
+    color: var(--dx-amarillo);
     text-decoration-line: underline;
   }
   @media (hover: hover) {
     .nav__enlace:hover {
+      color: var(--dx-amarillo);
       text-decoration-line: underline;
     }
   }
@@ -299,7 +309,9 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
       color var(--spring-04-dur) var(--spring-04),
       border-color var(--spring-04-dur) var(--spring-04);
   }
-  .menu__item[aria-current='page'] {
+  /* El panel tiene fondo claro: aquí el resalte es negro, no amarillo (diseño §7). La entrada de la página actual y la de
+     la categoría del servicio (aria-current="true") se subrayan. */
+  .menu__item[aria-current] {
     border-color: var(--dx-negro);
   }
   @media (hover: hover) and (min-width: 810px) {

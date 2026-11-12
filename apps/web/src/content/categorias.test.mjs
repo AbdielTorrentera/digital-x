@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { categorias } from './categorias.ts';
+import { comoTexto } from '../lib/texto.ts';
 import { servicios } from './servicios.ts';
 import { paginas } from '../lib/paginas.ts';
 
@@ -42,12 +43,16 @@ test('el SEO de cada categoría: title ≤ 60, meta ≤ 155 con zona e invitaci�
 
 test('los textos de las categorías: sin precios, cifras (salvo "360"), marcas, "a la medida", seguridad ni vigilancia', () => {
   for (const c of categorias) {
-    const texto = [c.etiqueta, c.titulo, c.para, c.title, c.meta, c.h1, c.intro, c.cierre.titulo, c.cierre.texto].join(
+    const preguntas = c.faq.flatMap((f) => [f.pregunta, comoTexto(f.respuesta)]).join(' ');
+    const sinFaq = [c.etiqueta, c.titulo, c.para, c.title, c.meta, c.h1, c.intro, c.cierre.titulo, c.cierre.texto].join(
       ' ',
     );
+    const texto = `${sinFaq} ${preguntas}`;
     assert.ok(!/\$|MXN|\bIVA\b|desde \d/i.test(texto), `precio en ${c.id}`);
     assert.ok(!/\d/.test(texto.replace(/360/g, '')), `cifra en ${c.id}`);
-    assert.ok(!/a la medida/i.test(texto), `"a la medida" en ${c.id}: solo se usa en la página de software`);
+    // "A la medida" no se usa como nombre ni en el SEO de una categoría; en una respuesta de las preguntas frecuentes sí
+    // puede aparecer ("software a la medida"), aprobado por el dueño (reglas-seo §5).
+    assert.ok(!/a la medida/i.test(sinFaq), `"a la medida" en ${c.id} fuera de sus preguntas frecuentes`);
     assert.ok(!/seguridad|vigilancia|proyector/i.test(texto), `vocabulario prohibido en ${c.id}`);
     assert.ok(!/\bapps\b|\bdron\b/i.test(texto), `"apps" o "dron" en ${c.id}`);
     // "Circuito cerrado" siempre con "para eventos", "en vivo" o "pantallas".
@@ -56,25 +61,58 @@ test('los textos de las categorías: sin precios, cifras (salvo "360"), marcas, 
   }
 });
 
-test('las preguntas frecuentes y los clientes de las categorías están listos pero vacíos: la sección no se dibuja y no se inventa nada', () => {
-  for (const c of categorias) {
-    assert.ok(Array.isArray(c.faq) && c.faq.length === 0, `faq de ${c.id}`);
-    assert.ok(Array.isArray(c.clientes) && c.clientes.length === 0, `clientes de ${c.id}`);
-  }
+test('las preguntas frecuentes de las categorías: Video 4 y Tecnología 3 (aprobadas); Audio vacía hasta que tenga página; clientes vacíos', () => {
+  const faq = Object.fromEntries(categorias.map((c) => [c.id, c.faq]));
+  assert.equal(faq.video.length, 4);
+  assert.equal(faq.tecnologia.length, 3);
+  assert.equal(faq.audio.length, 0);
+  assert.deepEqual(
+    faq.video.map((f) => f.pregunta),
+    [
+      '¿Qué servicio de video me conviene para mi evento?',
+      '¿Puedo combinar varios servicios de video en el mismo evento?',
+      '¿Qué servicio de video sirve para mostrar mi negocio o mi lugar?',
+      '¿Puedo transmitir mi evento en vivo y quedarme también con el video?',
+    ],
+  );
+  assert.deepEqual(
+    faq.tecnologia.map((f) => f.pregunta),
+    [
+      '¿Necesito una página web, una tienda en línea, una aplicación móvil o software?',
+      '¿Puedo conectar mi sistema o mi aplicación con otros sistemas o con mi página web?',
+      'Si mi negocio apenas empieza, ¿por dónde comienzo?',
+    ],
+  );
+  // Ninguna pregunta de categoría es una pregunta de un servicio (sin contenido duplicado).
+  const deServicios = new Set(Object.values(servicios).flatMap((s) => (s.pagina?.faq ?? []).map((f) => f.pregunta)));
+  for (const f of categorias.flatMap((c) => c.faq)) assert.ok(!deServicios.has(f.pregunta), f.pregunta);
+  for (const c of categorias) assert.ok(Array.isArray(c.clientes) && c.clientes.length === 0, `clientes de ${c.id}`);
 });
 
-test('ningún texto ni dato enlaza a /servicios/ ni a sus anclas: esa página ya no existe', () => {
-  const carpetas = ['.', '../lib'];
+test('nada en src/ (datos, lib, componentes, páginas ni scripts) apunta a /servicios/: los servicios cuelgan de /{categoria}/{slug}/', () => {
+  const carpetas = [
+    '.',
+    '../lib',
+    '../components',
+    '../components/sections',
+    '../components/ui',
+    '../pages',
+    '../pages/[categoria]',
+    '../scripts',
+  ];
+  let revisados = 0;
   for (const carpeta of carpetas) {
-    for (const archivo of readdirSync(new URL(carpeta, import.meta.url)).filter(
-      (nombre) => nombre.endsWith('.ts') && !nombre.endsWith('.test.mjs'),
+    for (const archivo of readdirSync(new URL(`${carpeta}/`, import.meta.url)).filter(
+      (nombre) => /\.(ts|astro)$/.test(nombre) && !nombre.endsWith('.test.mjs'),
     )) {
+      // Sin comentarios: se revisa el código y los textos, no lo que explica la historia.
       const texto = readFileSync(new URL(`${carpeta}/${archivo}`, import.meta.url), 'utf8').replace(
-        /\/\*[\s\S]*?\*\/|^\s*\/\/.*$/gm,
+        /\/\*[\s\S]*?\*\/|<!--[\s\S]*?-->|^\s*\/\/.*$/gm,
         '',
       );
-      assert.ok(!/['"`]\/servicios\/['"`#?]/.test(texto), `${archivo} enlaza a /servicios/`);
-      assert.ok(!/\/servicios\/#/.test(texto), `${archivo} enlaza a un ancla de /servicios/`);
+      revisados++;
+      assert.ok(!/\/servicios\//.test(texto), `${carpeta}/${archivo} apunta a /servicios/`);
     }
   }
+  assert.ok(revisados > 40, `solo se revisaron ${revisados} archivos`);
 });

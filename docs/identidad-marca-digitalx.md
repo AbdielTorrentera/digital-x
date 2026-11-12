@@ -61,13 +61,13 @@ Paleta oficial (archivo `paleta_Colores_Digital-x.ase`), más el blanco para fon
 | `--dx-amarillo-dorado` | `#F2CB05` | Amarillo dorado | Estado *hover* y *activo* de los botones amarillos, acentos secundarios |
 | `--dx-negro` | `#000000` | Negro | Fondo principal de secciones oscuras, texto sobre fondos claros, logo |
 | `--dx-gris-medio` | `#999999` | Gris medio | Texto secundario **solo sobre negro** (fechas, etiquetas, pies de foto), bordes |
-| `--dx-gris-claro` | `#DBDBDB` | Gris claro | Fondos de secciones claras, divisores sobre negro |
+| `--dx-gris-tarjeta` | `#F5F5F6` | Gris claro único | Todas las superficies grises claras (tarjetas, preguntas, encabezados, menú interno); es el gris de la plantilla Marby y sustituye al `#DBDBDB` anterior (decisión del dueño). Texto negro sobre él: ≈ 18:1 |
 | `--dx-blanco` | `#FFFFFF` | Blanco | Texto sobre negro, fondos claros |
 
 - **Proporción sugerida** *(propuesta)*: el sitio es predominantemente **negro y blanco**; el amarillo es el acento (botones, llamados a la acción, detalles) y no debe cubrir más de un 10 % aproximado de una pantalla. Así el amarillo destaca donde importa: en lo que se debe tocar.
-- **Excepción (decisión del dueño):** el fondo de las tarjetas de servicio usa el gris de la plantilla Marby original, `--dx-gris-tarjeta` `#F5F5F6`, solo para ese fondo (texto en negro, ≈ 18:1).
+- **Gris claro único (decisión del dueño):** el gris de la plantilla Marby original, `--dx-gris-tarjeta` `#F5F5F6`, es el único gris claro y sustituye al `#DBDBDB` en todas las superficies grises.
 - **No hay más colores.** Si se necesita un color de estado (error, éxito en formularios), se define primero aquí. `[PENDIENTE: colores de estado, si se usa formulario]`.
-- El botón flotante de WhatsApp usa el **verde oficial de WhatsApp** (`#25D366`) con el ícono en **negro** (el blanco sobre ese verde no cumple contraste: 2.0:1), por ser un elemento reconocible de terceros. Es la única excepción a la paleta.
+- El botón flotante de WhatsApp usa un **verde de WhatsApp** (`#1D9446`, `--dx-whatsapp`, tomado de la referencia del dueño) con el **logo oficial de WhatsApp en blanco** (glifo de Simple Icons, CC0, sin redibujarlo), por ser un elemento reconocible de terceros; es la única excepción a Phosphor en los íconos (diseño §6). Es la única excepción a la paleta. **Contraste:** el ícono blanco sobre ese verde mide **3.91:1** (cumple el 3:1 de diseño §3 para gráficos; con negro serían 5.38:1). No es el verde más claro y brillante de la marca de WhatsApp (`#25D366`, que con blanco da 1.98:1 y no cumple): no se usa.
 
 ---
 

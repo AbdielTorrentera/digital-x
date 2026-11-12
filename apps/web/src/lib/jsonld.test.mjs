@@ -84,21 +84,21 @@ test('aboutPageJsonLd apunta por @id al negocio y no declara otro negocio', () =
 test('breadcrumbListJsonLd numera las migas y lleva la URL de cada una', () => {
   const datos = breadcrumbListJsonLd([
     { nombre: 'Inicio', url: 'https://digitalx.mx/' },
-    { nombre: 'Renta de audio y sonido', url: 'https://digitalx.mx/servicios/renta-de-audio/' },
+    { nombre: 'Renta de audio y sonido', url: 'https://digitalx.mx/audio/renta-de-audio/' },
   ]);
   assert.equal(datos['@type'], 'BreadcrumbList');
   assert.deepEqual(
     datos.itemListElement.map((m) => [m.position, m.name, m.item]),
     [
       [1, 'Inicio', 'https://digitalx.mx/'],
-      [2, 'Renta de audio y sonido', 'https://digitalx.mx/servicios/renta-de-audio/'],
+      [2, 'Renta de audio y sonido', 'https://digitalx.mx/audio/renta-de-audio/'],
     ],
   );
 });
 
 test('serviceJsonLd referencia al negocio por @id, lleva sus zonas y no declara otro negocio', () => {
   const datos = serviceJsonLd({
-    url: 'https://digitalx.mx/servicios/renta-de-audio/',
+    url: 'https://digitalx.mx/audio/renta-de-audio/',
     nombre: 'Renta de audio y sonido',
     tipo: 'Servicios de audio',
     descripcion: 'Equipo de audio y sonorización.',
@@ -106,7 +106,7 @@ test('serviceJsonLd referencia al negocio por @id, lleva sus zonas y no declara 
     zonas: ['Puebla', 'Atlixco'],
   });
   assert.equal(datos['@type'], 'Service');
-  assert.equal(datos['@id'], 'https://digitalx.mx/servicios/renta-de-audio/#servicio');
+  assert.equal(datos['@id'], 'https://digitalx.mx/audio/renta-de-audio/#servicio');
   assert.deepEqual(datos.provider, { '@id': 'https://digitalx.mx/#negocio' });
   assert.deepEqual(datos.areaServed, [
     { '@type': 'City', name: 'Puebla' },
@@ -117,17 +117,17 @@ test('serviceJsonLd referencia al negocio por @id, lleva sus zonas y no declara 
 
 test('collectionPageJsonLd lista los elementos en orden y apunta por @id al negocio', () => {
   const datos = collectionPageJsonLd({
-    url: 'https://digitalx.mx/servicios/',
+    url: 'https://digitalx.mx/video/',
     nombre: 'Servicios',
     descripcion: 'Elige tu servicio.',
     idNegocio: 'https://digitalx.mx/#negocio',
     elementos: [
-      { name: 'Renta de audio y sonido', url: 'https://digitalx.mx/servicios/renta-de-audio/' },
-      { name: 'Video con drone', url: 'https://digitalx.mx/servicios/video-con-drone/' },
+      { name: 'Renta de audio y sonido', url: 'https://digitalx.mx/audio/renta-de-audio/' },
+      { name: 'Video con drone', url: 'https://digitalx.mx/video/video-con-drone/' },
     ],
   });
   assert.equal(datos['@type'], 'CollectionPage');
-  assert.equal(datos['@id'], 'https://digitalx.mx/servicios/#pagina');
+  assert.equal(datos['@id'], 'https://digitalx.mx/video/#pagina');
   assert.deepEqual(datos.about, { '@id': 'https://digitalx.mx/#negocio' });
   assert.equal(datos.mainEntity['@type'], 'ItemList');
   assert.deepEqual(
@@ -142,7 +142,7 @@ test('collectionPageJsonLd lista los elementos en orden y apunta por @id al nego
 
 test('collectionPageJsonLd sin elementos no lleva ItemList vacío', () => {
   const datos = collectionPageJsonLd({
-    url: 'https://digitalx.mx/servicios/',
+    url: 'https://digitalx.mx/video/',
     nombre: 'Servicios',
     descripcion: 'Elige tu servicio.',
     idNegocio: 'https://digitalx.mx/#negocio',

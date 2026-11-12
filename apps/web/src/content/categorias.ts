@@ -87,7 +87,28 @@ export const categorias: CategoriaContenido[] = [
       titulo: 'Cuéntanos tu evento',
       texto: 'Escríbenos por WhatsApp o llámanos y te decimos qué servicio de video te conviene.',
     },
-    faq: [],
+    faq: [
+      {
+        pregunta: '¿Qué servicio de video me conviene para mi evento?',
+        respuesta:
+          'Si quieres que todo tu público vea el escenario en el lugar, el circuito cerrado para eventos; si quieres quedarte con el video, la producción de videos para eventos; y si también quieres que lo vean en línea, la transmisión en vivo. Cuéntanos tu evento por WhatsApp y te decimos cuál te conviene.',
+      },
+      {
+        pregunta: '¿Puedo combinar varios servicios de video en el mismo evento?',
+        respuesta:
+          'Sí, siempre que los incluyamos en tu cotización. El circuito cerrado para eventos, la transmisión en vivo, la producción de videos y las tomas con drone se pueden sumar en el mismo evento. Dinos qué quieres combinar y lo cotizamos.',
+      },
+      {
+        pregunta: '¿Qué servicio de video sirve para mostrar mi negocio o mi lugar?',
+        respuesta:
+          'La producción de videos incluye videos institucionales, corporativos y promocionales. El video con drone muestra tu lugar desde el aire y el recorrido virtual 360, por dentro; también se pueden combinar.',
+      },
+      {
+        pregunta: '¿Puedo transmitir mi evento en vivo y quedarme también con el video?',
+        respuesta:
+          'Sí. Si la necesitas, la grabación de la transmisión se agrega con un costo extra; y si quieres un video editado, puedes sumar la producción de videos para eventos.',
+      },
+    ],
     clientes: [],
   },
   {
@@ -105,7 +126,23 @@ export const categorias: CategoriaContenido[] = [
       titulo: 'Cuéntanos qué necesita tu negocio',
       texto: 'Escríbenos por WhatsApp o llámanos y te decimos por dónde empezar.',
     },
-    faq: [],
+    faq: [
+      {
+        pregunta: '¿Necesito una página web, una tienda en línea, una aplicación móvil o software?',
+        respuesta:
+          'Si quieres presentar tu negocio, una página web; si quieres que tus clientes elijan y paguen sus productos, una tienda en línea; si necesitas algo en el celular, una aplicación móvil; y si lo que quieres es llevar mejor los procesos de tu negocio, software a la medida. Cuéntanos tu caso y te orientamos.',
+      },
+      {
+        pregunta: '¿Puedo conectar mi sistema o mi aplicación con otros sistemas o con mi página web?',
+        respuesta:
+          'Sí. Un sistema o una aplicación se pueden conectar con otros sistemas o con tu página web; esa conexión se cotiza como una función más.',
+      },
+      {
+        pregunta: 'Si mi negocio apenas empieza, ¿por dónde comienzo?',
+        respuesta:
+          'Cuéntanos qué hace tu negocio y qué quieres lograr, y te decimos por dónde empezar. Una aplicación puede arrancar con una versión sencilla y crecer después, siempre que se construya bien desde el inicio, con las bases para crecer.',
+      },
+    ],
     clientes: [],
   },
 ];

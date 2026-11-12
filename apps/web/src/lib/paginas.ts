@@ -5,7 +5,7 @@
  * Una página solo aparece en menú, pie y sitemap si su estado es 'lanzamiento' Y está
  * construida. Marcar `construida: true` al crear su archivo en src/pages/ (el build falla
  * si se marca sin que el archivo exista). Los servicios no tienen archivo propio: los genera
- * pages/servicios/[slug].astro, y el build también falla si uno construido no trae su contenido completo
+ * pages/[categoria]/[slug].astro, y el build también falla si uno construido no trae su contenido completo
  * en content/servicios.ts. Las páginas de categoría (/audio/, /video/ y /tecnologia/) tampoco: las genera
  * pages/[categoria].astro desde content/categorias.ts, y solo existen cuando la categoría tiene dos o más servicios
  * construidos (ver `destinoDeCategoria`).
@@ -29,86 +29,41 @@ export interface Pagina {
   paginaDe?: Categoria;
 }
 
+/** El slug de la URL de una categoría (/audio/, /video/, /tecnologia/), desde content/categorias.ts. */
+const slugDeCategoria = (id: Categoria) => categorias.find((c) => c.id === id)!.slug;
+
+/**
+ * Un servicio del registro. Su URL **se deriva de su categoría**: /{categoria}/{slug}/ (por ejemplo,
+ * /video/video-con-drone/). Nunca se escribe a mano, y nada cuelga de /servicios/.
+ */
+const servicio = (slug: string, titulo: string, categoria: Categoria, construida: boolean): Pagina => ({
+  url: `/${slugDeCategoria(categoria)}/${slug}/`,
+  titulo,
+  estado: 'lanzamiento',
+  construida,
+  categoria,
+});
+
 /** Páginas fijas y servicios. Las páginas de categoría se derivan de estos y de content/categorias.ts (abajo). */
 const base: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
 
   // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Una página por
-  // servicio (/servicios/{slug}/), generada por pages/servicios/[slug].astro solo cuando `construida` es true. Cada una
-  // se publica cuando el dueño apruebe sus fotos y videos: hasta entonces no se enlaza y su nombre es texto. El orden de
-  // aquí es el de las categorías y el de los textos del Inicio.
-  {
-    url: '/servicios/renta-de-audio/',
-    titulo: 'Renta de audio y sonido',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'audio',
-  },
+  // servicio (/{categoria}/{slug}/), generada por pages/[categoria]/[slug].astro solo cuando `construida` es true. Cada
+  // una se publica cuando el dueño apruebe sus fotos y videos: hasta entonces no se enlaza y su nombre es texto. El orden
+  // de aquí es el de las categorías y el de los textos del Inicio.
+  servicio('renta-de-audio', 'Renta de audio y sonido', 'audio', true),
 
-  {
-    url: '/servicios/circuito-cerrado-para-eventos/',
-    titulo: 'Circuito cerrado para eventos',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'video',
-  },
-  {
-    url: '/servicios/video-para-eventos/',
-    titulo: 'Producción de videos para eventos',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'video',
-  },
-  {
-    url: '/servicios/streaming-para-eventos/',
-    titulo: 'Transmisión en vivo',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'video',
-  },
-  {
-    url: '/servicios/video-con-drone/',
-    titulo: 'Video con drone',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'video',
-  },
-  {
-    url: '/servicios/recorridos-virtuales-360/',
-    titulo: 'Recorridos virtuales 360',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'video',
-  },
+  servicio('circuito-cerrado-para-eventos', 'Circuito cerrado para eventos', 'video', true),
+  servicio('video-para-eventos', 'Producción de videos para eventos', 'video', true),
+  servicio('streaming-para-eventos', 'Transmisión en vivo', 'video', true),
+  servicio('video-con-drone', 'Video con drone', 'video', true),
+  servicio('recorridos-virtuales-360', 'Recorridos virtuales 360', 'video', true),
 
-  {
-    url: '/servicios/paginas-web/',
-    titulo: 'Páginas web',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'tecnologia',
-  },
-  {
-    url: '/servicios/tienda-en-linea/',
-    titulo: 'Tienda en línea',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'tecnologia',
-  },
-  {
-    url: '/servicios/aplicaciones-moviles/',
-    titulo: 'Desarrollo de aplicaciones móviles',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'tecnologia',
-  },
-  {
-    url: '/servicios/desarrollo-de-software/',
-    titulo: 'Desarrollo de software',
-    estado: 'lanzamiento',
-    construida: true,
-    categoria: 'tecnologia',
-  },
+  servicio('paginas-web', 'Páginas web', 'tecnologia', true),
+  servicio('tienda-en-linea', 'Tienda en línea', 'tecnologia', true),
+  servicio('aplicaciones-moviles', 'Desarrollo de aplicaciones móviles', 'tecnologia', true),
+  servicio('desarrollo-de-software', 'Desarrollo de software', 'tecnologia', true),
 
   { url: '/proyectos/', titulo: 'Proyectos', estado: 'lanzamiento', construida: false },
   // [PENDIENTE: número mínimo de artículos para publicar el blog]
@@ -158,14 +113,18 @@ export const paginas: Pagina[] = [...base, ...paginasDeCategoria()];
 export const archivosDe = (url: string) => {
   const ruta = url === '/' ? 'index' : url.slice(1, -1);
   const archivos = [`${ruta}.astro`, `${ruta}/index.astro`];
-  // Los servicios (/servicios/{slug}/) salen todos de una sola ruta dinámica, y las categorías de otra.
-  if (/^\/servicios\/[^/]+\/$/.test(url)) archivos.push('servicios/[slug].astro');
+  // Los servicios (/{categoria}/{slug}/) salen todos de una sola ruta dinámica, y las categorías de otra.
+  if (paginas.some((p) => p.categoria && p.url === url)) archivos.push('[categoria]/[slug].astro');
   if (paginas.some((p) => p.paginaDe && p.url === url)) archivos.push('[categoria].astro');
   return archivos;
 };
 
-/** `/servicios/renta-de-audio/` → `renta-de-audio`; solo para las URLs de servicio. */
+/** `/audio/renta-de-audio/` → `renta-de-audio`; solo para las URLs de servicio. */
 export const slugDe = (url: string) => url.split('/')[2] ?? '';
+
+/** El servicio del registro con ese slug (`renta-de-audio`), o `undefined` si no es uno. */
+export const servicioPorSlug = (slug: string): Pagina | undefined =>
+  paginas.find((p) => p.categoria && slugDe(p.url) === slug);
 
 // El build falla si una página se marca como construida sin su archivo (ver astro.config.mjs).
 export const urlsConstruidas = paginas.filter((p) => p.construida).map((p) => p.url);

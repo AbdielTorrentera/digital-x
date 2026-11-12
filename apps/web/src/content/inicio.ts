@@ -5,7 +5,7 @@
  */
 import type { ImageMetadata } from 'astro';
 import { mensajesWhatsApp, waUrl, zonas } from '../lib/negocio';
-import { urlVerServicios, type Categoria as IdCategoria } from '../lib/paginas';
+import { urlVerServicios } from '../lib/paginas';
 import { lista } from '../lib/servicios';
 import { proyectos as proyectosDelSitio } from './proyectos';
 import type { PreguntaFrecuente } from '../lib/jsonld';
@@ -13,9 +13,7 @@ import type { PreguntaFrecuente } from '../lib/jsonld';
 // ⚠ FOTOS TEMPORALES (src/assets/temporales/, ver su README). Para poner una real: cambiar el import y el alt.
 // El build de producción falla mientras alguna página use una temporal.
 import fotoPortada from '../assets/temporales/temporal-salon-escenario-pantalla-bocinas.jpg';
-import fotoAudio from '../assets/temporales/temporal-bocinas-colgadas-techo.jpg';
-import fotoVideo from '../assets/temporales/temporal-camara-tripode-transmision.jpg';
-import fotoTecnologia from '../assets/temporales/temporal-laptop-escritorio-software.jpg';
+import fotoQueHacemos from '../assets/temporales/temporal-conferencia-escenario-pantalla.jpg';
 import fotoPorQue from '../assets/temporales/temporal-consola-mezcla-manos.jpg';
 
 export interface Foto {
@@ -31,12 +29,8 @@ export const portada = {
   descripcion:
     'Renta de audio, circuito cerrado para eventos, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.',
   h1: 'Audio, video y tecnología para tus eventos y tu negocio en Puebla',
-  // Debajo del H1 van las ciudades (reglas-seo sección 1): Puebla en el H1 y las demás en esta frase. Habla de todos los
-  // servicios: audio y video para eventos; página web, app o software para negocios.
-  texto:
-    'Un solo proveedor en Puebla, Atlixco e Izúcar de Matamoros para el audio y el video de tu evento, y para la página web, la app o el software de tu negocio.',
-  // Baja a la sección de servicios del Inicio (/#servicios).
-  boton: { etiqueta: 'Ver servicios', href: urlVerServicios },
+  // Junto al H1 va el logo blanco, grande (decorativo, lo pinta la portada). Sin lema, sin párrafo y sin botón: la propuesta y
+  // el único botón "Ver servicios" viven en la sección "Qué hacemos" (queHacemos).
   // [PENDIENTE: video de portada. Sin clip, la foto sirve igual en móvil y en escritorio.]
   foto: {
     src: fotoPortada,
@@ -44,32 +38,32 @@ export const portada = {
   } satisfies Foto,
 };
 
+// "Qué hacemos": el "About us" de la plantilla Marby (HomeAbout, commit 6a6f883d), SIN las tarjetas de cifras (no hay datos
+// y no se inventan números). El texto, aprobado por el dueño, no se repite en ninguna otra parte del sitio. El botón baja a
+// las tarjetas de servicios (/#servicios) y es el único "Ver servicios" del Inicio. Foto temporal.
+export const queHacemos = {
+  etiqueta: 'Digital X',
+  titulo: 'Qué hacemos',
+  texto:
+    'Un solo proveedor para tu evento y tu negocio: nos encargamos de que tu evento se vea y se escuche bien, y de darle a tu negocio las herramientas digitales que necesita, en Puebla, Atlixco, Izúcar de Matamoros y alrededores.',
+  boton: { etiqueta: 'Ver servicios', href: urlVerServicios },
+  foto: {
+    src: fotoQueHacemos,
+    alt: 'Presentador con micrófono en un escenario con pantalla grande y luces',
+  } satisfies Foto,
+};
+
 // Tarjetas de servicios del Inicio, una por categoría (Audio, Video y Tecnología), como la sección Services de Marby: cada
 // tarjeta entera es un enlace al destino de su categoría (su página de categoría o, si solo tiene un servicio construido,
 // ese servicio; ver `destinoDeCategoria`). El texto sale de content/categorias.ts: para quién es y los nombres de sus
 // servicios (los 10 oficiales, cada uno una sola vez): un nombre es enlace a su página solo si ya está construida.
-// Aquí solo viven las fotos, que son imágenes. [PENDIENTE: el dueño debe confirmar las frases de las tarjetas.] Sin
-// cifras, marcas ni capacidades.
+// Las fotos viven en categorias-fotos.ts. [PENDIENTE: el dueño debe confirmar las frases de las tarjetas.] Sin cifras,
+// marcas ni capacidades.
 export const servicios = {
   etiqueta: 'Servicios',
   titulo: 'Servicios de audio, video y tecnología en Puebla',
   /** Etiqueta pequeña de cada tarjeta. */
   etiquetaTarjeta: 'Servicios',
-  /** La foto de la tarjeta de cada categoría. */
-  fotos: {
-    audio: {
-      src: fotoAudio,
-      alt: 'Bocinas de sonido profesional colgadas del techo de un recinto, en blanco y negro',
-    },
-    video: {
-      src: fotoVideo,
-      alt: 'Cámara de video sobre un trípode grabando una sesión en un salón',
-    },
-    tecnologia: {
-      src: fotoTecnologia,
-      alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla',
-    },
-  } satisfies Record<IdCategoria, Foto>,
 };
 
 export const proyectos = {

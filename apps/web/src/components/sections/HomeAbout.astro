@@ -1,123 +1,104 @@
 ---
 import Btn from '../Btn.astro';
-import { site } from '../../lib/site';
-const { about } = await site('home');
+import Foto from '../Foto.astro';
+import type { Foto as FotoDatos } from '../../content/inicio';
+
+// "About us" de la plantilla Marby (HomeAbout, commit 6a6f883d): etiqueta y foto apaisada (proporción 473 × 234 px) a la
+// izquierda; título grande, texto y botón a la derecha. Desde 1024 px la foto ocupa 7 de 12 columnas, el texto las otras 5
+// y van separados por la escala --esp-*; debajo de 1024 px, la foto a todo el ancho arriba y el texto abajo. SIN las tres
+// tarjetas de cifras de la plantilla (no hay datos y no se inventan números). Los textos vienen de content/inicio.ts
+// (`queHacemos`). El título usa el tamaño grande de la escala (--txt-h1; el original usa su H2 de 48 px).
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  texto: string;
+  foto: FotoDatos;
+  boton: { etiqueta: string; href: string };
+}
+const { etiqueta, titulo, texto, foto, boton } = Astro.props;
 ---
 
 <section class="about section">
   <div class="container about__inner">
-    <div class="about__top">
-      <div class="about__col">
-        <p class="t-caption2" data-appear>
-          {about.label}
-        </p>
-        <img
-          class="about__img"
-          src={about.image}
-          alt={about.imageAlt}
-          width="473"
-          height="234"
-          loading="lazy"
-          data-appear
-        />
-      </div>
-      <div class="about__col about__col--text">
-        <h2 class="t-h2" data-appear>
-          {about.title}
-        </h2>
-        <p class="t-body" data-appear>
-          {about.text}
-        </p>
-        <div data-appear>
-          <Btn label={about.cta.label} href={about.cta.href} />
-        </div>
-      </div>
+    <div class="about__col">
+      <p class="t-caption2" data-appear>
+        {etiqueta}
+      </p>
+      <Foto
+        class="about__img"
+        src={foto.src}
+        alt={foto.alt}
+        sizes="(min-width: 1280px) 700px, (min-width: 1024px) 55vw, 100vw"
+        widths={[473, 946, 1400]}
+      />
     </div>
-    <div class="about__stats">
-      {about.stats.map((s: any) => (
-        <div class="stat" data-appear>
-          <p class="stat__label t-caption2">{s.label}</p>
-          <div class="stat__row">
-            <p class="t-h2 stat__value">{s.value}</p>
-            <p class="t-caption">{s.index}</p>
-          </div>
-        </div>
-      ))}
+    <div class="about__col about__col--text">
+      <h2 class="t-h1" data-appear>
+        {titulo}
+      </h2>
+      <p class="t-body" data-appear>
+        {texto}
+      </p>
+      <div data-appear>
+        <Btn label={boton.etiqueta} href={boton.href} />
+      </div>
     </div>
   </div>
 </section>
 <style>
+  /* Relleno de sección grande (como las demás): el espacio de abajo se suma al de arriba de la sección de servicios. */
   .about {
     background: var(--dx-blanco);
+    padding-block: var(--esp-8);
   }
   .about__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-7);
-  }
-  .about__top {
     display: flex;
     flex-direction: column;
     gap: var(--esp-5);
   }
   .about__col {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--esp-4);
+    gap: 20px;
   }
-  .about__img {
+  .about__col--text {
+    gap: var(--esp-5);
+  }
+  /* <picture> no pinta caja: el <img> es el elemento del flujo. Picture no le pone al <img> el atributo de alcance. */
+  .about :global(picture) {
+    display: contents;
+  }
+  /* Móvil: foto a todo el ancho arriba y el texto debajo. */
+  .about :global(.about__img) {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     border-radius: var(--radio);
   }
-  .about__stats {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-5);
-  }
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-7);
-    padding: var(--esp-4);
-    border-radius: var(--radio);
-    background: var(--dx-gris-claro);
-  }
-  .stat__label {
-    padding-bottom: var(--esp-4);
-    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
-  }
-  .stat__row {
-    display: flex;
-    align-items: flex-end;
-    gap: var(--esp-5);
-  }
-  .stat__value {
-    flex: 1;
-  }
-  @media (min-width: 768px) {
-    .about__stats {
-      flex-direction: row;
-    }
-    .stat {
-      flex: 1 1 0;
+  /* La proporción apaisada de la plantilla (473 × 234 px). */
+  @media (min-width: 810px) {
+    .about :global(.about__img) {
+      aspect-ratio: 473 / 234;
     }
   }
+  /* Escritorio: la foto ocupa 7 de 12 columnas y el texto el resto, con el medianil normal entre ambas; el texto queda
+     centrado verticalmente respecto de la foto con su etiqueta. */
   @media (min-width: 1024px) {
-    .about__top {
+    .about {
+      padding-block: var(--esp-9);
+    }
+    .about__inner {
       flex-direction: row;
-      gap: var(--medianil);
+      align-items: center;
+      gap: var(--esp-7);
     }
     .about__col {
-      flex: 1 1 0;
+      flex: 7 1 0;
     }
-    .about__stats {
-      gap: var(--esp-6);
-    }
-    .stat {
-      padding: var(--esp-5);
+    .about__col--text {
+      flex: 5 1 0;
     }
   }
 </style>

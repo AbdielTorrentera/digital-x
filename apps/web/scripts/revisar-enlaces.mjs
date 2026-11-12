@@ -91,9 +91,10 @@ for (const archivo of htmlDe(dist)) {
           new URL(sinHash, `https://sitio.local${paginaUrl}`).pathname;
     if (sinHash) revisados++;
     if (!sinHash && !ancla) continue;
-    // /servicios/ (el catálogo) ya no existe: ni la ruta ni sus anclas se enlazan desde ninguna página.
-    if (absoluto === '/servicios/') {
-      rotos.push(`${paginaUrl}  →  ${enlace}  (/servicios/ ya no existe: usa la categoría o el servicio)`);
+    // Nada cuelga de /servicios/ (ni el catálogo ni los servicios, que viven en /{categoria}/{slug}/): ningún enlace de
+    // ninguna página apunta a esa ruta, a una subruta ni a sus anclas.
+    if (absoluto === '/servicios' || absoluto.startsWith('/servicios/')) {
+      rotos.push(`${paginaUrl}  →  ${enlace}  (/servicios/ ya no existe: usa /{categoria}/{slug}/ o la categoría)`);
       continue;
     }
     if (sinHash && !resuelve(absoluto)) {

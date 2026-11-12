@@ -1,12 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import Foto from './Foto.astro';
 import Migas from './Migas.astro';
 import CierreContacto from './sections/CierreContacto.astro';
 import ClientesDeCategoria from './sections/ClientesDeCategoria.astro';
 import Faq from './sections/Faq.astro';
 import Team from './sections/Team.astro';
-import Servicios from './sections/Servicios.astro';
+import TarjetaServicio from './ui/TarjetaServicio.astro';
 import { categorias } from '../content/categorias';
+import { fotosDeCategoria } from '../content/categorias-fotos';
 import { proyectosPagina } from '../content/nosotros';
 import { proyectos as proyectosDelSitio } from '../content/proyectos';
 import { servicios } from '../content/servicios';
@@ -17,11 +19,12 @@ import { slugDe, serviciosConstruidos, type Categoria } from '../lib/paginas';
 import { proyectosDeCategoria } from '../lib/proyectos';
 import type { Slug } from '../content/servicios';
 
-// Plantilla de la página de una categoría (/audio/, /video/ y /tecnologia/), la misma para las tres: migas, H1 e
-// introducción; las tarjetas de servicio del Inicio (sections/Servicios.astro), una por servicio construido y con la foto
-// alternando de lado en escritorio; proyectos de la categoría (el carrusel de Nosotros, con los suyos); clientes con permiso; preguntas frecuentes y el cierre.
-// Los proyectos, los clientes y las preguntas solo se dibujan si hay. Todo sale de content/categorias.ts y del registro
-// de servicios; nada es específico de una categoría. Solo se genera para una categoría con dos o más servicios
+// Plantilla de la página de una categoría (/audio/, /video/ y /tecnologia/), la misma para las tres, con el diseño del
+// listado de la plantilla Marby (/property), SIN filtros ni búsqueda: portada con foto y el H1 encima, la introducción
+// debajo, una cuadrícula de tarjetas de servicio (2 columnas desde 768 px, 1 en móvil; ui/TarjetaServicio.astro), los
+// proyectos de la categoría (el carrusel de Nosotros), clientes con permiso, preguntas frecuentes en cuadrícula y el
+// cierre. Los proyectos, los clientes y las preguntas solo se dibujan si hay. Todo sale de content/categorias.ts y del
+// registro de servicios; nada es específico de una categoría. Solo se genera para una categoría con dos o más servicios
 // construidos (pages/[categoria].astro).
 // Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1.
 interface Props {
@@ -31,17 +34,17 @@ const { id } = Astro.props;
 const categoria = categorias.find((c) => c.id === id)!;
 const construidos = serviciosConstruidos(id);
 const nombreEnMinuscula = categoria.etiqueta.toLowerCase();
+const foto = fotosDeCategoria[id];
 
+// Una tarjeta por servicio construido, numerada dentro de la categoría (01, 02…), con los tres datos de su ficha.
 const tarjetas = construidos.map((pagina, i) => {
   const slug = slugDe(pagina.url) as Slug;
   return {
-    contador: `/${i + 1}`,
     titulo: pagina.titulo,
+    numero: String(i + 1).padStart(2, '0'),
     href: pagina.url,
-    ariaLabel: `Ver ${pagina.titulo.toLowerCase()}`,
     foto: fotos[slug],
-    parrafo: [{ literal: servicios[slug].descripcion }],
-    boton: 'Ver servicio',
+    filas: servicios[slug].pagina!.ficha!,
   };
 });
 
@@ -62,19 +65,45 @@ const datosEstructurados = collectionPageJsonLd({
 ---
 
 <Base title={categoria.title} description={categoria.meta} whatsapp={mensajesWhatsApp.general}>
-  <section class="cabeza">
-    <div class="container cabeza__inner">
+  <section class="phero sobre-negro">
+    <Foto class="phero__img" src={foto.src} alt={foto.alt} sizes="100vw" prioritaria />
+    <div class="container phero__inner">
+      <h1 class="t-h1 c-blanco">{categoria.h1}</h1>
+    </div>
+  </section>
+  <div class="barra-migas">
+    <div class="container">
       <Migas
         items={[
           { titulo: 'Inicio', url: '/' },
           { titulo: categoria.etiqueta, url: `/${categoria.slug}/` },
         ]}
       />
-      <h1 class="t-h1">{categoria.h1}</h1>
-      <p class="t-body cabeza__intro">{categoria.intro}</p>
+    </div>
+  </div>
+  <section class="intro">
+    <div class="container">
+      <p class="t-body intro__texto">{categoria.intro}</p>
     </div>
   </section>
-  <Servicios etiquetaTarjeta={categoria.etiqueta} items={tarjetas} alternar nivelTarjeta="h2" />
+  <section class:list={['plist', { 'plist--con-proyectos': proyectos.length > 0 }]}>
+    <div class="container">
+      <ul class="plist__grid">
+        {tarjetas.map((tarjeta) => (
+          <li data-appear>
+            <TarjetaServicio
+              titulo={tarjeta.titulo}
+              numero={tarjeta.numero}
+              href={tarjeta.href}
+              foto={tarjeta.foto}
+              etiquetaCategoria={categoria.etiqueta}
+              filas={tarjeta.filas}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
   {proyectos.length > 0 && (
     <Team
       etiqueta={proyectosPagina.etiqueta}
@@ -91,6 +120,7 @@ const datosEstructurados = collectionPageJsonLd({
       titulo={`Preguntas frecuentes sobre ${nombreEnMinuscula}`}
       texto={`Lo que más nos preguntan sobre ${nombreEnMinuscula}.`}
       items={categoria.faq}
+      variante="cuadricula"
     />
   )}
   <CierreContacto
@@ -103,21 +133,83 @@ const datosEstructurados = collectionPageJsonLd({
   <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
 </Base>
 <style>
-  .cabeza {
+  /* Migas debajo de la portada y fijas bajo la barra al hacer scroll (sticky, a `--nav-alto`): por debajo de la barra del
+     menú (z 5) y del menú interno, sin tapar el contenido (ocupan su lugar en el flujo). */
+  .barra-migas {
+    position: sticky;
+    top: var(--nav-alto);
+    z-index: 3;
     background: var(--dx-blanco);
-    padding-block: var(--esp-2) var(--esp-6);
   }
-  .cabeza__inner {
+  /* La portada de la página de listado de Marby: foto a todo el ancho con el título encima. En lugar de la franja de
+     vidrio, la foto se oscurece (--dx-brillo-sobre-foto) para que el texto blanco cumpla el contraste (marca §3). El alto
+     es mínimo, no fijo: el título crece con el zoom y la letra grande (diseño §9). */
+  .phero {
+    position: relative;
+    /* Alto: la mitad de la pantalla visible bajo la barra en móvil y 70 % desde 768 px (dvh donde exista). */
+    min-height: max(280px, calc(50vh - var(--nav-alto)));
+    min-height: max(280px, calc(50dvh - var(--nav-alto)));
+    overflow: clip;
     display: flex;
-    flex-direction: column;
-    gap: var(--esp-5);
+    align-items: center;
+    justify-content: center;
   }
-  .cabeza__intro {
+  /* Picture no le pone al <img> el atributo de alcance de Astro: se selecciona como global dentro de la sección. */
+  .phero :global(.phero__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--dx-brillo-sobre-foto));
+  }
+  /* El H1 va centrado sobre la foto, como en la portada del listado de Marby. */
+  .phero__inner {
+    position: relative;
+    padding-block: var(--esp-7);
+    text-align: center;
+  }
+  .phero__inner h1 {
+    max-width: 28ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .intro {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-4) 0;
+  }
+  .intro__texto {
     max-width: 70ch;
   }
+  .plist {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-7) var(--esp-8);
+  }
+  /* Con proyectos debajo, la foto de ese bloque empieza donde terminan las tarjetas (sin franja blanca vacía). */
+  .plist.plist--con-proyectos {
+    padding-bottom: 0;
+  }
+  .plist__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-7) var(--esp-6);
+  }
+  @media (min-width: 768px) {
+    .phero {
+      min-height: calc(70vh - var(--nav-alto));
+      min-height: calc(70dvh - var(--nav-alto));
+    }
+    .plist__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--esp-7) var(--medianil);
+    }
+  }
   @media (min-width: 1024px) {
-    .cabeza {
-      padding-block: var(--esp-4) var(--esp-7);
+    .plist {
+      padding-block: var(--esp-8) var(--esp-9);
+    }
+    .plist.plist--con-proyectos {
+      padding-bottom: 0;
     }
   }
 </style>

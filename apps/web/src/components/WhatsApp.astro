@@ -18,7 +18,7 @@ const { mensaje } = Astro.props;
   rel="noopener"
   aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
 >
-  <Icon name="whatsapp" />
+  <Icon name="whatsapp" size="flotante" />
 </a>
 <style>
   .wa {
@@ -28,9 +28,9 @@ const { mensaje } = Astro.props;
     width: var(--boton-flotante);
     height: var(--boton-flotante);
     border-radius: var(--radio-pildora);
-    /* Verde oficial de WhatsApp con ícono negro: el blanco no cumple contraste (identidad sección 2). */
+    /* Verde de WhatsApp (#1D9446) con el logo oficial de la marca en blanco (Simple Icons, CC0): 3.91:1, cumple 3:1 para gráficos. */
     background: var(--dx-whatsapp);
-    color: var(--dx-negro);
+    color: var(--dx-blanco);
     box-shadow: var(--sombra-flotante);
   }
   .wa:active {

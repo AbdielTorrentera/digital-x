@@ -9,13 +9,13 @@
   --dx-amarillo-dorado: #f2cb05;
   --dx-negro: #000000;
   --dx-gris-medio: #999999;
-  --dx-gris-claro: #dbdbdb;
   --dx-blanco: #ffffff;
   /* Única excepción a la paleta: verde oficial de WhatsApp (identidad sección 2). */
-  --dx-whatsapp: #25d366;
+  --dx-whatsapp: #1d9446; /* botón flotante de WhatsApp; con ícono blanco: 3.91:1 (identidad §2) */
 
-  /* Fondo de las tarjetas de servicio: el gris de la plantilla Marby original (--ink-50, commit 6a6f883d). Excepción a la
-     paleta de marca decidida por el dueño; solo para ese fondo (el texto sigue en negro). */
+  /* GRIS CLARO ÚNICO: el de la plantilla Marby original (--ink-50, commit 6a6f883d). Decisión del dueño: es el único gris
+     claro del sitio, para todas las superficies grises (tarjetas, preguntas, encabezados, menú interno y panel); sustituye
+     al #DBDBDB de la paleta anterior. El texto sobre él es negro (≈ 18:1). */
   --dx-gris-tarjeta: #f5f5f6;
 
   /* Derivados del negro (sin colores nuevos): capa para texto sobre fotos y sombras. */
@@ -28,10 +28,10 @@
   /* Colores por contexto. Fondo claro por defecto; .sobre-negro los invierte.
      Contraste (identidad sección 3): amarillo y gris medio solo existen sobre negro. */
   --fondo: var(--dx-blanco);
-  --fondo-suave: var(--dx-gris-claro);
+  --fondo-suave: var(--dx-gris-tarjeta);
   --texto: var(--dx-negro);
   --texto-sec: var(--dx-negro);
-  --borde: var(--dx-gris-claro);
+  --borde: var(--dx-gris-tarjeta);
   --foco-color: var(--dx-negro);
   --btn-fondo: var(--dx-negro);
   --btn-texto: var(--dx-blanco);
@@ -224,10 +224,12 @@
   /* medidas que fijan las reglas */
   --tactil: 48px; /* alto y área táctil mínima (diseño §6, SEO §10) */
   --alto-header: 64px; /* máximo del header fijo en móvil (diseño §7) */
-  /* Barra del menú, fija: logo + 20 px arriba y abajo (diseño §7). De aquí cuelgan la navegación interna y los saltos. */
-  --nav-alto: 88px;
+  /* Barra del menú, fija: logo + 20 px arriba y abajo (diseño §7). Sale de la barra real (81 px con el logo de 128 px), no
+     de un número a mano: de aquí cuelgan la portada, la navegación interna y los saltos. */
+  --nav-alto: calc(var(--logo-ancho) * 515 / 1609 + 2 * 20px);
   --salto-alto: calc(var(--tactil) + 2 * var(--esp-1)); /* barra de navegación interna: 48 px + su relleno */
-  --boton-flotante: 56px; /* círculo de los botones flotantes de WhatsApp y de llamada (SEO §11) */
+  --boton-flotante: 60px; /* círculo de los botones flotantes de WhatsApp y de llamada (SEO §11); 64 px desde 768 px */
+  --icono-flotante: 34px; /* ícono dentro de los flotantes (≈ 57 % del círculo); 36 px desde 768 px */
   --icono: 24px;
   --icono-boton: 20px; /* íconos dentro de botones (diseño §6) */
   --logo-ancho: 128px; /* ≥ 120 px (identidad §1) */
@@ -243,6 +245,8 @@
   :root {
     --margen: var(--esp-6);
     --medianil: var(--esp-5);
+    --boton-flotante: 64px;
+    --icono-flotante: 36px;
   }
 }
 

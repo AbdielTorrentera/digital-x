@@ -1,19 +1,24 @@
 ---
 import QuestionRow from '../ui/QuestionRow.astro';
+import QuestionTile from '../ui/QuestionTile.astro';
+import TextoConEnlaces from '../ui/TextoConEnlaces.astro';
 import { faqPageJsonLd, serializarJsonLd, type PreguntaFrecuente } from '../../lib/jsonld';
 
 // Preguntas frecuentes. El FAQPage (JSON-LD) se genera de la misma lista que se muestra, así nunca difieren
-// (reglas-seo sección 12: solo en páginas que muestran las preguntas en pantalla).
+// (reglas-seo sección 12: solo en páginas que muestran las preguntas en pantalla). Dos diseños de la plantilla Marby:
+// "lista" (filas que se abren, la del Inicio y los servicios) y "cuadricula" (la sección [ FAQS ] de /property: tarjetas
+// numeradas que se abren, 1 columna en móvil, 2 en tableta y 3 en escritorio; las páginas de categoría).
 interface Props {
   etiqueta: string;
   titulo: string;
   texto: string;
   items: PreguntaFrecuente[];
+  variante?: 'lista' | 'cuadricula';
 }
-const { etiqueta, titulo, texto, items } = Astro.props;
+const { etiqueta, titulo, texto, items, variante = 'lista' } = Astro.props;
 ---
 
-<section class="faq">
+<section class:list={['faq', { 'faq--cuadricula': variante === 'cuadricula' }]}>
   <div class="container faq__inner">
     <div class="faq__head">
       <div class="faq__title">
@@ -24,17 +29,27 @@ const { etiqueta, titulo, texto, items } = Astro.props;
         <p class="t-body">{texto}</p>
       </div>
     </div>
-    <div class="faq__list" data-accordion>
-      {items.map((item, i) => (
-        <QuestionRow n={i + 1} q={item.pregunta} a={item.respuesta} />
-      ))}
-    </div>
+    {variante === 'cuadricula' ? (
+      <div class="faq__grid" data-accordion>
+        {items.map((item, i) => (
+          <QuestionTile n={i + 1} q={item.pregunta} grupo="faq">
+            <TextoConEnlaces texto={item.respuesta} />
+          </QuestionTile>
+        ))}
+      </div>
+    ) : (
+      <div class="faq__list" data-accordion>
+        {items.map((item, i) => (
+          <QuestionRow n={i + 1} q={item.pregunta} a={item.respuesta} />
+        ))}
+      </div>
+    )}
   </div>
   <script type="application/ld+json" set:html={serializarJsonLd(faqPageJsonLd(items))} />
 </section>
 <style>
   .faq {
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
     padding-block: var(--esp-8);
   }
   .faq__inner {
@@ -76,6 +91,26 @@ const { etiqueta, titulo, texto, items } = Astro.props;
     .faq__title,
     .faq__side {
       flex: 1 1 0;
+    }
+  }
+  /* Cuadrícula: fondo blanco (las tarjetas son del gris claro, que sobre el gris de la lista no se verían). */
+  .faq--cuadricula {
+    background: var(--dx-blanco);
+  }
+  .faq__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-5);
+  }
+  @media (min-width: 768px) {
+    .faq__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--medianil);
+    }
+  }
+  @media (min-width: 1024px) {
+    .faq__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

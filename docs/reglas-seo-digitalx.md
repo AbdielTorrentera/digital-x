@@ -85,9 +85,9 @@ Meta de Política de privacidad (132 caracteres): `Qué datos personales recibe 
 
 ### Metadatos de las categorías y los servicios
 
-- **No hay página `/servicios/`.** Las categorías con dos o más servicios construidos tienen su página (`/video/`, `/tecnologia/`, y `/audio/` cuando corresponda) con el patrón `Servicios de {área} en Puebla y Atlixco | Digital X`; los textos viven en `apps/web/src/content/categorias.ts`. Sus metas, H1 e introducciones están aprobados por el dueño, y no repiten oraciones de las páginas de servicio.
+- **No hay página `/servicios/`**: los servicios viven en `/{categoria}/{slug}/`. Las categorías con dos o más servicios construidos tienen su página (`/video/`, `/tecnologia/`, y `/audio/` cuando corresponda) con el patrón `Servicios de {área} en Puebla y Atlixco | Digital X`; los textos viven en `apps/web/src/content/categorias.ts`. Sus metas, H1 e introducciones están aprobados por el dueño, y no repiten oraciones de las páginas de servicio.
 
-- Los 10 servicios tienen su página en `/servicios/{slug}/`. Sus **titles** y **descripciones cortas** (las de las tarjetas y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
+- Los 10 servicios tienen su página en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`); la categoría con un solo servicio construido no tiene página propia. Sus **titles** y **descripciones cortas** (las de las tarjetas y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
 - La **meta** de cada servicio se redacta aparte de su descripción: servicio + zona (Puebla, Atlixco o alrededores) + "Cotiza por WhatsApp", sin datos nuevos y de 155 caracteres como máximo. Las metas y los H1 de arriba están aprobados por el dueño.
 - En renta de audio se usan juntas las palabras "audio" y "sonido" (incluye sonorización), también en el H1.
 - Falta definir por servicio, al aprobar cada página: palabra clave principal, secciones, FAQ propias y enlaces internos.
@@ -125,7 +125,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 ## 4. Enlazado interno y pie de página
 
 - Cada **página de servicio** enlaza a: su categoría (en las migas: Inicio › {Categoría} › {Servicio}, o Inicio › {Servicio} si la categoría no tiene página), `/proyectos/` y un servicio complementario. Un servicio que aún no está publicado **no se enlaza**: su nombre sale como texto y se omite de "También te puede servir".
-- Las **páginas de categoría** (`/video/`, `/tecnologia/`; `/audio/` cuando Audio tenga dos servicios construidos) enlazan a todas las páginas de servicio publicadas de su categoría. **No existe `/servicios/`**: ningún enlace del sitio apunta a esa ruta ni a sus anclas (`pnpm check:enlaces` lo verifica). Con un solo servicio construido, la categoría no tiene página y el menú, el Inicio y el pie enlazan directo a ese servicio.
+- Las **páginas de categoría** (`/video/`, `/tecnologia/`; `/audio/` cuando Audio tenga dos servicios construidos) enlazan a todas las páginas de servicio publicadas de su categoría. **No existe `/servicios/`**: ningún enlace del sitio apunta a esa ruta, a una subruta ni a sus anclas (`pnpm check:enlaces` lo verifica). Con un solo servicio construido, la categoría no tiene página y el menú, el Inicio y el pie enlazan directo a ese servicio.
 - Textos de enlace **descriptivos**. PROHIBIDO: "ver más", "clic aquí", "leer más", "contacto" como único texto de un enlace de servicio.
 - Enlaces cruzados obligatorios: renta de audio ↔ circuito cerrado, producción de videos y transmisión en vivo ("¿quieres también proyectar, grabar o transmitir tu evento?").
 - **Pie de página geográfico:** un texto fijo, igual en todo el sitio, con las zonas de los dos grupos. Ejemplo:
@@ -240,7 +240,7 @@ Si falta un campo, `[PENDIENTE: ...]`. Casos de software: anónimos si no hay pe
 La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde celular. Diseñar **primero para móvil**.
 
 - Objetivo: página usable en menos de **2 s** en 4G móvil. Umbral mínimo de aprobación (Core Web Vitals "bueno"): **LCP ≤ 2.5 s, CLS ≤ 0.1, INP ≤ 200 ms**. Medir con PageSpeed Insights.
-- Botón de llamada **flotante** con enlace `tel:+522441244913`, solo ícono, encima del botón flotante de WhatsApp y **solo en celular y tableta** (menos de 1024 px); círculo de al menos **56 px**, visible sin hacer scroll. En escritorio no se muestra: el teléfono va en el pie con enlace `tel:`. El header no lleva botón de llamada.
+- Botón de llamada **flotante** con enlace `tel:+522441244913`, solo ícono, encima del botón flotante de WhatsApp y **solo en celular y tableta** (menos de 1024 px); círculo de **60 px en móvil y 64 px desde 768 px** (nunca menos de 56 px), visible sin hacer scroll. En escritorio no se muestra: el teléfono va en el pie con enlace `tel:`. El header no lleva botón de llamada.
 - Texto legible sin hacer zoom, sin scroll horizontal.
 - Sin ventanas emergentes que tapen el contenido en móvil.
 
@@ -249,7 +249,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 ## 11. Conversión: WhatsApp y llamada
 
 - **Botón flotante de WhatsApp** visible en todas las páginas, **solo ícono** en todos los tamaños: sin texto y sin una versión que cambie al hacer scroll (no lleva "Cotiza tu evento o proyecto aquí").
-  - Círculo de 56 px, igual al de llamada, fijo en una esquina, sin tapar el CTA principal ni el contenido.
+  - Círculo de 60 px (64 px desde 768 px), igual al de llamada, con el logo oficial de WhatsApp en blanco (Simple Icons; color y contraste: identidad §2), fijo en una esquina, sin tapar el CTA principal ni el contenido.
   - `aria-label` `Cotizar por WhatsApp (se abre en una pestaña nueva)`.
   - En el Inicio, WhatsApp aparece en este botón y en el llamado final; la portada, Cobertura y Preguntas frecuentes no llevan botón de WhatsApp.
 - Enlace de WhatsApp: `https://wa.me/522441244913?text={mensaje codificado}`.
@@ -272,7 +272,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 - **Categorías:** las páginas de categoría usan el mensaje general; cada página de servicio usa el suyo.
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):
   - Enlace `tel:+522441244913`, solo ícono, `aria-label` `Llamar a Digital X`.
-  - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de al menos 56 px, fondo negro (`--dx-negro`) con ícono blanco, para que WhatsApp (verde) siga siendo la acción principal.
+  - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de 60 px (64 px desde 768 px), fondo negro (`--dx-negro`) con ícono blanco (Phosphor Bold) de tamaño visual igual al del logo de WhatsApp (diseño §6), para que WhatsApp (verde) siga siendo la acción principal.
   - Respeta el área segura del celular y no tapa contenido ni el llamado final: el pie deja espacio al final de la página.
   - En escritorio el teléfono queda en el pie, con enlace `tel:`.
 - **Medición:** registrar eventos de clic en WhatsApp, llamada y correo, indicando la página de origen.
@@ -283,7 +283,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 
 - **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`). `foundingDate` = `2018` (el año en que nació la idea).
 - **Nosotros:** un nodo `AboutPage` cuyo `about` y `mainEntity` apuntan por `@id` a `https://digitalx.mx/#negocio`: no se duplica el `ProfessionalService`. Más el `FAQPage` de sus preguntas, que salen del mismo arreglo que se muestra. Sin `Person` ni datos del dueño.
-- **Páginas de categoría (`/video/`, `/tecnologia/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de sus servicios **publicados**, más el `BreadcrumbList` (Inicio › Categoría) y, cuando haya preguntas, el `FAQPage` (hoy vacío: no se genera). Desaparece el `ItemList` de `/servicios/` con la página; ninguna otra página lleva `ItemList`.
+- **Páginas de categoría (`/video/`, `/tecnologia/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de sus servicios **publicados**, más el `BreadcrumbList` (Inicio › Categoría) y, cuando haya preguntas, el `FAQPage` (Video y Tecnología tienen sus preguntas; Audio no, y no se genera). Desaparece el `ItemList` de `/servicios/` con la página; ninguna otra página lleva `ItemList`.
 - **Cada página de servicio:** nodo `Service` (con `@id` `{url}#servicio`) con `name`, `serviceType` (la categoría), `description`, `url`, `provider` (referencia al negocio por `@id`) y `areaServed`.
 - **`FAQPage`** solo en páginas que muestran las preguntas frecuentes en pantalla.
 - **`BreadcrumbList`** en las páginas de categoría y en las de servicio (las mismas migas que se ven).

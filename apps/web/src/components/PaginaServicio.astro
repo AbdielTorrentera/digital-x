@@ -8,23 +8,24 @@ import Migas from './Migas.astro';
 import NavInterna from './NavInterna.astro';
 import CierreContacto from './sections/CierreContacto.astro';
 import Faq from './sections/Faq.astro';
-import TarjetaProyecto from './ui/TarjetaProyecto.astro';
+import Team from './sections/Team.astro';
 import TextoConEnlaces from './ui/TextoConEnlaces.astro';
 import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
+import { proyectosPagina } from '../content/nosotros';
 import { proyectos as proyectosDelSitio } from '../content/proyectos';
 import { categorias } from '../content/categorias';
 import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
 import { enlaceAPagina } from '../lib/enlaces';
 import { serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
 import { idNegocio, negocio, telUrl, waUrl, zonas } from '../lib/negocio';
-import { paginas, visible } from '../lib/paginas';
+import { paginas, servicioPorSlug, visible } from '../lib/paginas';
 import { proyectosDeServicio } from '../lib/proyectos';
 import { enlaceDeServicio } from '../lib/servicios';
 
 // Plantilla de la página de un servicio: la página de detalle de la plantilla Marby (migas, barra con el título, foto
 // con ficha, navegación interna, descripción, lista de lo que incluye, enlaces relacionados, tarjeta de cotización,
 // preguntas frecuentes y galería). Se quitan la tarjeta de asesor, el mapa y el lightbox: no hay datos ni material.
-// Solo se genera para un servicio con `construida: true` y con su contenido completo (pages/servicios/[slug].astro).
+// Solo se genera para un servicio con `construida: true` y con su contenido completo (pages/[categoria]/[slug].astro).
 interface Props {
   slug: Slug;
   foto: FotoDeServicio;
@@ -35,8 +36,7 @@ const faltan = faltantesDePagina(slug);
 if (faltan.length > 0)
   throw new Error(`La página de ${slug} no tiene su contenido completo: falta ${faltan.join(', ')}.`);
 
-const registro = paginas.find((p) => p.categoria && p.url === `/servicios/${slug}/`)!;
-const numero = String(paginas.filter((p) => p.categoria).indexOf(registro) + 1).padStart(2, '0');
+const registro = servicioPorSlug(slug)!;
 const c = servicios[slug];
 const p = c.pagina!;
 const ficha = p.ficha!;
@@ -58,7 +58,7 @@ const url = new URL(registro.url, negocio.url).href;
 // Un servicio sin página no se enlaza: se omite de la lista (sus datos siguen completos).
 const enlaceDe = (item: EnlaceRelacionado) =>
   'slug' in item
-    ? { titulo: paginas.find((x) => x.url === `/servicios/${item.slug}/`)!.titulo, href: enlaceDeServicio(item.slug) }
+    ? { titulo: servicioPorSlug(item.slug)!.titulo, href: enlaceDeServicio(item.slug) }
     : { titulo: item.titulo, href: enlaceAPagina(item.url) };
 const relacionados = tambien.items
   .map((item) => ({ ...enlaceDe(item), texto: item.texto }))
@@ -72,8 +72,8 @@ const salto = [
   { href: '#descripcion', etiqueta: 'Descripción' },
   { href: '#que-incluye', etiqueta: 'Qué incluye' },
   ...secciones.map((s) => ({ href: `#${s.id}`, etiqueta: s.etiqueta })),
-  ...(proyectos.length > 0 ? [{ href: '#proyectos', etiqueta: 'Proyectos' }] : []),
   { href: '#te-puede-servir', etiqueta: 'Te puede servir' },
+  ...(proyectos.length > 0 ? [{ href: '#proyectos', etiqueta: 'Proyectos' }] : []),
 ];
 const nombreEnMinuscula = nombre.toLowerCase();
 const datosEstructurados = serviceJsonLd({
@@ -88,40 +88,39 @@ const datosEstructurados = serviceJsonLd({
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
 <Base title={c.title} description={c.meta} whatsapp={c.mensaje}>
-  <section class="srv">
-    <div class="container srv__inner">
-      <Migas
-        items={[
-          { titulo: 'Inicio', url: '/' },
-          ...(paginaDeCategoria ? [{ titulo: categoria.etiqueta, url: paginaDeCategoria.url }] : []),
-          { titulo: nombre, url: registro.url },
-        ]}
-      />
-      <div class="srv__nombre">
+  <header class="enc">
+    <div class="enc__foto">
+      <Foto class="enc__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 50vw, 100vw" prioritaria />
+      {galeria && (
+        <button class="enc__ver t-body-sm" type="button" data-galeria-abrir>
+          Ver todas las fotos
+        </button>
+      )}
+    </div>
+    <div class="enc__texto">
+      <div class="enc__interior">
+        <Migas
+          items={[
+            { titulo: 'Inicio', url: '/' },
+            ...(paginaDeCategoria ? [{ titulo: categoria.etiqueta, url: paginaDeCategoria.url }] : []),
+            { titulo: nombre, url: registro.url },
+          ]}
+        />
+        <p class="enc__etiqueta t-caption2">{categoria.etiqueta}</p>
         <h1 class="t-h1">{c.h1}</h1>
-        <p class="t-caption" aria-hidden="true">
-          [{numero}]
-        </p>
-      </div>
-      <div class="srv__arriba">
-        <div class="srv__foto">
-          <Foto class="srv__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 60vw, 100vw" prioritaria />
-          <span class="srv__chip t-body-sm">{categoria.etiqueta}</span>
-          {galeria && (
-            <button class="srv__ver t-body-sm" type="button" data-galeria-abrir>
-              Ver todas las fotos
-            </button>
-          )}
-        </div>
-        <dl class="srv__ficha">
+        <dl class="enc__ficha">
           {ficha.map((fila) => (
-            <div class="srv__fila">
+            <div class="enc__fila">
               <dt class="t-caption2">{fila.etiqueta}</dt>
               <dd class="t-body">{fila.valor}</dd>
             </div>
           ))}
         </dl>
       </div>
+    </div>
+  </header>
+  <section class:list={['srv', { 'srv--con-proyectos': proyectos.length > 0 }]}>
+    <div class="container srv__inner">
       <div class="srv__contenido">
         <div class="srv__izquierda">
           <NavInterna items={salto} />
@@ -178,19 +177,6 @@ const datosEstructurados = serviceJsonLd({
               )}
             </div>
           ))}
-          {proyectos.length > 0 && (
-            <div class="srv__bloque" id="proyectos" data-appear>
-              <h2 class="t-h2">Proyectos</h2>
-              <ul class="srv__proyectos">
-                {proyectos.map((proyecto) => (
-                  <TarjetaProyecto
-                    proyecto={proyecto}
-                    sizes="(min-width: 1280px) 20vw, (min-width: 768px) 40vw, 100vw"
-                  />
-                ))}
-              </ul>
-            </div>
-          )}
           <div class="srv__bloque" id="te-puede-servir" data-appear>
             <h2 class="t-h2">También te puede servir</h2>
             {tambien.intro && <p class="t-body srv__intro">{tambien.intro}</p>}
@@ -222,6 +208,17 @@ const datosEstructurados = serviceJsonLd({
       </div>
     </div>
   </section>
+  {proyectos.length > 0 && (
+    <div class="srv__proyectos" id="proyectos">
+      <Team
+        etiqueta={proyectosPagina.etiqueta}
+        titulo={`Proyectos de ${nombre.toLowerCase()}`}
+        foto={{ src: proyectosPagina.foto, alt: '' }}
+        items={proyectos}
+        boton={proyectosPagina.boton}
+      />
+    </div>
+  )}
   {p.faq?.length ? (
     <Faq
       etiqueta="Preguntas frecuentes"
@@ -241,84 +238,81 @@ const datosEstructurados = serviceJsonLd({
   <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
 </Base>
 <style>
-  .srv {
-    background: var(--dx-blanco);
-    padding-block: var(--esp-2) var(--esp-8);
-  }
-  .srv__inner {
+  /* Encabezado dividido (la sección de videoclips de mandmfilmsmx.com): foto a la mitad izquierda, a todo lo alto, y a la
+     derecha la etiqueta de categoría, el H1 grande y los tres datos del servicio, sobre un fondo claro de la paleta. En
+     móvil, la foto arriba y el texto abajo. El alto es mínimo: el texto crece con el zoom y la letra grande (diseño §9).
+     Las migas van arriba de la etiqueta, dentro de la columna de texto. <picture> no pinta caja. */
+  .enc {
+    background: var(--dx-gris-tarjeta);
     display: flex;
     flex-direction: column;
-    gap: var(--esp-5);
   }
-  .srv__nombre {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--esp-4);
-    padding: var(--esp-3) var(--esp-4);
-    border-radius: var(--radio);
-    background: var(--dx-gris-claro);
-  }
-
-  /* Foto principal y ficha. <picture> no pinta caja: el <img> es el elemento del flujo. */
-  .srv__arriba {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-5);
-  }
-  .srv__foto {
+  .enc__foto {
     position: relative;
     min-width: 0;
   }
-  .srv__foto :global(picture) {
+  .enc__foto :global(picture) {
     display: contents;
   }
-  .srv__foto :global(.srv__img) {
+  .enc__foto :global(.enc__img) {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    border-radius: var(--radio);
   }
-  /* Etiqueta de la categoría y botón de la galería: fondo sólido, para que se lean sobre cualquier foto. */
-  .srv__chip,
-  .srv__ver {
+  /* Botón de la galería (solo si el servicio tiene galería): fondo sólido, para que se lea sobre cualquier foto. */
+  .enc__ver {
     position: absolute;
-    padding: var(--esp-1) var(--esp-2);
-    border-radius: var(--radio-chico);
-    background: var(--dx-gris-claro);
-    color: var(--dx-negro);
-  }
-  .srv__chip {
-    top: var(--esp-4);
-    left: var(--esp-4);
-  }
-  .srv__ver {
     right: var(--esp-4);
     bottom: var(--esp-4);
     min-height: var(--tactil);
-    padding-inline: var(--esp-4);
+    padding: var(--esp-1) var(--esp-4);
+    border-radius: var(--radio-chico);
+    background: var(--dx-gris-tarjeta);
+    color: var(--dx-negro);
   }
   /* El modal de la galería necesita JavaScript: sin él, el botón no se muestra. */
-  :global(html:not(.js)) .srv__ver {
+  :global(html:not(.js)) .enc__ver {
     display: none;
   }
-  .srv__ficha {
+  .enc__texto {
+    min-width: 0;
+    padding: var(--esp-5) var(--margen) var(--esp-7);
+  }
+  .enc__interior {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+  .enc__etiqueta {
+    margin-top: var(--esp-3);
+  }
+  .enc__ficha {
     margin: 0;
     display: flex;
     flex-direction: column;
   }
-  .srv__fila {
+  .enc__fila {
     display: flex;
     flex-direction: column;
     gap: var(--esp-1);
     padding-block: var(--esp-3);
     box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
   }
-  .srv__fila:last-child {
+  .enc__fila:last-child {
     box-shadow: none;
   }
-  .srv__fila dd {
+  .enc__fila dd {
     margin: 0;
+  }
+
+  .srv {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-6) var(--esp-8);
+  }
+  .srv__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-5);
   }
 
   .srv__contenido {
@@ -354,12 +348,6 @@ const datosEstructurados = serviceJsonLd({
   .srv__bloque :global(strong) {
     font-weight: 600;
   }
-  /* Proyectos: una columna en móvil, dos desde tableta y tres en pantallas anchas (la columna es más angosta que la página). */
-  .srv__proyectos {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--esp-5);
-  }
 
   /* Lo que incluye (los highlights de Marby): una fila por inclusión, con su palomita. */
   .inc {
@@ -378,7 +366,7 @@ const datosEstructurados = serviceJsonLd({
     place-items: center;
     padding: var(--esp-2);
     border-radius: var(--radio-chico);
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
   }
 
   /* "También te puede servir": filas con línea, como la lista de lugares cercanos de Marby. */
@@ -427,30 +415,30 @@ const datosEstructurados = serviceJsonLd({
       justify-content: space-between;
       gap: var(--esp-5);
     }
-    .srv__proyectos {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1280px) {
-    .srv__proyectos {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
   }
   @media (min-width: 1024px) {
+    /* Escritorio: dos mitades; la foto ocupa toda la mitad izquierda, de borde a borde y a todo lo alto. */
+    .enc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      min-height: clamp(520px, calc(100dvh - var(--nav-alto)), 720px);
+    }
+    .enc__foto :global(.enc__img) {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      aspect-ratio: auto;
+    }
+    .enc__texto {
+      display: flex;
+      align-items: center;
+      padding: var(--esp-7);
+    }
     .srv {
-      padding-block: var(--esp-4) var(--esp-9);
+      padding-block: var(--esp-8) var(--esp-9);
     }
-    .srv__arriba {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: var(--medianil);
-    }
-    .srv__foto {
-      flex: 1 1 0;
-    }
-    .srv__ficha {
-      flex: none;
-      width: 340px;
+    .srv.srv--con-proyectos {
+      padding-bottom: 0;
     }
     .srv__contenido {
       flex-direction: row;
@@ -466,5 +454,15 @@ const datosEstructurados = serviceJsonLd({
       position: sticky;
       top: calc(var(--nav-alto) + var(--esp-4));
     }
+  }
+  /* Sin proyectos después, el contenido deja su relleno inferior; con ellos, la foto del bloque empieza justo donde termina
+     el contenido (si no, queda una franja blanca vacía arriba de la foto). */
+  .srv.srv--con-proyectos {
+    padding-bottom: 0;
+  }
+  /* El carrusel de proyectos (el de Nosotros) va a todo el ancho, después del contenido; el salto "Proyectos" llega aquí
+     dejando libre la barra del menú. */
+  .srv__proyectos {
+    scroll-margin-top: var(--nav-alto);
   }
 </style>

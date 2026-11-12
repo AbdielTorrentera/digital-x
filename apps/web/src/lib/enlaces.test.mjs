@@ -7,8 +7,8 @@ test('una página construida se enlaza', () => {
 });
 
 test('una página en lanzamiento se enlaza aunque todavía no esté construida', () => {
-  assert.equal(enlaceAPagina('/servicios/video-con-drone/'), '/servicios/video-con-drone/');
-  assert.equal(esPaginaPlaneada('/servicios/tienda-en-linea/'), true);
+  assert.equal(enlaceAPagina('/video/video-con-drone/'), '/video/video-con-drone/');
+  assert.equal(esPaginaPlaneada('/tecnologia/tienda-en-linea/'), true);
 });
 
 test('una página pendiente de material nunca se enlaza, aunque esté en el registro', () => {
@@ -24,10 +24,10 @@ test('una URL que no está en el registro tampoco se enlaza', () => {
 
 test('un enlace con ancla se valida por su ruta: /#servicios se enlaza, una ruta inventada con ancla no', () => {
   assert.equal(enlaceAPagina('/#servicios'), '/#servicios');
-  // /servicios/ ya no existe (los servicios cuelgan de /servicios/{slug}/): ni la ruta ni sus anclas se pueden enlazar.
+  // /servicios/ ya no existe (los servicios cuelgan de /{categoria}/{slug}/): ni la ruta ni sus anclas se pueden enlazar.
   assert.throws(() => enlaceAPagina('/servicios/'), /no se puede enlazar/);
   assert.throws(() => enlaceAPagina('/servicios/#audio'), /no se puede enlazar/);
-  assert.equal(enlaceAPagina('/servicios/video-con-drone/#que-incluye'), '/servicios/video-con-drone/#que-incluye');
+  assert.equal(enlaceAPagina('/video/video-con-drone/#que-incluye'), '/video/video-con-drone/#que-incluye');
   assert.throws(() => enlaceAPagina('/inventada/#audio'), /no se puede enlazar/);
   assert.throws(() => enlaceAPagina('/blog/#x'), /no se puede enlazar/);
 });

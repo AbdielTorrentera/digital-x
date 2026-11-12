@@ -315,7 +315,7 @@ p.centrado,
   }
 }
 .btn--icon {
-  background: var(--dx-gris-claro);
+  background: var(--dx-gris-tarjeta);
   color: var(--dx-negro);
   width: 32px;
   justify-content: center;

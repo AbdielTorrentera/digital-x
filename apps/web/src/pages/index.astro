@@ -1,17 +1,21 @@
 ---
 import Base from '../layouts/Base.astro';
+import CierreContacto from '../components/sections/CierreContacto.astro';
 import Hero from '../components/sections/Hero.astro';
+import HomeAbout from '../components/sections/HomeAbout.astro';
 import Servicios from '../components/sections/Servicios.astro';
-import Proyectos from '../components/sections/Proyectos.astro';
+import Team from '../components/sections/Team.astro';
 import Features from '../components/sections/Features.astro';
 import Cobertura from '../components/sections/Cobertura.astro';
 import Faq from '../components/sections/Faq.astro';
-import LlamadoFinal from '../components/sections/LlamadoFinal.astro';
 import { categoriasConDestino } from '../lib/categorias';
-import { mensajesWhatsApp } from '../lib/negocio';
+import { mensajesWhatsApp, negocio, telUrl } from '../lib/negocio';
 import { proyectosDelInicio } from '../lib/proyectos';
 import { parrafoDeCategoria } from '../lib/servicios';
-import { cierre, cobertura, faq, porQue, portada, proyectos, servicios } from '../content/inicio';
+import { cierre, cobertura, faq, porQue, portada, proyectos, queHacemos, servicios } from '../content/inicio';
+import { proyectosPagina } from '../content/nosotros';
+import { fotosDeCategoria } from '../content/categorias-fotos';
+import { fotoCierre } from '../content/servicios-fotos';
 const proyectosVisibles = proyectosDelInicio(proyectos.items);
 // Una tarjeta por categoría con al menos un servicio construido. Con un solo servicio construido, la tarjeta lleva directo a él.
 const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servicioUnico }, i) => ({
@@ -21,7 +25,7 @@ const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servici
   ariaLabel: directo
     ? `Ver ${servicioUnico!.titulo.toLowerCase()}`
     : `Ver servicios de ${categoria.etiqueta.toLowerCase()}`,
-  foto: servicios.fotos[categoria.id],
+  foto: fotosDeCategoria[categoria.id],
   parrafo: parrafoDeCategoria(categoria),
   boton: directo ? 'Ver servicio' : 'Ver servicios',
 }));
@@ -29,7 +33,14 @@ const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servici
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
 <Base title={portada.title} description={portada.descripcion} whatsapp={mensajesWhatsApp.general}>
-  <Hero titulo={portada.h1} texto={portada.texto} boton={portada.boton} foto={portada.foto} />
+  <Hero titulo={portada.h1} foto={portada.foto} />
+  <HomeAbout
+    etiqueta={queHacemos.etiqueta}
+    titulo={queHacemos.titulo}
+    texto={queHacemos.texto}
+    foto={queHacemos.foto}
+    boton={queHacemos.boton}
+  />
   <Servicios
     id="servicios"
     etiqueta={servicios.etiqueta}
@@ -38,10 +49,22 @@ const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servici
     items={tarjetas}
   />
   {proyectosVisibles.length > 0 && (
-    <Proyectos etiqueta={proyectos.etiqueta} titulo={proyectos.titulo} items={proyectosVisibles} />
+    <Team
+      etiqueta={proyectos.etiqueta}
+      titulo={proyectos.titulo}
+      foto={{ src: proyectosPagina.foto, alt: '' }}
+      items={proyectosVisibles}
+      boton={proyectosPagina.boton}
+    />
   )}
   <Features etiqueta={porQue.etiqueta} titulo={porQue.titulo} foto={porQue.foto} items={porQue.items} />
   <Cobertura {...cobertura} />
   <Faq {...faq} />
-  <LlamadoFinal {...cierre} />
+  <CierreContacto
+    foto={fotoCierre}
+    titulo={cierre.titulo}
+    texto={cierre.texto}
+    whatsapp={cierre.boton}
+    llamar={{ etiqueta: 'Llamar', href: telUrl, numero: negocio.telefono.pantalla }}
+  />
 </Base>

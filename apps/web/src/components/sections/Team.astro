@@ -15,7 +15,9 @@ import type { Proyecto } from '../../content/proyectos';
 // mientras la persona toca, arrastra, pasa el cursor o hace foco, y se reanuda 3 segundos después. Con movimiento reducido
 // (o sin JavaScript) no avanza sola, pero se desliza a mano. Solo cambian los textos, los colores (tokens --dx-*), las
 // tipografías y lo que exigen las reglas. La foto no depende del cursor en pantallas táctiles. La protección contra los
-// ejemplos vive en content/proyectos.ts.
+// ejemplos vive en content/proyectos.ts. Acomodo del bloque: con pocos proyectos fijos, TODO se centra en un mismo eje
+// (etiqueta, título de ancho limitado, tarjetas y botón); en cuanto hay carrusel (`is-carrusel`, que pone el script),
+// vuelve el acomodo original de la plantilla: etiqueta a la izquierda, título en su columna y botón al borde del contenedor.
 interface Props {
   etiqueta: string;
   titulo: string;
@@ -26,7 +28,7 @@ interface Props {
 const { etiqueta, titulo, foto, items, boton } = Astro.props;
 ---
 
-<section class="team sobre-negro">
+<section class="team sobre-negro" data-team>
   <Foto class="team__bg" src={foto.src} alt="" sizes="100vw" />
   <div class="container team__inner" data-appear style="--appear-y:0px">
     <div class="team__head">
@@ -105,6 +107,7 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
         const medir = () => {
           desborda = maximo() > 1;
           fila.classList.toggle('is-desborda', desborda);
+          fila.closest('.team')?.classList.toggle('is-carrusel', desborda);
           if (desborda) {
             fila.setAttribute('tabindex', '0');
           } else {
@@ -138,7 +141,9 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
         };
 
         new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(fila);
-        new ResizeObserver(medir).observe(fila);
+        const observador = new ResizeObserver(medir);
+        observador.observe(fila);
+        observador.observe(fila.firstElementChild!); // la pista cambia de ancho si cambia su contenido
         medir();
         ultimo = performance.now();
         requestAnimationFrame(cuadro);
@@ -227,19 +232,44 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
     gap: 40px;
     overflow: hidden;
   }
+  /* Pocos proyectos fijos (sin carrusel): etiqueta, título, tarjetas y botón comparten el eje central. */
   .team__head {
     display: flex;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
-  }
-  .team__label {
-    flex: 1;
+    text-align: center;
   }
   .team__text {
-    width: 460px;
+    width: 100%;
+    max-width: 460px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+  }
+  .team__boton {
+    display: flex;
+    justify-content: center;
+  }
+  /* Carrusel: el acomodo original de la plantilla, alineado al contenedor. */
+  @media (min-width: 810px) {
+    .team.is-carrusel .team__head {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .team.is-carrusel .team__label {
+      flex: 1;
+    }
+    .team.is-carrusel .team__text {
+      width: 460px;
+      max-width: none;
+    }
+  }
+  .team.is-carrusel .team__head {
+    text-align: left;
+  }
+  .team.is-carrusel .team__boton {
+    justify-content: flex-start;
   }
   /* Contenedor con scroll horizontal nativo. Si las tarjetas caben, se ven fijas; si lo exceden (`is-desborda`), avanza
      solo (script) y se desliza a mano. Sin barra visible. */
@@ -357,9 +387,6 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
     font-weight: 600;
     line-height: var(--lh-etiqueta);
   }
-  .team__boton {
-    display: flex;
-  }
   /* Sin cursor que revele la foto (tablet, móvil o pantalla táctil), la foto se ve siempre. */
   @media (max-width: 1199.98px), (hover: none) {
     .member :global(.member__photo),
@@ -368,11 +395,12 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
     }
   }
   @media (max-width: 809.98px) {
-    .team__head {
-      flex-direction: column;
+    .team.is-carrusel .team__head {
+      align-items: flex-start;
     }
-    .team__text {
+    .team.is-carrusel .team__text {
       width: 100%;
+      max-width: none;
     }
   }
 </style>

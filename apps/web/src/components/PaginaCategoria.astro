@@ -86,7 +86,7 @@ const datosEstructurados = collectionPageJsonLd({
       <p class="t-body intro__texto">{categoria.intro}</p>
     </div>
   </section>
-  <section class="plist">
+  <section class:list={['plist', { 'plist--con-proyectos': proyectos.length > 0 }]}>
     <div class="container">
       <ul class="plist__grid">
         {tarjetas.map((tarjeta) => (
@@ -146,7 +146,9 @@ const datosEstructurados = collectionPageJsonLd({
      es mínimo, no fijo: el título crece con el zoom y la letra grande (diseño §9). */
   .phero {
     position: relative;
-    min-height: 280px;
+    /* Alto: la mitad de la pantalla visible bajo la barra en móvil y 70 % desde 768 px (dvh donde exista). */
+    min-height: max(280px, calc(50vh - var(--nav-alto)));
+    min-height: max(280px, calc(50dvh - var(--nav-alto)));
     overflow: clip;
     display: flex;
     align-items: center;
@@ -168,7 +170,7 @@ const datosEstructurados = collectionPageJsonLd({
     text-align: center;
   }
   .phero__inner h1 {
-    max-width: 20ch;
+    max-width: 28ch;
     margin-inline: auto;
     text-wrap: balance;
   }
@@ -183,6 +185,10 @@ const datosEstructurados = collectionPageJsonLd({
     background: var(--dx-blanco);
     padding-block: var(--esp-7) var(--esp-8);
   }
+  /* Con proyectos debajo, la foto de ese bloque empieza donde terminan las tarjetas (sin franja blanca vacía). */
+  .plist.plist--con-proyectos {
+    padding-bottom: 0;
+  }
   .plist__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -190,7 +196,8 @@ const datosEstructurados = collectionPageJsonLd({
   }
   @media (min-width: 768px) {
     .phero {
-      min-height: 400px;
+      min-height: calc(70vh - var(--nav-alto));
+      min-height: calc(70dvh - var(--nav-alto));
     }
     .plist__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -200,6 +207,9 @@ const datosEstructurados = collectionPageJsonLd({
   @media (min-width: 1024px) {
     .plist {
       padding-block: var(--esp-8) var(--esp-9);
+    }
+    .plist.plist--con-proyectos {
+      padding-bottom: 0;
     }
   }
 </style>

@@ -119,7 +119,7 @@ const datosEstructurados = serviceJsonLd({
       </div>
     </div>
   </header>
-  <section class="srv">
+  <section class:list={['srv', { 'srv--con-proyectos': proyectos.length > 0 }]}>
     <div class="container srv__inner">
       <div class="srv__contenido">
         <div class="srv__izquierda">
@@ -437,6 +437,9 @@ const datosEstructurados = serviceJsonLd({
     .srv {
       padding-block: var(--esp-8) var(--esp-9);
     }
+    .srv.srv--con-proyectos {
+      padding-bottom: 0;
+    }
     .srv__contenido {
       flex-direction: row;
       align-items: flex-start;
@@ -451,6 +454,11 @@ const datosEstructurados = serviceJsonLd({
       position: sticky;
       top: calc(var(--nav-alto) + var(--esp-4));
     }
+  }
+  /* Sin proyectos después, el contenido deja su relleno inferior; con ellos, la foto del bloque empieza justo donde termina
+     el contenido (si no, queda una franja blanca vacía arriba de la foto). */
+  .srv.srv--con-proyectos {
+    padding-bottom: 0;
   }
   /* El carrusel de proyectos (el de Nosotros) va a todo el ancho, después del contenido; el salto "Proyectos" llega aquí
      dejando libre la barra del menú. */

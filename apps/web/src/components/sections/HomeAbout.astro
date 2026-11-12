@@ -3,9 +3,9 @@ import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
 import type { Foto as FotoDatos } from '../../content/inicio';
 
-// "About us" de la plantilla Marby (HomeAbout, commit 6a6f883d), fiel al original: dos columnas (en escritorio ancho; en
-// una sola debajo de 1200 px) con la etiqueta y una foto apaisada y baja (473 × 234 px) a la izquierda, y a la derecha
-// (columna de 460 px como máximo) el título grande, el texto y el botón; 20 px entre columnas y entre elementos. SIN las tres
+// "About us" de la plantilla Marby (HomeAbout, commit 6a6f883d): etiqueta y foto apaisada (proporción 473 × 234 px) a la
+// izquierda; título grande, texto y botón a la derecha. Desde 1024 px la foto ocupa 7 de 12 columnas, el texto las otras 5
+// y van separados por la escala --esp-*; debajo de 1024 px, la foto a todo el ancho arriba y el texto abajo. SIN las tres
 // tarjetas de cifras de la plantilla (no hay datos y no se inventan números). Los textos vienen de content/inicio.ts
 // (`queHacemos`). El título usa el tamaño grande de la escala (--txt-h1; el original usa su H2 de 48 px).
 interface Props {
@@ -28,8 +28,8 @@ const { etiqueta, titulo, texto, foto, boton } = Astro.props;
         class="about__img"
         src={foto.src}
         alt={foto.alt}
-        sizes="(min-width: 1024px) 473px, 100vw"
-        widths={[473, 946]}
+        sizes="(min-width: 1280px) 700px, (min-width: 1024px) 55vw, 100vw"
+        widths={[473, 946, 1400]}
       />
     </div>
     <div class="about__col about__col--text">
@@ -46,50 +46,59 @@ const { etiqueta, titulo, texto, foto, boton } = Astro.props;
   </div>
 </section>
 <style>
+  /* Relleno de sección grande (como las demás): el espacio de abajo se suma al de arriba de la sección de servicios. */
   .about {
     background: var(--dx-blanco);
-    /* Esta sección y la de servicios son blancas: el espacio entre ambas es el de una sola, no la suma de dos. */
-    padding-block: var(--esp-8) 0;
+    padding-block: var(--esp-8);
   }
-  /* Medidas del original: 20 px entre columnas y entre elementos; foto de 473 × 234 px. */
   .about__inner {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--esp-5);
   }
   .about__col {
-    flex: 1 1 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
   }
+  .about__col--text {
+    gap: var(--esp-5);
+  }
   /* <picture> no pinta caja: el <img> es el elemento del flujo. Picture no le pone al <img> el atributo de alcance. */
   .about :global(picture) {
     display: contents;
   }
+  /* Móvil: foto a todo el ancho arriba y el texto debajo. */
   .about :global(.about__img) {
-    width: 473px;
-    max-width: 100%;
-    height: 234px;
+    width: 100%;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     border-radius: var(--radio);
   }
-  @media (min-width: 1200px) {
+  /* La proporción apaisada de la plantilla (473 × 234 px). */
+  @media (min-width: 810px) {
+    .about :global(.about__img) {
+      aspect-ratio: 473 / 234;
+    }
+  }
+  /* Escritorio: la foto ocupa 7 de 12 columnas y el texto el resto, con el medianil normal entre ambas; el texto queda
+     centrado verticalmente respecto de la foto con su etiqueta. */
+  @media (min-width: 1024px) {
     .about {
-      padding-block: var(--esp-9) 0;
+      padding-block: var(--esp-9);
     }
     .about__inner {
       flex-direction: row;
+      align-items: center;
+      gap: var(--esp-7);
+    }
+    .about__col {
+      flex: 7 1 0;
     }
     .about__col--text {
-      max-width: 460px;
-    }
-  }
-  @media (max-width: 809.98px) {
-    .about :global(.about__img) {
-      width: 100%;
+      flex: 5 1 0;
     }
   }
 </style>

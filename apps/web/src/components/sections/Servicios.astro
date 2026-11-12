@@ -111,10 +111,16 @@ const { etiqueta, titulo, etiquetaTarjeta, items, id } = Astro.props;
     flex-direction: column;
     gap: 12px;
   }
+  /* El espacio entre tarjetas es lo que tarda la siguiente en llegar a montarse sobre la anterior: con 20 px el botón (al
+     pie de la tarjeta) se cubría casi al instante de fijarse y no daba tiempo de verlo ni de usarlo. Con casi media pantalla
+     (`dvh`), cada tarjeta queda fija y COMPLETA, con su botón a la vista y clicable, durante un buen tramo de scroll antes de
+     que la siguiente la cubra. */
   .services__stack {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    gap: clamp(20px, 45vh, 480px);
+    gap: clamp(20px, 45dvh, 480px);
   }
   .svc {
     position: sticky;
@@ -232,8 +238,15 @@ const { etiqueta, titulo, etiquetaTarjeta, items, id } = Astro.props;
   }
   /* Movimiento reducido (diseño §8): las tarjetas se muestran una debajo de otra, sin que se fijen ni se encimen. */
   @media (prefers-reduced-motion: reduce) {
-    .svc {
+    .services__stack {
+      gap: 20px;
+    }
+    /* `top` también vuelve a `auto`: en `relative` desplazaría cada tarjeta 100 px hacia abajo y la última invadiría la
+       sección siguiente, que taparía su botón. */
+    .svc,
+    .svc:nth-child(3) {
       position: relative;
+      top: auto;
     }
   }
 </style>

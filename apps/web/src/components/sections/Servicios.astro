@@ -10,8 +10,8 @@ import type { Foto as FotoDeContenido } from '../../content/inicio';
 // extiende a toda la tarjeta (::after), para no anidar enlaces. Los nombres que van dentro del párrafo van por encima y
 // son enlaces solo si traen URL. El botón es un <span> decorativo. Solo cambian los textos, los colores (tokens --dx-*),
 // las tipografías y lo que exigen las reglas (aria-label, movimiento reducido). Medidas y animaciones, las del original.
-// Es configurable y no sabe de qué son las tarjetas: el Inicio la usa con las categorías y las páginas de categoría
-// (/video/, /tecnologia/) con los servicios de la categoría, con la foto alternando de lado en escritorio (`alternar`).
+// Es configurable y no sabe de qué son las tarjetas: hoy el Inicio la usa con las categorías (las páginas de categoría
+// usan la tarjeta de propiedad, ui/TarjetaServicio.astro).
 export interface Tarjeta {
   /** Número de la tarjeta ("/1"). */
   contador: string;
@@ -33,17 +33,12 @@ interface Props {
   /** Pequeña etiqueta de cada tarjeta. */
   etiquetaTarjeta: string;
   items: Tarjeta[];
-  /** En escritorio, la foto va a un lado y al otro alternando (izquierda, derecha, izquierda…). */
-  alternar?: boolean;
-  /** Nivel del título de cada tarjeta: h3 bajo el encabezado de la sección; h2 cuando no hay encabezado. */
-  nivelTarjeta?: 'h2' | 'h3';
   id?: string;
 }
-const { etiqueta, titulo, etiquetaTarjeta, items, alternar = false, nivelTarjeta = 'h3', id } = Astro.props;
-const TituloTarjeta = nivelTarjeta;
+const { etiqueta, titulo, etiquetaTarjeta, items, id } = Astro.props;
 ---
 
-<section class="services" id={id} data-alternar={alternar ? '' : undefined}>
+<section class="services" id={id}>
   <div class="container services__inner">
     {(etiqueta || titulo) && (
       <div class="services__head">
@@ -73,11 +68,11 @@ const TituloTarjeta = nivelTarjeta;
               <span class="svc__count">{s.contador}</span>
             </div>
             <p class="t-body-sm">{etiquetaTarjeta}</p>
-            <TituloTarjeta class="t-h3">
+            <h3 class="t-h3">
               <a class="svc__enlace" href={enlaceAPagina(s.href)} aria-label={s.ariaLabel}>
                 {s.titulo}
               </a>
-            </TituloTarjeta>
+            </h3>
             <div class="svc__text">
               <p class="t-body">
                 {s.parrafo.map((parte) => {
@@ -153,47 +148,6 @@ const TituloTarjeta = nivelTarjeta;
     z-index: 1;
     text-decoration: underline;
     text-underline-offset: var(--esp-1);
-  }
-  /* Con `alternar`, en escritorio y tableta ancha NO hay apilado: son filas normales (sin sticky) en las que la foto va
-     a un lado y al otro (la tarjeta par, con la foto a la derecha). Foto y tarjeta miden lo mismo: al menos 500 px (el alto
-     del original) y, si un servicio trae más texto, la fila crece en vez de cortarlo; ambas se igualan a la más alta. La
-     foto no aporta su alto natural a la fila (contain: size): lo da la tarjeta. Entre filas, la escala de espaciado
-     (diseño §2: entre tarjetas en escritorio, --esp-6). */
-  @media (min-width: 810px) {
-    .services[data-alternar] {
-      padding-block: var(--esp-6) var(--esp-8);
-    }
-    .services[data-alternar] .services__stack {
-      gap: var(--esp-6);
-    }
-    .services[data-alternar] .svc {
-      position: static;
-      height: auto;
-      min-height: 500px;
-      align-items: stretch;
-      gap: var(--esp-5);
-    }
-    .services[data-alternar] .svc:nth-child(even) {
-      flex-direction: row-reverse;
-    }
-    /* Foto y tarjeta, cada una exactamente la mitad de la fila (menos la mitad del hueco): así llenan el ancho y quedan
-       alineadas con el resto de la página, sin importar el relleno de la tarjeta. */
-    .services[data-alternar] .svc :global(.svc__img) {
-      flex: 0 0 calc((100% - var(--esp-5)) / 2);
-      height: auto;
-      min-height: 500px;
-      contain: size;
-    }
-    .services[data-alternar] .svc__card {
-      flex: 0 0 calc((100% - var(--esp-5)) / 2);
-      height: auto;
-      min-height: 500px;
-    }
-  }
-  @media (min-width: 1024px) {
-    .services[data-alternar] {
-      padding-block: var(--esp-7) var(--esp-9);
-    }
   }
   .svc__card {
     flex: 1 1 0;

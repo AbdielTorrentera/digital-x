@@ -1,0 +1,170 @@
+---
+import Foto from '../Foto.astro';
+import Icon from '../Icon.astro';
+import { enlaceAPagina } from '../../lib/enlaces';
+import type { Foto as FotoDatos } from '../../content/inicio';
+
+// Tarjeta de servicio de las páginas de categoría: la PropertyCard de la plantilla Marby (foto con una barra que aparece
+// al pasar el cursor, nombre con su número y renglones de datos), rescatada del catálogo que ya no existe. Los renglones
+// son los tres datos que cada servicio ya trae al inicio de su página (su `ficha`, con sus propias etiquetas): la tarjeta no
+// sabe de qué son. TODA la tarjeta enlaza al servicio: el nombre (título) es el enlace y se extiende a toda ella (::after),
+// así que no hay enlaces anidados. La barra de la foto solo se ve con cursor (en pantallas táctiles no existe).
+interface Props {
+  titulo: string;
+  /** "01", "02"…: el número dentro de su categoría; decorativo. */
+  numero: string;
+  /** La página del servicio. */
+  href: string;
+  foto: FotoDatos;
+  /** Chip de la barra de la foto: la categoría. */
+  etiquetaCategoria: string;
+  /** Los renglones de datos: etiqueta y valor. */
+  filas: { etiqueta: string; valor: string }[];
+  /** Nivel del título: h2 cuando la tarjeta cuelga del H1 de la página; h3 bajo un encabezado de sección. */
+  nivel?: 'h2' | 'h3';
+}
+const { titulo, numero, href, foto, etiquetaCategoria, filas, nivel = 'h2' } = Astro.props;
+const Titulo = nivel;
+---
+
+<article class="tsrv hover-target">
+  <div class="tsrv__media">
+    <Foto
+      class="tsrv__img"
+      src={foto.src}
+      alt={foto.alt}
+      sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw"
+    />
+    <div class="tsrv__bar" aria-hidden="true">
+      <span class="tsrv__chip t-body-sm">{etiquetaCategoria}</span>
+      <span class="btn btn--icon">
+        <span class="btn__icon">
+          <Icon name="arrow" />
+        </span>
+      </span>
+    </div>
+  </div>
+  <div class="tsrv__nombre">
+    <Titulo class="t-h5">
+      <a class="tsrv__enlace" href={enlaceAPagina(href)}>
+        {titulo}
+      </a>
+    </Titulo>
+    <p class="t-caption" aria-hidden="true">
+      [{numero}]
+    </p>
+  </div>
+  <dl class="tsrv__lista">
+    {filas.map((fila) => (
+      <div class="tsrv__fila">
+        <dt class="t-caption2">{fila.etiqueta}</dt>
+        <dd class="t-body-sm">{fila.valor}</dd>
+      </div>
+    ))}
+  </dl>
+</article>
+<style>
+  .tsrv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+    min-width: 0;
+  }
+  .tsrv__media {
+    position: relative;
+    aspect-ratio: 1.24;
+    border-radius: var(--radio);
+    overflow: clip;
+  }
+  /* <picture> no pinta caja: el <img> es el elemento del flujo. Picture no le pone al <img> el atributo de alcance. */
+  .tsrv__media :global(picture) {
+    display: contents;
+  }
+  .tsrv__media :global(.tsrv__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Barra con el chip de la categoría y la flecha: aparece al pasar el cursor (solo escritorio con cursor). */
+  .tsrv__bar {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 63px;
+    padding: var(--esp-5) var(--esp-5) var(--esp-3);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity var(--dur-media) var(--ease);
+  }
+  .tsrv__chip {
+    padding: var(--esp-1) var(--esp-2);
+    border-radius: var(--radio-chico);
+    background: var(--dx-gris-tarjeta);
+    color: var(--dx-negro);
+  }
+  .tsrv__nombre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-3);
+    padding: var(--esp-2) var(--esp-5);
+    min-height: var(--tactil);
+    border-radius: var(--radio);
+    background: var(--dx-gris-tarjeta);
+  }
+  /* El título es el único enlace de la tarjeta y se extiende a toda ella; el foco se dibuja alrededor de la tarjeta. */
+  .tsrv__enlace {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .tsrv__enlace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radio);
+  }
+  .tsrv__enlace:focus-visible {
+    outline: none;
+  }
+  .tsrv__enlace:focus-visible::after {
+    outline: var(--foco) solid var(--foco-color);
+    outline-offset: var(--foco);
+  }
+  .tsrv__lista {
+    margin: 0;
+    padding: 0 var(--esp-5);
+    display: flex;
+    flex-direction: column;
+  }
+  /* Etiqueta a la izquierda y valor a la derecha, como en la plantilla; un valor largo se parte en varias líneas. */
+  .tsrv__fila {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--esp-4);
+    padding-block: var(--esp-1) var(--esp-2);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .tsrv__fila:last-child {
+    box-shadow: none;
+  }
+  .tsrv__fila dt {
+    flex: none;
+  }
+  .tsrv__fila dd {
+    margin: 0;
+    text-align: right;
+  }
+  @media (hover: hover) and (min-width: 1200px) {
+    .tsrv:hover .tsrv__bar {
+      opacity: 1;
+    }
+  }
+</style>

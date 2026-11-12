@@ -65,20 +65,22 @@ const datosEstructurados = collectionPageJsonLd({
 ---
 
 <Base title={categoria.title} description={categoria.meta} whatsapp={mensajesWhatsApp.general}>
-  <div class="container cabeza">
-    <Migas
-      items={[
-        { titulo: 'Inicio', url: '/' },
-        { titulo: categoria.etiqueta, url: `/${categoria.slug}/` },
-      ]}
-    />
-  </div>
   <section class="phero sobre-negro">
     <Foto class="phero__img" src={foto.src} alt={foto.alt} sizes="100vw" prioritaria />
     <div class="container phero__inner">
       <h1 class="t-h1 c-blanco">{categoria.h1}</h1>
     </div>
   </section>
+  <div class="barra-migas">
+    <div class="container">
+      <Migas
+        items={[
+          { titulo: 'Inicio', url: '/' },
+          { titulo: categoria.etiqueta, url: `/${categoria.slug}/` },
+        ]}
+      />
+    </div>
+  </div>
   <section class="intro">
     <div class="container">
       <p class="t-body intro__texto">{categoria.intro}</p>
@@ -131,7 +133,12 @@ const datosEstructurados = collectionPageJsonLd({
   <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
 </Base>
 <style>
-  .cabeza {
+  /* Migas debajo de la portada y fijas bajo la barra al hacer scroll (sticky, a `--nav-alto`): por debajo de la barra del
+     menú (z 5) y del menú interno, sin tapar el contenido (ocupan su lugar en el flujo). */
+  .barra-migas {
+    position: sticky;
+    top: var(--nav-alto);
+    z-index: 3;
     background: var(--dx-blanco);
   }
   /* La portada de la página de listado de Marby: foto a todo el ancho con el título encima. En lugar de la franja de
@@ -143,6 +150,7 @@ const datosEstructurados = collectionPageJsonLd({
     overflow: clip;
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   /* Picture no le pone al <img> el atributo de alcance de Astro: se selecciona como global dentro de la sección. */
   .phero :global(.phero__img) {
@@ -153,16 +161,20 @@ const datosEstructurados = collectionPageJsonLd({
     object-fit: cover;
     filter: brightness(var(--dx-brillo-sobre-foto));
   }
+  /* El H1 va centrado sobre la foto, como en la portada del listado de Marby. */
   .phero__inner {
     position: relative;
     padding-block: var(--esp-7);
+    text-align: center;
   }
   .phero__inner h1 {
     max-width: 20ch;
+    margin-inline: auto;
+    text-wrap: balance;
   }
   .intro {
     background: var(--dx-blanco);
-    padding-block: var(--esp-6) 0;
+    padding-block: var(--esp-4) 0;
   }
   .intro__texto {
     max-width: 70ch;

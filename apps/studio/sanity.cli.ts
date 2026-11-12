@@ -1,10 +1,8 @@
 import {defineCliConfig} from 'sanity/cli'
+import {datasetProduccion, projectId} from '@digitalx/sanity/config'
 
 export default defineCliConfig({
-  api: {
-    projectId: 'z037bu0t',
-    dataset: 'production',
-  },
+  api: {projectId, dataset: datasetProduccion},
   deployment: {
     /**
      * Enable auto-updates for studios.

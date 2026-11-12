@@ -7,14 +7,14 @@ import type { Foto as FotoDatos } from '../../content/inicio';
 // a ninguna animación de entrada (que depende de JavaScript). Sin video: [PENDIENTE: clip de portada].
 // Llena exactamente la pantalla visible bajo la barra fija: la barra mide `--nav-alto` y está en el flujo, así que la
 // portada mide 100 % del alto de la pantalla menos esa barra (y crece si su contenido es más alto, sin cortarlo).
-// Un solo H1. La marca (logo blanco y lema) va del lado derecho en escritorio y arriba del H1 en móvil; el logo es
-// decorativo (el accesible es el de la barra).
+// Un solo H1, a la izquierda y centrado verticalmente; el logo blanco, grande, a la derecha y también centrado
+// verticalmente. En móvil van en una columna (el logo arriba y el H1 debajo), sin encimarse. El logo es decorativo
+// (el accesible es el de la barra).
 interface Props {
   titulo: string;
   foto: FotoDatos;
-  marca?: { lema: string };
 }
-const { titulo, foto, marca } = Astro.props;
+const { titulo, foto } = Astro.props;
 ---
 
 <section class="hero sobre-negro">
@@ -22,14 +22,9 @@ const { titulo, foto, marca } = Astro.props;
   <div class="scrim" aria-hidden="true"></div>
   <div class="container hero__inner">
     <h1 class="hero__title">{titulo}</h1>
-    {marca && (
-      <div class="hero__marca">
-        <div class="hero__logo" aria-hidden="true">
-          <Logo />
-        </div>
-        <p class="hero__lema t-body-sm c-blanco">{marca.lema}</p>
-      </div>
-    )}
+    <div class="hero__logo" aria-hidden="true">
+      <Logo />
+    </div>
   </div>
 </section>
 <style>
@@ -50,25 +45,19 @@ const { titulo, foto, marca } = Astro.props;
     object-fit: cover;
     background: var(--dx-negro);
   }
-  /* Móvil: la marca arriba y el H1 abajo. */
+  /* Móvil: una columna centrada verticalmente, el logo arriba y el H1 debajo. */
   .hero__inner {
     position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     gap: var(--esp-6);
-    padding-block: var(--esp-6) var(--esp-7);
-  }
-  .hero__marca {
-    order: -1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--esp-2);
+    padding-block: var(--esp-8);
   }
   .hero__logo {
-    --logo-ancho: 144px;
+    --logo-ancho: 200px;
+    order: -1;
     color: var(--dx-blanco);
   }
   .hero__title {
@@ -80,31 +69,26 @@ const { titulo, foto, marca } = Astro.props;
     color: var(--dx-blanco);
     text-wrap: balance;
   }
-  /* Escritorio y tableta: el H1 a la izquierda y la marca a la derecha, alineados abajo. */
+  /* Tableta y escritorio: el H1 a la izquierda y el logo a la derecha, ambos centrados verticalmente. */
   @media (min-width: 768px) {
     .hero__inner {
       flex-direction: row;
-      align-items: flex-end;
+      align-items: center;
       justify-content: space-between;
       gap: var(--esp-7);
-      /* Abajo, lo que ocupa el botón flotante de WhatsApp (56 px + su margen): la marca nunca queda tapada. */
-      padding-block: var(--esp-8) var(--esp-9);
     }
     .hero__title {
       max-width: 18ch;
     }
-    .hero__marca {
-      order: 0;
-      align-items: flex-end;
-      text-align: right;
-    }
     .hero__logo {
-      --logo-ancho: 240px;
+      --logo-ancho: 280px;
+      order: 0;
+      flex: none;
     }
   }
   @media (min-width: 1024px) {
-    .hero__inner {
-      padding-block: var(--esp-9);
+    .hero__logo {
+      --logo-ancho: 380px;
     }
   }
 </style>

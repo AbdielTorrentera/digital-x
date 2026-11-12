@@ -4,7 +4,7 @@ import CierreContacto from '../components/sections/CierreContacto.astro';
 import Hero from '../components/sections/Hero.astro';
 import HomeAbout from '../components/sections/HomeAbout.astro';
 import Servicios from '../components/sections/Servicios.astro';
-import Proyectos from '../components/sections/Proyectos.astro';
+import Team from '../components/sections/Team.astro';
 import Features from '../components/sections/Features.astro';
 import Cobertura from '../components/sections/Cobertura.astro';
 import Faq from '../components/sections/Faq.astro';
@@ -13,6 +13,7 @@ import { mensajesWhatsApp, negocio, telUrl } from '../lib/negocio';
 import { proyectosDelInicio } from '../lib/proyectos';
 import { parrafoDeCategoria } from '../lib/servicios';
 import { cierre, cobertura, faq, porQue, portada, proyectos, queHacemos, servicios } from '../content/inicio';
+import { proyectosPagina } from '../content/nosotros';
 import { fotosDeCategoria } from '../content/categorias-fotos';
 import { fotoCierre } from '../content/servicios-fotos';
 const proyectosVisibles = proyectosDelInicio(proyectos.items);
@@ -32,7 +33,7 @@ const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servici
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
 <Base title={portada.title} description={portada.descripcion} whatsapp={mensajesWhatsApp.general}>
-  <Hero titulo={portada.h1} foto={portada.foto} marca={portada.marca} />
+  <Hero titulo={portada.h1} foto={portada.foto} />
   <HomeAbout
     etiqueta={queHacemos.etiqueta}
     titulo={queHacemos.titulo}
@@ -48,7 +49,13 @@ const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servici
     items={tarjetas}
   />
   {proyectosVisibles.length > 0 && (
-    <Proyectos etiqueta={proyectos.etiqueta} titulo={proyectos.titulo} items={proyectosVisibles} />
+    <Team
+      etiqueta={proyectos.etiqueta}
+      titulo={proyectos.titulo}
+      foto={{ src: proyectosPagina.foto, alt: '' }}
+      items={proyectosVisibles}
+      boton={proyectosPagina.boton}
+    />
   )}
   <Features etiqueta={porQue.etiqueta} titulo={porQue.titulo} foto={porQue.foto} items={porQue.items} />
   <Cobertura {...cobertura} />

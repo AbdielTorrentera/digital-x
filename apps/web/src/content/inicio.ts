@@ -29,9 +29,8 @@ export const portada = {
   descripcion:
     'Renta de audio, circuito cerrado para eventos, streaming y desarrollo web en Puebla, Atlixco e Izúcar de Matamoros. Cotiza con Digital X.',
   h1: 'Audio, video y tecnología para tus eventos y tu negocio en Puebla',
-  // Junto al H1 va la marca: el logo blanco y este lema, en letra pequeña. El párrafo que antes iba aquí ("Un solo
-  // proveedor en Puebla…") y el botón viven solo en la sección "Qué hacemos" (queHacemos), para no repetirlos.
-  marca: { lema: 'Soluciones de audio, video y tecnología' },
+  // Junto al H1 va el logo blanco, grande (decorativo, lo pinta la portada). Sin lema, sin párrafo y sin botón: la propuesta y
+  // el único botón "Ver servicios" viven en la sección "Qué hacemos" (queHacemos).
   // [PENDIENTE: video de portada. Sin clip, la foto sirve igual en móvil y en escritorio.]
   foto: {
     src: fotoPortada,
@@ -39,14 +38,14 @@ export const portada = {
   } satisfies Foto,
 };
 
-// "Qué hacemos": el "About us" de la plantilla Marby, SIN las tarjetas de cifras (no hay datos y no se inventan números).
-// El texto no se repite en ninguna otra parte del sitio (la portada ya no lo lleva). El botón baja a las tarjetas de
-// servicios (/#servicios). Foto temporal.
+// "Qué hacemos": el "About us" de la plantilla Marby (HomeAbout, commit 6a6f883d), SIN las tarjetas de cifras (no hay datos
+// y no se inventan números). El texto, aprobado por el dueño, no se repite en ninguna otra parte del sitio. El botón baja a
+// las tarjetas de servicios (/#servicios) y es el único "Ver servicios" del Inicio. Foto temporal.
 export const queHacemos = {
-  etiqueta: 'Qué hacemos',
-  titulo: 'Para tus eventos y tu negocio en Puebla',
+  etiqueta: 'Digital X',
+  titulo: 'Qué hacemos',
   texto:
-    'Un solo proveedor en Puebla, Atlixco e Izúcar de Matamoros para el audio y el video de tu evento, y para la página web, la app o el software de tu negocio.',
+    'Un solo proveedor para tu evento y tu negocio: nos encargamos de que tu evento se vea y se escuche bien, y de darle a tu negocio las herramientas digitales que necesita, en Puebla, Atlixco, Izúcar de Matamoros y alrededores.',
   boton: { etiqueta: 'Ver servicios', href: urlVerServicios },
   foto: {
     src: fotoQueHacemos,

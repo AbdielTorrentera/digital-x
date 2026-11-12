@@ -3,9 +3,11 @@ import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
 import type { Foto as FotoDatos } from '../../content/inicio';
 
-// "About us" de la plantilla Marby: etiqueta, foto a la izquierda, título grande y texto a la derecha, y un botón. SIN
-// las tres tarjetas de cifras de la plantilla (no hay datos y no se inventan números). Los textos vienen de
-// content/inicio.ts (`queHacemos`).
+// "About us" de la plantilla Marby (HomeAbout, commit 6a6f883d), fiel al original: dos columnas (en escritorio ancho; en
+// una sola debajo de 1200 px) con la etiqueta y una foto apaisada y baja (473 × 234 px) a la izquierda, y a la derecha
+// (columna de 460 px como máximo) el título grande, el texto y el botón; 20 px entre columnas y entre elementos. SIN las tres
+// tarjetas de cifras de la plantilla (no hay datos y no se inventan números). Los textos vienen de content/inicio.ts
+// (`queHacemos`). El título usa el tamaño grande de la escala (--txt-h1; el original usa su H2 de 48 px).
 interface Props {
   etiqueta: string;
   titulo: string;
@@ -22,10 +24,16 @@ const { etiqueta, titulo, texto, foto, boton } = Astro.props;
       <p class="t-caption2" data-appear>
         {etiqueta}
       </p>
-      <Foto class="about__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 50vw, 100vw" />
+      <Foto
+        class="about__img"
+        src={foto.src}
+        alt={foto.alt}
+        sizes="(min-width: 1024px) 473px, 100vw"
+        widths={[473, 946]}
+      />
     </div>
     <div class="about__col about__col--text">
-      <h2 class="t-h2" data-appear>
+      <h2 class="t-h1" data-appear>
         {titulo}
       </h2>
       <p class="t-body" data-appear>
@@ -43,38 +51,45 @@ const { etiqueta, titulo, texto, foto, boton } = Astro.props;
     /* Esta sección y la de servicios son blancas: el espacio entre ambas es el de una sola, no la suma de dos. */
     padding-block: var(--esp-8) 0;
   }
+  /* Medidas del original: 20 px entre columnas y entre elementos; foto de 473 × 234 px. */
   .about__inner {
     display: flex;
     flex-direction: column;
-    gap: var(--esp-5);
+    gap: 20px;
   }
   .about__col {
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--esp-4);
+    gap: 20px;
   }
   /* <picture> no pinta caja: el <img> es el elemento del flujo. Picture no le pone al <img> el atributo de alcance. */
   .about :global(picture) {
     display: contents;
   }
   .about :global(.about__img) {
-    width: 100%;
-    aspect-ratio: 4 / 3;
+    width: 473px;
+    max-width: 100%;
+    height: 234px;
     object-fit: cover;
     border-radius: var(--radio);
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 1200px) {
     .about {
       padding-block: var(--esp-9) 0;
     }
     .about__inner {
       flex-direction: row;
-      gap: var(--medianil);
     }
-    .about__col {
-      flex: 1 1 0;
-      min-width: 0;
+    .about__col--text {
+      max-width: 460px;
+    }
+  }
+  @media (max-width: 809.98px) {
+    .about :global(.about__img) {
+      width: 100%;
     }
   }
 </style>

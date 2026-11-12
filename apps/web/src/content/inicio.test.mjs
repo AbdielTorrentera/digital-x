@@ -13,20 +13,23 @@ const bloque = (nombre) => {
   return inicio.slice(desde, inicio.indexOf('\n};', desde));
 };
 
-test('la portada lleva el H1, la marca con su lema y nada más: sin párrafo ni botón', () => {
+test('la portada lleva solo el H1 (el logo lo pinta el componente): sin lema, párrafo ni botón', () => {
   const portada = bloque('portada');
   assert.match(portada, /h1: 'Audio, video y tecnología para tus eventos y tu negocio en Puebla'/);
-  assert.match(portada, /marca: \{ lema: 'Soluciones de audio, video y tecnología' \}/);
+  assert.ok(
+    !/\blema\b|\bmarca\b|Soluciones de audio, video y tecnología/.test(inicio),
+    'sin lema ni marca en los datos',
+  );
   assert.ok(!/\btexto:|\bboton:/.test(portada), 'la portada no lleva párrafo ni botón');
 });
 
-test('"Qué hacemos": etiqueta, título, texto, foto temporal con alt y el único botón "Ver servicios" a #servicios', () => {
+test('"Qué hacemos": etiqueta "Digital X", título, texto aprobado, foto temporal con alt y el único botón "Ver servicios" a #servicios', () => {
   const sec = bloque('queHacemos');
-  assert.match(sec, /etiqueta: 'Qué hacemos'/);
-  assert.match(sec, /titulo: 'Para tus eventos y tu negocio en Puebla'/);
+  assert.match(sec, /etiqueta: 'Digital X'/);
+  assert.match(sec, /titulo: 'Qué hacemos'/);
   assert.match(
     sec,
-    /Un solo proveedor en Puebla, Atlixco e Izúcar de Matamoros para el audio y el video de tu evento, y para la página web, la app o el software de tu negocio\./,
+    /Un solo proveedor para tu evento y tu negocio: nos encargamos de que tu evento se vea y se escuche bien, y de darle a tu negocio las herramientas digitales que necesita, en Puebla, Atlixco, Izúcar de Matamoros y alrededores\./,
   );
   assert.match(sec, /boton: \{ etiqueta: 'Ver servicios', href: urlVerServicios \}/);
   assert.match(sec, /alt: '[^']+'/);
@@ -36,7 +39,7 @@ test('"Qué hacemos": etiqueta, título, texto, foto temporal con alt y el únic
 });
 
 test('el texto de "Qué hacemos" no se repite en el Inicio ni queda un segundo botón "Ver servicios"', () => {
-  assert.equal((inicio.match(/Un solo proveedor en Puebla/g) ?? []).length, 1);
+  assert.equal((inicio.match(/Un solo proveedor para tu evento y tu negocio/g) ?? []).length, 1);
   assert.equal((inicio.match(/etiqueta: 'Ver servicios'/g) ?? []).length, 1);
 });
 

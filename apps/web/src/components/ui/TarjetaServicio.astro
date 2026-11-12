@@ -102,6 +102,8 @@ const Titulo = nivel;
     backdrop-filter: blur(8px);
     opacity: 0;
     transition: opacity var(--dur-media) var(--ease);
+    /* Decorativa: el clic sobre la barra y su flecha atraviesa hasta el enlace extendido de la tarjeta. */
+    pointer-events: none;
   }
   .tsrv__chip {
     padding: var(--esp-1) var(--esp-2);
@@ -121,8 +123,17 @@ const Titulo = nivel;
   }
   /* El título es el único enlace de la tarjeta y se extiende a toda ella; el foco se dibuja alrededor de la tarjeta. */
   .tsrv__enlace {
-    text-decoration: underline;
+    text-decoration: none;
     text-underline-offset: var(--esp-1);
+  }
+  /* Sin subrayado en reposo (como la PropertyCard); subrayado al pasar el cursor por la tarjeta y con el foco. */
+  .tsrv__enlace:focus-visible {
+    text-decoration: underline;
+  }
+  @media (hover: hover) {
+    .tsrv:hover .tsrv__enlace {
+      text-decoration: underline;
+    }
   }
   .tsrv__enlace::after {
     content: '';

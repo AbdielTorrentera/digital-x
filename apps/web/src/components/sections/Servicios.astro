@@ -87,7 +87,7 @@ const { etiqueta, titulo, etiquetaTarjeta, items, id } = Astro.props;
                 })}
               </p>
             </div>
-            <Btn label={s.boton} variant="secondary" />
+            <Btn class="svc__boton" label={s.boton} variant="secondary" />
           </div>
         </article>
       ))}
@@ -142,6 +142,12 @@ const { etiqueta, titulo, etiquetaTarjeta, items, id } = Astro.props;
     content: '';
     position: absolute;
     inset: 0;
+  }
+  /* El botón es decorativo (un <span>): el enlace extendido del título ocupa toda la tarjeta y queda por debajo de él, así
+     que sin esto el clic sobre el botón no llegaba al enlace. Con `pointer-events: none` el clic lo atraviesa y llega al
+     enlace de SU propia tarjeta. */
+  .svc :global(.svc__boton) {
+    pointer-events: none;
   }
   .svc__nombre {
     position: relative;

@@ -53,7 +53,7 @@ Monorepo con pnpm workspaces:
 
 - `apps/web`: sitio público en **Astro**, basado en la plantilla **Marby** (licencia MIT: conservar `LICENSE` y el crédito). → `digitalx.mx`
 - `apps/studio`: **Sanity Studio**, en español. → `admin.digitalx.mx`
-- `packages/`: código compartido (consultas GROQ, tipos generados de Sanity).
+- `packages/sanity`: reglas de contenido compartidas por el Studio y el build (longitudes de SEO, vocabulario, permisos, slugs) y, desde la etapa 3 de la fase 3, las consultas GROQ y los tipos generados de Sanity. → Las reglas de contenido se escriben **una sola vez** aquí.
 
 Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstruye solo cuando cambia su carpeta), **Sanity** (plan gratuito, dataset `production`), **Mux** para videos (plan gratuito, máximo 10). El sitio es estático; un webhook de Sanity dispara el rebuild en Vercel.
 
@@ -68,9 +68,9 @@ Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstr
 
 - Gestor de paquetes: **pnpm**. Nunca usar `npm` ni `npx` (usar `pnpm dlx`).
 - Desarrollo: `pnpm dev` dentro de cada app (web en :4321, studio en :3333).
-- Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`.
+- Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio se conecta al dataset `pruebas` (ver `apps/studio/.env.development`); el Studio publicado y la CLI usan `production`.
 - Antes de dar por terminada una tarea en `apps/web`: `pnpm build` sin errores.
-- Verificaciones: `pnpm format` / `pnpm format:check` (raíz); `pnpm check`, `pnpm test`, `pnpm build` y `pnpm check:enlaces` (en `apps/web`); `pnpm check` (en `apps/studio`).
+- Verificaciones: `pnpm format` / `pnpm format:check` (raíz); `pnpm check`, `pnpm test`, `pnpm build` y `pnpm check:enlaces` (en `apps/web`); `pnpm check` (en `apps/studio`); `pnpm test` (en `packages/sanity`); `pnpm sanity schema validate` (en `apps/studio`) al cambiar esquemas.
 
 ## Adaptar Marby: lo que hay que cambiar
 

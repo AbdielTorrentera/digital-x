@@ -1,4 +1,4 @@
-import {defineConfig} from 'sanity'
+import {defineConfig, defineLocaleResourceBundle} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {esESLocale} from '@sanity/locale-es-es'
@@ -16,6 +16,21 @@ export default defineConfig({
   dataset: import.meta.env.SANITY_STUDIO_DATASET ?? datasetProduccion,
 
   plugins: [esESLocale(), structureTool({structure: estructura}), visionTool()],
+
+  i18n: {
+    bundles: [
+      // «Nuevo {{schemaType}}» no concuerda con todos los títulos («Nuevo Reseña de un cliente»): se usa un
+      // texto neutro que funciona con cualquier título.
+      defineLocaleResourceBundle({
+        locale: 'es-ES',
+        namespace: 'structure',
+        resources: {
+          'panes.document-header-title.new.text': 'Documento nuevo: {{schemaType}}',
+          'browser-document-title.new-document': 'Documento nuevo: {{schemaType}}',
+        },
+      }),
+    ],
+  },
 
   schema: {
     types: schemaTypes,

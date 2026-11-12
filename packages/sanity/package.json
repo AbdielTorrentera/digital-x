@@ -1,0 +1,21 @@
+{
+  "name": "@digitalx/sanity",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Reglas de contenido compartidas entre el Studio (validaciones) y el build del sitio.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "exports": {
+    "./config": "./config.ts",
+    "./reglas": "./reglas/index.ts"
+  },
+  "scripts": {
+    "test": "node --test \"reglas/**/*.test.mjs\""
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true
+  }
+}

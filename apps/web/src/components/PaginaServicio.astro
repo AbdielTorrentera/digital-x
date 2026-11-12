@@ -8,9 +8,10 @@ import Migas from './Migas.astro';
 import NavInterna from './NavInterna.astro';
 import CierreContacto from './sections/CierreContacto.astro';
 import Faq from './sections/Faq.astro';
-import TarjetaProyecto from './ui/TarjetaProyecto.astro';
+import Team from './sections/Team.astro';
 import TextoConEnlaces from './ui/TextoConEnlaces.astro';
 import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
+import { proyectosPagina } from '../content/nosotros';
 import { proyectos as proyectosDelSitio } from '../content/proyectos';
 import { categorias } from '../content/categorias';
 import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
@@ -71,8 +72,8 @@ const salto = [
   { href: '#descripcion', etiqueta: 'Descripción' },
   { href: '#que-incluye', etiqueta: 'Qué incluye' },
   ...secciones.map((s) => ({ href: `#${s.id}`, etiqueta: s.etiqueta })),
-  ...(proyectos.length > 0 ? [{ href: '#proyectos', etiqueta: 'Proyectos' }] : []),
   { href: '#te-puede-servir', etiqueta: 'Te puede servir' },
+  ...(proyectos.length > 0 ? [{ href: '#proyectos', etiqueta: 'Proyectos' }] : []),
 ];
 const nombreEnMinuscula = nombre.toLowerCase();
 const datosEstructurados = serviceJsonLd({
@@ -176,19 +177,6 @@ const datosEstructurados = serviceJsonLd({
               )}
             </div>
           ))}
-          {proyectos.length > 0 && (
-            <div class="srv__bloque" id="proyectos" data-appear>
-              <h2 class="t-h2">Proyectos</h2>
-              <ul class="srv__proyectos">
-                {proyectos.map((proyecto) => (
-                  <TarjetaProyecto
-                    proyecto={proyecto}
-                    sizes="(min-width: 1280px) 20vw, (min-width: 768px) 40vw, 100vw"
-                  />
-                ))}
-              </ul>
-            </div>
-          )}
           <div class="srv__bloque" id="te-puede-servir" data-appear>
             <h2 class="t-h2">También te puede servir</h2>
             {tambien.intro && <p class="t-body srv__intro">{tambien.intro}</p>}
@@ -220,6 +208,17 @@ const datosEstructurados = serviceJsonLd({
       </div>
     </div>
   </section>
+  {proyectos.length > 0 && (
+    <div class="srv__proyectos" id="proyectos">
+      <Team
+        etiqueta={proyectosPagina.etiqueta}
+        titulo={`Proyectos de ${nombre.toLowerCase()}`}
+        foto={{ src: proyectosPagina.foto, alt: '' }}
+        items={proyectos}
+        boton={proyectosPagina.boton}
+      />
+    </div>
+  )}
   {p.faq?.length ? (
     <Faq
       etiqueta="Preguntas frecuentes"
@@ -244,7 +243,7 @@ const datosEstructurados = serviceJsonLd({
      móvil, la foto arriba y el texto abajo. El alto es mínimo: el texto crece con el zoom y la letra grande (diseño §9).
      Las migas van arriba de la etiqueta, dentro de la columna de texto. <picture> no pinta caja. */
   .enc {
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
     display: flex;
     flex-direction: column;
   }
@@ -268,7 +267,7 @@ const datosEstructurados = serviceJsonLd({
     min-height: var(--tactil);
     padding: var(--esp-1) var(--esp-4);
     border-radius: var(--radio-chico);
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
     color: var(--dx-negro);
   }
   /* El modal de la galería necesita JavaScript: sin él, el botón no se muestra. */
@@ -349,12 +348,6 @@ const datosEstructurados = serviceJsonLd({
   .srv__bloque :global(strong) {
     font-weight: 600;
   }
-  /* Proyectos: una columna en móvil, dos desde tableta y tres en pantallas anchas (la columna es más angosta que la página). */
-  .srv__proyectos {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--esp-5);
-  }
 
   /* Lo que incluye (los highlights de Marby): una fila por inclusión, con su palomita. */
   .inc {
@@ -373,7 +366,7 @@ const datosEstructurados = serviceJsonLd({
     place-items: center;
     padding: var(--esp-2);
     border-radius: var(--radio-chico);
-    background: var(--dx-gris-claro);
+    background: var(--dx-gris-tarjeta);
   }
 
   /* "También te puede servir": filas con línea, como la lista de lugares cercanos de Marby. */
@@ -422,14 +415,6 @@ const datosEstructurados = serviceJsonLd({
       justify-content: space-between;
       gap: var(--esp-5);
     }
-    .srv__proyectos {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 1280px) {
-    .srv__proyectos {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
   }
   @media (min-width: 1024px) {
     /* Escritorio: dos mitades; la foto ocupa toda la mitad izquierda, de borde a borde y a todo lo alto. */
@@ -466,5 +451,10 @@ const datosEstructurados = serviceJsonLd({
       position: sticky;
       top: calc(var(--nav-alto) + var(--esp-4));
     }
+  }
+  /* El carrusel de proyectos (el de Nosotros) va a todo el ancho, después del contenido; el salto "Proyectos" llega aquí
+     dejando libre la barra del menú. */
+  .srv__proyectos {
+    scroll-margin-top: var(--nav-alto);
   }
 </style>

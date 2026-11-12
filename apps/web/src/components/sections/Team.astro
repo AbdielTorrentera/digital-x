@@ -261,9 +261,13 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
   .ticker.is-arrastrando {
     cursor: grabbing;
   }
+  /* Si las tarjetas caben en el ancho, se ven fijas y CENTRADAS (la pista mide al menos todo el ancho); si lo exceden, la
+     pista mide lo que mide su contenido y el contenedor se desliza (el centrado no recorta el inicio). */
   .ticker__track {
     display: flex;
     width: max-content;
+    min-width: 100%;
+    justify-content: center;
   }
   .ticker__set {
     display: flex;

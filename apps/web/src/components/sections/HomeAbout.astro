@@ -1,61 +1,49 @@
 ---
 import Btn from '../Btn.astro';
-import { site } from '../../lib/site';
-const { about } = await site('home');
+import Foto from '../Foto.astro';
+import type { Foto as FotoDatos } from '../../content/inicio';
+
+// "About us" de la plantilla Marby: etiqueta, foto a la izquierda, título grande y texto a la derecha, y un botón. SIN
+// las tres tarjetas de cifras de la plantilla (no hay datos y no se inventan números). Los textos vienen de
+// content/inicio.ts (`queHacemos`).
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  texto: string;
+  foto: FotoDatos;
+  boton: { etiqueta: string; href: string };
+}
+const { etiqueta, titulo, texto, foto, boton } = Astro.props;
 ---
 
 <section class="about section">
   <div class="container about__inner">
-    <div class="about__top">
-      <div class="about__col">
-        <p class="t-caption2" data-appear>
-          {about.label}
-        </p>
-        <img
-          class="about__img"
-          src={about.image}
-          alt={about.imageAlt}
-          width="473"
-          height="234"
-          loading="lazy"
-          data-appear
-        />
-      </div>
-      <div class="about__col about__col--text">
-        <h2 class="t-h2" data-appear>
-          {about.title}
-        </h2>
-        <p class="t-body" data-appear>
-          {about.text}
-        </p>
-        <div data-appear>
-          <Btn label={about.cta.label} href={about.cta.href} />
-        </div>
-      </div>
+    <div class="about__col">
+      <p class="t-caption2" data-appear>
+        {etiqueta}
+      </p>
+      <Foto class="about__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 50vw, 100vw" />
     </div>
-    <div class="about__stats">
-      {about.stats.map((s: any) => (
-        <div class="stat" data-appear>
-          <p class="stat__label t-caption2">{s.label}</p>
-          <div class="stat__row">
-            <p class="t-h2 stat__value">{s.value}</p>
-            <p class="t-caption">{s.index}</p>
-          </div>
-        </div>
-      ))}
+    <div class="about__col about__col--text">
+      <h2 class="t-h2" data-appear>
+        {titulo}
+      </h2>
+      <p class="t-body" data-appear>
+        {texto}
+      </p>
+      <div data-appear>
+        <Btn label={boton.etiqueta} href={boton.href} />
+      </div>
     </div>
   </div>
 </section>
 <style>
   .about {
     background: var(--dx-blanco);
+    /* Esta sección y la de servicios son blancas: el espacio entre ambas es el de una sola, no la suma de dos. */
+    padding-block: var(--esp-8) 0;
   }
   .about__inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-7);
-  }
-  .about__top {
     display: flex;
     flex-direction: column;
     gap: var(--esp-5);
@@ -66,58 +54,27 @@ const { about } = await site('home');
     align-items: flex-start;
     gap: var(--esp-4);
   }
-  .about__img {
+  /* <picture> no pinta caja: el <img> es el elemento del flujo. Picture no le pone al <img> el atributo de alcance. */
+  .about :global(picture) {
+    display: contents;
+  }
+  .about :global(.about__img) {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
     border-radius: var(--radio);
   }
-  .about__stats {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-5);
-  }
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: var(--esp-7);
-    padding: var(--esp-4);
-    border-radius: var(--radio);
-    background: var(--dx-gris-claro);
-  }
-  .stat__label {
-    padding-bottom: var(--esp-4);
-    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
-  }
-  .stat__row {
-    display: flex;
-    align-items: flex-end;
-    gap: var(--esp-5);
-  }
-  .stat__value {
-    flex: 1;
-  }
-  @media (min-width: 768px) {
-    .about__stats {
-      flex-direction: row;
-    }
-    .stat {
-      flex: 1 1 0;
-    }
-  }
   @media (min-width: 1024px) {
-    .about__top {
+    .about {
+      padding-block: var(--esp-9) 0;
+    }
+    .about__inner {
       flex-direction: row;
       gap: var(--medianil);
     }
     .about__col {
       flex: 1 1 0;
-    }
-    .about__stats {
-      gap: var(--esp-6);
-    }
-    .stat {
-      padding: var(--esp-5);
+      min-width: 0;
     }
   }
 </style>

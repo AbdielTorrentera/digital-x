@@ -11,7 +11,7 @@
   --dx-gris-medio: #999999;
   --dx-blanco: #ffffff;
   /* Única excepción a la paleta: verde oficial de WhatsApp (identidad sección 2). */
-  --dx-whatsapp: #25d366;
+  --dx-whatsapp: #1d9446; /* botón flotante de WhatsApp; con ícono blanco: 3.91:1 (identidad §2) */
 
   /* GRIS CLARO ÚNICO: el de la plantilla Marby original (--ink-50, commit 6a6f883d). Decisión del dueño: es el único gris
      claro del sitio, para todas las superficies grises (tarjetas, preguntas, encabezados, menú interno y panel); sustituye

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
-// Un solo juego de íconos: Phosphor Icons (MIT), peso Regular en todos, sin excepciones (reglas-diseno §6).
+// Un solo juego de íconos: Phosphor Icons (MIT), peso Regular en todos; Bold solo en los dos flotantes; Fill, nunca (reglas-diseno §6).
 const icons = new URL('../icons/', import.meta.url);
 const fuente = readFileSync(new URL('./Icon.astro', import.meta.url), 'utf8');
 
@@ -13,9 +13,9 @@ test('todos los íconos son archivos de Phosphor en src/icons, con su licencia M
     'check.svg',
     'list.svg',
     'map-pin.svg',
-    'phone.svg',
+    'phone-bold.svg',
     'plus.svg',
-    'whatsapp-logo.svg',
+    'whatsapp-logo-bold.svg',
     'x.svg',
   ]);
   const licencia = readFileSync(new URL('LICENSE-PHOSPHOR', icons), 'utf8');
@@ -30,7 +30,7 @@ test('todos los íconos son archivos de Phosphor en src/icons, con su licencia M
   }
 });
 
-test('Icon.astro importa solo esos archivos, todos en peso Regular (sin Fill)', () => {
+test('Icon.astro importa solo esos archivos: Bold solo en WhatsApp y llamada, y ninguno en Fill', () => {
   const importados = [...fuente.matchAll(/from '\.\.\/icons\/([^']+)\?raw'/g)].map((m) => m[1]);
   for (const f of importados) assert.ok(existsSync(new URL(f, icons)), f);
   assert.deepEqual(

@@ -1,3 +1,4 @@
+import { posicionParaCentrar } from '../lib/salto';
 import { reduced } from './motion';
 import { lenis } from './smooth';
 
@@ -7,12 +8,30 @@ export function initJumpLinks() {
     const links = [...bar.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
     const scroller = bar.closest<HTMLElement>('[data-jump-scroller]');
     const targets = links.map((a) => document.getElementById(a.hash.slice(1))).filter(Boolean) as HTMLElement[];
+    // La barra puede ser más angosta que sus enlaces (360 px): cuando cambia la sección activa, la barra se desplaza sola,
+    // solo en horizontal (nunca la página), para dejarla centrada y visible. Con prefers-reduced-motion es directo.
+    let previa = -1;
+    const centrar = (enlace: HTMLElement, directo: boolean) => {
+      if (bar.scrollWidth <= bar.clientWidth) return;
+      const izquierda = posicionParaCentrar({
+        izquierda: enlace.offsetLeft,
+        ancho: enlace.offsetWidth,
+        barraAncho: bar.clientWidth,
+        scrollAncho: bar.scrollWidth,
+      });
+      if (Math.abs(izquierda - bar.scrollLeft) < 1) return;
+      bar.scrollTo({ left: izquierda, behavior: reduced || directo ? 'auto' : 'smooth' });
+    };
     const update = () => {
       const line = (scroller ? scroller.getBoundingClientRect().top : 0) + (Number(bar.dataset.jumpOffset) || 140);
       let current = 0;
       targets.forEach((t, k) => {
         if (t.getBoundingClientRect().top <= line) current = k;
       });
+      if (current !== previa) {
+        centrar(links[current], previa === -1);
+        previa = current;
+      }
       links.forEach((a, k) => {
         a.classList.toggle('is-active', k === current);
         if (k === current) a.setAttribute('aria-current', 'location');

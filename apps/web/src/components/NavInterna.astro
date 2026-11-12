@@ -1,7 +1,7 @@
 ---
 // Navegación interna: los jump links de la plantilla Marby. Una barra fija debajo del menú con enlaces a las secciones
-// de la página; scripts/jumplinks.ts marca la sección que se está viendo (aria-current) y hace el salto, con Lenis y
-// con prefers-reduced-motion. Sin JavaScript son anclas normales. Dentro de la galería (modal) va fija arriba del
+// de la página; scripts/jumplinks.ts marca la sección que se está viendo (aria-current), hace el salto (con Lenis y con
+// prefers-reduced-motion) y, si la barra no cabe completa, la desplaza sola en horizontal para dejar visible la activa. Sin JavaScript son anclas normales. Dentro de la galería (modal) va fija arriba del
 // contenedor con scroll en lugar de bajo el menú.
 interface Props {
   items: { href: string; etiqueta: string }[];
@@ -32,8 +32,13 @@ const { items, etiqueta = 'En esta página', offset = 168, modal = false } = Ast
     padding: var(--esp-1);
     border-radius: var(--radio);
     background: var(--dx-gris-claro);
-    /* Con enlaces de más para el ancho (360 px, o letra grande) la barra se desliza en lugar de partir los nombres. */
+    /* Con enlaces de más para el ancho (360 px, o letra grande) la barra se desliza en lugar de partir los nombres; el
+       script la desplaza sola para dejar visible la sección activa. Sin barra de desplazamiento visible. */
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .salto::-webkit-scrollbar {
+    display: none;
   }
   .salto--modal {
     top: 0;

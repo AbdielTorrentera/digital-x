@@ -35,7 +35,7 @@ const sinCodigoNiComentarios = (html: string) =>
 export const paginasConPendientes = (paginas: PaginaHtml[]): string[] =>
   paginas.filter((pagina) => sinCodigoNiComentarios(pagina.html).includes('[PENDIENTE')).map((pagina) => pagina.url);
 
-/** `index.html` → `/`, `404.html` → `/404/`, `servicios/index.html` → `/servicios/`. */
+/** `index.html` → `/`, `404.html` → `/404/`, `video/index.html` → `/video/`. */
 export const urlDeArchivoHtml = (ruta: string): string => {
   const limpia = ruta
     .replace(/\\/g, '/')

@@ -35,7 +35,7 @@ test('hoy Audio tiene un servicio construido, Video 5 y Tecnología 4', () => {
 });
 
 test('con un solo servicio construido la categoría no tiene página y lleva directo a ese servicio', () => {
-  assert.equal(destinoDeCategoria('audio'), '/servicios/renta-de-audio/');
+  assert.equal(destinoDeCategoria('audio'), '/audio/renta-de-audio/');
   assert.ok(!paginasDeCategoria().some((p) => p.paginaDe === 'audio'));
   assert.ok(!paginas.some((p) => p.url === '/audio/'));
   assert.ok(!urlsPublicadas.includes('/audio/'));
@@ -105,7 +105,7 @@ test('categoriasConDestino sigue el orden de los datos y marca Audio como direct
   assert.deepEqual(
     categoriasConDestino().map((c) => [c.categoria.id, c.href, c.directo]),
     [
-      ['audio', '/servicios/renta-de-audio/', true],
+      ['audio', '/audio/renta-de-audio/', true],
       ['video', '/video/', false],
       ['tecnologia', '/tecnologia/', false],
     ],
@@ -122,7 +122,7 @@ test('parrafoDeCategoria une para quién es y los nombres de sus servicios, el p
   assert.match(texto, /^Para quienes organizan fiestas.* Renta de audio y sonido, y sonorización\.$/);
   assert.deepEqual(
     partes.filter((p) => 'nombre' in p).map((p) => p.url),
-    ['/servicios/renta-de-audio/', null],
+    ['/audio/renta-de-audio/', null],
   );
 });
 

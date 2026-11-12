@@ -29,7 +29,12 @@ const bloquesDe = ([, c]) => [
 ];
 const bloques = [
   ...entradas.flatMap(bloquesDe),
-  ...categorias.flatMap((c) => [c.para, c.intro, c.cierre.texto]),
+  ...categorias.flatMap((c) => [
+    c.para,
+    c.intro,
+    c.cierre.texto,
+    ...c.faq.flatMap((f) => [f.pregunta, comoTexto(f.respuesta)]),
+  ]),
 ].filter(Boolean);
 
 test('los servicios del contenido son los del registro de páginas, en el mismo orden', () => {
@@ -1177,7 +1182,7 @@ test('"a la medida" se usa en los textos de la página de software, pero nunca c
   assert.ok(nombres.length > 0);
   for (const nombre of nombres)
     assert.ok(!/a la medida/i.test(nombre), `"a la medida" en un nombre de servicio: ${nombre}`);
-  assert.equal(paginas.find((p) => p.url === '/servicios/desarrollo-de-software/').titulo, 'Desarrollo de software');
+  assert.equal(paginas.find((p) => p.url === '/tecnologia/desarrollo-de-software/').titulo, 'Desarrollo de software');
   // Es la búsqueda principal: la página lo dice en su title, su H1, su meta y su descripción corta.
   const c = servicios['desarrollo-de-software'];
   for (const texto of [c.title, c.h1, c.meta, c.descripcion]) assert.match(texto, /a la medida/i);

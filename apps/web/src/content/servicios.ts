@@ -1,5 +1,5 @@
 /**
- * Contenido de cada servicio (/servicios/{slug}/). Textos locales, mientras no estén en
+ * Contenido de cada servicio (/{categoria}/{slug}/). Textos locales, mientras no estén en
  * Sanity. El nombre de cada servicio y su estado (construida) viven en lib/paginas.ts: aquí solo va lo demás. Sin
  * imágenes: las fotos van en servicios-fotos.ts, para poder probar estos textos con node:test.
  * Fuentes: docs/estructura-sitio-digitalx.md sección 5, docs/reglas-seo-digitalx.md sección 1 (title y meta) y los
@@ -1484,7 +1484,7 @@ export const servicios: Record<Slug, ServicioContenido> = {
 
 /**
  * Lo que le falta al contenido de un servicio para publicar su página. Vacío = completo. El build lo exige para
- * cualquier servicio con `construida: true` (pages/servicios/[slug].astro); no se generan páginas a medias.
+ * cualquier servicio con `construida: true` (pages/[categoria]/[slug].astro); no se generan páginas a medias.
  */
 export const faltantesDePagina = (slug: Slug): string[] => {
   const pagina = servicios[slug].pagina;

@@ -40,7 +40,7 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
 
 test('el pie enlaza las 3 categorías como "Audio", "Video" y "Tecnología" (sin "Servicios de"), cada una a su destino', () => {
   assert.deepEqual(categoriasDeServicios, [
-    { titulo: 'Audio', url: '/servicios/renta-de-audio/' },
+    { titulo: 'Audio', url: '/audio/renta-de-audio/' },
     { titulo: 'Video', url: '/video/' },
     { titulo: 'Tecnología', url: '/tecnologia/' },
   ]);
@@ -94,7 +94,7 @@ test('el menú es Inicio · Audio · Video · Tecnología · Nosotros, generado 
     menu.map((i) => [i.titulo, i.url]),
     [
       ['Inicio', '/'],
-      ['Audio', '/servicios/renta-de-audio/'],
+      ['Audio', '/audio/renta-de-audio/'],
       ['Video', '/video/'],
       ['Tecnología', '/tecnologia/'],
       ['Nosotros', '/nosotros/'],
@@ -114,11 +114,11 @@ test('el menú es Inicio · Audio · Video · Tecnología · Nosotros, generado 
 test('archivosDe da las rutas posibles del archivo de cada página', () => {
   assert.deepEqual(archivosDe('/'), ['index.astro', 'index/index.astro']);
   assert.deepEqual(archivosDe('/nosotros/'), ['nosotros.astro', 'nosotros/index.astro']);
-  // Los servicios salen de la ruta dinámica pages/servicios/[slug].astro.
-  assert.deepEqual(archivosDe('/servicios/renta-de-audio/'), [
-    'servicios/renta-de-audio.astro',
-    'servicios/renta-de-audio/index.astro',
-    'servicios/[slug].astro',
+  // Los servicios salen de la ruta dinámica pages/[categoria]/[slug].astro.
+  assert.deepEqual(archivosDe('/audio/renta-de-audio/'), [
+    'audio/renta-de-audio.astro',
+    'audio/renta-de-audio/index.astro',
+    '[categoria]/[slug].astro',
   ]);
   // Y las categorías con página, de pages/[categoria].astro.
   assert.deepEqual(archivosDe('/video/'), ['video.astro', 'video/index.astro', '[categoria].astro']);
@@ -132,32 +132,32 @@ test('hay 10 servicios, todos en "lanzamiento", y todos están construidos', () 
   assert.deepEqual(
     servicios.filter((p) => p.construida).map((p) => p.url),
     [
-      '/servicios/renta-de-audio/',
-      '/servicios/circuito-cerrado-para-eventos/',
-      '/servicios/video-para-eventos/',
-      '/servicios/streaming-para-eventos/',
-      '/servicios/video-con-drone/',
-      '/servicios/recorridos-virtuales-360/',
-      '/servicios/paginas-web/',
-      '/servicios/tienda-en-linea/',
-      '/servicios/aplicaciones-moviles/',
-      '/servicios/desarrollo-de-software/',
+      '/audio/renta-de-audio/',
+      '/video/circuito-cerrado-para-eventos/',
+      '/video/video-para-eventos/',
+      '/video/streaming-para-eventos/',
+      '/video/video-con-drone/',
+      '/video/recorridos-virtuales-360/',
+      '/tecnologia/paginas-web/',
+      '/tecnologia/tienda-en-linea/',
+      '/tecnologia/aplicaciones-moviles/',
+      '/tecnologia/desarrollo-de-software/',
     ],
   );
 });
 
 test('los servicios son los oficiales: ni uno más ni uno menos', () => {
   assert.deepEqual(servicios.map((p) => p.url).sort(), [
-    '/servicios/aplicaciones-moviles/',
-    '/servicios/circuito-cerrado-para-eventos/',
-    '/servicios/desarrollo-de-software/',
-    '/servicios/paginas-web/',
-    '/servicios/recorridos-virtuales-360/',
-    '/servicios/renta-de-audio/',
-    '/servicios/streaming-para-eventos/',
-    '/servicios/tienda-en-linea/',
-    '/servicios/video-con-drone/',
-    '/servicios/video-para-eventos/',
+    '/audio/renta-de-audio/',
+    '/tecnologia/aplicaciones-moviles/',
+    '/tecnologia/desarrollo-de-software/',
+    '/tecnologia/paginas-web/',
+    '/tecnologia/tienda-en-linea/',
+    '/video/circuito-cerrado-para-eventos/',
+    '/video/recorridos-virtuales-360/',
+    '/video/streaming-para-eventos/',
+    '/video/video-con-drone/',
+    '/video/video-para-eventos/',
   ]);
 });
 
@@ -183,16 +183,20 @@ test('no hay página de contacto: /contacto/ no está en el registro, el menú n
   assert.ok(![...menu, ...enlacesEmpresa, ...enlacesLegales].some((i) => i.url === '/contacto/'));
 });
 
-test('toda URL cumple el formato de estructura §2: minúsculas, sin acentos, con barra final y los servicios en /servicios/{slug}/', () => {
+test('toda URL cumple el formato de estructura §2: minúsculas, sin acentos, con barra final y los servicios en /{categoria}/{slug}/', () => {
   for (const p of paginas) {
     assert.match(p.url, /^\/([a-z0-9]+(-[a-z0-9]+)*\/)*$/, `formato de ${p.url}`);
-    if (p.categoria) assert.match(p.url, /^\/servicios\/[a-z0-9-]+\/$/, `${p.url} no es /servicios/{slug}/`);
+    if (p.categoria) {
+      assert.match(p.url, /^\/(audio|video|tecnologia)\/[a-z0-9-]+\/$/, `${p.url} no es /{categoria}/{slug}/`);
+      // La URL sale de la categoría del servicio y nada cuelga de /servicios/.
+      assert.ok(p.url.startsWith(`/${p.categoria}/`), `${p.url} no cuelga de su categoría`);
+    }
   }
   assert.equal(new Set(paginas.map((p) => p.url)).size, paginas.length, 'URLs repetidas');
 });
 
 test('urlsPlaneadas son las de lanzamiento (construidas o no) y urlsSinConstruir las que aún no existen', () => {
-  assert.ok(urlsPlaneadas.includes('/servicios/video-con-drone/'));
+  assert.ok(urlsPlaneadas.includes('/video/video-con-drone/'));
   assert.ok(urlsPublicadas.every((url) => urlsPlaneadas.includes(url)));
   assert.ok(urlsSinConstruir.every((url) => urlsPlaneadas.includes(url) && !urlsPublicadas.includes(url)));
   assert.equal(urlsPlaneadas.length, urlsPublicadas.length + urlsSinConstruir.length);

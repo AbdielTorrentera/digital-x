@@ -29,7 +29,7 @@ test('serviciosDe marca como construido solo el servicio cuya página ya existe 
     for (const { titulo, url, slug, construida } of serviciosDe(categoria)) {
       const pagina = paginas.find((p) => p.url === url);
       assert.equal(pagina.titulo, titulo);
-      assert.equal(url, `/servicios/${slug}/`);
+      assert.equal(url, `/${categoria}/${slug}/`);
       assert.equal(construida, pagina.construida && pagina.estado === 'lanzamiento', titulo);
     }
   }
@@ -41,7 +41,7 @@ test('enlaceDeServicio lleva a la página si está construida y, si no, no hay e
     assert.equal(enlaceDeServicio(slug), p.construida ? p.url : null, slug);
   }
   // Ya están los 10 servicios construidos: uno se marca como no construido solo durante la prueba.
-  const registro = paginas.find((p) => p.url === '/servicios/desarrollo-de-software/');
+  const registro = paginas.find((p) => p.url === '/tecnologia/desarrollo-de-software/');
   registro.construida = false;
   try {
     assert.equal(enlaceDeServicio('desarrollo-de-software'), null);
@@ -72,7 +72,7 @@ test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y 
   assert.equal(renta.nombre, 'renta de audio y sonido');
   assert.equal(
     renta.url,
-    paginas.find((p) => p.url === '/servicios/renta-de-audio/').construida ? '/servicios/renta-de-audio/' : null,
+    paginas.find((p) => p.url === '/audio/renta-de-audio/').construida ? '/audio/renta-de-audio/' : null,
   );
   assert.deepEqual(sonorizacion, { nombre: 'sonorización', url: null });
   // Unidos, los trozos son exactamente la frase de `lista`.
@@ -89,11 +89,11 @@ test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página;
     partesDeSlugs(['renta-de-audio', 'desarrollo-de-software'])
       .filter((p) => 'nombre' in p)
       .map((p) => p.url);
-  assert.deepEqual(urlsDe(), ['/servicios/renta-de-audio/', '/servicios/desarrollo-de-software/']);
-  const registro = paginas.find((p) => p.url === '/servicios/desarrollo-de-software/');
+  assert.deepEqual(urlsDe(), ['/audio/renta-de-audio/', '/tecnologia/desarrollo-de-software/']);
+  const registro = paginas.find((p) => p.url === '/tecnologia/desarrollo-de-software/');
   registro.construida = false;
   try {
-    assert.deepEqual(urlsDe(), ['/servicios/renta-de-audio/', null]);
+    assert.deepEqual(urlsDe(), ['/audio/renta-de-audio/', null]);
   } finally {
     registro.construida = true;
   }
@@ -103,7 +103,7 @@ test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página;
   assert.equal(texto, 'Renta de audio y sonido, y Circuito cerrado para eventos');
   assert.deepEqual(
     partes.filter((p) => 'nombre' in p).map((p) => p.url),
-    ['/servicios/renta-de-audio/', '/servicios/circuito-cerrado-para-eventos/'],
+    ['/audio/renta-de-audio/', '/video/circuito-cerrado-para-eventos/'],
   );
   const tres = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos', 'video-para-eventos']);
   assert.equal(

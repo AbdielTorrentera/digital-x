@@ -249,7 +249,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 ## 11. Conversión: WhatsApp y llamada
 
 - **Botón flotante de WhatsApp** visible en todas las páginas, **solo ícono** en todos los tamaños: sin texto y sin una versión que cambie al hacer scroll (no lleva "Cotiza tu evento o proyecto aquí").
-  - Círculo de 60 px (64 px desde 768 px), igual al de llamada, con el logo de WhatsApp en línea blanca (Phosphor Bold; color y contraste: identidad §2), fijo en una esquina, sin tapar el CTA principal ni el contenido.
+  - Círculo de 60 px (64 px desde 768 px), igual al de llamada, con el logo oficial de WhatsApp en blanco (Simple Icons; color y contraste: identidad §2), fijo en una esquina, sin tapar el CTA principal ni el contenido.
   - `aria-label` `Cotizar por WhatsApp (se abre en una pestaña nueva)`.
   - En el Inicio, WhatsApp aparece en este botón y en el llamado final; la portada, Cobertura y Preguntas frecuentes no llevan botón de WhatsApp.
 - Enlace de WhatsApp: `https://wa.me/522441244913?text={mensaje codificado}`.
@@ -272,7 +272,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 - **Categorías:** las páginas de categoría usan el mensaje general; cada página de servicio usa el suyo.
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):
   - Enlace `tel:+522441244913`, solo ícono, `aria-label` `Llamar a Digital X`.
-  - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de 60 px (64 px desde 768 px), fondo negro (`--dx-negro`) con ícono blanco del mismo tamaño y peso (Bold) que el de WhatsApp (diseño §6), para que WhatsApp (verde) siga siendo la acción principal.
+  - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de 60 px (64 px desde 768 px), fondo negro (`--dx-negro`) con ícono blanco (Phosphor Bold) de tamaño visual igual al del logo de WhatsApp (diseño §6), para que WhatsApp (verde) siga siendo la acción principal.
   - Respeta el área segura del celular y no tapa contenido ni el llamado final: el pie deja espacio al final de la página.
   - En escritorio el teléfono queda en el pie, con enlace `tel:`.
 - **Medición:** registrar eventos de clic en WhatsApp, llamada y correo, indicando la página de origen.

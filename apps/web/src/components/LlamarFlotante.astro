@@ -25,6 +25,16 @@ import { negocio, telUrl } from '../lib/negocio';
       0 0 0 var(--linea) var(--dx-gris-medio),
       var(--sombra-flotante);
   }
+  /* El teléfono de Phosphor deja ~19 % de aire dentro de su caja, y el logo de WhatsApp (Simple Icons) llega al borde de la
+     suya: la caja del teléfono es 1.2 veces mayor para que ambos glifos midan casi lo mismo, y se corre un 1.6 % hacia
+     abajo y a la izquierda porque el dibujo no está centrado en su caja (centro en 132, 124 de 256). */
+  .llamar :global(.icon) {
+    width: calc(var(--icono-flotante) * 1.2);
+    height: calc(var(--icono-flotante) * 1.2);
+  }
+  .llamar :global(.icon svg) {
+    transform: translate(-1.6%, 1.6%);
+  }
   .llamar:hover {
     background: var(--dx-amarillo);
     color: var(--dx-negro);

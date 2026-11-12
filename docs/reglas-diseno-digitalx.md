@@ -195,7 +195,8 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 
 ### Íconos
 
-- Un solo juego de íconos con el mismo grosor de trazo. Tamaño base 24 px (20 px dentro de botones).
+- **Un solo juego de íconos: Phosphor Icons** (decisión del dueño; licencia **MIT**, © Phosphor Icons, copiada en `apps/web/src/icons/LICENSE-PHOSPHOR`: se conserva con los íconos). Peso **Regular** en todo el sitio: flecha ↗ de los botones (`arrow-up-right`), ubicación de los proyectos (`map-pin`), + de las preguntas (`plus`), menú de 3 rayas (`list`), cerrar (`x`) y palomita (`check`). **Única excepción aprobada por el dueño: los dos botones flotantes usan el peso Fill**, ambos en blanco: `whatsapp-logo` (sobre el verde de WhatsApp, como su logo original) y `phone` (sobre negro). Los íconos son archivos SVG copiados tal cual de la biblioteca en `apps/web/src/icons/`, en línea con `currentColor` (sin paquete, CDN ni fuente de íconos); `components/Icon.astro` es el único que los pinta. Un ícono nuevo sale de la misma biblioteca y del peso Regular. La lupa de Marby se eliminó (no se usaba).
+- Tamaño base 24 px (20 px dentro de botones). **Botones flotantes:** círculo de **60 px con ícono de 28 px en móvil** y de **64 px con ícono de 32 px desde 768 px** (`--boton-flotante` y `--icono-flotante`), los dos con el mismo tamaño y estilo de ícono; zona táctil muy por encima de 48 px. El ícono de llamada es blanco sobre negro (21:1); el de WhatsApp, blanco sobre `#25D366` (excepción de contraste de identidad §2). El relleno inferior del pie se calcula con `--boton-flotante` para que, al final de la página, la pila de dos botones no tape texto.
 - Íconos decorativos con `aria-hidden="true"`; los que comunican algo llevan texto visible o `aria-label`.
 
 ### Radios y sombras
@@ -260,7 +261,7 @@ Objetivo: **WCAG 2.2 nivel AA**.
 
 ## 11. Pendientes
 
-- [ ] Confirmar el juego de íconos (se mantiene el de Marby mientras tanto).
+- [x] Juego de íconos: Phosphor Icons, peso Regular (excepción Fill en los flotantes), licencia MIT en el repo.
 - [ ] Colores de estado para formularios (ver marca §2), si se publica el formulario.
 ---
 

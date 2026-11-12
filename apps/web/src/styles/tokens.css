@@ -228,7 +228,8 @@
      de un número a mano: de aquí cuelgan la portada, la navegación interna y los saltos. */
   --nav-alto: calc(var(--logo-ancho) * 515 / 1609 + 2 * 20px);
   --salto-alto: calc(var(--tactil) + 2 * var(--esp-1)); /* barra de navegación interna: 48 px + su relleno */
-  --boton-flotante: 56px; /* círculo de los botones flotantes de WhatsApp y de llamada (SEO §11) */
+  --boton-flotante: 60px; /* círculo de los botones flotantes de WhatsApp y de llamada (SEO §11); 64 px desde 768 px */
+  --icono-flotante: 28px; /* ícono dentro de los flotantes; 32 px desde 768 px */
   --icono: 24px;
   --icono-boton: 20px; /* íconos dentro de botones (diseño §6) */
   --logo-ancho: 128px; /* ≥ 120 px (identidad §1) */
@@ -244,6 +245,8 @@
   :root {
     --margen: var(--esp-6);
     --medianil: var(--esp-5);
+    --boton-flotante: 64px;
+    --icono-flotante: 32px;
   }
 }
 

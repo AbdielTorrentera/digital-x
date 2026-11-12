@@ -240,7 +240,7 @@ Si falta un campo, `[PENDIENTE: ...]`. Casos de software: anónimos si no hay pe
 La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde celular. Diseñar **primero para móvil**.
 
 - Objetivo: página usable en menos de **2 s** en 4G móvil. Umbral mínimo de aprobación (Core Web Vitals "bueno"): **LCP ≤ 2.5 s, CLS ≤ 0.1, INP ≤ 200 ms**. Medir con PageSpeed Insights.
-- Botón de llamada **flotante** con enlace `tel:+522441244913`, solo ícono, encima del botón flotante de WhatsApp y **solo en celular y tableta** (menos de 1024 px); círculo de al menos **56 px**, visible sin hacer scroll. En escritorio no se muestra: el teléfono va en el pie con enlace `tel:`. El header no lleva botón de llamada.
+- Botón de llamada **flotante** con enlace `tel:+522441244913`, solo ícono, encima del botón flotante de WhatsApp y **solo en celular y tableta** (menos de 1024 px); círculo de **60 px en móvil y 64 px desde 768 px** (nunca menos de 56 px), visible sin hacer scroll. En escritorio no se muestra: el teléfono va en el pie con enlace `tel:`. El header no lleva botón de llamada.
 - Texto legible sin hacer zoom, sin scroll horizontal.
 - Sin ventanas emergentes que tapen el contenido en móvil.
 
@@ -249,7 +249,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 ## 11. Conversión: WhatsApp y llamada
 
 - **Botón flotante de WhatsApp** visible en todas las páginas, **solo ícono** en todos los tamaños: sin texto y sin una versión que cambie al hacer scroll (no lleva "Cotiza tu evento o proyecto aquí").
-  - Círculo de 56 px, igual al de llamada, fijo en una esquina, sin tapar el CTA principal ni el contenido.
+  - Círculo de 60 px (64 px desde 768 px), igual al de llamada, con el logo de WhatsApp en blanco (peso Fill, excepción aprobada: identidad §2), fijo en una esquina, sin tapar el CTA principal ni el contenido.
   - `aria-label` `Cotizar por WhatsApp (se abre en una pestaña nueva)`.
   - En el Inicio, WhatsApp aparece en este botón y en el llamado final; la portada, Cobertura y Preguntas frecuentes no llevan botón de WhatsApp.
 - Enlace de WhatsApp: `https://wa.me/522441244913?text={mensaje codificado}`.
@@ -272,7 +272,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 - **Categorías:** las páginas de categoría usan el mensaje general; cada página de servicio usa el suyo.
 - **Botón flotante de llamada** (solo celular y tableta, menos de 1024 px):
   - Enlace `tel:+522441244913`, solo ícono, `aria-label` `Llamar a Digital X`.
-  - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de al menos 56 px, fondo negro (`--dx-negro`) con ícono blanco, para que WhatsApp (verde) siga siendo la acción principal.
+  - Encima del botón de WhatsApp, con **8 px o más** de separación. Círculo de 60 px (64 px desde 768 px), fondo negro (`--dx-negro`) con ícono blanco del mismo tamaño y estilo que el de WhatsApp (diseño §6), para que WhatsApp (verde) siga siendo la acción principal.
   - Respeta el área segura del celular y no tapa contenido ni el llamado final: el pie deja espacio al final de la página.
   - En escritorio el teléfono queda en el pie, con enlace `tel:`.
 - **Medición:** registrar eventos de clic en WhatsApp, llamada y correo, indicando la página de origen.

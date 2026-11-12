@@ -102,12 +102,12 @@ const anio = new Date().getFullYear();
 
 <style>
   /* El relleno inferior deja libre el final de la página para que los botones flotantes no tapen texto: en móvil y
-     tableta son dos (llamada 56 px + 8 px + WhatsApp 56 px + margen), en escritorio solo WhatsApp. */
+     tableta son dos (llamada + 8 px + WhatsApp, de --boton-flotante cada uno, más su margen), en escritorio solo WhatsApp. */
   /* .sobre-negro (tokens.css) pone fondo negro, texto blanco, texto secundario en gris medio y foco amarillo. */
   /* Línea fina de 1 px arriba (gris medio sobre negro): separa el pie del cierre de foto oscura que lo precede, para que
      no queden dos bloques oscuros seguidos sin separación. */
   .footer {
-    padding: var(--esp-8) 0 calc(var(--esp-9) + var(--esp-7));
+    padding: var(--esp-8) 0 calc(2 * var(--boton-flotante) + var(--esp-2) + 2 * var(--esp-5));
     box-shadow: inset 0 var(--linea) 0 var(--borde);
   }
   .footer__inner {

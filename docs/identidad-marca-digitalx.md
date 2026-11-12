@@ -67,7 +67,7 @@ Paleta oficial (archivo `paleta_Colores_Digital-x.ase`), más el blanco para fon
 - **Proporción sugerida** *(propuesta)*: el sitio es predominantemente **negro y blanco**; el amarillo es el acento (botones, llamados a la acción, detalles) y no debe cubrir más de un 10 % aproximado de una pantalla. Así el amarillo destaca donde importa: en lo que se debe tocar.
 - **Gris claro único (decisión del dueño):** el gris de la plantilla Marby original, `--dx-gris-tarjeta` `#F5F5F6`, es el único gris claro y sustituye al `#DBDBDB` en todas las superficies grises.
 - **No hay más colores.** Si se necesita un color de estado (error, éxito en formularios), se define primero aquí. `[PENDIENTE: colores de estado, si se usa formulario]`.
-- El botón flotante de WhatsApp usa el **verde oficial de WhatsApp** (`#25D366`) con el ícono en **negro** (el blanco sobre ese verde no cumple contraste: 2.0:1), por ser un elemento reconocible de terceros. Es la única excepción a la paleta.
+- El botón flotante de WhatsApp usa el **verde oficial de WhatsApp** (`#25D366`) con el logo de WhatsApp en **blanco** (peso Fill), como el logo original, por ser un elemento reconocible de terceros. Es la única excepción a la paleta. **Excepción de contraste aprobada por el dueño:** el blanco sobre ese verde mide **1.98:1**, por debajo del 3:1 que pide diseño §3 para los íconos; el botón es reconocible por la marca y lleva `aria-label`. Si se quisiera cumplirlo, bastaría un verde más oscuro (por ejemplo `#128C7E`, 4.1:1 con blanco) en `--dx-whatsapp`.
 
 ---
 

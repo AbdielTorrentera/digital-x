@@ -1,21 +1,22 @@
 ---
-import menu from '../icons/menu.svg?raw';
-import arrow from '../icons/arrow.svg?raw';
+// Íconos: Phosphor Icons (MIT, licencia en src/icons/LICENSE-PHOSPHOR), peso Regular, copiados como SVG (sin paquete,
+// CDN ni fuente de íconos). Excepción aprobada por el dueño: los dos botones flotantes (WhatsApp y llamada) usan el peso
+// Fill. Cada archivo es el original de la biblioteca, con `currentColor`.
+import menu from '../icons/list.svg?raw';
+import arrow from '../icons/arrow-up-right.svg?raw';
 import check from '../icons/check.svg?raw';
 import plus from '../icons/plus.svg?raw';
-import pin from '../icons/pin.svg?raw';
-import search from '../icons/search.svg?raw';
-import whatsapp from '../icons/whatsapp.svg?raw';
-import phone from '../icons/phone.svg?raw';
+import pin from '../icons/map-pin.svg?raw';
+import close from '../icons/x.svg?raw';
+import whatsapp from '../icons/whatsapp-logo-fill.svg?raw';
+import phone from '../icons/phone-fill.svg?raw';
 
-const close =
-  '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg>';
-const icons = { menu, arrow, check, plus, pin, search, close, whatsapp, phone };
+const icons = { menu, arrow, check, plus, pin, close, whatsapp, phone };
 
-// Tamaños de diseño §6: 'base' (24 px) y 'boton' (20 px, dentro de botones). Salen de tokens.css.
+// Tamaños de diseño §6: 'base' (24 px), 'boton' (20 px, dentro de botones) y 'flotante' (botones flotantes). Salen de tokens.css.
 interface Props {
   name: keyof typeof icons;
-  size?: 'base' | 'boton';
+  size?: 'base' | 'boton' | 'flotante';
   class?: string;
 }
 const { name, size = 'base', class: cls } = Astro.props;
@@ -35,6 +36,10 @@ const svg = icons[name].replace('<svg', '<svg aria-hidden="true" focusable="fals
   .icon--boton {
     width: var(--icono-boton);
     height: var(--icono-boton);
+  }
+  .icon--flotante {
+    width: var(--icono-flotante);
+    height: var(--icono-flotante);
   }
   .icon :global(svg) {
     width: 100%;

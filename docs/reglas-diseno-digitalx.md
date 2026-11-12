@@ -227,6 +227,7 @@ Los colores y sus combinaciones permitidas están en `identidad-marca-digitalx.m
 - Con `prefers-reduced-motion`, se desactivan animaciones, carruseles automáticos, el desplazamiento suave y la reproducción automática de video.
 - **Prohibido:** secuestrar el scroll, carruseles nuevos que avanzan solos sin botón de pausa (la fila de proyectos de Nosotros es la excepción descrita arriba), parpadeos de más de 3 veces por segundo y video con sonido automático.
 - En pantallas táctiles el desplazamiento es el nativo del sistema (sin desplazamiento suave por JavaScript).
+- **Enlaces con ancla a la misma página** (el botón "Ver servicios" de "Qué hacemos", y cualquier otro `#` o `/#`): `scripts/anclas.ts` hace el salto suave (Lenis con puntero fino; en táctil, el suave nativo) y **descuenta la barra fija** (el `scroll-margin-top` del destino o, si no lo tiene, el alto de la barra), de modo que el título no queda debajo de ella. Con `prefers-reduced-motion` el salto es directo. Pasa el foco al destino y deja el `#` en la dirección. Lenis ya no usa su opción `anchors` (saltaba de golpe y sin descontar la barra). El menú interno de los servicios y el enlace "Saltar al contenido" conservan su propio manejo.
 
 ---
 

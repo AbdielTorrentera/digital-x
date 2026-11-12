@@ -10,7 +10,8 @@ const punteroFino = window.matchMedia('(hover: hover) and (pointer: fine)');
 export async function initSmooth() {
   if (reduced || !punteroFino.matches) return;
   const { default: Lenis } = await import('lenis');
-  lenis = new Lenis({ lerp: 0.1, autoRaf: true, anchors: { offset: 0 } });
+  // Sin `anchors`: los saltos a un # los hace scripts/anclas.ts (con el descuento de la barra) y el menú interno.
+  lenis = new Lenis({ lerp: 0.1, autoRaf: true });
 }
 
 export const lockScroll = (on: boolean) => {

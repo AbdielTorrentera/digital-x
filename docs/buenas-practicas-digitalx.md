@@ -36,8 +36,8 @@ Cada tipo de cosa vive en un solo lugar:
 
 | Qué | Dónde |
 | --- | --- |
-| Datos del negocio (teléfono, WhatsApp, zonas, mensajes) | `apps/web/src/lib/negocio.ts` |
-| Registro de páginas y su estado | `apps/web/src/lib/paginas.ts` |
+| Datos del negocio (teléfono, WhatsApp, correo, redes, zonas, mensaje general) | «Configuración del sitio» en Sanity, leída por `apps/web/src/lib/negocio.ts` (en código: URL, logo y funciones de enlace) |
+| Registro de páginas y su estado | `apps/web/src/lib/paginas.ts` (páginas fijas; los servicios y su estado salen de Sanity) |
 | Colores, espaciados, tamaños, radios, duraciones | `apps/web/src/styles/tokens.css` |
 | Consultas a Sanity (GROQ) y tipos generados | `packages/sanity/` (consultas y tipos, desde la etapa 3) |
 | Esquemas de contenido | `apps/studio/schemaTypes/` |
@@ -48,7 +48,7 @@ Cada tipo de cosa vive en un solo lugar:
 
 Reglas:
 
-1. **Ningún dato del negocio escrito a mano en un componente.** Teléfono, URL, correo o mensaje de WhatsApp se importan de `negocio.ts` (o de Sanity cuando se migre). Lo mismo para URLs del sitio: salen de `paginas.ts`.
+1. **Ningún dato del negocio escrito a mano en un componente.** Teléfono, URL, correo o mensaje de WhatsApp se importan de `negocio.ts` (que los lee de Sanity). Lo mismo para URLs del sitio: salen de `paginas.ts`.
 2. **Las páginas (`src/pages/`) solo arman:** obtienen datos y componen secciones. No contienen estilos grandes ni lógica.
 3. **Componentes pequeños.** Si un componente pasa de unas 200 líneas o hace dos cosas distintas, se divide. Un archivo que "hace de todo" es un error.
 4. **Las consultas a Sanity no se esparcen por los componentes:** se escriben una vez en su módulo y se reutilizan.
@@ -100,6 +100,7 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 | Accesibilidad automática | axe con Playwright | Al cambiar componentes o páginas |
 | Rendimiento | Lighthouse o PageSpeed | Antes de lanzar y al agregar páginas |
 
+- **Contenido de Sanity.** Las reglas de contenido (vocabulario, SEO, permisos, fotos) se escriben **una sola vez** en `packages/sanity/reglas` y las usan el Studio (error al capturar) y el build (falla): lo que bloquea el build es error en el Studio, salvo las guardas de solo producción (fotos temporales, proyectos de ejemplo y enlaces a páginas sin construir). Al cambiar una regla se actualizan sus pruebas en ese paquete.
 - **Enlaces a páginas planeadas.** En desarrollo y en CI se permite enlazar a páginas en estado "Lanzamiento" que todavía no están construidas (llevan a la 404): `check:enlaces` las acepta y sigue fallando con cualquier URL que no esté en el registro `paginas.ts` o que esté "Pendiente de material". El build de producción falla si queda alguno, con la lista de páginas y enlaces; es el mismo mecanismo (y el mismo tipo de pruebas) que la protección de fotos temporales y de `[PENDIENTE` visibles.
 - Las funciones con lógica real (por ejemplo `waUrl`, el filtrado de páginas visibles o la validación de enlaces) llevan una **prueba unitaria pequeña**.
 - Ninguna tarea se da por terminada si alguna de sus verificaciones falla o no se pudo ejecutar; se reporta.
@@ -127,6 +128,7 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 - **GitHub Actions** en cada *pull request*: `pnpm install --frozen-lockfile`, `prettier --check`, `astro check`, `pnpm build` y revisión de enlaces. Debe pasar para fusionar.
 - **Vercel** despliega automáticamente: vista previa por *pull request* y por cada fusión a `main`. La **producción** sale de la rama `lanzamiento` (creada desde `main` en GitHub; nadie le hace *push* hasta el lanzamiento); ver "Proyecto de Vercel del sitio" abajo.
 - Cada proyecto de Vercel se reconstruye solo cuando cambia su carpeta (`apps/web` o `apps/studio`) o `packages/`.
+- **El build lee Sanity.** `pnpm build` baja antes el contenido publicado (sin token) y lo valida con `packages/sanity/reglas`; si Sanity no responde o algo no pasa, falla y Vercel conserva la versión anterior. El CI también lo baja de `production` (necesita red). Las pruebas y `astro check` usan una muestra fija (`packages/sanity/muestra/contenido.json`) para no depender de lo publicado.
 - Sin herramientas adicionales de orquestación (Turborepo, Nx) mientras haya dos apps.
 
 ### Proyecto de Vercel del sitio (`apps/web`)

@@ -46,7 +46,7 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
 
 1. Los secretos viven **solo** en las variables de entorno de Vercel y en `.env` local. `.env` nunca se sube a Git (ya está en `.gitignore`); `.env.example` lleva solo nombres, sin valores.
 2. **Prefijo `PUBLIC_`:** en Astro, toda variable que empieza con `PUBLIC_` termina en el código que descarga el navegador. Solo pueden llevarlo valores públicos (ID de proyecto de Sanity, nombre del dataset). **Prohibido** `PUBLIC_` en tokens.
-3. **El sitio no usa tokens de Sanity.** El dataset es público y el sitio solo lee contenido publicado. Si en el futuro hace falta un token (por ejemplo, vista previa de borradores), será de **solo lectura**, solo en el servidor y aprobado antes.
+3. **El sitio no usa tokens de Sanity.** El dataset es público y el sitio solo lee contenido publicado. Si en el futuro hace falta un token (por ejemplo, vista previa de borradores), será de **solo lectura**, solo en el servidor y aprobado antes. El build baja el contenido **publicado** con la API pública (`perspective=published`, sin cabeceras de autenticación) y lo deja en `apps/web/.contenido/sanity.json`, que no se sube a Git (`.gitignore`). La muestra de pruebas (`packages/sanity/muestra/contenido.json`) sí se sube y solo trae datos públicos; nunca se agregan a Sanity datos privados (§4.1).
 4. Ningún token de **escritura** de Sanity existe fuera de la cuenta del dueño. Si se necesita para una migración, se crea, se usa y se borra el mismo día.
 5. La URL del *deploy hook* de Vercel es un secreto: solo vive en la configuración del webhook de Sanity. Si se filtra, se regenera.
 6. Si un secreto se sube por error a Git: se **revoca y se regenera de inmediato**. Borrarlo del historial no basta.

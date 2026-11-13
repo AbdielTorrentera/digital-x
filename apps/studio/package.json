@@ -10,7 +10,9 @@
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
-    "start": "sanity start"
+    "start": "sanity start",
+    "migracion:exportar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./migraciones/registrar.mjs migraciones/exportar.mjs",
+    "migracion:verificar": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./migraciones/registrar.mjs migraciones/verificar.mjs"
   },
   "keywords": [
     "sanity"

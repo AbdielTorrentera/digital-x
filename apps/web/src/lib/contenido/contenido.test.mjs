@@ -105,6 +105,20 @@ test('las fotos: nombre descriptivo desde el alt, decorativas con alt vacío y t
     nombreDeArchivo({ alt: 'Pantalla de circuito cerrado en una conferencia en Atlixco, con público' }).length <= 60,
   );
   assert.equal(nombreDeArchivo({ alt: 'Cámara  ÚNICA: ¡Niño!' }), 'camara-unica-nino');
+  // Al cortar no queda una palabra vacía al final (de, del, la, un, en, con, y, a, para, por, sobre…).
+  assert.equal(
+    nombreDeArchivo({ alt: 'Bocinas de sonido profesional colgadas del techo de un recinto, en blanco y negro' }),
+    'bocinas-de-sonido-profesional-colgadas-del-techo',
+  );
+  assert.equal(
+    nombreDeArchivo({ alt: 'Laptop abierta sobre un escritorio de madera con código en la pantalla' }),
+    'laptop-abierta-sobre-un-escritorio-de-madera-con-codigo',
+  );
+  assert.equal(
+    nombreDeArchivo({ alt: 'Salón para eventos con escenario' }),
+    'salon-para-eventos-con-escenario',
+    'sin cortar no se toca',
+  );
   assert.equal(nombreDeArchivo({ decorativa: true, alt: 'no se usa' }, 'temporal-fondo.jpg'), 'temporal-fondo');
   // Las fotos de fondo (decorativas) llegan como imagen suelta, sin alt.
   for (const imagen of [fotoCierre, manifiesto.foto, proyectosPagina.foto, cierreNosotros.foto]) {

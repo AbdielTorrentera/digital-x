@@ -9,6 +9,24 @@ import type { Foto, FotoDoc, Imagen } from './tipos.ts';
 const ANCHO_MAXIMO = 2400;
 /** Largo máximo del nombre del archivo, sin la extensión. */
 const LARGO_NOMBRE = 60;
+/** Palabras que no pueden quedar al final de un nombre de archivo cortado. */
+const PALABRAS_VACIAS = new Set([
+  'de',
+  'del',
+  'la',
+  'el',
+  'los',
+  'las',
+  'un',
+  'una',
+  'en',
+  'con',
+  'y',
+  'a',
+  'para',
+  'por',
+  'sobre',
+]);
 
 /**
  * El nombre con el que se publica el archivo (reglas-seo §6): descriptivo, sacado del texto alternativo. Una foto
@@ -16,9 +34,18 @@ const LARGO_NOMBRE = 60;
  */
 export const nombreDeArchivo = (foto: FotoDoc, nombreOriginal?: string): string => {
   const base = foto.decorativa || !foto.alt?.trim() ? (nombreOriginal ?? '').replace(/\.[^.]+$/, '') : foto.alt;
-  // Se corta en una palabra completa (en el último guion antes del límite), no a media palabra.
+  // Se corta en una palabra completa (en el último guion antes del límite), no a media palabra, y no queda terminando
+  // en una palabra vacía ("…-de-un", "…-con-codigo-en").
   const completo = slugificar(base, 200);
-  const corte = completo.length > LARGO_NOMBRE ? completo.slice(0, LARGO_NOMBRE).replace(/-[^-]*$/, '') : completo;
+  let corte = completo;
+  if (completo.length > LARGO_NOMBRE) {
+    const palabras = completo
+      .slice(0, LARGO_NOMBRE)
+      .replace(/-[^-]*$/, '')
+      .split('-');
+    while (palabras.length > 1 && PALABRAS_VACIAS.has(palabras[palabras.length - 1])) palabras.pop();
+    corte = palabras.join('-');
+  }
   return corte || 'foto';
 };
 

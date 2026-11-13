@@ -8,7 +8,6 @@ import {
   proyectosDeServicio,
   proyectosDelInicio,
   proyectosPublicables,
-  titulosDeEjemplo,
 } from './proyectos.ts';
 
 const real = (n) => ({ titulo: `Proyecto ${n}`, foto: { src: `/foto-${n}.webp` }, permiso: true });
@@ -57,12 +56,6 @@ test('Nosotros muestra los reales con permiso y los de ejemplo, y deja fuera los
     proyectosDeNosotros(lista).map((p) => p.titulo),
     ['Proyecto 1', 'Ejemplo 2'],
   );
-});
-
-test('titulosDeEjemplo lista solo los títulos de los proyectos de ejemplo', () => {
-  assert.deepEqual(titulosDeEjemplo([real(1), ejemplo(2), ejemplo(3)]), ['Ejemplo 2', 'Ejemplo 3']);
-  assert.deepEqual(titulosDeEjemplo([real(1)]), []);
-  assert.deepEqual(titulosDeEjemplo([]), []);
 });
 
 const usa = (proyecto, ...servicios) => ({ ...proyecto, servicios });

@@ -8,8 +8,8 @@ import AboutVision from '../components/sections/AboutVision.astro';
 import Team from '../components/sections/Team.astro';
 import Faq from '../components/sections/Faq.astro';
 import CierreContacto from '../components/sections/CierreContacto.astro';
-import { cierre, distingue, faq, historia, manifiesto, pagina, proyectosPagina } from '../content/nosotros';
-import { proyectos } from '../content/proyectos';
+import { cierre, distingue, faq, historia, manifiesto, pagina, proyectosPagina } from '../lib/contenido/nosotros';
+import { proyectos } from '../lib/contenido/proyectos';
 import { aboutPageJsonLd, serializarJsonLd } from '../lib/jsonld';
 import { idNegocio, mensajesWhatsApp, negocio } from '../lib/negocio';
 import { proyectosDeNosotros } from '../lib/proyectos';
@@ -18,7 +18,7 @@ const url = new URL('/nosotros/', negocio.url).href;
 ---
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
-<Base title={pagina.title} description={pagina.descripcion} whatsapp={mensajesWhatsApp.general}>
+<Base title={pagina.title} description={pagina.descripcion} image={pagina.imagen} whatsapp={mensajesWhatsApp.general}>
   <PageHeader label={pagina.etiqueta} title={pagina.h1} />
   <section class="portada">
     <Foto

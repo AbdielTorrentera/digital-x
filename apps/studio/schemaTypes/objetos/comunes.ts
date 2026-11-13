@@ -1,5 +1,6 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {RUTAS_TAMBIEN, urlDeRedValida} from '@digitalx/sanity/reglas'
+import {avisoDePaginaSinConstruir} from '../../validaciones'
 
 export const pregunta = defineType({
   name: 'pregunta',
@@ -89,7 +90,7 @@ export const relacionadoPagina = defineType({
       title: 'Página',
       type: 'string',
       options: {list: RUTAS_TAMBIEN, layout: 'radio'},
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => [Rule.required(), Rule.custom(avisoDePaginaSinConstruir).warning()],
     }),
     defineField({
       name: 'texto',

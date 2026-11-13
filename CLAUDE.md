@@ -60,15 +60,17 @@ Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstr
 - `brand/` es la fuente única de logos e íconos; lo copiado en `apps/web` se actualiza desde ahí, nunca al revés.
 - Mux en plan gratuito: se acepta su marca en el reproductor; no proponer quitarla.
 
-**Qué va en Sanity:** proyectos, artículos del blog, preguntas frecuentes, testimonios (solo con permiso), servicios, categorías de servicios (Audio, Video y Tecnología, con su SEO, preguntas y clientes con permiso), datos de contacto y SEO de proyectos y artículos. **URLs de servicio:** cada servicio vive en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`), derivada de su categoría; la página `/{categoria}/` solo existe con dos o más servicios construidos y con uno solo los enlaces van directo al servicio. No existe `/servicios/` (ver `docs/estructura-sitio-digitalx.md` §2).
+**Qué va en Sanity:** configuración del sitio (teléfono, WhatsApp, correo, redes, zonas, mensaje general, foto de cierre), textos y fotos del Inicio y de Nosotros, categorías de servicios (Audio, Video y Tecnología, con su SEO, preguntas y clientes con permiso), servicios (todo su contenido, fotos, mensaje de WhatsApp y si su página está construida), proyectos, clientes y reseñas (solo con permiso), y artículos del blog. Reglas completas en `docs/estructura-sitio-digitalx.md` §7. **URLs de servicio:** cada servicio vive en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`), derivada de su categoría; la página `/{categoria}/` solo existe con dos o más servicios construidos y con uno solo los enlaces van directo al servicio. No existe `/servicios/` (ver `docs/estructura-sitio-digitalx.md` §2).
 
-**Qué va en código:** diseño, layout, navegación, páginas legales y SEO de las páginas fijas.
+**Cómo llega el contenido al sitio:** `pnpm build` y `pnpm dev` bajan antes el contenido publicado de Sanity (sin token) a `apps/web/.contenido/sanity.json` y lo validan con `packages/sanity/reglas`; si Sanity no responde o algo no pasa las reglas, el build se detiene (nunca se publica a medias). Las pruebas leen una muestra fija (`packages/sanity/muestra/contenido.json`). Todo lo que hace fallar el build es error en el Studio; las únicas excepciones (fotos temporales, proyectos de ejemplo y enlaces a páginas que aún no existen) solo fallan en producción.
+
+**Qué va en código:** diseño, layout, navegación, páginas legales (`content/condiciones.ts` y `privacidad.ts`), etiquetas de los botones de contacto y SEO de las páginas fijas que no están en Sanity.
 
 ## Comandos
 
 - Gestor de paquetes: **pnpm**. Nunca usar `npm` ni `npx` (usar `pnpm dlx`).
 - Desarrollo: `pnpm dev` dentro de cada app (web en :4321, studio en :3333).
-- Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio se conecta al dataset `pruebas` (ver `apps/studio/.env.development`); el Studio publicado y la CLI usan `production`.
+- Contenido de Sanity: `pnpm contenido:descargar` baja la instantánea (también la bajan `pnpm build` y `pnpm dev`); `pnpm contenido:muestra` regenera la muestra de las pruebas (solo cuando cambia el contenido de producción a propósito); `SANITY_DATASET=pruebas` baja otro dataset. Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio se conecta al dataset `pruebas` (ver `apps/studio/.env.development`); el Studio publicado y la CLI usan `production`.
 - Antes de dar por terminada una tarea en `apps/web`: `pnpm build` sin errores.
 - Verificaciones: `pnpm format` / `pnpm format:check` (raíz); `pnpm check`, `pnpm test`, `pnpm build` y `pnpm check:enlaces` (en `apps/web`); `pnpm check` (en `apps/studio`); `pnpm test` (en `packages/sanity`); `pnpm sanity schema validate` (en `apps/studio`) al cambiar esquemas.
 

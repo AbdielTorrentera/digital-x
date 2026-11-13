@@ -7,17 +7,17 @@ import ClientesDeCategoria from './sections/ClientesDeCategoria.astro';
 import Faq from './sections/Faq.astro';
 import Team from './sections/Team.astro';
 import TarjetaServicio from './ui/TarjetaServicio.astro';
-import { categorias } from '../content/categorias';
-import { fotosDeCategoria } from '../content/categorias-fotos';
-import { proyectosPagina } from '../content/nosotros';
-import { proyectos as proyectosDelSitio } from '../content/proyectos';
-import { servicios } from '../content/servicios';
-import { fotoCierre, fotos } from '../content/servicios-fotos';
+import { categorias } from '../lib/contenido/categorias';
+import { fotosDeCategoria } from '../lib/contenido/categorias-fotos';
+import { proyectosPagina } from '../lib/contenido/nosotros';
+import { proyectos as proyectosDelSitio } from '../lib/contenido/proyectos';
+import { servicios } from '../lib/contenido/servicios';
+import { fotoCierre, fotos } from '../lib/contenido/servicios-fotos';
 import { collectionPageJsonLd, serializarJsonLd } from '../lib/jsonld';
 import { idNegocio, mensajesWhatsApp, negocio, telUrl, waUrl } from '../lib/negocio';
 import { slugDe, serviciosConstruidos, type Categoria } from '../lib/paginas';
 import { proyectosDeCategoria } from '../lib/proyectos';
-import type { Slug } from '../content/servicios';
+import type { Slug } from '../lib/contenido/servicios';
 
 // Plantilla de la página de una categoría (/audio/, /video/ y /tecnologia/), la misma para las tres, con el diseño del
 // listado de la plantilla Marby (/property), SIN filtros ni búsqueda: portada con foto y el H1 encima, la introducción
@@ -64,7 +64,7 @@ const datosEstructurados = collectionPageJsonLd({
 });
 ---
 
-<Base title={categoria.title} description={categoria.meta} whatsapp={mensajesWhatsApp.general}>
+<Base title={categoria.title} description={categoria.meta} image={categoria.imagen} whatsapp={mensajesWhatsApp.general}>
   <section class="phero sobre-negro">
     <Foto class="phero__img" src={foto.src} alt={foto.alt} sizes="100vw" prioritaria />
     <div class="container phero__inner">

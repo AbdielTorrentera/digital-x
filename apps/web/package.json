@@ -7,15 +7,18 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/descargar-contenido.ts --dev && astro dev",
+    "build": "node scripts/descargar-contenido.ts && astro build",
     "preview": "astro preview",
-    "check": "astro check",
-    "test": "node --test \"src/**/*.test.mjs\"",
-    "check:enlaces": "node scripts/revisar-enlaces.mjs"
+    "check": "CONTENIDO_JSON=../../packages/sanity/muestra/contenido.json astro check",
+    "test": "CONTENIDO_JSON=../../packages/sanity/muestra/contenido.json node --test \"src/**/*.test.mjs\"",
+    "check:enlaces": "node scripts/revisar-enlaces.mjs",
+    "contenido:descargar": "node scripts/descargar-contenido.ts",
+    "contenido:muestra": "node scripts/descargar-contenido.ts --muestra"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@digitalx/sanity": "workspace:*",
     "@fontsource/archivo": "^5.3.0",
     "@fontsource/onest": "^5.3.1",
     "@vercel/analytics": "^2.0.1",

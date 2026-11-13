@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { anclaDe, enlaceAPagina, esPaginaPlaneada, idsDeHtml } from './enlaces.ts';
@@ -39,4 +40,35 @@ test('idsDeHtml lee los id con comillas dobles o simples y anclaDe saca el ancla
   assert.equal(anclaDe('#que-hacemos'), 'que-hacemos');
   assert.equal(anclaDe('/servicios/'), '');
   assert.equal(anclaDe('/servicios/#'), '');
+});
+
+test('nada en src/ ni en el contenido de Sanity apunta a /servicios/: los servicios cuelgan de /{categoria}/{slug}/', () => {
+  const carpetas = [
+    '.',
+    './contenido',
+    '../content',
+    '../components',
+    '../components/sections',
+    '../components/ui',
+    '../pages',
+    '../pages/[categoria]',
+    '../scripts',
+  ];
+  let revisados = 0;
+  for (const carpeta of carpetas) {
+    for (const archivo of readdirSync(new URL(`${carpeta}/`, import.meta.url)).filter(
+      (nombre) => /\.(ts|astro)$/.test(nombre) && !nombre.endsWith('.test.mjs'),
+    )) {
+      // Sin comentarios: se revisa el código y los textos, no lo que explica la historia.
+      const texto = readFileSync(new URL(`${carpeta}/${archivo}`, import.meta.url), 'utf8').replace(
+        /\/\*[\s\S]*?\*\/|<!--[\s\S]*?-->|^\s*\/\/.*$/gm,
+        '',
+      );
+      revisados++;
+      assert.ok(!/\/servicios\//.test(texto), `${carpeta}/${archivo} apunta a /servicios/`);
+    }
+  }
+  assert.ok(revisados > 40, `solo se revisaron ${revisados} archivos`);
+  const datos = readFileSync(new URL('../../../../packages/sanity/muestra/contenido.json', import.meta.url), 'utf8');
+  assert.ok(!datos.includes('/servicios/'), 'el contenido de Sanity enlaza a /servicios/');
 });

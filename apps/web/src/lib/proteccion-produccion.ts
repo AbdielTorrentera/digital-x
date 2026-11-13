@@ -1,23 +1,9 @@
 /**
- * Protecciones del build de producción: impiden publicar por error material provisional.
+ * Protecciones del build de producción sobre el HTML generado: impiden publicar por error material provisional.
  * Solo actúan cuando VERCEL_ENV=production (ver astro.config.mjs); en local y en previews no se aplican.
+ * Las fotos temporales y los proyectos de ejemplo se revisan antes, sobre los datos de Sanity (`validarContenido`).
  * Funciones puras, sin imports, para poder probarlas con node:test.
  */
-
-/** Las fotos de apps/web/src/assets/temporales/ se llaman "temporal-…" y Astro conserva ese nombre al emitirlas. */
-const PREFIJO_TEMPORAL = 'temporal-';
-
-/** De una lista de rutas (por ejemplo, los archivos de dist/), las que son fotos temporales. */
-export const archivosTemporales = (rutas: string[]): string[] =>
-  rutas.filter((ruta) => (ruta.split(/[\\/]/).pop() ?? '').startsWith(PREFIJO_TEMPORAL));
-
-/**
- * Astro emite cada foto en varios anchos y formatos (temporal-x.HASH_a.webp, temporal-x.HASH_b.avif…).
- * Esto las agrupa por la foto original ("temporal-x") para que el aviso del build sea legible.
- */
-export const nombresDeFotosTemporales = (rutas: string[]): string[] => [
-  ...new Set(archivosTemporales(rutas).map((ruta) => (ruta.split(/[\\/]/).pop() ?? '').replace(/\..*$/, ''))),
-];
 
 export interface PaginaHtml {
   url: string;

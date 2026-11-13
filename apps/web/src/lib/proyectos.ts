@@ -58,7 +58,3 @@ export const proyectosDeCategoria = <T extends Proyecto>(items: T[], nombres: st
         (proyecto.servicios ?? []).some((nombre) => nombres.includes(nombre)),
     )
     .slice(0, maximo);
-
-/** Títulos de los proyectos de ejemplo. En producción debe estar vacía (content/proyectos.ts lanza un error si no). */
-export const titulosDeEjemplo = <T extends Proyecto>(items: T[]): string[] =>
-  items.filter((proyecto) => proyecto.placeholder === true).map((proyecto) => proyecto.titulo ?? '(sin título)');

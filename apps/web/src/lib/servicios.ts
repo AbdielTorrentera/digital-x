@@ -1,4 +1,4 @@
-import { categorias } from '../content/categorias.ts';
+import { categorias } from './contenido/categorias.ts';
 import { paginas, slugDe, visible, type Categoria } from './paginas.ts';
 
 export interface ServicioDeCategoria {
@@ -43,7 +43,7 @@ const unir = (nombres: { nombre: string; url: string | null }[]): Parte[] =>
 /**
  * Los servicios de una categoría como frase, en minúscula para usarlos a mitad de oración. Cada nombre trae su URL solo
  * si la página está construida (si no, es texto). Los servicios sin página propia (hoy, la sonorización de Audio) salen de
- * los datos de la categoría (`sinPagina` en content/categorias.ts) y van como texto, sin enlace.
+ * los datos de la categoría (`sinPagina` en Sanity) y van como texto, sin enlace.
  */
 export const partesDeServicios = (categoria: Categoria): Parte[] =>
   unir([
@@ -85,8 +85,6 @@ const comoTexto = (partes: Parte[]) => partes.map((p) => ('literal' in p ? p.lit
  * usarlos a mitad de frase. Salen de las mismas páginas del registro, así que no pueden diferir de las tarjetas.
  * Los leen las tarjetas y las preguntas frecuentes del Inicio y las condiciones de contratación.
  */
-export const lista = {
-  audio: comoTexto(partesDeServicios('audio')),
-  video: comoTexto(partesDeServicios('video')),
-  tecnologia: comoTexto(partesDeServicios('tecnologia')),
-};
+export const lista: Record<string, string> = Object.fromEntries(
+  categorias.map((c) => [c.id, comoTexto(partesDeServicios(c.id))]),
+);

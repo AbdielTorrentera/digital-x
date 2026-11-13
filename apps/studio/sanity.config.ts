@@ -4,6 +4,7 @@ import {visionTool} from '@sanity/vision'
 import {esESLocale} from '@sanity/locale-es-es'
 import {datasetProduccion, projectId} from '@digitalx/sanity/config'
 import {schemaTypes} from './schemaTypes'
+import {acciones} from './acciones'
 import {DOCUMENTOS_UNICOS, estructura} from './estructura'
 
 export default defineConfig({
@@ -40,12 +41,7 @@ export default defineConfig({
   },
 
   document: {
-    // Ni se borran, ni se despublican, ni se duplican: sin ellos el sitio no tiene datos.
-    actions: (acciones, {schemaType}) =>
-      DOCUMENTOS_UNICOS.includes(schemaType)
-        ? acciones.filter(
-            ({action}) => !['unpublish', 'delete', 'duplicate'].includes(action ?? ''),
-          )
-        : acciones,
+    // Los documentos únicos no se borran ni se despublican; los servicios y categorías no se quitan si el Inicio los nombra.
+    actions: (previas, contexto) => acciones(previas, contexto, DOCUMENTOS_UNICOS),
   },
 })

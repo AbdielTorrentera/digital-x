@@ -1,5 +1,6 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {RUTAS_FIJAS} from '@digitalx/sanity/reglas'
+import {avisoDePaginaSinConstruir} from '../../validaciones'
 
 /**
  * Un párrafo en el que se pueden enlazar palabras a un servicio o a una página del sitio. Es Portable Text
@@ -45,8 +46,10 @@ export const textoConEnlaces = defineType({
                 title: 'Página',
                 type: 'string',
                 options: {list: RUTAS_FIJAS, layout: 'radio'},
-                validation: (Rule) =>
+                validation: (Rule) => [
                   Rule.required().error('Elige la página a la que lleva el enlace.'),
+                  Rule.custom(avisoDePaginaSinConstruir).warning(),
+                ],
               }),
             ],
           }),

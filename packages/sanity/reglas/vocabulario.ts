@@ -52,6 +52,10 @@ const dentroDe = (clave: string) => (t: Texto) => t.ruta.includes(clave)
 /** Reglas de todo el sitio. */
 export const reglasGlobales: ReglaDeVocabulario[] = [
   {
+    patron: /\[PENDIENTE/,
+    motivo: 'es un hueco de contenido sin llenar: complétalo o quítalo antes de publicar',
+  },
+  {
     patron: MARCADOR_DESCONOCIDO,
     motivo: `solo existen estos marcadores: ${MARCADORES.map((m) => `{${m}}`).join(', ')}`,
   },

@@ -1,7 +1,7 @@
 ---
 import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
-import type { ImageMetadata } from 'astro';
+import type { Imagen } from '../../lib/contenido/tipos';
 
 // Cierre de la página (Nosotros, las categorías y la página de cada servicio): el bloque de contacto del pie de la
 // plantilla Marby (foto oscura con velo), SIN formulario. Una sola columna centrada: título, texto y, debajo, dos botones
@@ -12,7 +12,7 @@ import type { ImageMetadata } from 'astro';
 // más oscuro para que el texto blanco cumpla contraste. Medidas y animaciones, las de la plantilla.
 interface Props {
   /** Foto de fondo (decorativa). */
-  foto: ImageMetadata;
+  foto: Imagen;
   titulo: string;
   texto: string;
   whatsapp: { etiqueta: string; href: string };

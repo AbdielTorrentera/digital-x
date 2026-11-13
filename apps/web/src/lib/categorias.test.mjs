@@ -12,7 +12,7 @@ import {
   urlsPublicadas,
 } from './paginas.ts';
 import { parrafoDeCategoria } from './servicios.ts';
-import { categorias } from '../content/categorias.ts';
+import { categorias } from './contenido/categorias.ts';
 
 // Deja construidos solo `cuantos` servicios de la categoría (los primeros del registro) mientras corre `prueba`, y los
 // restaura al terminar. Así se prueba la regla de las categorías con 0, 1 y 2 o más servicios.

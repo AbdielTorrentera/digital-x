@@ -1,59 +1,69 @@
 /**
- * Datos del negocio. Fuente única: docs/estructura-sitio-digitalx.md sección 1
- * y docs/reglas-seo-digitalx.md secciones 4, 11 y 13.
+ * Datos del negocio. Fuente: «Configuración del sitio» en Sanity (teléfono, WhatsApp, correo, redes, zonas, fundación y
+ * mensaje general); en código quedan solo la URL, el logo y las funciones de enlace. Reglas: docs/estructura-sitio-digitalx.md
+ * sección 1 y docs/reglas-seo-digitalx.md secciones 4, 11 y 13.
  * Todo dato faltante va como `null` y se oculta en la interfaz.
  */
+import { configuracion as config } from './contenido/configuracion.ts';
+import { aImagenCompartir } from './contenido/imagenes.ts';
+
 const enEspanol = (items: readonly string[]) =>
   new Intl.ListFormat('es', { style: 'long', type: 'conjunction' }).format(items);
 
 /**
- * Zonas de servicio (docs/estructura-sitio-digitalx.md sección 1). "Puebla" sola es la ciudad.
- * Los dos grupos son DATO INTERNO: no se muestran en el sitio. Lo único público es la lista de lugares (`texto`).
+ * Zonas de servicio (docs/estructura-sitio-digitalx.md sección 1), de «Configuración del sitio» en Sanity. "Puebla" sola
+ * es la ciudad. Lo único público es la lista de lugares: los grupos de traslado incluido y con cargo adicional son
+ * DATO INTERNO y viven solo en docs/estructura-sitio-digitalx.md (no en el código ni en Sanity).
  */
-const trasladoIncluido = ['Puebla', 'Atlixco', 'Izúcar de Matamoros'] as const;
-const cargoAdicional = ['Tepeaca', 'San Martín Texmelucan', 'Amozoc'] as const;
-const todas = [...trasladoIncluido, ...cargoAdicional];
-
 export const zonas = {
-  trasladoIncluido,
-  cargoAdicional,
-  /** Las 6 zonas, para los datos estructurados (areaServed). */
-  todas,
+  /** Las zonas confirmadas, para los datos estructurados (areaServed). */
+  todas: [...config.zonas],
   /** "Puebla, Atlixco, Izúcar de Matamoros, Tepeaca, San Martín Texmelucan, Amozoc y alrededores". */
-  texto: enEspanol([...todas, 'alrededores']),
+  texto: enEspanol([...config.zonas, 'alrededores']),
+};
+
+const NOMBRES_DE_RED: Record<string, string> = {
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  tiktok: 'TikTok',
+  google: 'Perfil de Google',
+  youtube: 'YouTube',
+  linkedin: 'LinkedIn',
 };
 
 /**
- * Redes del negocio. [PENDIENTE: URLs de Facebook, Instagram, TikTok y del perfil de Google.] Mientras la URL sea
- * null la red no se muestra ni entra a sameAs: no se pintan enlaces vacíos ni con "#".
+ * Redes del negocio capturadas en el Studio. [PENDIENTE: URLs de Facebook, Instagram, TikTok y del perfil de Google.]
+ * Mientras una red no esté activa y con dirección no se muestra ni entra a sameAs: no se pintan enlaces vacíos ni con "#".
  */
-const redesDelNegocio: { nombre: string; url: string | null }[] = [
-  { nombre: 'Facebook', url: null },
-  { nombre: 'Instagram', url: null },
-  { nombre: 'TikTok', url: null },
-  { nombre: 'Perfil de Google', url: null },
-];
+const redesDelNegocio: { nombre: string; url: string | null }[] = (config.redes ?? []).map((red) => ({
+  nombre: NOMBRES_DE_RED[red.red] ?? red.red,
+  url: red.activa && red.url ? red.url : null,
+}));
 
 /** Solo las redes que ya tienen URL real. */
 export const redesConUrl = <T extends { url: string | null }>(redes: T[]) =>
   redes.filter((red): red is T & { url: string } => red.url !== null);
 
+/** El teléfono para leer en pantalla: "+522441244913" → "+52 244 124 4913". */
+const telefonoEnPantalla = (tel: string) => `${tel.slice(0, 3)} ${tel.slice(3, 6)} ${tel.slice(6, 9)} ${tel.slice(9)}`;
+
 export const negocio = {
   nombre: 'Digital X',
   url: 'https://digitalx.mx',
   // La idea nació en 2018 y el negocio se formalizó en 2021 (dato del dueño). foundingDate usa el año de la idea.
-  fundacion: '2018',
-  telefono: { pantalla: '+52 244 124 4913', tel: '+522441244913' },
-  whatsapp: '522441244913',
-  // [PENDIENTE: correo definitivo en digitalx.mx]
-  correo: null as string | null,
+  fundacion: config.fundacion,
+  telefono: { pantalla: telefonoEnPantalla(config.telefono), tel: config.telefono },
+  whatsapp: config.whatsapp,
+  // [PENDIENTE: correo definitivo en digitalx.mx] Vacío en Sanity = no se muestra en ningún lado.
+  correo: (config.correo || null) as string | null,
   // Solo las redes con URL: el pie, el menú y sameAs leen esta lista y no pintan nada si está vacía.
   redes: redesConUrl(redesDelNegocio),
   // Pie de página: texto fijo, igual en todo el sitio, sin enlaces por ciudad (reglas-seo sección 4).
   textoCobertura: `Servicios de audio, video y tecnología en ${zonas.texto}.`,
-  // [PENDIENTE: SEO de las páginas, ver reglas-seo sección 1]
-  // Imagen genérica de marca (1200x630) para compartir enlaces; cada página puede pasar la suya.
-  imagenOg: '/og-digitalx-1200x630.png' as string | null,
+  // Imagen de marca (1200x630) para compartir enlaces; cada página puede pasar la suya. Una imagen para compartir
+  // capturada en «Configuración del sitio» tiene prioridad.
+  imagenOg: (config.imagenCompartir ? aImagenCompartir(config.imagenCompartir) : '/og-digitalx-1200x630.png') as
+    string | null,
   // Logo para los datos estructurados: copia de brand/png/digitalx-logo-negro-1200.png (brand/ es la fuente).
   logo: '/logo-digitalx-negro-1200.png',
 } as const;
@@ -62,32 +72,10 @@ export const negocio = {
 export const idNegocio = `${negocio.url}/#negocio`;
 
 /**
- * Mensajes prellenados por página (reglas-seo sección 11).
- * [PENDIENTE: el dueño debe confirmar los mensajes propuestos]
+ * Mensaje prellenado de WhatsApp. El general sale de «Configuración del sitio»; el de cada servicio, del propio servicio
+ * (`servicios[slug].mensaje`). [PENDIENTE: el dueño debe confirmar los mensajes propuestos, reglas-seo sección 11]
  */
-export const mensajesWhatsApp = {
-  general: 'Hola, estoy interesado en una cotización. Servicio: __ Fecha: __ Lugar: __',
-  rentaDeAudio:
-    'Hola, necesito renta de audio y sonido para un evento. Fecha: __ Lugar: __ Personas: __ Tipo de evento: __',
-  circuitoCerrado:
-    'Hola, quiero cotizar circuito cerrado (cámaras en vivo en pantallas) para un evento. Fecha: __ Lugar: __ Tipo de evento: __',
-  produccionDeVideos:
-    'Hola, quiero cotizar video para un evento o un video promocional. Fecha: __ Lugar: __ Tipo de evento o de video: __ Duración aprox.: __',
-  streaming:
-    'Hola, quiero cotizar una transmisión en vivo. Fecha: __ Lugar: __ Tipo de evento: __ Plataforma (Facebook, YouTube...): __ Duración aprox.: __',
-  drone:
-    'Hola, quiero cotizar video o fotografía aérea con drone. Fecha: __ Lugar: __ Tipo de evento o proyecto: __ Interior o exterior: __ Qué quiero mostrar: __',
-  recorridos360:
-    'Hola, quiero cotizar un recorrido virtual 360. Fecha: __ Lugar: __ Tipo de espacio (hotel, restaurante, escuela, negocio...): __ Tamaño aprox.: __ Interior, exterior o aéreo: __',
-  paginasWeb:
-    'Hola, quiero cotizar una página web. Tipo de negocio: __ ¿Landing page o varias secciones?: __ ¿Ya tienes logo, textos y fotos?: __ ¿Tienes dominio?: __',
-  aplicacionesMoviles:
-    'Hola, quiero cotizar una aplicación móvil. Para qué la necesito (registros, clientes, reservas, catálogo...): __ ¿Quiénes la usarían?: __ ¿Ya tienes alguna página, app o sistema?: __',
-  desarrolloDeSoftware:
-    'Hola, quiero cotizar un software a la medida. Qué proceso quiero resolver: __ ¿Cuántas personas lo usarían?: __ ¿Hoy lo llevo en papel, hojas de cálculo u otro sistema?: __',
-  tiendaEnLinea:
-    'Hola, quiero cotizar una tienda en línea. Qué vendo: __ Aprox. cuántos productos: __ ¿Ya tienes fotos y descripciones?: __ ¿Ya tienes dominio?: __',
-} as const;
+export const mensajesWhatsApp = { general: config.mensajeWhatsAppGeneral } as const;
 
 export const waUrl = (mensaje: string = mensajesWhatsApp.general) =>
   `https://wa.me/${negocio.whatsapp}?text=${encodeURIComponent(mensaje)}`;

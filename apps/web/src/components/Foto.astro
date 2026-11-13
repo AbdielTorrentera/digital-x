@@ -1,25 +1,41 @@
 ---
 import { Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
+import type { Imagen } from '../lib/contenido/tipos';
 
 // Foto de contenido (reglas-seo sección 6): <img> con alt, width y height, en AVIF o WebP (nunca JPEG ni PNG),
 // con varios anchos y `sizes` para que el celular baje la versión chica. Solo la foto de la primera pantalla
 // (`prioritaria`) carga de inmediato y con prioridad alta; todas las demás son lazy.
+// La imagen viene del CDN de Sanity: Astro la baja al compilar y la sirve desde el propio sitio. Una foto decorativa
+// (alt vacío) se pinta con `alt=""` y `aria-hidden="true"`: los lectores de pantalla la saltan.
 interface Props {
-  src: ImageMetadata;
+  src: Imagen;
   alt: string;
   /** Qué ancho ocupa la foto en pantalla; el navegador lo usa para elegir la versión a descargar. */
   sizes: string;
   widths?: number[];
   prioritaria?: boolean;
   class?: string;
+  /** `object-position` del punto de interés marcado en el Studio. */
+  posicion?: string;
 }
-const { src, alt, sizes, widths = [360, 720, 1080, 1440, 1920], prioritaria = false, class: cls } = Astro.props;
+const {
+  src,
+  alt,
+  sizes,
+  widths = [360, 720, 1080, 1440, 1920],
+  prioritaria = false,
+  class: cls,
+  posicion,
+} = Astro.props;
 ---
 
 <Picture
-  src={src}
+  src={src.src}
+  width={src.width}
+  height={src.height}
   alt={alt}
+  aria-hidden={alt === '' ? 'true' : undefined}
+  style={posicion ? `object-position: ${posicion}` : undefined}
   sizes={sizes}
   widths={widths}
   formats={['avif', 'webp']}

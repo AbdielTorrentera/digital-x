@@ -98,7 +98,13 @@ export const categoria = defineType({
         'El párrafo bajo el título. Menciona las zonas y no repite oraciones de las páginas de sus servicios.',
       validation: (Rule) => Rule.required().max(500),
     }),
-    defineField({name: 'cierre', title: 'Cierre de la página', type: 'cierre', group: 'contenido'}),
+    defineField({
+      name: 'cierre',
+      title: 'Cierre de la página',
+      type: 'cierre',
+      group: 'contenido',
+      validation: (Rule) => Rule.required(),
+    }),
     campoFoto({
       name: 'foto',
       title: 'Foto de la categoría',

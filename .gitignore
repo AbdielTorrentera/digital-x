@@ -12,5 +12,6 @@ dist
 # esta línea es solo una protección por si alguien las copia aquí. Al proyecto solo entran las ya procesadas.
 /fotos/
 
-# Archivos generados por la migración (traen rutas locales; no se suben)
-apps/studio/migraciones/salida/
+
+# Contenido de Sanity descargado al compilar (se vuelve a bajar en cada build)
+apps/web/.contenido/

@@ -3,14 +3,10 @@ import sitemap from '@astrojs/sitemap';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { projectId } from '@digitalx/sanity/config';
 import { esProduccion } from './src/lib/entorno.ts';
 import { archivosDe, urlsConstruidas, urlsPublicadas, urlsSinConstruir } from './src/lib/paginas.ts';
-import {
-  enlacesANoConstruidas,
-  nombresDeFotosTemporales,
-  paginasConPendientes,
-  urlDeArchivoHtml,
-} from './src/lib/proteccion-produccion.ts';
+import { enlacesANoConstruidas, paginasConPendientes, urlDeArchivoHtml } from './src/lib/proteccion-produccion.ts';
 
 const site = 'https://digitalx.mx';
 
@@ -31,9 +27,10 @@ const archivosDeCarpeta = (dir) =>
     return statSync(ruta).isDirectory() ? archivosDeCarpeta(ruta) : [ruta];
   });
 
-// En producción (VERCEL_ENV=production) el build falla si queda material provisional: fotos de
-// src/assets/temporales/, algún "[PENDIENTE" visible o un enlace interno a una página planeada que aún no está
-// construida (en desarrollo ese enlace lleva a la 404). En local y en previews no se aplica.
+// En producción (VERCEL_ENV=production) el build falla si queda material provisional: algún "[PENDIENTE" visible o un
+// enlace interno a una página planeada que aún no está construida (en desarrollo ese enlace lleva a la 404). Las fotos
+// temporales y los proyectos de ejemplo se revisan antes, sobre los datos de Sanity (scripts/descargar-contenido.ts).
+// En local y en previews no se aplica.
 const proteccionProduccion = {
   name: 'proteccion-produccion',
   hooks: {
@@ -41,18 +38,12 @@ const proteccionProduccion = {
       if (!esProduccion) return;
       const raiz = fileURLToPath(dir);
       const rutas = archivosDeCarpeta(raiz).map((ruta) => relative(raiz, ruta));
-      const temporales = nombresDeFotosTemporales(rutas);
       const paginasHtml = rutas
         .filter((ruta) => ruta.endsWith('.html'))
         .map((ruta) => ({ url: urlDeArchivoHtml(ruta), html: readFileSync(join(raiz, ruta), 'utf8') }));
       const conPendientes = paginasConPendientes(paginasHtml);
       const aNoConstruidas = enlacesANoConstruidas(paginasHtml, urlsSinConstruir);
       const problemas = [];
-      if (temporales.length > 0) {
-        problemas.push(
-          `Fotos temporales en el build (reemplázalas por las reales, ver src/assets/temporales/README.md):\n${temporales.map((nombre) => `  - ${nombre}`).join('\n')}`,
-        );
-      }
       if (conPendientes.length > 0) {
         problemas.push(`Páginas con [PENDIENTE visible:\n${conPendientes.map((u) => `  - ${u}`).join('\n')}`);
       }
@@ -76,5 +67,8 @@ export default defineConfig({
   integrations: [sitemap({ filter: (page) => publicadas.has(page) }), proteccionProduccion],
   // The stylesheets are small, so they go inside the page instead of blocking the first paint as separate requests.
   build: { inlineStylesheets: 'always' },
+  // Las fotos vienen del CDN de Sanity; solo las de nuestro proyecto. Astro las baja al compilar y las sirve desde el
+  // propio sitio (la CSP no necesita cdn.sanity.io para las imágenes de las páginas).
+  image: { remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io', pathname: `/images/${projectId}/**` }] },
   devToolbar: { enabled: false },
 });

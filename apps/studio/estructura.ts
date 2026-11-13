@@ -19,7 +19,8 @@ export const estructura: StructureResolver = (S) => {
       .title(titulo)
       .child(S.document().schemaType(id).documentId(id).title(titulo))
 
-  const lista = (tipo: string, titulo: string, orden?: string) =>
+  type Orden = {field: string; direction: 'asc' | 'desc'}[]
+  const lista = (tipo: string, titulo: string, orden?: Orden) =>
     S.listItem()
       .id(`lista-${tipo}`)
       .title(titulo)
@@ -27,10 +28,15 @@ export const estructura: StructureResolver = (S) => {
       .child(
         S.documentTypeList(tipo)
           .title(titulo)
-          .defaultOrdering(
-            orden ? [{field: orden, direction: 'asc'}] : [{field: '_updatedAt', direction: 'desc'}],
-          ),
+          .defaultOrdering(orden ?? [{field: '_updatedAt', direction: 'desc'}]),
       )
+
+  const porOrden: Orden = [{field: 'orden', direction: 'asc'}]
+  // Primero el orden de la categoría (Audio, Video, Tecnología) y luego el del servicio dentro de ella.
+  const porCategoriaYOrden: Orden = [
+    {field: 'categoria->orden', direction: 'asc'},
+    {field: 'orden', direction: 'asc'},
+  ]
 
   return S.list()
     .title('Digital X')
@@ -58,7 +64,7 @@ export const estructura: StructureResolver = (S) => {
           S.list()
             .title('Servicios')
             .items([
-              lista('categoria', 'Categorías (Audio, Video, Tecnología)', 'orden'),
+              lista('categoria', 'Categorías (Audio, Video, Tecnología)', porOrden),
               S.listItem()
                 .id('servicios-por-categoria')
                 .title('Servicios por categoría')
@@ -75,7 +81,7 @@ export const estructura: StructureResolver = (S) => {
                         .defaultOrdering([{field: 'orden', direction: 'asc'}]),
                     ),
                 ),
-              lista('servicio', 'Todos los servicios', 'orden'),
+              lista('servicio', 'Todos los servicios', porCategoriaYOrden),
               unico('guiaDeServicios', 'Guía «¿Qué servicios necesito?» (inactiva)'),
             ]),
         ),
@@ -92,7 +98,7 @@ export const estructura: StructureResolver = (S) => {
             .title('Blog')
             .items([
               lista('articulo', 'Artículos'),
-              lista('categoriaBlog', 'Categorías del blog', 'orden'),
+              lista('categoriaBlog', 'Categorías del blog', porOrden),
               lista('autor', 'Autores'),
             ]),
         ),

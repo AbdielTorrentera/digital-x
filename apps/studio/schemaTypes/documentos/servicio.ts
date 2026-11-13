@@ -237,13 +237,14 @@ export const servicio = defineType({
     select: {
       title: 'nombre',
       categoria: 'categoria.etiqueta',
+      categoriaSlug: 'categoria.slug.current',
       slug: 'slug.current',
       media: 'foto',
       construida: 'paginaConstruida',
     },
-    prepare: ({title, categoria, slug, media, construida: lista}) => ({
+    prepare: ({title, categoria, categoriaSlug, slug, media, construida: lista}) => ({
       title,
-      subtitle: `${lista ? 'Con página' : 'Sin página'} · ${categoria ?? 'sin categoría'} · /${slug ?? ''}/`,
+      subtitle: `${lista ? 'Con página' : 'Sin página'} · ${categoria ?? 'sin categoría'} · /${categoriaSlug ?? '?'}/${slug ?? ''}/`,
       media,
     }),
   },

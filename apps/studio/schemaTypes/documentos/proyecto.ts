@@ -22,6 +22,7 @@ export const proyecto = defineType({
   ],
   validation: vocabulario,
   orderings: [
+    {title: 'Orden', name: 'orden', by: [{field: 'orden', direction: 'asc'}]},
     {title: 'Más recientes primero', name: 'fecha', by: [{field: 'fecha', direction: 'desc'}]},
   ],
   fields: [
@@ -101,6 +102,15 @@ export const proyecto = defineType({
       type: 'date',
       group: 'caso',
       validation: (Rule) => Rule.custom(obligatorioSalvoEjemplo('la fecha')),
+    }),
+    defineField({
+      name: 'orden',
+      title: 'Orden',
+      type: 'number',
+      group: 'caso',
+      description:
+        'Opcional. El 1 va primero: define cuáles salen en el Inicio y en qué orden se ven. Los que no tienen número van después, del más reciente al más antiguo. Ejemplo: 1',
+      validation: (Rule) => Rule.integer().min(1),
     }),
     defineField({
       name: 'cliente',

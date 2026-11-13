@@ -1,6 +1,6 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {campoFoto, campoSeo} from '../campos'
-import {validacionDePagina} from '../../validaciones'
+import {validacionDeInicio, validacionDePagina} from '../../validaciones'
 
 const GRUPOS = [
   {name: 'contenido', title: 'Textos', default: true},
@@ -8,12 +8,12 @@ const GRUPOS = [
   {name: 'seo', title: 'Google'},
 ]
 
+// Los campos de los objetos (queHacemos, hitos…) no llevan `group`: el grupo es del campo de primer nivel.
 const texto = (name: string, title: string, description: string, max: number) =>
   defineField({
     name,
     title,
     type: 'string',
-    group: 'contenido',
     description,
     validation: (Rule) => Rule.required().max(max),
   })
@@ -24,7 +24,6 @@ const parrafo = (name: string, title: string, description: string, max = 400) =>
     title,
     type: 'text',
     rows: 3,
-    group: 'contenido',
     description,
     validation: (Rule) => Rule.required().max(max),
   })
@@ -34,7 +33,7 @@ export const inicio = defineType({
   title: 'Inicio',
   type: 'document',
   groups: GRUPOS,
-  validation: validacionDePagina,
+  validation: validacionDeInicio,
   fields: [
     defineField({
       name: 'h1',
@@ -50,6 +49,7 @@ export const inicio = defineType({
       title: 'Sección «Qué hacemos»',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description:
         'La sección con foto debajo de la portada. Su texto no puede repetirse en ninguna otra página.',
       fields: [
@@ -74,6 +74,7 @@ export const inicio = defineType({
       title: 'Sección de servicios',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       fields: [
         texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Servicios', 30),
         texto('titulo', 'Título', 'Ejemplo: Servicios de audio, video y tecnología en Puebla', 90),
@@ -84,6 +85,7 @@ export const inicio = defineType({
       title: 'Sección de proyectos',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description: 'Solo se muestra cuando hay al menos 3 proyectos con foto y permiso.',
       fields: [
         texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Proyectos', 30),
@@ -107,6 +109,7 @@ export const inicio = defineType({
       title: 'Sección «Por qué Digital X»',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description:
         'Ventajas que se pueden comprobar. No se publican topes de personas ni datos del equipo.',
       fields: [
@@ -141,6 +144,7 @@ export const inicio = defineType({
       title: 'Sección de cobertura',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description:
         'Sin condiciones de traslado ni cargos. Puedes escribir {zonas} para los lugares de cobertura y {servicios-audio}, {servicios-video} y {servicios-tecnologia} para los nombres de los servicios: el sitio los pone y los mantiene al día.',
       fields: [
@@ -158,6 +162,7 @@ export const inicio = defineType({
       title: 'Sección de preguntas frecuentes',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       fields: [
         texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Preguntas frecuentes', 30),
         texto('titulo', 'Título', 'Ejemplo: Preguntas frecuentes', 60),
@@ -183,6 +188,7 @@ export const inicio = defineType({
       title: 'Cierre de la página',
       type: 'cierre',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description:
         'Con los botones de WhatsApp y llamada. El título es el llamado final. Ejemplo: Cotiza tu evento o proyecto',
     }),
@@ -221,7 +227,7 @@ export const nosotros = defineType({
   groups: GRUPOS,
   validation: validacionDePagina,
   fields: [
-    texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Nosotros', 30),
+    {...texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Nosotros', 30), group: 'contenido'},
     defineField({
       name: 'h1',
       title: 'Título principal (H1)',
@@ -235,6 +241,7 @@ export const nosotros = defineType({
       title: 'Historia (línea de tiempo)',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description:
         'No se publican el nombre, la foto ni la biografía del dueño, ni el tamaño del equipo.',
       fields: [
@@ -266,6 +273,7 @@ export const nosotros = defineType({
       title: 'Sección «Qué nos distingue»',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       fields: [
         texto('titulo', 'Título', 'Ejemplo: Qué nos distingue', 60),
         defineField({
@@ -293,6 +301,7 @@ export const nosotros = defineType({
       title: 'Sección «Lo que nos importa»',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       fields: [
         texto('titulo', 'Título', 'Ejemplo: Lo que nos importa', 60),
         defineField({
@@ -320,6 +329,7 @@ export const nosotros = defineType({
       title: 'Sección de proyectos',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       fields: [
         texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Proyectos', 30),
         texto('titulo', 'Título', 'Ejemplo: Proyectos de Digital X', 60),
@@ -331,6 +341,7 @@ export const nosotros = defineType({
       title: 'Preguntas frecuentes',
       type: 'object',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       fields: [
         texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Preguntas frecuentes', 30),
         texto('titulo', 'Título', 'Ejemplo: Preguntas frecuentes', 60),
@@ -354,6 +365,7 @@ export const nosotros = defineType({
       title: 'Cierre de la página',
       type: 'cierre',
       group: 'contenido',
+      validation: (Rule) => Rule.required(),
       description: 'Sin formulario: solo los botones de WhatsApp y llamada.',
     }),
     campoFoto({

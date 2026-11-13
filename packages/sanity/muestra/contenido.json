@@ -40,7 +40,9 @@
         "meta": "Renta de audio y sonido, y sonorización, para eventos en Puebla y Atlixco, con personal técnico capacitado. Cotiza por WhatsApp.",
         "title": "Servicios de audio en Puebla y Atlixco | Digital X"
       },
-      "sinPagina": ["sonorización"],
+      "sinPagina": [
+        "sonorización"
+      ],
       "slug": {
         "_type": "slug",
         "current": "audio"
@@ -907,9 +909,9 @@
     {
       "_createdAt": "2026-11-13T00:54:30Z",
       "_id": "proyecto-app-de-reservas-para-un-negocio-local",
-      "_rev": "wQ2RL0014iZ8x6qvSGoElF",
+      "_rev": "mrPzNVDWMypYrwv7d3aHor",
       "_type": "proyecto",
-      "_updatedAt": "2026-11-13T00:54:33Z",
+      "_updatedAt": "2026-11-13T18:20:28Z",
       "esEjemplo": true,
       "fotos": [
         {
@@ -924,6 +926,7 @@
         }
       ],
       "municipio": "Atlixco",
+      "orden": 4,
       "permiso": false,
       "resumen": "Aplicación móvil para llevar las reservas de un negocio local, desarrollada para iPhone y Android.",
       "servicios": [
@@ -942,9 +945,9 @@
     {
       "_createdAt": "2026-11-13T00:54:30Z",
       "_id": "proyecto-conferencia-empresarial",
-      "_rev": "wQ2RL0014iZ8x6qvSGoElF",
+      "_rev": "mrPzNVDWMypYrwv7d3aHJN",
       "_type": "proyecto",
-      "_updatedAt": "2026-11-13T00:54:33Z",
+      "_updatedAt": "2026-11-13T18:20:23Z",
       "esEjemplo": true,
       "fotos": [
         {
@@ -959,6 +962,7 @@
         }
       ],
       "municipio": "Puebla",
+      "orden": 1,
       "permiso": false,
       "resumen": "Audio y pantallas en vivo para una conferencia, con un técnico pendiente durante todo el evento.",
       "servicios": [
@@ -982,9 +986,9 @@
     {
       "_createdAt": "2026-11-13T00:54:30Z",
       "_id": "proyecto-sistema-de-control-de-clientes-para-una-escuela",
-      "_rev": "wQ2RL0014iZ8x6qvSGoElF",
+      "_rev": "AQlr8DKTBmMF6vKcTTUDcX",
       "_type": "proyecto",
-      "_updatedAt": "2026-11-13T00:54:33Z",
+      "_updatedAt": "2026-11-13T18:20:29Z",
       "esEjemplo": true,
       "fotos": [
         {
@@ -999,6 +1003,7 @@
         }
       ],
       "municipio": "Amozoc",
+      "orden": 5,
       "permiso": false,
       "resumen": "Sistema web para dar seguimiento a los clientes de una escuela y llevar su registro.",
       "servicios": [
@@ -1017,9 +1022,9 @@
     {
       "_createdAt": "2026-11-13T00:54:30Z",
       "_id": "proyecto-sitio-web-para-un-negocio-local",
-      "_rev": "wQ2RL0014iZ8x6qvSGoElF",
+      "_rev": "wQ2RL0014iZ8x6qvSJhVCP",
       "_type": "proyecto",
-      "_updatedAt": "2026-11-13T00:54:33Z",
+      "_updatedAt": "2026-11-13T18:20:26Z",
       "esEjemplo": true,
       "fotos": [
         {
@@ -1034,6 +1039,7 @@
         }
       ],
       "municipio": "Izúcar de Matamoros",
+      "orden": 3,
       "permiso": false,
       "resumen": "Diseño y desarrollo de un sitio web para presentar los servicios de un negocio local.",
       "servicios": [
@@ -1052,9 +1058,9 @@
     {
       "_createdAt": "2026-11-13T00:54:30Z",
       "_id": "proyecto-transmision-en-vivo-con-drone",
-      "_rev": "wQ2RL0014iZ8x6qvSGoElF",
+      "_rev": "AQlr8DKTBmMF6vKcTTUCz3",
       "_type": "proyecto",
-      "_updatedAt": "2026-11-13T00:54:33Z",
+      "_updatedAt": "2026-11-13T18:20:25Z",
       "esEjemplo": true,
       "fotos": [
         {
@@ -1069,6 +1075,7 @@
         }
       ],
       "municipio": "Atlixco",
+      "orden": 2,
       "permiso": false,
       "resumen": "Transmisión en vivo con varias cámaras y tomas aéreas para un evento al aire libre.",
       "servicios": [
@@ -1370,7 +1377,9 @@
                       {
                         "_key": "7996e865b99as1",
                         "_type": "span",
-                        "marks": ["7996e865b99am1"],
+                        "marks": [
+                          "7996e865b99am1"
+                        ],
                         "text": "página web"
                       },
                       {
@@ -1382,7 +1391,9 @@
                       {
                         "_key": "7996e865b99as3",
                         "_type": "span",
-                        "marks": ["7996e865b99am3"],
+                        "marks": [
+                          "7996e865b99am3"
+                        ],
                         "text": "tienda en línea"
                       },
                       {
@@ -1454,7 +1465,9 @@
                       {
                         "_key": "54fa76ec8f60s1",
                         "_type": "span",
-                        "marks": ["54fa76ec8f60m1"],
+                        "marks": [
+                          "54fa76ec8f60m1"
+                        ],
                         "text": "condiciones de contratación"
                       },
                       {
@@ -1932,7 +1945,9 @@
                   {
                     "_key": "55f72f0a5770s1",
                     "_type": "span",
-                    "marks": ["55f72f0a5770m1"],
+                    "marks": [
+                      "55f72f0a5770m1"
+                    ],
                     "text": "condiciones de contratación"
                   },
                   {
@@ -2129,7 +2144,9 @@
                           {
                             "_key": "6a8b2dc1a540s0",
                             "_type": "span",
-                            "marks": ["6a8b2dc1a540m0"],
+                            "marks": [
+                              "6a8b2dc1a540m0"
+                            ],
                             "text": "Página web"
                           },
                           {
@@ -2141,7 +2158,9 @@
                           {
                             "_key": "6a8b2dc1a540s2",
                             "_type": "span",
-                            "marks": ["6a8b2dc1a540m2"],
+                            "marks": [
+                              "6a8b2dc1a540m2"
+                            ],
                             "text": "tienda en línea"
                           }
                         ],
@@ -2194,7 +2213,9 @@
                           {
                             "_key": "1377cdc87a70s0",
                             "_type": "span",
-                            "marks": ["1377cdc87a70m0"],
+                            "marks": [
+                              "1377cdc87a70m0"
+                            ],
                             "text": "Aplicación móvil"
                           }
                         ],
@@ -2311,7 +2332,9 @@
                       {
                         "_key": "506847e9e2a0s1",
                         "_type": "span",
-                        "marks": ["506847e9e2a0m1"],
+                        "marks": [
+                          "506847e9e2a0m1"
+                        ],
                         "text": "condiciones de contratación"
                       },
                       {
@@ -2747,7 +2770,9 @@
                       {
                         "_key": "71bfae585d48s1",
                         "_type": "span",
-                        "marks": ["71bfae585d48m1"],
+                        "marks": [
+                          "71bfae585d48m1"
+                        ],
                         "text": "tienda en línea"
                       },
                       {
@@ -2759,7 +2784,9 @@
                       {
                         "_key": "71bfae585d48s3",
                         "_type": "span",
-                        "marks": ["71bfae585d48m3"],
+                        "marks": [
+                          "71bfae585d48m3"
+                        ],
                         "text": "aplicaciones móviles"
                       },
                       {
@@ -2771,7 +2798,9 @@
                       {
                         "_key": "71bfae585d48s5",
                         "_type": "span",
-                        "marks": ["71bfae585d48m5"],
+                        "marks": [
+                          "71bfae585d48m5"
+                        ],
                         "text": "desarrollo de software"
                       },
                       {
@@ -2883,7 +2912,9 @@
                       {
                         "_key": "0677a0774e6es1",
                         "_type": "span",
-                        "marks": ["0677a0774e6em1"],
+                        "marks": [
+                          "0677a0774e6em1"
+                        ],
                         "text": "condiciones de contratación"
                       },
                       {
@@ -3180,7 +3211,9 @@
               {
                 "_key": "459a06a77d34s1",
                 "_type": "span",
-                "marks": ["459a06a77d34m1"],
+                "marks": [
+                  "459a06a77d34m1"
+                ],
                 "text": "video con drone"
               },
               {
@@ -3192,7 +3225,9 @@
               {
                 "_key": "459a06a77d34s3",
                 "_type": "span",
-                "marks": ["459a06a77d34m3"],
+                "marks": [
+                  "459a06a77d34m3"
+                ],
                 "text": "producción de videos para eventos"
               },
               {
@@ -3868,7 +3903,9 @@
               {
                 "_key": "eed84cf45cb0s1",
                 "_type": "span",
-                "marks": ["eed84cf45cb0m1"],
+                "marks": [
+                  "eed84cf45cb0m1"
+                ],
                 "text": "producción de videos para eventos"
               },
               {
@@ -3880,7 +3917,9 @@
               {
                 "_key": "eed84cf45cb0s3",
                 "_type": "span",
-                "marks": ["eed84cf45cb0m3"],
+                "marks": [
+                  "eed84cf45cb0m3"
+                ],
                 "text": "circuito cerrado para eventos"
               },
               {
@@ -4310,7 +4349,9 @@
                       {
                         "_key": "f69f2b01cc48s1",
                         "_type": "span",
-                        "marks": ["f69f2b01cc48m1"],
+                        "marks": [
+                          "f69f2b01cc48m1"
+                        ],
                         "text": "página web"
                       },
                       {
@@ -4374,7 +4415,9 @@
                       {
                         "_key": "6f80bb8ac164s1",
                         "_type": "span",
-                        "marks": ["6f80bb8ac164m1"],
+                        "marks": [
+                          "6f80bb8ac164m1"
+                        ],
                         "text": "condiciones de contratación"
                       },
                       {
@@ -4671,7 +4714,9 @@
               {
                 "_key": "b5a2b16391d9s1",
                 "_type": "span",
-                "marks": ["b5a2b16391d9m1"],
+                "marks": [
+                  "b5a2b16391d9m1"
+                ],
                 "text": "producción de videos para eventos"
               },
               {
@@ -4683,7 +4728,9 @@
               {
                 "_key": "b5a2b16391d9s3",
                 "_type": "span",
-                "marks": ["b5a2b16391d9m3"],
+                "marks": [
+                  "b5a2b16391d9m3"
+                ],
                 "text": "transmisión en vivo"
               },
               {
@@ -4695,7 +4742,9 @@
               {
                 "_key": "b5a2b16391d9s5",
                 "_type": "span",
-                "marks": ["b5a2b16391d9m5"],
+                "marks": [
+                  "b5a2b16391d9m5"
+                ],
                 "text": "circuito cerrado para eventos"
               },
               {
@@ -4864,7 +4913,9 @@
                           {
                             "_key": "df482ceed511s1",
                             "_type": "span",
-                            "marks": ["df482ceed511m1"],
+                            "marks": [
+                              "df482ceed511m1"
+                            ],
                             "text": "recorrido virtual 360"
                           },
                           {
@@ -5257,7 +5308,9 @@
               {
                 "_key": "8bdd0ac6f8a1s1",
                 "_type": "span",
-                "marks": ["8bdd0ac6f8a1m1"],
+                "marks": [
+                  "8bdd0ac6f8a1m1"
+                ],
                 "text": "transmisión en vivo"
               },
               {
@@ -5269,7 +5322,9 @@
               {
                 "_key": "8bdd0ac6f8a1s3",
                 "_type": "span",
-                "marks": ["8bdd0ac6f8a1m3"],
+                "marks": [
+                  "8bdd0ac6f8a1m3"
+                ],
                 "text": "circuito cerrado para eventos"
               },
               {

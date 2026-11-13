@@ -139,7 +139,8 @@ export async function construir() {
     archivos.add(ruta)
     return {
       _type: 'foto',
-      asset: {_sanityAsset: `image@${pathToFileURL(ruta).href}`},
+      // El importador espera la marca en el objeto de la foto y pone él mismo la referencia `asset`.
+      _sanityAsset: `image@${pathToFileURL(ruta).href}`,
       ...(f.alt ? {alt: f.alt} : {decorativa: true}),
       temporal: path.basename(ruta).startsWith('temporal-'),
     }

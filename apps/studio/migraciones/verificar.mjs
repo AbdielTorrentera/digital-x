@@ -69,8 +69,7 @@ if (dataset) {
   })
   for (const [o, id] of unico) {
     delete o._sanityAsset
-    o._type = 'reference'
-    o._ref = id
+    o.asset = {_type: 'reference', _ref: id}
   }
 }
 
@@ -87,9 +86,10 @@ const normalizado = (doc) => {
 const esperadoNormalizado = (doc) => {
   const d = copia(doc)
   recorrer(d, (o) => {
-    if (o.asset?._sanityAsset) {
-      const ruta = fileURLToPath(o.asset._sanityAsset.replace(/^image@/, ''))
+    if (o._sanityAsset) {
+      const ruta = fileURLToPath(o._sanityAsset.replace(/^image@/, ''))
       o.asset = {archivo: path.basename(ruta), sha1: sha1DeArchivo(ruta)}
+      delete o._sanityAsset
     }
   })
   return d
@@ -104,6 +104,12 @@ const comparar = (nombre, esperadoValor, real) => {
     fallas.push(`${nombre}: ${String(error.message).split('\n').slice(0, 12).join('\n    ')}`)
   }
 }
+
+// 0) forma de la foto: el importador espera `_sanityAsset` en la propia foto, no dentro de `asset`
+recorrer(esperados, (o) => {
+  if (o.asset?._sanityAsset)
+    fallas.push('Una foto trae _sanityAsset dentro de `asset`: el importador lo anidaría mal')
+})
 
 // 1) conteos y documentos que faltan o sobran
 const nuestros = actuales.filter((d) => idsEsperados.has(d._id))

@@ -12,16 +12,28 @@ export const foto = defineType({
   },
   fields: [
     defineField({
+      name: 'decorativa',
+      title: 'Foto decorativa',
+      type: 'boolean',
+      initialValue: false,
+      description:
+        'Márcala si la foto solo adorna, por ejemplo un fondo, y no aporta información. Las decorativas no llevan texto alternativo y el sitio las oculta a los lectores de pantalla.',
+    }),
+    defineField({
       name: 'alt',
       title: 'Texto alternativo (qué se ve en la foto)',
       type: 'string',
       description:
         'Describe lo que se ve, con el servicio y el lugar si aplica. Lo leen los lectores de pantalla y Google. Ejemplo: Pantalla de circuito cerrado en una conferencia en Atlixco',
+      hidden: ({parent}) => (parent as {decorativa?: boolean} | undefined)?.decorativa === true,
       validation: (Rule) =>
         Rule.custom((alt, {parent}) => {
-          if (!(parent as {asset?: unknown} | undefined)?.asset) return true
+          const foto = parent as {asset?: unknown; decorativa?: boolean} | undefined
+          // Sin foto, o si es decorativa, el texto alternativo no es obligatorio.
+          if (!foto?.asset || foto.decorativa === true) return true
           const largo = alt?.trim().length ?? 0
-          if (!largo) return 'Describe la foto: es obligatorio.'
+          if (!largo)
+            return 'Describe la foto (es obligatorio) o márcala como decorativa si solo adorna.'
           if (largo < MIN_ALT) return `Escribe al menos ${MIN_ALT} caracteres.`
           if (largo > MAX_ALT) return `Máximo ${MAX_ALT} caracteres (llevas ${largo}).`
           return true
@@ -43,10 +55,10 @@ export const foto = defineType({
     }),
   ],
   preview: {
-    select: {media: 'asset', title: 'alt', temporal: 'temporal'},
-    prepare: ({media, title, temporal}) => ({
+    select: {media: 'asset', title: 'alt', temporal: 'temporal', decorativa: 'decorativa'},
+    prepare: ({media, title, temporal, decorativa}) => ({
       media,
-      title: title || 'Sin texto alternativo',
+      title: decorativa ? 'Foto decorativa' : title || 'Sin texto alternativo',
       subtitle: temporal ? 'Temporal' : undefined,
     }),
   },

@@ -2,6 +2,7 @@
 // `content/servicios.test.mjs` y `categorias.test.mjs`, pero sobre los datos de Sanity: el Studio lo muestra
 // como error al capturar y el build lo repite sobre lo que llega (etapa 3).
 import {TIPOS_CON_VOCABULARIO} from './constantes.ts'
+import {MARCADOR_DESCONOCIDO, MARCADORES} from './marcadores.ts'
 import {textosDe, type Ruta, type Texto} from './texto.ts'
 
 export interface ReglaDeVocabulario {
@@ -50,6 +51,10 @@ const dentroDe = (clave: string) => (t: Texto) => t.ruta.includes(clave)
 
 /** Reglas de todo el sitio. */
 export const reglasGlobales: ReglaDeVocabulario[] = [
+  {
+    patron: MARCADOR_DESCONOCIDO,
+    motivo: `solo existen estos marcadores: ${MARCADORES.map((m) => `{${m}}`).join(', ')}`,
+  },
   {
     patron: /vigilancia/i,
     motivo: 'el circuito cerrado es para eventos: nunca se habla de vigilancia',
@@ -338,7 +343,8 @@ export function hallazgosDeVocabulario(doc: Record<string, unknown>): Hallazgo[]
   for (const t of textosDe(doc)) {
     if (!t.texto.trim()) continue
     aplicar(reglasGlobales, t, hallazgos)
-    aplicar(extra, t, hallazgos)
+    // El texto alternativo describe la foto tal cual: solo se le aplican las reglas de todo el sitio.
+    if (t.ruta.at(-1) !== 'alt') aplicar(extra, t, hallazgos)
     if (circuitoCerradoSuelto(t.texto))
       hallazgos.push({
         ruta: t.ruta,

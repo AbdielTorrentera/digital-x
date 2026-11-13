@@ -115,6 +115,8 @@ export const seccion = defineType({
       title: 'Ancla (dirección interna)',
       type: 'slug',
       options: {
+        // La unicidad dentro de la lista se valida en el campo `secciones` del servicio.
+        isUnique: () => true,
         source: (_doc, {parent}) => (parent as {titulo?: string})?.titulo ?? '',
         slugify: (t) => slugificar(t, 40),
       },

@@ -161,3 +161,38 @@ test('los textos obligatorios señalan el campo que hay que corregir', () => {
   )
   assert.deepEqual(sw.map((h) => h.ruta.join('.')).sort(), ['descripcion', 'h1', 'seo.meta'])
 })
+
+test('marcadores: solo los conocidos; resolver y volver al marcador', async () => {
+  const {aMarcadores, resolverMarcadores} = await import('./index.ts')
+  assert.deepEqual(
+    mensajes({_type: 'inicio', cobertura: {texto: 'Trabajamos en {zonas}. Y {servicios-audio}.'}}),
+    [],
+  )
+  assert.equal(mensajes({_type: 'inicio', cobertura: {texto: 'Trabajamos en {zona}.'}}).length, 1)
+  assert.equal(mensajes({_type: 'inicio', cobertura: {texto: 'Hola {nombre}'}}).length, 1)
+  const valores = {
+    zonas: 'Puebla y Atlixco',
+    'servicios-audio': 'audio',
+    'servicios-video': 'video',
+    'servicios-tecnologia': 'web',
+  }
+  const plantilla = 'Trabajamos en {zonas}. En video, {servicios-video}.'
+  assert.equal(
+    resolverMarcadores(plantilla, valores),
+    'Trabajamos en Puebla y Atlixco. En video, video.',
+  )
+  assert.equal(aMarcadores('Trabajamos en Puebla y Atlixco.', valores), 'Trabajamos en {zonas}.')
+})
+
+test('el texto alternativo de una foto solo pasa por las reglas de todo el sitio', () => {
+  const foto = (alt) => servicio('streaming-para-eventos', {foto: {_type: 'foto', alt}})
+  assert.deepEqual(
+    mensajes(foto('Manos sobre los controles de una consola de mezcla de audio')),
+    [],
+  )
+  assert.equal(mensajes(foto('Cámaras de seguridad en un salón')).length, 1)
+  assert.equal(
+    mensajes(servicio('streaming-para-eventos', {descripcion: 'Mezcla en vivo'})).length,
+    1,
+  )
+})

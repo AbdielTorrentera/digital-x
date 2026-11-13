@@ -12,10 +12,10 @@ import { categoriasConDestino } from '../lib/categorias';
 import { mensajesWhatsApp, negocio, telUrl } from '../lib/negocio';
 import { proyectosDelInicio } from '../lib/proyectos';
 import { parrafoDeCategoria } from '../lib/servicios';
-import { cierre, cobertura, faq, porQue, portada, proyectos, queHacemos, servicios } from '../content/inicio';
-import { proyectosPagina } from '../content/nosotros';
-import { fotosDeCategoria } from '../content/categorias-fotos';
-import { fotoCierre } from '../content/servicios-fotos';
+import { cierre, cobertura, faq, porQue, portada, proyectos, queHacemos, servicios } from '../lib/contenido/inicio';
+import { proyectosPagina } from '../lib/contenido/nosotros';
+import { fotosDeCategoria } from '../lib/contenido/categorias-fotos';
+import { fotoCierre } from '../lib/contenido/servicios-fotos';
 const proyectosVisibles = proyectosDelInicio(proyectos.items);
 // Una tarjeta por categoría con al menos un servicio construido. Con un solo servicio construido, la tarjeta lleva directo a él.
 const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servicioUnico }, i) => ({
@@ -32,7 +32,12 @@ const tarjetas = categoriasConDestino().map(({ categoria, href, directo, servici
 ---
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
-<Base title={portada.title} description={portada.descripcion} whatsapp={mensajesWhatsApp.general}>
+<Base
+  title={portada.title}
+  description={portada.descripcion}
+  image={portada.imagen}
+  whatsapp={mensajesWhatsApp.general}
+>
   <Hero titulo={portada.h1} foto={portada.foto} />
   <HomeAbout
     etiqueta={queHacemos.etiqueta}

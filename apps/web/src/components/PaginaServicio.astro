@@ -10,11 +10,11 @@ import CierreContacto from './sections/CierreContacto.astro';
 import Faq from './sections/Faq.astro';
 import Team from './sections/Team.astro';
 import TextoConEnlaces from './ui/TextoConEnlaces.astro';
-import { fotoCierre, type FotoDeServicio } from '../content/servicios-fotos';
-import { proyectosPagina } from '../content/nosotros';
-import { proyectos as proyectosDelSitio } from '../content/proyectos';
-import { categorias } from '../content/categorias';
-import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../content/servicios';
+import { fotoCierre, type FotoDeServicio } from '../lib/contenido/servicios-fotos';
+import { proyectosPagina } from '../lib/contenido/nosotros';
+import { proyectos as proyectosDelSitio } from '../lib/contenido/proyectos';
+import { categorias } from '../lib/contenido/categorias';
+import { faltantesDePagina, servicios, type EnlaceRelacionado, type Slug } from '../lib/contenido/servicios';
 import { enlaceAPagina } from '../lib/enlaces';
 import { serializarJsonLd, serviceJsonLd } from '../lib/jsonld';
 import { idNegocio, negocio, telUrl, waUrl, zonas } from '../lib/negocio';
@@ -87,7 +87,7 @@ const datosEstructurados = serviceJsonLd({
 ---
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
-<Base title={c.title} description={c.meta} whatsapp={c.mensaje}>
+<Base title={c.title} description={c.meta} image={c.imagen} whatsapp={c.mensaje}>
   <header class="enc">
     <div class="enc__foto">
       <Foto class="enc__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 50vw, 100vw" prioritaria />

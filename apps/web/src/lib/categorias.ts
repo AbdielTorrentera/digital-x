@@ -1,4 +1,4 @@
-import { categorias, type CategoriaContenido } from '../content/categorias.ts';
+import { categorias, type CategoriaContenido } from './contenido/categorias.ts';
 import { destinoDeCategoria, serviciosConstruidos, type Pagina } from './paginas.ts';
 
 /** Una categoría con su destino en el menú, el Inicio y el pie: su página, o su único servicio construido. */

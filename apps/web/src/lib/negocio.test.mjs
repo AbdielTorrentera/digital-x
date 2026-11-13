@@ -20,35 +20,14 @@ test('telUrl usa el teléfono en formato internacional', () => {
   assert.match(telUrl, /^tel:\+\d+$/);
 });
 
-test('cada uno de los 10 servicios tiene su mensaje de WhatsApp', () => {
-  const claves = [
-    'rentaDeAudio',
-    'circuitoCerrado',
-    'produccionDeVideos',
-    'streaming',
-    'drone',
-    'recorridos360',
-    'paginasWeb',
-    'aplicacionesMoviles',
-    'desarrolloDeSoftware',
-    'tiendaEnLinea',
-  ];
-  for (const clave of claves) {
-    assert.equal(typeof mensajesWhatsApp[clave], 'string', `falta el mensaje de ${clave}`);
-    assert.ok(mensajesWhatsApp[clave].length > 0);
-  }
-  assert.equal(Object.keys(mensajesWhatsApp).length, claves.length + 1, 'solo los 10 servicios y el general');
+test('el mensaje general de WhatsApp sale de la configuración y el de cada servicio, del propio servicio', () => {
+  assert.equal(typeof mensajesWhatsApp.general, 'string');
+  assert.ok(mensajesWhatsApp.general.length > 0);
+  assert.deepEqual(Object.keys(mensajesWhatsApp), ['general']);
 });
 
-test('los mensajes de los servicios eliminados ya no existen', () => {
-  for (const clave of ['rentaDeSonido', 'instalacionDeAudio', 'videoParaRedes', 'softwareALaMedida', 'sitiosWeb']) {
-    assert.ok(!(clave in mensajesWhatsApp), `${clave} debería haberse eliminado`);
-  }
-});
-
-test('las zonas son 6, sin repetirse, y los dos grupos quedan como dato interno', () => {
-  assert.deepEqual([...zonas.trasladoIncluido], ['Puebla', 'Atlixco', 'Izúcar de Matamoros']);
-  assert.deepEqual([...zonas.cargoAdicional], ['Tepeaca', 'San Martín Texmelucan', 'Amozoc']);
+test('las zonas son 6, sin repetirse, y los grupos de traslado no existen en el código (dato interno)', () => {
+  assert.ok(!('trasladoIncluido' in zonas) && !('cargoAdicional' in zonas));
   assert.equal(zonas.todas.length, 6);
   assert.equal(new Set(zonas.todas).size, 6, 'ninguna zona repetida');
 });

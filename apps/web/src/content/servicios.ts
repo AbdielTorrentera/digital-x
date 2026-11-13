@@ -600,7 +600,7 @@ export const servicios: Record<Slug, ServicioContenido> = {
         titulo: 'Tomas aéreas para tu evento, tu negocio o tu espacio',
         parrafos: [
           'En Digital X grabamos video y fotografía aérea con drone para eventos, empresas y espacios en Puebla, Atlixco, Izúcar de Matamoros y alrededores, tanto en exteriores como en interiores.',
-          'Planeamos contigo las tomas que necesitas y revisamos el lugar antes de volar. Cada servicio se cotiza a la medida: cuéntanos qué quieres mostrar y te respondemos con una propuesta.',
+          'Planeamos contigo las tomas que necesitas y revisamos el lugar antes de volar. Cotizamos cada proyecto según lo que quieras mostrar: cuéntanos qué tomas te interesan y te respondemos con una propuesta.',
         ],
       },
       incluye: [
@@ -902,7 +902,7 @@ export const servicios: Record<Slug, ServicioContenido> = {
         titulo: 'Tu página web, diseñada y desarrollada para tu negocio',
         parrafos: [
           'En Digital X diseñamos y desarrollamos páginas web y landing pages para negocios, profesionistas y organizaciones en Puebla, Atlixco, Izúcar de Matamoros y alrededores.',
-          'Empezamos por entender tu negocio, diseñamos la página, la desarrollamos y la publicamos. Cada proyecto se cotiza según su tamaño y sus funciones: cuéntanos qué necesitas y te respondemos con una propuesta.',
+          'Empezamos por entender tu negocio, diseñamos la página, la desarrollamos y la publicamos. Cada proyecto se cotiza según su tamaño y sus funciones: escríbenos lo que necesitas y te preparamos una propuesta.',
         ],
       },
       incluye: [
@@ -1421,7 +1421,7 @@ export const servicios: Record<Slug, ServicioContenido> = {
             },
             {
               parrafo: [
-                'Cada etapa del sistema tiene su pago; los detalles están en las ',
+                'Cada etapa del sistema tiene su pago; consulta cómo funciona en las ',
                 { url: '/condiciones-de-contratacion/', texto: 'condiciones de contratación' },
                 '.',
               ],

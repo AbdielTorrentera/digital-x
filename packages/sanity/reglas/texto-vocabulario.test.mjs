@@ -196,3 +196,24 @@ test('el texto alternativo de una foto solo pasa por las reglas de todo el sitio
     1,
   )
 })
+
+test('marcadores en uso y bloqueo: no se quita el último servicio de una categoría que el Inicio nombra', async () => {
+  const {categoriasDeMarcadores, motivoDeBloqueo} = await import('./index.ts')
+  assert.deepEqual(
+    categoriasDeMarcadores([
+      'Trabajamos en {zonas}',
+      'En video, {servicios-video}. En audio, {servicios-audio}. {servicios-video}',
+    ]),
+    ['video', 'audio'],
+  )
+  const base = {
+    categoria: 'video',
+    serviciosRestantes: 0,
+    sinPagina: 0,
+    categoriasEnElInicio: ['video'],
+  }
+  assert.match(motivoDeBloqueo(base), /{servicios-video}/)
+  assert.equal(motivoDeBloqueo({...base, serviciosRestantes: 1}), null)
+  assert.equal(motivoDeBloqueo({...base, sinPagina: 1}), null)
+  assert.equal(motivoDeBloqueo({...base, categoriasEnElInicio: ['audio']}), null)
+})

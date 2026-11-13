@@ -1,9 +1,35 @@
-# Sanity Clean Content Studio
+# Studio de Digital X
 
-Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
+Sanity Studio en español. Aquí el dueño administra el contenido del sitio (configuración, servicios, proyectos,
+reseñas y blog) sin tocar código. Las reglas completas están en `docs/` (estructura §7 y seguridad §4).
 
-Now you can do the following things:
+## Comandos
 
-- [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
-- [Join the Sanity community](https://www.sanity.io/community/join?utm_source=readme)
-- [Extend and build plugins](https://www.sanity.io/docs/content-studio/extending?utm_source=readme)
+Desde `apps/studio`:
+
+| Comando                                     | Qué hace                                                                    |
+| ------------------------------------------- | --------------------------------------------------------------------------- |
+| `pnpm dev`                                  | Studio local en <http://localhost:3333>, conectado al dataset **`pruebas`** |
+| `SANITY_STUDIO_DATASET=production pnpm dev` | Lo mismo, pero contra lo publicado (con cuidado: edita el contenido real)   |
+| `pnpm check`                                | Revisa los tipos (`tsc`)                                                    |
+| `pnpm sanity schema validate`               | Valida los esquemas                                                         |
+| `pnpm build`                                | Compila el Studio                                                           |
+
+El acceso es con la cuenta de GitHub del dueño (2FA activa): `pnpm sanity login --provider github`.
+
+## Cómo está organizado
+
+- `schemaTypes/documentos/`: un archivo por tipo de documento. Los **documentos únicos** (`configuracion`, `inicio`,
+  `nosotros`, `paginaProyectos`, `paginaBlog`, `paginaResenas`, `guiaDeServicios`) tienen ID fijo y no se crean,
+  duplican ni borran.
+- `schemaTypes/objetos/`: piezas reutilizables (foto con texto alternativo, SEO, texto con enlaces, bloques…).
+- `estructura.ts`: el menú del Studio. `validaciones.ts`: validaciones que consultan otros documentos.
+- Las reglas de contenido (longitudes de SEO, vocabulario prohibido, permisos, slugs) viven en
+  `packages/sanity/reglas/` y las usa también el build del sitio, para que lo que el Studio rechaza al capturar sea
+  lo mismo que el build rechaza al compilar.
+
+## Datasets
+
+- `production`: lo que lee el sitio. Es **público**: todo lo publicado lo puede leer cualquiera, por eso no se
+  guarda aquí nada privado y reseñas, clientes y proyectos reales no se pueden publicar sin permiso.
+- `pruebas`: para ensayar. `pnpm dev` se conecta aquí (ver `.env.development`; son valores públicos, no secretos).

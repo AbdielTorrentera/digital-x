@@ -7,7 +7,7 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "pnpm --filter ./apps/web test"
+    "test": "pnpm --filter ./apps/web --filter ./packages/sanity test"
   },
   "keywords": [],
   "author": "",

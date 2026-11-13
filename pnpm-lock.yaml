@@ -211,6 +211,12 @@ importers:
 
   apps/studio:
     dependencies:
+      '@digitalx/sanity':
+        specifier: workspace:*
+        version: link:../../packages/sanity
+      '@sanity/locale-es-es':
+        specifier: ^1.2.39
+        version: 1.2.39(sanity@6.22.0(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(@noble/hashes@2.4.0)(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(rolldown@1.2.15)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)))(@sanity/workflow-blueprint@0.36.0(@sanity/workflow-engine@0.36.0(@types/react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3))(typescript@6.0.3))(@types/node@24.19.2)(@types/react@19.3.0)(jiti@2.7.0)(prismjs@1.30.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.15)(styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@6.0.3))
       '@sanity/vision':
         specifier: ^6.22.0
         version: 6.22.0(@babel/runtime@7.29.10)(@codemirror/theme-one-dark@6.1.3)(@shikijs/themes@4.5.0)(@types/react@19.3.0)(codemirror@6.0.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sanity@6.22.0(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(@noble/hashes@2.4.0)(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(rolldown@1.2.15)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)))(@sanity/workflow-blueprint@0.36.0(@sanity/workflow-engine@0.36.0(@types/react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3))(typescript@6.0.3))(@types/node@24.19.2)(@types/react@19.3.0)(jiti@2.7.0)(prismjs@1.30.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.15)(styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@6.0.3))(styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
@@ -273,6 +279,8 @@ importers:
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
+
+  packages/sanity: {}
 
 packages:
 
@@ -2487,6 +2495,12 @@ packages:
 
   '@sanity/lezer-groq@1.0.4':
     resolution: {integrity: sha512-KgCmAY7yXll+g3+1z+GZiQhlEW7ulJGUH8gGzbUgKVZShPop/dDjfwNAdGZKFY3AkF+m62oSa1X8m1P3sonD4A==}
+
+  '@sanity/locale-es-es@1.2.39':
+    resolution: {integrity: sha512-c4ryp9/jlOJF8BPtdKKnIXIqGQblz9yIwRDksQVq8xYGmXXzcR1YajGpIQkan/+jxNPxg1BBlQ3axzlfT4/WMQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      sanity: ^3.22.0 || ^4.0.0-0 || ^5.0.0-0 || ^6.0.0-0
 
   '@sanity/logos@2.2.6':
     resolution: {integrity: sha512-wTkEcfne18DAYvbGclESNjraUCmbFL1fHMHzpIKH7AgdARvJqMHPEg6QoFsgeKP6tmDmME772uoAIsnwCOTWzg==}
@@ -8868,6 +8882,10 @@ snapshots:
       '@lezer/common': 1.5.4
       '@lezer/highlight': 1.2.5
       '@lezer/lr': 1.4.11
+
+  '@sanity/locale-es-es@1.2.39(sanity@6.22.0(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(@noble/hashes@2.4.0)(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(rolldown@1.2.15)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)))(@sanity/workflow-blueprint@0.36.0(@sanity/workflow-engine@0.36.0(@types/react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3))(typescript@6.0.3))(@types/node@24.19.2)(@types/react@19.3.0)(jiti@2.7.0)(prismjs@1.30.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.15)(styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@6.0.3))':
+    dependencies:
+      sanity: 6.22.0(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(@noble/hashes@2.4.0)(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7(supports-color@8.1.1))(@babel/runtime@7.29.10)(rolldown@1.2.15)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)))(@sanity/workflow-blueprint@0.36.0(@sanity/workflow-engine@0.36.0(@types/react@19.3.0)(supports-color@8.1.1)(typescript@6.0.3))(typescript@6.0.3))(@types/node@24.19.2)(@types/react@19.3.0)(jiti@2.7.0)(prismjs@1.30.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.15)(styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@6.0.3)
 
   '@sanity/logos@2.2.6(react@19.3.1)':
     dependencies:

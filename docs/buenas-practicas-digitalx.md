@@ -39,8 +39,9 @@ Cada tipo de cosa vive en un solo lugar:
 | Datos del negocio (teléfono, WhatsApp, zonas, mensajes) | `apps/web/src/lib/negocio.ts` |
 | Registro de páginas y su estado | `apps/web/src/lib/paginas.ts` |
 | Colores, espaciados, tamaños, radios, duraciones | `apps/web/src/styles/tokens.css` |
-| Consultas a Sanity (GROQ) y tipos generados | `packages/sanity/` (cuando exista) |
+| Consultas a Sanity (GROQ) y tipos generados | `packages/sanity/` (consultas y tipos, desde la etapa 3) |
 | Esquemas de contenido | `apps/studio/schemaTypes/` |
+| Reglas de contenido compartidas por el Studio y el build (longitudes, vocabulario, permisos, slugs) | `packages/sanity/reglas/` (con sus pruebas: `pnpm test` en esa carpeta) |
 | Secciones visuales reutilizables | `apps/web/src/components/sections/` y `ui/` |
 | Comportamiento en el navegador | `apps/web/src/scripts/`, un módulo por comportamiento |
 | Logos e íconos fuente | `brand/` |
@@ -94,7 +95,7 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 | Enlaces internos sin 404 | Script de revisión sobre `dist/` (acepta páginas planeadas sin construir) | Cada *pull request* |
 | Sin enlaces a páginas sin construir, fotos temporales ni `[PENDIENTE` | Protección en el build de producción (`VERCEL_ENV=production`) | Cada build de producción |
 | Registro de páginas coherente con las rutas | Protección en el build (ya existe) | Cada build |
-| Esquemas de Sanity válidos | Validaciones del esquema y `sanity schema validate` | Al cambiar esquemas |
+| Esquemas de Sanity válidos | Validaciones del esquema, `sanity schema validate` y las pruebas de `packages/sanity` | Al cambiar esquemas |
 | Pantallas a 360 y 1440 px, sin scroll horizontal | Playwright (capturas y comprobaciones básicas) | Al cambiar componentes o páginas |
 | Accesibilidad automática | axe con Playwright | Al cambiar componentes o páginas |
 | Rendimiento | Lighthouse o PageSpeed | Antes de lanzar y al agregar páginas |

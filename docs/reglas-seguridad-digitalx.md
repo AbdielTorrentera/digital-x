@@ -65,6 +65,8 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
    - Los enlaces externos llevan `rel="noopener noreferrer"`.
 4. Los esquemas de Sanity validan campos obligatorios, longitudes máximas y formatos (URL, slug), para que un error de captura no rompa una página.
 5. Imágenes: antes de subirlas se les quitan los **metadatos de ubicación (GPS/EXIF)**. En Sanity no se activan los metadatos `exif` ni `location`. Lo mismo para videos.
+6. **Permiso obligatorio para publicar.** Como el dataset es público, un documento publicado lo puede leer cualquiera. Por eso reseñas, clientes y proyectos reales **no se pueden publicar sin `permiso: true`**: el esquema lo valida como error (no como aviso) y, sin permiso, el documento se queda en borrador, que no es público. La única excepción son los proyectos marcados `esEjemplo` (ficticios). El comprobante del permiso no se guarda en Sanity. El build repite la comprobación y falla si le llega un documento publicado sin permiso, y antes de cada lanzamiento se consulta el dataset **sin token** y estas consultas deben dar 0: `*[_type=="resena" && permiso!=true]`, `*[_type=="cliente" && permiso!=true]` y `*[_type=="proyecto" && permiso!=true && esEjemplo!=true]`.
+7. **Vocabulario y datos.** Los esquemas rechazan, al capturar, las palabras que el sitio no puede decir (vigilancia, proyector, precios sin confirmar, marcas, etc.; ver estructura §7) con las reglas de `packages/sanity/reglas/`, las mismas que repite el build.
 
 ---
 
@@ -129,7 +131,7 @@ upgrade-insecure-requests
 ## 7. Cuentas, accesos y dominios
 
 1. **Verificación en dos pasos (2FA)** obligatoria en GitHub, Vercel, Sanity, Mux, GoDaddy, Akky, Google (Search Console, Perfil de Negocio) y el correo. De preferencia con app o llave de seguridad, no SMS.
-2. **Sanity:** el dueño es *Administrator*; quien solo edita contenido es *Editor*. Cuando alguien deja de colaborar, se le quita el acceso ese día.
+2. **Sanity:** el acceso al Studio y al proyecto es **con la cuenta de GitHub del dueño, con 2FA activa**; no se usa cuenta de correo y contraseña. En el plan gratuito solo existen los roles *Administrator* y *Viewer* (*Editor* exige un plan de pago y no se usa). Hoy hay **un solo usuario**, que es dueño y desarrollador, como *Administrator*. Si alguien más necesita acceso, entra como *Viewer* (solo lectura) y se le quita ese día cuando deje de colaborar; antes de dar a alguien más acceso de escritura se revisa este punto.
 3. **GitHub:** repositorio público (permite proteger ramas y Actions sin costo). Por eso nunca se suben secretos, datos personales de clientes ni información privada del negocio, ni siquiera en `docs/`. Rama `main` protegida: sin *force push*, solo con pull request y con las verificaciones en verde.
 4. **Vercel:** las versiones de prueba (*preview*) con protección de acceso activada, además del `noindex`.
 5. **Dominios:** `digitalx.mx` y `digitalequis.com` con bloqueo de transferencia activado, renovación automática y datos de contacto vigentes en el registrador.

@@ -33,5 +33,6 @@ jobs:
       - run: pnpm --filter ./apps/web check
       - run: pnpm --filter ./apps/studio check
       - run: pnpm --filter ./apps/web test
+      - run: pnpm --filter ./packages/sanity test
       - run: pnpm --filter ./apps/web build
       - run: pnpm --filter ./apps/web check:enlaces

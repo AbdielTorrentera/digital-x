@@ -171,7 +171,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 ### Texto alternativo (`alt`)
 - Obligatorio en toda imagen de contenido. Describe lo que se ve, con servicio y lugar cuando aplique.
   Ejemplo: `Pantalla de circuito cerrado en conferencia en Atlixco`.
-- Imágenes decorativas: `alt=""`.
+- Imágenes decorativas: `alt=""`. En Sanity son las fotos con la casilla «Foto decorativa» (no llevan `alt` y el sitio las pinta con `alt=""` y `aria-hidden="true"`); todas las demás exigen `alt` de 5 a 125 caracteres.
 
 ### Formato y carga
 - Imágenes en **WebP o AVIF**. No usar PNG para fotos.

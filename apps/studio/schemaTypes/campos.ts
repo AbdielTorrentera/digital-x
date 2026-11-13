@@ -3,6 +3,9 @@ import {defineField} from 'sanity'
 import {problemasDeMeta, problemasDeTitle} from '@digitalx/sanity/reglas'
 import {textoSeoUnico} from '../validaciones'
 
+/** Un proyecto de ejemplo (ficticio) no necesita los datos de un trabajo real. */
+export const esEjemplo = (documento?: {[campo: string]: unknown}) => documento?.esEjemplo === true
+
 interface OpcionesDeFoto {
   name: string
   title: string
@@ -50,7 +53,11 @@ export const campoSeo = ({
     group,
     options: {collapsible: false},
     validation: (Rule) =>
-      obligatorio || metaObligatoria ? Rule.required().error('Falta el apartado de Google.') : Rule,
+      Rule.custom((valor, contexto) =>
+        !valor && (obligatorio || metaObligatoria) && !esEjemplo(contexto.document)
+          ? 'Falta el apartado de Google.'
+          : true,
+      ),
     fields: [
       defineField({
         name: 'title',
@@ -76,7 +83,10 @@ export const campoSeo = ({
         description: `El texto gris bajo el título en Google. Máximo 155 caracteres${servicio ? ', con la zona (Puebla o Atlixco) y terminando en «Cotiza por WhatsApp.»' : ''}. Cada página necesita la suya. Ejemplo: ${ejemploMeta}`,
         validation: (Rule) =>
           Rule.custom(async (valor, contexto) => {
-            if (!valor) return metaObligatoria ? 'Escribe la descripción para Google.' : true
+            if (!valor)
+              return metaObligatoria && !esEjemplo(contexto.document)
+                ? 'Escribe la descripción para Google.'
+                : true
             const problemas = problemasDeMeta(valor, servicio)
             if (problemas.length) return problemas.join(' ')
             return (

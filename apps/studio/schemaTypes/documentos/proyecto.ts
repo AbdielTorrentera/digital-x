@@ -1,7 +1,12 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {problemaDePermiso, slugificar} from '@digitalx/sanity/reglas'
-import {campoSeo} from '../campos'
+import {campoSeo, esEjemplo} from '../campos'
 import {vocabulario} from '../../validaciones'
+
+// Un proyecto real lleva todo su caso; uno de ejemplo (ficticio) solo lo básico.
+const obligatorioSalvoEjemplo =
+  (nombre: string) => (valor: unknown, contexto: {document?: {[campo: string]: unknown}}) =>
+    valor || esEjemplo(contexto.document) ? true : `Falta ${nombre}.`
 
 export const proyecto = defineType({
   name: 'proyecto',
@@ -55,7 +60,7 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
-      validation: (Rule) => Rule.required().max(600),
+      validation: (Rule) => Rule.max(600).custom(obligatorioSalvoEjemplo('el reto')),
     }),
     defineField({
       name: 'solucion',
@@ -63,7 +68,7 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
-      validation: (Rule) => Rule.required().max(600),
+      validation: (Rule) => Rule.max(600).custom(obligatorioSalvoEjemplo('la solución')),
     }),
     defineField({
       name: 'resultado',
@@ -71,7 +76,7 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
-      validation: (Rule) => Rule.required().max(600),
+      validation: (Rule) => Rule.max(600).custom(obligatorioSalvoEjemplo('el resultado')),
     }),
     defineField({
       name: 'servicios',
@@ -95,7 +100,7 @@ export const proyecto = defineType({
       title: 'Fecha del trabajo',
       type: 'date',
       group: 'caso',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.custom(obligatorioSalvoEjemplo('la fecha')),
     }),
     defineField({
       name: 'cliente',

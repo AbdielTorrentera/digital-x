@@ -1,5 +1,6 @@
 export * from './constantes.ts'
 export * from './enlaces.ts'
+export * from './marcadores.ts'
 export * from './permiso.ts'
 export * from './seo.ts'
 export * from './servicios.ts'

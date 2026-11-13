@@ -142,7 +142,7 @@ export const inicio = defineType({
       type: 'object',
       group: 'contenido',
       description:
-        'Los lugares salen de «Configuración del sitio»: escríbelos también en el texto. Sin condiciones de traslado ni cargos.',
+        'Sin condiciones de traslado ni cargos. Puedes escribir {zonas} para los lugares de cobertura y {servicios-audio}, {servicios-video} y {servicios-tecnologia} para los nombres de los servicios: el sitio los pone y los mantiene al día.',
       fields: [
         texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Cobertura', 30),
         texto('titulo', 'Título', 'Ejemplo: Dónde trabajamos', 60),
@@ -173,7 +173,7 @@ export const inicio = defineType({
           type: 'array',
           of: [defineArrayMember({type: 'pregunta'})],
           description:
-            'Si cambias los servicios o los lugares de cobertura, actualiza las respuestas que los nombran.',
+            'Puedes escribir {zonas} para los lugares de cobertura y {servicios-audio}, {servicios-video} y {servicios-tecnologia} para los nombres de los servicios: el sitio los pone y los mantiene al día.',
           validation: (Rule) => Rule.required().min(1),
         }),
       ],

@@ -38,6 +38,9 @@ export function vocabularioDelDocumento(documento: unknown) {
 /** El vocabulario bloquea «Publicar» (error); las oraciones repetidas solo avisan. */
 export const vocabulario = (Rule: DocumentRule) => Rule.custom(vocabularioDelDocumento).error()
 
+// El texto alternativo de una misma foto se repite en varias páginas y es correcto.
+const sinAlt = (t: {ruta: unknown[]}) => t.ruta.at(-1) !== 'alt'
+
 const TIPOS_QUE_NO_SE_REPITEN = ['servicio', 'categoria', 'inicio', 'nosotros']
 let cache: {momento: number; documentos: Record<string, string[]>} | null = null
 
@@ -51,7 +54,7 @@ async function textosPublicados(contexto: ValidationContext) {
   cache = {
     momento: Date.now(),
     documentos: Object.fromEntries(
-      documentos.map((d) => [d._id, [...textosDe(d)].map((t) => t.texto)]),
+      documentos.map((d) => [d._id, [...textosDe(d)].filter(sinAlt).map((t) => t.texto)]),
     ),
   }
   return cache.documentos
@@ -65,7 +68,7 @@ export async function avisoDeOracionesRepetidas(documento: unknown, contexto: Va
   const otros = await textosPublicados(contexto)
   const repetidas = oracionesRepetidas({
     ...Object.fromEntries(Object.entries(otros).filter(([otroId]) => otroId !== id)),
-    [id]: [...textosDe(actual)].map((t) => t.texto),
+    [id]: [...textosDe(actual)].filter(sinAlt).map((t) => t.texto),
   }).filter((r) => r.documentos.includes(id))
   if (!repetidas.length) return true
   return `Estas oraciones ya están en otra página (el contenido repetido daña el SEO): ${repetidas

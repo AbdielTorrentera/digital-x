@@ -134,3 +134,49 @@ export const collectionPageJsonLd = ({ url, nombre, descripcion, idNegocio, elem
       }
     : {}),
 });
+
+export interface DatosProyecto {
+  /** URL absoluta del detalle del proyecto. */
+  url: string;
+  nombre: string;
+  /** El resumen del proyecto, tal como se ve en la página. */
+  descripcion: string;
+  /** URL absoluta de la imagen para compartir del proyecto. */
+  imagen: string;
+  /** La fecha de la ficha («2026-03-14»), solo si el dueño la capturó. */
+  fecha?: string;
+  municipio: string;
+  /** @id del negocio ya declarado en el sitio: el autor se referencia, no se duplica. */
+  idNegocio: string;
+  /** URL absoluta de las páginas de los servicios usados que ya están construidas. */
+  serviciosUrl: string[];
+}
+
+/**
+ * CreativeWork del detalle de un proyecto: solo lo que se ve en la página. Sin cliente, reseñas ni calificaciones, sin
+ * dirección ni coordenadas (reglas-seo sección 12). `dateCreated` solo existe si hay fecha; `about` solo si hay servicios
+ * con página.
+ */
+export const proyectoJsonLd = ({
+  url,
+  nombre,
+  descripcion,
+  imagen,
+  fecha,
+  municipio,
+  idNegocio,
+  serviciosUrl,
+}: DatosProyecto) => ({
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${url}#proyecto`,
+  url,
+  name: nombre,
+  description: descripcion,
+  image: imagen,
+  inLanguage: 'es-MX',
+  ...(fecha ? { dateCreated: fecha } : {}),
+  locationCreated: { '@type': 'City', name: municipio },
+  creator: { '@id': idNegocio },
+  ...(serviciosUrl.length > 0 ? { about: serviciosUrl.map((servicio) => ({ '@id': `${servicio}#servicio` })) } : {}),
+});

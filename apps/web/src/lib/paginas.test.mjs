@@ -51,10 +51,13 @@ test('el pie enlaza cada categoría con servicios construidos como "Audio" o "Vi
   }
 });
 
-test('el pie se genera de las páginas construidas: hoy el grupo "Digital X" solo trae Nosotros y los legales van aparte', () => {
+test('el pie se genera de las páginas construidas: el grupo "Digital X" trae Proyectos (si existe) y Nosotros, y los legales van aparte', () => {
   assert.deepEqual(
     enlacesEmpresa.map((p) => [p.titulo, p.url]),
-    [['Nosotros', '/nosotros/']],
+    [
+      ['Proyectos', '/proyectos/'],
+      ['Nosotros', '/nosotros/'],
+    ],
   );
   assert.deepEqual(
     enlacesLegales.map((p) => [p.titulo, p.url]),
@@ -68,34 +71,35 @@ test('el pie se genera de las páginas construidas: hoy el grupo "Digital X" sol
     const pagina = paginas.find((p) => p.url === url);
     assert.ok(pagina && visible(pagina), `${url} está en el pie sin estar construida`);
   }
-  assert.ok(!enlacesEmpresa.some((p) => p.url === '/proyectos/' || p.url === '/blog/'));
+  assert.ok(!enlacesEmpresa.some((p) => p.url === '/blog/'));
 });
 
-test('Proyectos y Blog aparecen en el pie solos cuando se construyen', () => {
+test('Proyectos sale del pie solo cuando su página deja de estar construida', () => {
   const proyectos = paginas.find((p) => p.url === '/proyectos/');
-  assert.ok(proyectos && !proyectos.construida);
-  proyectos.construida = true;
+  assert.ok(proyectos && proyectos.construida);
+  proyectos.construida = false;
   try {
     assert.deepEqual(
       construirEnlacesEmpresa().map((p) => p.url),
-      ['/proyectos/', '/nosotros/'],
+      ['/nosotros/'],
     );
   } finally {
-    proyectos.construida = false;
+    proyectos.construida = true;
   }
   assert.deepEqual(
     construirEnlacesEmpresa().map((p) => p.url),
-    ['/nosotros/'],
+    ['/proyectos/', '/nosotros/'],
   );
 });
 
-test('el menú se genera de los datos: Inicio · una entrada por categoría con servicios construidos · Nosotros, sin "Servicios" ni páginas sin construir', () => {
+test('el menú se genera de los datos: Inicio · una entrada por categoría con servicios construidos · Proyectos · Nosotros, sin "Servicios" ni páginas sin construir', () => {
   assert.deepEqual(
     menu.map((i) => [i.titulo, i.url]),
     [
       ['Inicio', '/'],
       ['Audio', '/audio/renta-de-audio/'],
       ['Video', '/video/'],
+      ['Proyectos', '/proyectos/'],
       ['Nosotros', '/nosotros/'],
     ],
   );
@@ -106,7 +110,6 @@ test('el menú se genera de los datos: Inicio · una entrada por categoría con 
     assert.ok(visible(pagina), `${url} está en el menú sin estar construida`);
   }
   assert.ok(!menu.some((i) => i.url === '/blog/'), 'Blog no se publica todavía');
-  assert.ok(!menu.some((i) => i.url === '/proyectos/'), 'Proyectos entra cuando se construya');
   assert.ok(!menu.some((i) => i.url === '/servicios/'), 'ya no hay página de Servicios');
 });
 

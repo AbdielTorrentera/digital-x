@@ -1,8 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import Foto from './Foto.astro';
-import Migas from './Migas.astro';
 import CierreContacto from './sections/CierreContacto.astro';
+import PortadaListado from './sections/PortadaListado.astro';
 import ClientesDeCategoria from './sections/ClientesDeCategoria.astro';
 import Faq from './sections/Faq.astro';
 import Team from './sections/Team.astro';
@@ -22,7 +21,7 @@ import type { Slug } from '../lib/contenido/servicios';
 // Plantilla de la página de una categoría (/audio/, /video/ y /tecnologia/), la misma para las tres, con el diseño del
 // listado de la plantilla Marby (/property), SIN filtros ni búsqueda: portada con foto y el H1 encima, la introducción
 // debajo, una cuadrícula de tarjetas de servicio (2 columnas desde 768 px, 1 en móvil; ui/TarjetaServicio.astro), los
-// proyectos de la categoría (el carrusel de Nosotros), clientes con permiso, preguntas frecuentes en cuadrícula y el
+// proyectos de la categoría (el carrusel de Nosotros), clientes publicados, preguntas frecuentes en cuadrícula y el
 // cierre. Los proyectos, los clientes y las preguntas solo se dibujan si hay. Todo sale de content/categorias.ts y del
 // registro de servicios; nada es específico de una categoría. Solo se genera para una categoría con dos o más servicios
 // construidos (pages/[categoria].astro).
@@ -48,8 +47,7 @@ const tarjetas = construidos.map((pagina, i) => {
   };
 });
 
-// Hasta 4 proyectos que usaron algún servicio de la categoría (de ejemplo, con la etiqueta EJEMPLO, mientras no haya
-// reales). Sin ninguno, la sección no se dibuja.
+// Hasta 4 proyectos que usaron algún servicio de la categoría. Sin ninguno, la sección no se dibuja.
 const proyectos = proyectosDeCategoria(
   proyectosDelSitio,
   construidos.map((p) => p.titulo),
@@ -65,27 +63,15 @@ const datosEstructurados = collectionPageJsonLd({
 ---
 
 <Base title={categoria.title} description={categoria.meta} image={categoria.imagen} whatsapp={mensajesWhatsApp.general}>
-  <section class="phero sobre-negro">
-    <Foto class="phero__img" src={foto.src} alt={foto.alt} sizes="100vw" prioritaria />
-    <div class="container phero__inner">
-      <h1 class="t-h1 c-blanco">{categoria.h1}</h1>
-    </div>
-  </section>
-  <div class="barra-migas">
-    <div class="container">
-      <Migas
-        items={[
-          { titulo: 'Inicio', url: '/' },
-          { titulo: categoria.etiqueta, url: `/${categoria.slug}/` },
-        ]}
-      />
-    </div>
-  </div>
-  <section class="intro">
-    <div class="container">
-      <p class="t-body intro__texto">{categoria.intro}</p>
-    </div>
-  </section>
+  <PortadaListado
+    foto={foto}
+    h1={categoria.h1}
+    intro={categoria.intro}
+    migas={[
+      { titulo: 'Inicio', url: '/' },
+      { titulo: categoria.etiqueta, url: `/${categoria.slug}/` },
+    ]}
+  />
   <section class:list={['plist', { 'plist--con-proyectos': proyectos.length > 0 }]}>
     <div class="container">
       <ul class="plist__grid">
@@ -133,54 +119,6 @@ const datosEstructurados = collectionPageJsonLd({
   <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
 </Base>
 <style>
-  /* Migas debajo de la portada y fijas bajo la barra al hacer scroll (sticky, a `--nav-alto`): por debajo de la barra del
-     menú (z 5) y del menú interno, sin tapar el contenido (ocupan su lugar en el flujo). */
-  .barra-migas {
-    position: sticky;
-    top: var(--nav-alto);
-    z-index: 3;
-    background: var(--dx-blanco);
-  }
-  /* La portada de la página de listado de Marby: foto a todo el ancho con el título encima. En lugar de la franja de
-     vidrio, la foto se oscurece (--dx-brillo-sobre-foto) para que el texto blanco cumpla el contraste (marca §3). El alto
-     es mínimo, no fijo: el título crece con el zoom y la letra grande (diseño §9). */
-  .phero {
-    position: relative;
-    /* Alto: la mitad de la pantalla visible bajo la barra en móvil y 70 % desde 768 px (dvh donde exista). */
-    min-height: max(280px, calc(50vh - var(--nav-alto)));
-    min-height: max(280px, calc(50dvh - var(--nav-alto)));
-    overflow: clip;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  /* Picture no le pone al <img> el atributo de alcance de Astro: se selecciona como global dentro de la sección. */
-  .phero :global(.phero__img) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(var(--dx-brillo-sobre-foto));
-  }
-  /* El H1 va centrado sobre la foto, como en la portada del listado de Marby. */
-  .phero__inner {
-    position: relative;
-    padding-block: var(--esp-7);
-    text-align: center;
-  }
-  .phero__inner h1 {
-    max-width: 28ch;
-    margin-inline: auto;
-    text-wrap: balance;
-  }
-  .intro {
-    background: var(--dx-blanco);
-    padding-block: var(--esp-4) 0;
-  }
-  .intro__texto {
-    max-width: 70ch;
-  }
   .plist {
     background: var(--dx-blanco);
     padding-block: var(--esp-7) var(--esp-8);
@@ -195,10 +133,6 @@ const datosEstructurados = collectionPageJsonLd({
     gap: var(--esp-7) var(--esp-6);
   }
   @media (min-width: 768px) {
-    .phero {
-      min-height: calc(70vh - var(--nav-alto));
-      min-height: calc(70dvh - var(--nav-alto));
-    }
     .plist__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--esp-7) var(--medianil);

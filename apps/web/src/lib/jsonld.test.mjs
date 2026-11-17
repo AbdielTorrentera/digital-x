@@ -5,6 +5,7 @@ import {
   breadcrumbListJsonLd,
   collectionPageJsonLd,
   faqPageJsonLd,
+  proyectoJsonLd,
   sameAsDeRedes,
   serializarJsonLd,
   serviceJsonLd,
@@ -151,4 +152,32 @@ test('collectionPageJsonLd sin elementos no lleva ItemList vacío', () => {
   assert.equal(datos['@type'], 'CollectionPage');
   assert.deepEqual(datos.about, { '@id': 'https://digitalx.mx/#negocio' });
   assert.ok(!('mainEntity' in datos));
+});
+
+const proyecto = {
+  url: 'https://digitalx.mx/proyectos/conferencia/',
+  nombre: 'Conferencia empresarial',
+  descripcion: 'Sonido y pantallas para una conferencia.',
+  imagen: 'https://cdn.sanity.io/images/x/production/a.jpg?w=1200&h=630&fit=crop',
+  municipio: 'Puebla',
+  idNegocio: 'https://digitalx.mx/#negocio',
+  serviciosUrl: ['https://digitalx.mx/audio/renta-de-audio/'],
+};
+
+test('proyectoJsonLd describe el trabajo con lo que se ve y apunta al negocio y a sus servicios por @id', () => {
+  const datos = proyectoJsonLd({ ...proyecto, fecha: '2026-03-14' });
+  assert.equal(datos['@type'], 'CreativeWork');
+  assert.equal(datos['@id'], 'https://digitalx.mx/proyectos/conferencia/#proyecto');
+  assert.equal(datos.name, 'Conferencia empresarial');
+  assert.equal(datos.dateCreated, '2026-03-14');
+  assert.deepEqual(datos.locationCreated, { '@type': 'City', name: 'Puebla' });
+  assert.deepEqual(datos.creator, { '@id': 'https://digitalx.mx/#negocio' });
+  assert.deepEqual(datos.about, [{ '@id': 'https://digitalx.mx/audio/renta-de-audio/#servicio' }]);
+});
+
+test('proyectoJsonLd omite la fecha y los servicios si no los hay, y nunca lleva reseñas, dirección ni coordenadas', () => {
+  const datos = proyectoJsonLd({ ...proyecto, serviciosUrl: [] });
+  assert.ok(!('dateCreated' in datos));
+  assert.ok(!('about' in datos));
+  assert.ok(!/Review|AggregateRating|"address"|"geo"|"client"/.test(JSON.stringify(datos)));
 });

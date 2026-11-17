@@ -133,6 +133,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
+- **Proyectos:** cada tarjeta de proyecto (en `/proyectos/`, el Inicio, Nosotros, las categorías y los servicios) enlaza a su página; la página de un proyecto enlaza a `/proyectos/` (migas y «Otros proyectos») y a cada servicio usado que ya está construido («Servicios que usamos»); cada servicio enlaza a `/proyectos/` en «También te puede servir». **Si `/proyectos/` no existe** (sin proyectos publicados o sin la «Página de proyectos» publicada), ningún enlace a ella ni a sus detalles se dibuja: los textos se muestran como texto y los botones no aparecen.
 - **Enlaces del pie** (todos desde `paginas.ts` y las categorías de Sanity): las 3 categorías de servicios, escritas "Audio", "Video" y "Tecnología" bajo el título de columna "Servicios", cada una a su destino (su página de categoría o su único servicio construido), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil). El pie **solo muestra páginas construidas** (se genera desde `paginas.ts`): Proyectos y Blog aparecen solos cuando existan, y nunca se enlaza una página sin construir. Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
@@ -184,7 +185,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 
 ## 7. Proyectos y casos de éxito
 
-Cada proyecto en `/proyectos/` se presenta como **ficha corta**, no como foto suelta. Solo trabajos reales y con permiso.
+Cada proyecto se presenta como **ficha corta**, no como foto suelta, y tiene su propia página (`/proyectos/{slug}/`). Solo trabajos reales.
 
 Campos de cada ficha:
 1. **Título:** servicio + tipo de trabajo + lugar. Ej.: `Audio para evento cultural en Atlixco`, `Circuito cerrado con pantallas en conferencia en Atlixco`.
@@ -194,7 +195,13 @@ Campos de cada ficha:
 5. **Fotos** con nombre de archivo y `alt` según la sección 6.
 6. **Enlace** a la subpágina del servicio correspondiente.
 
-Si falta un campo, `[PENDIENTE: ...]`. Casos de software: anónimos si no hay permiso del cliente.
+Reto, solución, resultado y fecha son opcionales: si un campo no tiene texto, la página no lo muestra (guía de redacción: lo ideal es llenar los tres). Casos de software: anónimos (sin el campo «Cliente»).
+
+**Metadatos automáticos de cada proyecto.** El dueño puede escribir el título y la descripción para Google de cada proyecto (campo «Cómo aparece en Google»); si los deja vacíos, el sitio los arma solo, sin agregar datos:
+- **Title:** `{título del proyecto} en {municipio} | Digital X` (ejemplo: `Conferencia empresarial en Puebla | Digital X`). Si el título ya nombra el municipio (sin distinguir acentos ni mayúsculas), no se repite: `{título} | Digital X`.
+- **Meta description:** el **resumen** del proyecto, tal como lo escribió el dueño.
+- **Imagen al compartir:** la del campo de Google y, si no hay, la primera foto del proyecto.
+- Estas reglas de redacción (largo, ciudad, único en el sitio) son guía: no se validan.
 
 ---
 
@@ -283,10 +290,12 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
 
 - **Sitio completo:** un nodo `ProfessionalService` (subtipo de `LocalBusiness`) con: `name` = "Digital X", `url`, `telephone` = "+522441244913", `email` (cuando esté definido), `areaServed` (las 6 zonas de los dos grupos de `estructura-sitio-digitalx.md` sección 1), `sameAs` (solo las redes con URL real entre Facebook, Instagram, TikTok y el perfil de Google; `[PENDIENTE: URLs]`; sin ninguna, no se incluye la propiedad y nunca se escribe un `[PENDIENTE` ni una URL inventada) y `logo` (el PNG `brand/png/digitalx-logo-negro-1200.png`, copiado en `apps/web/public/`). `foundingDate` = `2018` (el año en que nació la idea).
 - **Nosotros:** un nodo `AboutPage` cuyo `about` y `mainEntity` apuntan por `@id` a `https://digitalx.mx/#negocio`: no se duplica el `ProfessionalService`. Más el `FAQPage` de sus preguntas, que salen del mismo arreglo que se muestra. Sin `Person` ni datos del dueño.
-- **Páginas de categoría (`/video/`, `/tecnologia/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de sus servicios **publicados**, más el `BreadcrumbList` (Inicio › Categoría) y, cuando haya preguntas, el `FAQPage` (Video y Tecnología tienen sus preguntas; Audio no, y no se genera). Desaparece el `ItemList` de `/servicios/` con la página; ninguna otra página lleva `ItemList`.
+- **Páginas de categoría (`/video/`, `/tecnologia/`):** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de sus servicios **publicados**, más el `BreadcrumbList` (Inicio › Categoría) y, cuando haya preguntas, el `FAQPage` (Video y Tecnología tienen sus preguntas; Audio no, y no se genera). Desaparece el `ItemList` de `/servicios/` con la página; solo llevan `ItemList` las páginas de categoría y `/proyectos/`.
 - **Cada página de servicio:** nodo `Service` (con `@id` `{url}#servicio`) con `name`, `serviceType` (la categoría), `description`, `url`, `provider` (referencia al negocio por `@id`) y `areaServed`.
 - **`FAQPage`** solo en páginas que muestran las preguntas frecuentes en pantalla.
 - **`BreadcrumbList`** en las páginas de categoría y en las de servicio (las mismas migas que se ven).
+- **`/proyectos/`:** `CollectionPage` que apunta por `@id` al negocio, con un `ItemList` (`name` y `url`) de los proyectos publicados, más el `BreadcrumbList` (Inicio › Proyectos).
+- **Cada proyecto (`/proyectos/{slug}/`):** nodo `CreativeWork` (con `@id` `{url}#proyecto`) con `name`, `description` (el resumen), `url`, `image`, `inLanguage`, `dateCreated` (solo si hay fecha), `locationCreated` (la ciudad del municipio), `creator` (el negocio por `@id`) y `about` (los servicios usados que ya tienen página, por su `@id` `{url}#servicio`), más el `BreadcrumbList` (Inicio › Proyectos › Proyecto). **Nunca** el cliente, `Review` ni `AggregateRating`.
 - **`BlogPosting`** en cada artículo del blog, con `headline`, `datePublished`, `dateModified`, `author` e `image`, todos coincidiendo con lo visible.
 - **PROHIBIDO:**
   - Publicar `address`/`streetAddress` o **coordenadas (`geo`)**. El negocio opera sin dirección pública; las coordenadas revelarían un domicilio.

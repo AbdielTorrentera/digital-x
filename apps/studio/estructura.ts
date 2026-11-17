@@ -86,7 +86,7 @@ export const estructura: StructureResolver = (S) => {
             ]),
         ),
       S.divider(),
-      lista('proyecto', 'Proyectos'),
+      lista('proyecto', 'Proyectos', porOrden),
       lista('resena', 'Reseñas de clientes'),
       lista('cliente', 'Clientes'),
       S.divider(),

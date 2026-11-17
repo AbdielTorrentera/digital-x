@@ -141,10 +141,27 @@ export interface ServicioDoc {
 export interface ProyectoDoc {
   _id: string;
   titulo: string;
+  slug: { current: string };
   resumen: string;
+  reto?: string;
+  solucion?: string;
+  resultado?: string;
   municipio: string;
   servicios: Referencia[];
+  fecha?: string;
+  orden?: number;
   fotos: FotoDoc[];
+  seo?: SeoDoc;
+}
+
+/** La «Página de proyectos» (encabezado, introducción, foto, cierre y SEO de /proyectos/). */
+export interface PaginaProyectosDoc {
+  etiqueta: string;
+  h1: string;
+  intro: string;
+  foto: FotoDoc;
+  cierre: CierreDoc;
+  seo: SeoDoc;
 }
 
 export interface ClienteDoc {

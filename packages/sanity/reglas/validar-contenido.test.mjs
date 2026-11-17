@@ -20,6 +20,18 @@ const servicioCompleto = (extra = {}) => ({
   ...extra,
 })
 
+const proyectoCompleto = (extra = {}) => ({
+  _id: 'p1',
+  _type: 'proyecto',
+  titulo: 'Proyecto',
+  slug: {current: 'proyecto'},
+  resumen: 'Resumen',
+  municipio: 'Atlixco',
+  servicios: [{_type: 'reference', _ref: 's1'}],
+  fotos: [foto()],
+  ...extra,
+})
+
 /** Contenido mínimo que pasa todas las reglas técnicas; cada prueba rompe una cosa. */
 const base = () => ({
   assets: {'image-a': {url: 'https://x/a.jpg', extension: 'jpg', width: 10, height: 10}},
@@ -229,16 +241,66 @@ test('una referencia fuerte a algo no publicado falla; una débil se omite', () 
 
 test('un proyecto sin título ni descripción para Google pasa (el apartado de Google es opcional en proyectos)', () => {
   const m = copia()
-  m.documentos.push({_id: 'p2', _type: 'proyecto', titulo: 'Proyecto sin SEO'})
+  m.documentos.push(proyectoCompleto({_id: 'p2'}))
   assert.deepEqual(errores(m), [])
   m.documentos.at(-1).seo = {}
   assert.deepEqual(errores(m), [])
 })
 
+test('un proyecto necesita lo que su página dibuja: título, dirección, resumen, municipio, servicios y fotos', () => {
+  for (const campo of ['titulo', 'slug', 'resumen', 'municipio', 'servicios', 'fotos']) {
+    const m = copia()
+    m.documentos.push(proyectoCompleto({[campo]: undefined}))
+    assert.ok(con(m, /p1 \(proyecto\)/).length >= 1, `sin ${campo} debe fallar`)
+  }
+})
+
+test('la dirección de un proyecto debe ser válida y no repetirse entre proyectos', () => {
+  const malo = copia()
+  malo.documentos.push(proyectoCompleto({slug: {current: 'Mi Proyecto'}}))
+  assert.equal(con(malo, /minúsculas/).length, 1)
+  const repetido = copia()
+  repetido.documentos.push(
+    proyectoCompleto({_id: 'pa', slug: {current: 'igual'}}),
+    proyectoCompleto({_id: 'pb', slug: {current: 'igual'}}),
+  )
+  assert.equal(con(repetido, /la usa otro proyecto/).length, 2)
+  const distinto = copia()
+  distinto.documentos.push(
+    proyectoCompleto({_id: 'pa', slug: {current: 'uno'}}),
+    proyectoCompleto({_id: 'pb', slug: {current: 'dos'}}),
+  )
+  assert.deepEqual(errores(distinto), [])
+})
+
+test('la «Página de proyectos» es opcional, pero si está publicada necesita todo lo que dibuja', () => {
+  const completa = {
+    _id: 'paginaProyectos',
+    _type: 'paginaProyectos',
+    etiqueta: 'Proyectos',
+    h1: 'h',
+    intro: 'i',
+    foto: foto(),
+    cierre: {titulo: 't', texto: 'x'},
+    seo,
+  }
+  const ok = copia()
+  ok.documentos.push(completa)
+  assert.deepEqual(errores(ok), [])
+  for (const campo of ['etiqueta', 'h1', 'intro', 'foto', 'cierre', 'seo']) {
+    const m = copia()
+    m.documentos.push({...completa, [campo]: undefined})
+    assert.ok(con(m, /paginaProyectos \(paginaProyectos\)/).length >= 1, `sin ${campo} debe fallar`)
+  }
+  const sinGoogle = copia()
+  sinGoogle.documentos.push({...completa, seo: {title: 'Solo título'}})
+  assert.equal(con(sinGoogle, /descripción para Google/).length, 1)
+})
+
 test('permiso, proyecto de ejemplo y reseñas cortas ya no se validan', () => {
   const m = copia()
   m.documentos.push(
-    {_id: 'p1', _type: 'proyecto', titulo: 'Ejemplo', esEjemplo: true, permiso: false},
+    proyectoCompleto({titulo: 'Ejemplo', esEjemplo: true, permiso: false}),
     {_id: 'r1', _type: 'resena', texto: 'corta', permiso: false},
     {_id: 'cl1', _type: 'cliente', nombre: 'E', permiso: false},
   )

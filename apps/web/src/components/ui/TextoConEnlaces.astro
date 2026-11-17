@@ -1,12 +1,13 @@
 ---
 import type { TextoConEnlaces } from '../../lib/texto';
-import { enlaceAPagina } from '../../lib/enlaces';
+import { enlaceSiExiste } from '../../lib/enlaces';
 import { enlaceDeServicio } from '../../lib/servicios';
 
 // Un texto corrido con enlaces: la nota bajo "Qué incluye", los párrafos y los puntos con título de las secciones, y las
 // respuestas de las preguntas frecuentes. Un trozo de texto se escribe tal cual; un `{ slug, texto }` es un enlace a la
 // página del servicio si está publicada y, si no, solo texto; un `{ url, texto }` es un enlace a otra página del registro
-// (validada con `enlaceAPagina`). Un texto sin enlaces puede ser un `string`.
+// si ya está construida (validada con `enlaceSiExiste`) y, si no (por ejemplo, /proyectos/ sin proyectos publicados),
+// solo texto. Un texto sin enlaces puede ser un `string`.
 interface Props {
   texto: string | TextoConEnlaces;
 }
@@ -16,7 +17,7 @@ const trozos = typeof texto === 'string' ? [texto] : texto;
 
 {trozos.map((trozo) => {
   if (typeof trozo === 'string') return trozo;
-  const href = 'slug' in trozo ? enlaceDeServicio(trozo.slug) : enlaceAPagina(trozo.url);
+  const href = 'slug' in trozo ? enlaceDeServicio(trozo.slug) : enlaceSiExiste(trozo.url);
   return href ? (
     <a class="link" href={href}>
       {trozo.texto}

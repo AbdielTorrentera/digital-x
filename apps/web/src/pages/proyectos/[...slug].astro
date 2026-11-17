@@ -1,0 +1,20 @@
+---
+import PaginaProyecto from '../../components/PaginaProyecto.astro';
+import PaginaProyectos from '../../components/PaginaProyectos.astro';
+import { hayProyectos, proyectos } from '../../lib/contenido/proyectos';
+
+// /proyectos/ y /proyectos/{slug}/ salen de esta sola ruta (la de rest permite que `slug` falte para el listado). Solo se
+// genera algo si hay al menos un proyecto publicado Y la «Página de proyectos» publicada (`hayProyectos`): sin ellos, no
+// hay ninguna página y lib/paginas.ts tampoco enlaza ninguna (menú, pie, tarjetas, «También te puede servir»).
+export function getStaticPaths() {
+  if (!hayProyectos) return [];
+  return [
+    { params: { slug: undefined }, props: { slugProyecto: null } },
+    ...proyectos.map((p) => ({ params: { slug: p.slug }, props: { slugProyecto: p.slug } })),
+  ];
+}
+const { slugProyecto } = Astro.props;
+const proyecto = slugProyecto ? proyectos.find((p) => p.slug === slugProyecto) : undefined;
+---
+
+{proyecto ? <PaginaProyecto proyecto={proyecto} /> : <PaginaProyectos />}

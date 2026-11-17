@@ -833,6 +833,92 @@
       }
     },
     {
+      "_id": "paginaProyectos",
+      "_type": "paginaProyectos",
+      "etiqueta": "Proyectos",
+      "h1": "Proyectos de prueba",
+      "intro": "Introducción de prueba de la página de proyectos.",
+      "foto": {
+        "_key": "fp",
+        "_type": "foto",
+        "alt": "Foto de prueba de la portada",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-315be2f2c1fdcbba5cba12212dce15d0314ff117-2000x1082-jpg"
+        }
+      },
+      "cierre": {
+        "_type": "cierre",
+        "titulo": "Cierre de prueba de proyectos",
+        "texto": "Texto de prueba del cierre de proyectos."
+      },
+      "seo": {
+        "title": "Proyectos de prueba | Digital X",
+        "meta": "Descripción de prueba de la página de proyectos."
+      }
+    },
+    {
+      "_id": "proyecto-completo",
+      "_type": "proyecto",
+      "titulo": "Proyecto con todos los campos",
+      "slug": {
+        "_type": "slug",
+        "current": "proyecto-con-todos-los-campos"
+      },
+      "orden": 1,
+      "resumen": "Resumen de prueba del proyecto con todos los campos.",
+      "reto": "Reto de prueba, primer párrafo.\nReto de prueba, segundo párrafo.",
+      "solucion": "Solución de prueba.",
+      "resultado": "Resultado de prueba.",
+      "municipio": "Ciudad Dos",
+      "fecha": "2026-03-14",
+      "servicios": [
+        {
+          "_key": "k1",
+          "_type": "reference",
+          "_ref": "servicio-renta-de-audio"
+        },
+        {
+          "_key": "k2",
+          "_type": "reference",
+          "_ref": "servicio-paginas-web"
+        }
+      ],
+      "fotos": [
+        {
+          "_key": "f1",
+          "_type": "foto",
+          "alt": "Foto de prueba uno",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-39b8db512fe686cd9e3e487bf049815a48423fd0-2000x1500-jpg"
+          }
+        },
+        {
+          "_key": "f2",
+          "_type": "foto",
+          "alt": "Foto de prueba dos",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-6cf91f3df281772d37a49357bf9559cd1e605a9c-2000x1333-jpg"
+          }
+        },
+        {
+          "_key": "f3",
+          "_type": "foto",
+          "alt": "Foto de prueba tres",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-02d765837705c0ece6bbfc1ef46c0c6a7a5ab107-2000x1333-jpg"
+          }
+        }
+      ],
+      "seo": {
+        "title": "Título propio del proyecto | Digital X",
+        "meta": "Descripción propia del proyecto de prueba."
+      }
+    },
+    {
       "_id": "proyecto-de-prueba",
       "_type": "proyecto",
       "fotos": [

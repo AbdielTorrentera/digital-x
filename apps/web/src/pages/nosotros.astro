@@ -15,6 +15,8 @@ import { idNegocio, mensajesWhatsApp, negocio } from '../lib/negocio';
 import { proyectosDeNosotros } from '../lib/proyectos';
 
 const url = new URL('/nosotros/', negocio.url).href;
+// Sin proyectos publicados, la sección no se dibuja (un carrusel vacío no dice nada).
+const proyectosNosotros = proyectosDeNosotros(proyectos);
 ---
 
 <!-- Estructura: docs/estructura-sitio-digitalx.md sección 5. Metadatos y H1: docs/reglas-seo-digitalx.md sección 1. -->
@@ -32,13 +34,15 @@ const url = new URL('/nosotros/', negocio.url).href;
   <AboutYears etiqueta={historia.etiqueta} texto={historia.texto} hitos={historia.hitos} />
   <AboutBeliefs titulo={distingue.titulo} foto={distingue.foto} items={distingue.items} />
   <AboutVision titulo={manifiesto.titulo} foto={{ src: manifiesto.foto, alt: '' }} items={manifiesto.items} />
-  <Team
-    etiqueta={proyectosPagina.etiqueta}
-    titulo={proyectosPagina.titulo}
-    foto={{ src: proyectosPagina.foto, alt: '' }}
-    items={proyectosDeNosotros(proyectos)}
-    boton={proyectosPagina.boton}
-  />
+  {proyectosNosotros.length > 0 && (
+    <Team
+      etiqueta={proyectosPagina.etiqueta}
+      titulo={proyectosPagina.titulo}
+      foto={{ src: proyectosPagina.foto, alt: '' }}
+      items={proyectosNosotros}
+      boton={proyectosPagina.boton}
+    />
+  )}
   <Faq {...faq} />
   <CierreContacto {...cierre} />
   <script

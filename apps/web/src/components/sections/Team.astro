@@ -1,21 +1,22 @@
 ---
 import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
-import Icon from '../Icon.astro';
+import TarjetaProyecto from '../ui/TarjetaProyecto.astro';
+import { enlaceSiExiste } from '../../lib/enlaces';
 import type { Foto as FotoDatos } from '../../lib/contenido/inicio';
 import type { Proyecto } from '../../lib/contenido/proyectos';
 
 // Fila de tarjetas de proyectos: el Team de la plantilla Marby, con proyectos en lugar de personas (foto, número,
-// título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/. Es el
-// carrusel de proyectos de Nosotros y de las páginas de categoría: recibe la lista (Nosotros, todos; una categoría, los
+// título, servicios como etiquetas, municipio con su ícono y un texto corto; `ui/TarjetaProyecto.astro`). Cada tarjeta
+// enlaza al detalle de su proyecto y el botón lleva a /proyectos/ (sin esa página, ni las tarjetas ni el botón llevan
+// enlace). Es el carrusel de proyectos de Nosotros y de las páginas de categoría: recibe la lista (Nosotros, todos; una categoría, los
 // suyos), su título y la foto de fondo. Cada proyecto aparece UNA sola vez (sin copias): si las tarjetas caben en el
 // ancho, se muestran fijas, sin avance ni arrastre; si lo exceden, la fila es un contenedor con scroll horizontal nativo
 // que se desliza con el dedo, la rueda, el trackpad o arrastrando, y un pequeño script la hace avanzar a 50 px por segundo
 // de ida y vuelta (al llegar a un extremo se detiene un momento y regresa), sin botón de pausa. El avance se detiene
 // mientras la persona toca, arrastra, pasa el cursor o hace foco, y se reanuda 3 segundos después. Con movimiento reducido
 // (o sin JavaScript) no avanza sola, pero se desliza a mano. Solo cambian los textos, los colores (tokens --dx-*), las
-// tipografías y lo que exigen las reglas. La foto no depende del cursor en pantallas táctiles. La protección contra los
-// ejemplos vive en content/proyectos.ts. Acomodo del bloque: con pocos proyectos fijos, TODO se centra en un mismo eje
+// tipografías y lo que exigen las reglas. La foto no depende del cursor en pantallas táctiles. Acomodo del bloque: con pocos proyectos fijos, TODO se centra en un mismo eje
 // (etiqueta, título de ancho limitado, tarjetas y botón); en cuanto hay carrusel (`is-carrusel`, que pone el script),
 // vuelve el acomodo original de la plantilla: etiqueta a la izquierda, título en su columna y botón al borde del contenedor.
 interface Props {
@@ -26,6 +27,8 @@ interface Props {
   boton: { etiqueta: string; href: string };
 }
 const { etiqueta, titulo, foto, items, boton } = Astro.props;
+// El botón «Ver todos los proyectos» solo se dibuja si /proyectos/ existe.
+const hrefBoton = enlaceSiExiste(boton.href);
 ---
 
 <section class="team sobre-negro" data-team>
@@ -53,31 +56,16 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
       <div class="ticker__track">
         <div class="ticker__set">
           {items.map((p, i) => (
-            <a class="member" href={boton.href} aria-label={`Ver proyectos: ${p.titulo}`}>
-              <Foto class="member__photo" src={p.foto.src} alt={p.foto.alt} sizes="278px" widths={[278, 556, 834]} />
-              <div class="member__blur" aria-hidden="true" />
-              <div class="member__body">
-                <div class="member__name">
-                  <p class="t-caption c-blanco">{String(i + 1).padStart(2, '0')}</p>
-                  <h3 class="t-h4 c-blanco">{p.titulo}</h3>
-                  <p class="t-caption c-blanco">{p.texto}</p>
-                </div>
-                <div class="member__meta">
-                  <p class="t-caption c-blanco">{p.servicios.join(' · ')}</p>
-                  <p class="t-caption c-blanco member__city">
-                    <Icon name="pin" size="boton" />
-                    {p.municipio}
-                  </p>
-                </div>
-              </div>
-            </a>
+            <TarjetaProyecto proyecto={p} numero={String(i + 1).padStart(2, '0')} />
           ))}
         </div>
       </div>
     </div>
-    <div class="team__boton" data-appear style="--appear-delay:0.4s">
-      <Btn label={boton.etiqueta} href={boton.href} />
-    </div>
+    {hrefBoton && (
+      <div class="team__boton" data-appear style="--appear-delay:0.4s">
+        <Btn label={boton.etiqueta} href={hrefBoton} />
+      </div>
+    )}
     <script>
       // Hace avanzar la fila de proyectos cuando no caben en el ancho, y la deja deslizar a mano.
       const VELOCIDAD = 50; // px por segundo, como en la plantilla
@@ -215,6 +203,8 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
     position: relative;
     overflow: clip;
     padding-block: 80px;
+    /* Negro desde el primer momento: mientras carga la foto de fondo, el texto blanco no queda sobre blanco. */
+    background: var(--dx-negro);
   }
   .team :global(.team__bg) {
     position: absolute;
@@ -303,82 +293,6 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
     gap: 20px;
   }
 
-  .member {
-    position: relative;
-    display: block;
-    width: 278px;
-    height: 352px;
-    flex: none;
-    border-radius: 8px;
-    overflow: clip;
-    border: 1px solid var(--dx-linea-sobre-foto);
-    background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    -webkit-user-drag: none;
-  }
-  .member :global(.member__photo),
-  .member__blur {
-    position: absolute;
-    opacity: 0;
-    transition: opacity 0.4s var(--ease);
-  }
-  .member :global(.member__photo) {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(var(--dx-brillo-sobre-foto));
-  }
-  .member__blur {
-    inset: auto 0 0;
-    height: 54px;
-    background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
-    -webkit-backdrop-filter: blur(3px);
-    backdrop-filter: blur(3px);
-  }
-  .member:hover :global(.member__photo),
-  .member:hover .member__blur,
-  .member:focus-visible :global(.member__photo),
-  .member:focus-visible .member__blur {
-    opacity: 1;
-  }
-  .member__body {
-    position: absolute;
-    inset: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .member__name {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .member__meta {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .member__meta > :first-child {
-    flex: 1;
-  }
-  .member__city {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .member__city :global(.icon) {
-    width: 14px;
-    height: 14px;
-  }
-  /* Sin cursor que revele la foto (tablet, móvil o pantalla táctil), la foto se ve siempre. */
-  @media (max-width: 1199.98px), (hover: none) {
-    .member :global(.member__photo),
-    .member__blur {
-      opacity: 1;
-    }
-  }
   @media (max-width: 809.98px) {
     .team.is-carrusel .team__head {
       align-items: flex-start;

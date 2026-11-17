@@ -80,21 +80,22 @@ test('la regla sigue a los servicios: con 0, 1 y 2 construidos cambia el destino
   assert.equal(destinoDeCategoria('video'), '/video/');
 });
 
-test('el menú se genera de los datos: Inicio, una entrada por categoría con destino y Nosotros; Proyectos y Blog solo si están construidas', () => {
+test('el menú se genera de los datos: Inicio, una entrada por categoría con destino, Proyectos (solo si existe) y Nosotros', () => {
+  // La instantánea de prueba trae proyectos y la «Página de proyectos»: Proyectos está construida y entra al menú.
+  const proyectos = paginas.find((p) => p.url === '/proyectos/');
+  assert.ok(proyectos && proyectos.construida, 'Proyectos está construida en los datos de prueba');
   assert.deepEqual(
     construirMenu().map((i) => i.titulo),
-    ['Inicio', 'Audio', 'Video', 'Nosotros'],
+    ['Inicio', 'Audio', 'Video', 'Proyectos', 'Nosotros'],
   );
-  const proyectos = paginas.find((p) => p.url === '/proyectos/');
-  assert.ok(proyectos && !proyectos.construida, 'Proyectos aún no está construida');
-  proyectos.construida = true;
+  proyectos.construida = false;
   try {
     assert.deepEqual(
       construirMenu().map((i) => i.titulo),
-      ['Inicio', 'Audio', 'Video', 'Proyectos', 'Nosotros'],
+      ['Inicio', 'Audio', 'Video', 'Nosotros'],
     );
   } finally {
-    proyectos.construida = false;
+    proyectos.construida = true;
   }
 });
 

@@ -1,13 +1,15 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {slugificar} from '@digitalx/sanity/reglas'
 import {campoSeo} from '../campos'
+import {avisoDeProyectoSinPagina} from '../../validaciones'
 
 export const proyecto = defineType({
   name: 'proyecto',
   title: 'Proyecto',
   type: 'document',
   description:
-    'Un trabajo real de Digital X, con su reto, solución y resultado. Todo lo publicado aquí se muestra en el sitio.',
+    'Un trabajo real de Digital X. Todo lo publicado aquí se muestra en el sitio, en /proyectos/ y en su propia página. Para que aparezcan, también debe estar publicada la «Página de proyectos» (en Páginas).',
+  validation: (Rule) => Rule.custom(avisoDeProyectoSinPagina).warning(),
   groups: [
     {name: 'caso', title: 'El caso', default: true},
     {name: 'fotos', title: 'Fotos'},
@@ -33,7 +35,7 @@ export const proyecto = defineType({
       type: 'slug',
       group: 'caso',
       description:
-        'La dirección del proyecto: /proyectos/{slug}/. Ejemplo: audio-evento-cultural-atlixco. Si ya está publicado, no la cambies.',
+        'La dirección del proyecto: /proyectos/{slug}/. Ejemplo: audio-evento-cultural-atlixco. Si ya está publicado, no la cambies (la dirección vieja dejaría de funcionar).',
       options: {source: 'titulo', slugify: (t) => slugificar(t, 80)},
       validation: (Rule) => Rule.required(),
     }),
@@ -53,6 +55,7 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
+      description: 'Opcional. Si lo dejas vacío, la página no muestra esta parte.',
     }),
     defineField({
       name: 'solucion',
@@ -60,6 +63,7 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
+      description: 'Opcional. Si lo dejas vacío, la página no muestra esta parte.',
     }),
     defineField({
       name: 'resultado',
@@ -67,6 +71,7 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
+      description: 'Opcional. Si lo dejas vacío, la página no muestra esta parte.',
     }),
     defineField({
       name: 'servicios',
@@ -90,6 +95,8 @@ export const proyecto = defineType({
       title: 'Fecha del trabajo',
       type: 'date',
       group: 'caso',
+      description:
+        'Opcional. Se muestra como mes y año (marzo de 2026). Si la dejas vacía, no se muestra.',
     }),
     defineField({
       name: 'orden',
@@ -120,9 +127,13 @@ export const proyecto = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     campoSeo({
-      // Opcional: hoy no existe ninguna página de proyecto; se decide de nuevo en la etapa 5.
+      // Opcional: si se dejan vacíos, el sitio arma el título y usa el resumen como descripción.
       obligatorio: false,
       metaObligatoria: false,
+      siVacioTitle:
+        'Si lo dejas vacío se arma solo: el título del proyecto, «en» el municipio y «| Digital X» (sin repetir el municipio si el título ya lo dice).',
+      siVacioMeta: 'Si la dejas vacía se usa el resumen del proyecto.',
+      siVacioImagen: 'Si la dejas vacía se usa la primera foto del proyecto.',
       ejemploTitle: 'Audio para evento cultural en Atlixco | Digital X',
       ejemploMeta:
         'Sonido y pantallas para un evento cultural en Atlixco: el reto, lo que hicimos y cómo quedó. Cotiza por WhatsApp.',

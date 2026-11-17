@@ -84,6 +84,9 @@ const OBLIGATORIOS: Record<string, string[]> = {
     'fotoCierre',
     'seo',
   ],
+  // La «Página de proyectos» es opcional (sin ella no hay /proyectos/); si está publicada, debe traer todo lo que dibuja.
+  proyecto: ['titulo', 'slug', 'resumen', 'municipio', 'servicios', 'fotos'],
+  paginaProyectos: ['etiqueta', 'h1', 'intro', 'foto', 'cierre', 'seo'],
   categoria: [
     'etiqueta',
     'slug',
@@ -109,7 +112,7 @@ const OBLIGATORIOS: Record<string, string[]> = {
   ],
 }
 
-const TIPOS_CON_SEO_OBLIGATORIO = ['inicio', 'nosotros', 'categoria', 'servicio']
+const TIPOS_CON_SEO_OBLIGATORIO = ['inicio', 'nosotros', 'paginaProyectos', 'categoria', 'servicio']
 
 function* objetosConRuta(
   valor: unknown,
@@ -171,12 +174,19 @@ export function validarContenido({documentos, assets}: Instantanea): Resultado {
     }
   }
 
-  // 3) Slugs
+  // 3) Slugs. Los de un proyecto son direcciones (/proyectos/{slug}/): no pueden repetirse entre proyectos.
+  const slugsDeProyectos = new Map<string, number>()
+  for (const doc of publicados('proyecto')) {
+    const slug = (doc.slug as {current?: string} | undefined)?.current
+    if (slug) slugsDeProyectos.set(slug, (slugsDeProyectos.get(slug) ?? 0) + 1)
+  }
   for (const doc of documentos) {
-    if (doc._type !== 'servicio' && doc._type !== 'categoria') continue
+    if (doc._type !== 'servicio' && doc._type !== 'categoria' && doc._type !== 'proyecto') continue
     const slug = (doc.slug as {current?: string} | undefined)?.current
     for (const problema of problemasDeSlug(slug, {reservados: doc._type === 'categoria'}))
       error(doc, problema)
+    if (doc._type === 'proyecto' && slug && (slugsDeProyectos.get(slug) ?? 0) > 1)
+      error(doc, `la dirección «${slug}» la usa otro proyecto. Elige otra.`)
   }
 
   // 4) Servicios con página construida

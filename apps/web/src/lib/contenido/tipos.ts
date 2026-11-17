@@ -10,8 +10,6 @@ export interface Referencia {
 export interface FotoDoc {
   asset: Referencia;
   alt?: string;
-  decorativa?: boolean;
-  temporal?: boolean;
   hotspot?: { x: number; y: number };
   crop?: { top: number; bottom: number; left: number; right: number };
 }
@@ -147,15 +145,12 @@ export interface ProyectoDoc {
   municipio: string;
   servicios: Referencia[];
   fotos: FotoDoc[];
-  permiso?: boolean;
-  esEjemplo?: boolean;
 }
 
 export interface ClienteDoc {
   _id: string;
   nombre: string;
   logo?: FotoDoc;
-  permiso?: boolean;
 }
 
 export interface GuiaDoc {
@@ -173,7 +168,7 @@ export interface Imagen {
   height: number;
 }
 
-/** Una foto de contenido. `alt` va vacío en las fotos decorativas (el sitio las pinta con `alt=""` y `aria-hidden`). */
+/** Una foto de contenido. `alt` va vacío si no se escribió (el sitio la pinta con `alt=""` y `aria-hidden`). */
 export interface Foto {
   src: Imagen;
   alt: string;

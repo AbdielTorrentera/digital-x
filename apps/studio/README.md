@@ -24,12 +24,12 @@ El acceso es con la cuenta de GitHub del dueño (2FA activa): `pnpm sanity login
   duplican ni borran.
 - `schemaTypes/objetos/`: piezas reutilizables (foto con texto alternativo, SEO, texto con enlaces, bloques…).
 - `estructura.ts`: el menú del Studio. `validaciones.ts`: validaciones que consultan otros documentos. `acciones.ts`: protege «Despublicar» y «Eliminar» de servicios y categorías que el Inicio nombra con marcadores.
-- Las reglas de contenido (longitudes de SEO, vocabulario prohibido, permisos, slugs) viven en
-  `packages/sanity/reglas/` y las usa también el build del sitio, para que lo que el Studio rechaza al capturar sea
-  lo mismo que el build rechaza al compilar.
+- Las reglas técnicas de contenido (slugs, enlaces, marcadores, página construida completa, formatos) viven en
+  `packages/sanity/reglas/` y las usa también el build del sitio. Las reglas de redacción de `docs/` son guía para
+  quien escribe: el Studio no las valida.
 
 ## Datasets
 
 - `production`: lo que lee el sitio. Es **público**: todo lo publicado lo puede leer cualquiera, por eso no se
-  guarda aquí nada privado y reseñas, clientes y proyectos reales no se pueden publicar sin permiso.
+  guarda aquí nada privado, y todo lo publicado se muestra en el sitio.
 - `pruebas`: para ensayar. `pnpm dev` se conecta aquí (ver `.env.development`; son valores públicos, no secretos).

@@ -1,5 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
-import {RUTAS_TAMBIEN, urlDeRedValida} from '@digitalx/sanity/reglas'
+import {RUTAS_TAMBIEN, esHttps} from '@digitalx/sanity/reglas'
 import {avisoDePaginaSinConstruir} from '../../validaciones'
 
 export const pregunta = defineType({
@@ -13,7 +13,7 @@ export const pregunta = defineType({
       type: 'string',
       description:
         'Escríbela como la haría un cliente. Ejemplo: ¿Necesito corriente eléctrica en el lugar?',
-      validation: (Rule) => Rule.required().max(140),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'respuesta',
@@ -37,14 +37,14 @@ export const filaFicha = defineType({
       title: 'Etiqueta',
       type: 'string',
       description: 'Ejemplo: Entrega',
-      validation: (Rule) => Rule.required().max(24),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'valor',
       title: 'Dato',
       type: 'string',
       description: 'Ejemplo: Video editado, tomas sin editar o ambos',
-      validation: (Rule) => Rule.required().max(120),
+      validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {select: {title: 'etiqueta', subtitle: 'valor'}},
@@ -67,7 +67,7 @@ export const relacionadoServicio = defineType({
       title: 'Por qué puede servirte',
       type: 'string',
       description: 'Una frase. Ejemplo: Para que todo el público vea el escenario',
-      validation: (Rule) => Rule.required().max(160),
+      validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {select: {title: 'servicio.nombre', subtitle: 'texto'}},
@@ -83,7 +83,7 @@ export const relacionadoPagina = defineType({
       title: 'Título del enlace',
       type: 'string',
       description: 'Ejemplo: Nuestros proyectos',
-      validation: (Rule) => Rule.required().max(60),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'ruta',
@@ -96,7 +96,7 @@ export const relacionadoPagina = defineType({
       name: 'texto',
       title: 'Frase',
       type: 'string',
-      validation: (Rule) => Rule.required().max(160),
+      validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {select: {title: 'titulo', subtitle: 'texto'}},
@@ -136,14 +136,14 @@ export const cierre = defineType({
       title: 'Título',
       type: 'string',
       description: 'Ejemplo: Cotiza tu evento o proyecto',
-      validation: (Rule) => Rule.required().max(80),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'texto',
       title: 'Texto',
       type: 'text',
       rows: 3,
-      validation: (Rule) => Rule.required().max(300),
+      validation: (Rule) => Rule.required(),
     }),
   ],
 })
@@ -158,14 +158,14 @@ export const cotizacion = defineType({
       title: 'Etiqueta',
       type: 'string',
       description: 'Ejemplo: Cotización',
-      validation: (Rule) => Rule.required().max(30),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'texto',
       title: 'Texto',
       type: 'text',
       rows: 3,
-      validation: (Rule) => Rule.required().max(300),
+      validation: (Rule) => Rule.required(),
     }),
   ],
 })
@@ -180,7 +180,7 @@ export const seccionGaleria = defineType({
       title: 'Título del grupo',
       type: 'string',
       description: 'Ejemplo: Conferencia en Atlixco',
-      validation: (Rule) => Rule.required().max(80),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'fotos',
@@ -225,13 +225,9 @@ export const red = defineType({
       description: 'La dirección completa de tu perfil. Ejemplo: https://www.facebook.com/digitalx',
       validation: (Rule) =>
         Rule.uri({scheme: ['https']}).custom((url, {parent}) => {
-          const {red, activa} = (parent ?? {}) as {red?: string; activa?: boolean}
+          const {activa} = (parent ?? {}) as {activa?: boolean}
           if (!url) return activa ? 'Una red activa necesita su dirección.' : true
-          return (
-            !red ||
-            urlDeRedValida(red, url) ||
-            'Esta dirección no es de esa red: revisa que la copiaste de su perfil.'
-          )
+          return esHttps(url) || 'Debe empezar con https://'
         }),
     }),
     defineField({

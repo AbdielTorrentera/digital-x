@@ -4,11 +4,10 @@
  *
  *   node scripts/descargar-contenido.ts            baja, valida y escribe la instantánea
  *   node scripts/descargar-contenido.ts --dev      igual, pero si no hay red y ya existe una instantánea, la usa
- *   node scripts/descargar-contenido.ts --muestra  además guarda la muestra fija que usan las pruebas
  *
  * Si Sanity no responde o el contenido no pasa la validación, termina con error y el build se detiene: nunca se
  * publica a medias (seguridad §2). `SANITY_DATASET=pruebas` baja otro dataset (solo para desarrollo).
- * `CONTENIDO_JSON=ruta` usa ese archivo en lugar de bajar nada (así compilan las pruebas).
+ * `CONTENIDO_JSON=ruta` usa ese archivo en lugar de bajar nada (así corren las pruebas).
  */
 import { existsSync, mkdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -34,10 +33,7 @@ const TIPOS = [
 ];
 const args = process.argv.slice(2);
 const dev = args.includes('--dev');
-const muestra = args.includes('--muestra');
-const produccion = process.env.VERCEL_ENV === 'production';
 const destino = resolve(process.cwd(), '.contenido/sanity.json');
-const destinoMuestra = resolve(process.cwd(), '../../packages/sanity/muestra/contenido.json');
 
 if (process.env.CONTENIDO_JSON) {
   console.log(`Contenido: se usa ${process.env.CONTENIDO_JSON} (CONTENIDO_JSON); no se baja nada.`);
@@ -114,7 +110,7 @@ try {
   process.exit(1);
 }
 
-const { errores, avisos } = validarContenido(instantanea, { produccion });
+const { errores } = validarContenido(instantanea);
 if (errores.length > 0) {
   console.error(
     `✖ El contenido de Sanity (${dataset}) no pasa las reglas del sitio (${errores.length}):\n${errores.map((e) => `  - ${e}`).join('\n')}\n  Corrígelo en el Studio y vuelve a publicar. El build se detiene; la versión anterior sigue en línea.`,
@@ -122,15 +118,7 @@ if (errores.length > 0) {
   process.exit(1);
 }
 guardar(destino, instantanea);
-if (muestra) {
-  if (dataset !== datasetProduccion) {
-    console.error('La muestra se baja siempre de production.');
-    process.exit(1);
-  }
-  guardar(destinoMuestra, instantanea);
-}
 const asNum = (tipo: string) => instantanea.documentos.filter((d) => d._type === tipo).length;
 console.log(
-  `Contenido de Sanity (${dataset}): ${instantanea.documentos.length} documentos (${asNum('servicio')} servicios, ${asNum('categoria')} categorías, ${asNum('proyecto')} proyectos) y ${Object.keys(instantanea.assets).length} fotos${muestra ? '; muestra de pruebas actualizada' : ''}.`,
+  `Contenido de Sanity (${dataset}): ${instantanea.documentos.length} documentos (${asNum('servicio')} servicios, ${asNum('categoria')} categorías, ${asNum('proyecto')} proyectos) y ${Object.keys(instantanea.assets).length} fotos.`,
 );
-for (const aviso of avisos) console.warn(`  ⚠ ${aviso}`);

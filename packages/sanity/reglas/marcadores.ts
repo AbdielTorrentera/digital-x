@@ -1,3 +1,5 @@
+import {textosDe, type Ruta} from './texto.ts'
+
 // Marcadores en los textos: partes que hoy se arman con datos y que el dueño no debe escribir a mano
 // (por ejemplo, la lista de lugares o los nombres de los servicios). El adaptador del sitio los reemplaza al compilar.
 
@@ -16,11 +18,6 @@ export const MARCADOR_DESCONOCIDO = new RegExp(`\\{(?!(${MARCADORES.join('|')})\
 /** Reemplaza cada marcador por su valor. Los valores salen de `zonas.texto` y de `lib/servicios.lista` (en el sitio). */
 export function resolverMarcadores(texto: string, valores: Record<Marcador, string>): string {
   return MARCADORES.reduce((t, marcador) => t.replaceAll(`{${marcador}}`, valores[marcador]), texto)
-}
-
-/** Lo inverso, para la migración: pone el marcador donde el texto trae el valor tal cual. */
-export function aMarcadores(texto: string, valores: Record<Marcador, string>): string {
-  return MARCADORES.reduce((t, marcador) => t.replaceAll(valores[marcador], `{${marcador}}`), texto)
 }
 
 /** Las categorías (slug) cuyo marcador `{servicios-X}` usan estos textos. */
@@ -48,4 +45,12 @@ export function motivoDeBloqueo(datos: {
   if (!datos.categoriasEnElInicio.includes(datos.categoria)) return null
   if (datos.serviciosRestantes + datos.sinPagina > 0) return null
   return `El Inicio nombra los servicios de ${datos.categoria} con {servicios-${datos.categoria}} y no quedaría ninguno. Quita ese marcador del Inicio primero.`
+}
+
+/** Cada `{algo}` que no es un marcador conocido, con la ruta del campo donde está. */
+export function marcadoresDesconocidos(doc: unknown): {ruta: Ruta; marcador: string}[] {
+  const global = new RegExp(MARCADOR_DESCONOCIDO.source, 'g')
+  return [...textosDe(doc)].flatMap((t) =>
+    [...t.texto.matchAll(global)].map((m) => ({ruta: t.ruta, marcador: m[0]})),
+  )
 }

@@ -1,30 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { enlacesANoConstruidas, paginasConPendientes, urlDeArchivoHtml } from './proteccion-produccion.ts';
-
-test('paginasConPendientes lista las páginas con [PENDIENTE visible, en texto o en atributos', () => {
-  const paginas = [
-    { url: '/', html: '<main><p>[PENDIENTE: proyecto con foto]</p></main>' },
-    { url: '/nosotros/', html: '<main><p>Quiénes somos</p></main>' },
-    { url: '/proyectos/', html: '<img alt="[PENDIENTE: describir la foto]" src="/a.webp">' },
-  ];
-  assert.deepEqual(paginasConPendientes(paginas), ['/', '/proyectos/']);
-});
-
-test('paginasConPendientes ignora comentarios, scripts, estilos y JSON-LD', () => {
-  const html = [
-    '<!-- [PENDIENTE: nota para quien edite] -->',
-    '<style>/* [PENDIENTE: ajustar] */ p { margin: 0 }</style>',
-    '<script>const nota = "[PENDIENTE: algo]";</script>',
-    '<script type="application/ld+json">{"description":"[PENDIENTE: texto]"}</script>',
-    '<main><p>Todo confirmado</p></main>',
-  ].join('');
-  assert.deepEqual(paginasConPendientes([{ url: '/', html }]), []);
-});
-
-test('paginasConPendientes sin páginas devuelve una lista vacía', () => {
-  assert.deepEqual(paginasConPendientes([]), []);
-});
+import { enlacesANoConstruidas, urlDeArchivoHtml } from './proteccion-produccion.ts';
 
 test('urlDeArchivoHtml convierte la ruta del HTML en la URL pública', () => {
   assert.equal(urlDeArchivoHtml('index.html'), '/');

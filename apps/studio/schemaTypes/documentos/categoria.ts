@@ -24,7 +24,7 @@ export const categoria = defineType({
       type: 'string',
       group: 'contenido',
       description: 'Cómo se llama la categoría en el menú, el pie y las etiquetas. Ejemplo: Video',
-      validation: (Rule) => Rule.required().max(24),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -55,7 +55,7 @@ export const categoria = defineType({
       group: 'contenido',
       description:
         'Se usa en el pie de página y en los datos para Google. Ejemplo: Servicios de video',
-      validation: (Rule) => Rule.required().max(60),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'para',
@@ -65,7 +65,7 @@ export const categoria = defineType({
       group: 'contenido',
       description:
         'Una frase de para quién es. Ejemplo: Para quienes organizan fiestas, conferencias, eventos culturales y cultos, con personal técnico de principio a fin.',
-      validation: (Rule) => Rule.required().max(200),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'sinPagina',
@@ -83,10 +83,7 @@ export const categoria = defineType({
       group: 'contenido',
       description:
         'Menciona la categoría y Puebla. Ejemplo: Servicios de video para eventos y negocios en Puebla',
-      validation: (Rule) =>
-        Rule.required()
-          .max(90)
-          .custom((h1) => !h1 || /Puebla/.test(h1) || 'El título principal debe mencionar Puebla.'),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'intro',
@@ -96,7 +93,7 @@ export const categoria = defineType({
       group: 'contenido',
       description:
         'El párrafo bajo el título. Menciona las zonas y no repite oraciones de las páginas de sus servicios.',
-      validation: (Rule) => Rule.required().max(500),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'cierre',
@@ -127,11 +124,9 @@ export const categoria = defineType({
       type: 'array',
       group: 'preguntas',
       of: [defineArrayMember({type: 'reference', to: [{type: 'cliente'}], weak: true})],
-      description:
-        'Elige clientes ya creados en «Clientes». Solo se muestran los que tienen permiso y están publicados.',
+      description: 'Elige clientes ya creados en «Clientes». Se muestran los que están publicados.',
     }),
     campoSeo({
-      servicio: true,
       ejemploTitle: 'Servicios de video en Puebla y Atlixco | Digital X',
       ejemploMeta:
         'Circuito cerrado para eventos, producción de videos, streaming, video con drone y recorridos 360 en Puebla y Atlixco. Cotiza por WhatsApp.',

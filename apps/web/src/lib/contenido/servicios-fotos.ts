@@ -26,5 +26,5 @@ export const fotos: Record<Slug, FotoDeServicio> = Object.fromEntries(
   ]),
 );
 
-/** Foto de fondo del cierre de contacto (decorativa: va con `alt=""`). */
+/** Foto de fondo del cierre de contacto (va con `alt=""`). */
 export const fotoCierre: Imagen = aImagen(configuracion.fotoCierre);

@@ -63,10 +63,9 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
    - **Prohibido** `set:html` (o equivalentes) con contenido que venga de Sanity o de cualquier fuente externa.
    - Los enlaces que vienen del contenido solo aceptan `https:`, `mailto:`, `tel:` y rutas internas. Cualquier otro protocolo (`javascript:`, `data:`) se descarta. Se valida en el esquema de Sanity **y** al mostrarlo.
    - Los enlaces externos llevan `rel="noopener noreferrer"`.
-4. Los esquemas de Sanity validan campos obligatorios, longitudes máximas y formatos (URL, slug), para que un error de captura no rompa una página.
+4. Los esquemas de Sanity validan los campos obligatorios y los formatos (URL, slug), para que un error de captura no rompa una página. Las longitudes y el vocabulario son guía de redacción, no validaciones.
 5. Imágenes: antes de subirlas se les quitan los **metadatos de ubicación (GPS/EXIF)**. En Sanity no se activan los metadatos `exif` ni `location`. Lo mismo para videos.
-6. **Permiso obligatorio para publicar.** Como el dataset es público, un documento publicado lo puede leer cualquiera. Por eso reseñas, clientes y proyectos reales **no se pueden publicar sin `permiso: true`**: el esquema lo valida como error (no como aviso) y, sin permiso, el documento se queda en borrador, que no es público. La única excepción son los proyectos marcados `esEjemplo` (ficticios). El comprobante del permiso no se guarda en Sanity. El build repite la comprobación y falla si le llega un documento publicado sin permiso, y antes de cada lanzamiento se consulta el dataset **sin token** y estas consultas deben dar 0: `*[_type=="resena" && permiso!=true]`, `*[_type=="cliente" && permiso!=true]` y `*[_type=="proyecto" && permiso!=true && esEjemplo!=true]`.
-7. **Vocabulario y datos.** Los esquemas rechazan, al capturar, las palabras que el sitio no puede decir (vigilancia, proyector, precios sin confirmar, marcas, etc.; ver estructura §7) con las reglas de `packages/sanity/reglas/`, las mismas que repite el build.
+6. **Todo lo publicado se muestra.** Como el dataset es público, un documento publicado lo puede leer cualquiera y el sitio lo muestra. Antes de publicar, el dueño confirma que tiene el permiso de quien aparece (cliente, reseña, proyecto); el sitio no lo valida y el comprobante del permiso no se guarda en Sanity.
 
 ---
 

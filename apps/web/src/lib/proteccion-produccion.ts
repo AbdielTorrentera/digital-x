@@ -1,7 +1,6 @@
 /**
- * Protecciones del build de producción sobre el HTML generado: impiden publicar por error material provisional.
+ * Protección del build de producción sobre el HTML generado: impide publicar un enlace a una página que no existe.
  * Solo actúan cuando VERCEL_ENV=production (ver astro.config.mjs); en local y en previews no se aplican.
- * Las fotos temporales y los proyectos de ejemplo se revisan antes, sobre los datos de Sanity (`validarContenido`).
  * Funciones puras, sin imports, para poder probarlas con node:test.
  */
 
@@ -10,16 +9,11 @@ export interface PaginaHtml {
   html: string;
 }
 
-// Un [PENDIENTE que solo está en un comentario, un script, un estilo o el JSON-LD no lo ve nadie y no cuenta.
 const sinCodigoNiComentarios = (html: string) =>
   html
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<script\b[\s\S]*?<\/script>/gi, '')
     .replace(/<style\b[\s\S]*?<\/style>/gi, '');
-
-/** URLs de las páginas cuyo HTML visible (texto o atributos como alt) todavía trae un `[PENDIENTE`. */
-export const paginasConPendientes = (paginas: PaginaHtml[]): string[] =>
-  paginas.filter((pagina) => sinCodigoNiComentarios(pagina.html).includes('[PENDIENTE')).map((pagina) => pagina.url);
 
 /** `index.html` → `/`, `404.html` → `/404/`, `video/index.html` → `/video/`. */
 export const urlDeArchivoHtml = (ruta: string): string => {

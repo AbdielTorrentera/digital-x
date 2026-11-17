@@ -1,26 +1,18 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
-import {problemaDePermiso, slugificar} from '@digitalx/sanity/reglas'
-import {campoSeo, esEjemplo} from '../campos'
-import {vocabulario} from '../../validaciones'
-
-// Un proyecto real lleva todo su caso; uno de ejemplo (ficticio) solo lo básico.
-const obligatorioSalvoEjemplo =
-  (nombre: string) => (valor: unknown, contexto: {document?: {[campo: string]: unknown}}) =>
-    valor || esEjemplo(contexto.document) ? true : `Falta ${nombre}.`
+import {slugificar} from '@digitalx/sanity/reglas'
+import {campoSeo} from '../campos'
 
 export const proyecto = defineType({
   name: 'proyecto',
   title: 'Proyecto',
   type: 'document',
   description:
-    'Un trabajo real de Digital X, con su reto, solución y resultado. Solo se publica con el permiso del cliente. Los proyectos de ejemplo (ficticios) bloquean la publicación del sitio.',
+    'Un trabajo real de Digital X, con su reto, solución y resultado. Todo lo publicado aquí se muestra en el sitio.',
   groups: [
     {name: 'caso', title: 'El caso', default: true},
     {name: 'fotos', title: 'Fotos'},
-    {name: 'permiso', title: 'Permiso y estado'},
     {name: 'seo', title: 'Google'},
   ],
-  validation: vocabulario,
   orderings: [
     {title: 'Orden', name: 'orden', by: [{field: 'orden', direction: 'asc'}]},
     {title: 'Más recientes primero', name: 'fecha', by: [{field: 'fecha', direction: 'desc'}]},
@@ -33,7 +25,7 @@ export const proyecto = defineType({
       group: 'caso',
       description:
         'Servicio + tipo de trabajo + lugar. Ejemplo: Audio para evento cultural en Atlixco',
-      validation: (Rule) => Rule.required().max(90),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -53,7 +45,7 @@ export const proyecto = defineType({
       group: 'caso',
       description:
         'Una o dos frases que se ven en la tarjeta y en el listado. Ejemplo: Sonido y pantallas para una conferencia con más de un salón.',
-      validation: (Rule) => Rule.required().max(200),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'reto',
@@ -61,7 +53,6 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
-      validation: (Rule) => Rule.max(600).custom(obligatorioSalvoEjemplo('el reto')),
     }),
     defineField({
       name: 'solucion',
@@ -69,7 +60,6 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
-      validation: (Rule) => Rule.max(600).custom(obligatorioSalvoEjemplo('la solución')),
     }),
     defineField({
       name: 'resultado',
@@ -77,7 +67,6 @@ export const proyecto = defineType({
       type: 'text',
       rows: 4,
       group: 'caso',
-      validation: (Rule) => Rule.max(600).custom(obligatorioSalvoEjemplo('el resultado')),
     }),
     defineField({
       name: 'servicios',
@@ -94,14 +83,13 @@ export const proyecto = defineType({
       type: 'string',
       group: 'caso',
       description: 'Solo si el trabajo se hizo ahí. Ejemplo: Atlixco',
-      validation: (Rule) => Rule.required().max(60),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'fecha',
       title: 'Fecha del trabajo',
       type: 'date',
       group: 'caso',
-      validation: (Rule) => Rule.custom(obligatorioSalvoEjemplo('la fecha')),
     }),
     defineField({
       name: 'orden',
@@ -120,7 +108,7 @@ export const proyecto = defineType({
       weak: true,
       group: 'caso',
       description:
-        'Opcional. Solo si el cliente ya está en «Clientes» con permiso. Los casos de software pueden ir anónimos.',
+        'Opcional. Solo si el cliente ya está en «Clientes». Los casos de software pueden ir anónimos.',
     }),
     defineField({
       name: 'fotos',
@@ -128,38 +116,8 @@ export const proyecto = defineType({
       type: 'array',
       group: 'fotos',
       of: [defineArrayMember({type: 'foto'})],
-      description:
-        'La primera es la portada del proyecto. Todas con su texto alternativo. Solo fotos reales del trabajo y con permiso.',
+      description: 'La primera es la portada del proyecto. Solo fotos reales del trabajo.',
       validation: (Rule) => Rule.required().min(1),
-    }),
-    defineField({
-      name: 'permiso',
-      title: 'El cliente me dio permiso para publicarlo',
-      type: 'boolean',
-      group: 'permiso',
-      initialValue: false,
-      description:
-        'Obligatorio para publicar un proyecto real. Lo publicado aquí lo puede leer cualquiera. El comprobante del permiso no se guarda en Sanity: guárdalo aparte.',
-      validation: (Rule) =>
-        Rule.custom(
-          (permiso, {document}) =>
-            problemaDePermiso({...(document as object), permiso, _type: 'proyecto'}) ?? true,
-        ),
-    }),
-    defineField({
-      name: 'esEjemplo',
-      title: 'Es un proyecto de ejemplo (ficticio)',
-      type: 'boolean',
-      group: 'permiso',
-      initialValue: false,
-      description:
-        'Márcalo si el proyecto es inventado, solo para mostrar cómo se vería. Se muestra con la etiqueta EJEMPLO, no necesita permiso y bloquea la publicación del sitio: reemplázalo por uno real.',
-      validation: (Rule) =>
-        Rule.custom((valor) =>
-          valor
-            ? 'Proyecto de ejemplo: bloquea la publicación del sitio hasta que lo reemplaces por uno real.'
-            : true,
-        ).warning(),
     }),
     campoSeo({
       obligatorio: false,
@@ -170,17 +128,6 @@ export const proyecto = defineType({
     }),
   ],
   preview: {
-    select: {
-      title: 'titulo',
-      municipio: 'municipio',
-      media: 'fotos.0',
-      ejemplo: 'esEjemplo',
-      permiso: 'permiso',
-    },
-    prepare: ({title, municipio, media, ejemplo, permiso}) => ({
-      title,
-      subtitle: `${municipio ?? ''} · ${ejemplo ? 'EJEMPLO' : permiso ? 'Con permiso' : 'Sin permiso (borrador)'}`,
-      media,
-    }),
+    select: {title: 'titulo', subtitle: 'municipio', media: 'fotos.0'},
   },
 })

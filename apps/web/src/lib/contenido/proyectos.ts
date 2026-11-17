@@ -1,5 +1,4 @@
-// Los proyectos publicados en Sanity, con la forma que usan las secciones de proyectos. Los de ejemplo (`placeholder`)
-// se ven con la etiqueta EJEMPLO y bloquean el build de producción (`validarContenido`).
+// Los proyectos publicados en Sanity, con la forma que usan las secciones de proyectos.
 import { aFoto } from './imagenes.ts';
 import { documentosDe } from './instantanea.ts';
 import type { Foto, ProyectoDoc, ServicioDoc } from './tipos.ts';
@@ -11,8 +10,6 @@ export interface Proyecto {
   servicios: string[];
   foto: Foto;
   texto: string;
-  permiso: boolean;
-  placeholder: boolean;
 }
 
 const nombreDeServicio = (id: string) => {
@@ -38,6 +35,4 @@ export const proyectos: Proyecto[] = documentosDe<ProyectoDoc & { orden?: number
     servicios: p.servicios.map((s) => nombreDeServicio(s._ref)),
     foto: aFoto(p.fotos[0]),
     texto: p.resumen,
-    permiso: p.permiso === true,
-    placeholder: p.esEjemplo === true,
   }));

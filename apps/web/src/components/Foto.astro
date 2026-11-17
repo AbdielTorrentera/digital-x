@@ -1,12 +1,13 @@
 ---
 import { Picture } from 'astro:assets';
 import type { Imagen } from '../lib/contenido/tipos';
+import { atributosDeAlt } from '../lib/contenido/imagenes';
 
 // Foto de contenido (reglas-seo sección 6): <img> con alt, width y height, en AVIF o WebP (nunca JPEG ni PNG),
 // con varios anchos y `sizes` para que el celular baje la versión chica. Solo la foto de la primera pantalla
 // (`prioritaria`) carga de inmediato y con prioridad alta; todas las demás son lazy.
-// La imagen viene del CDN de Sanity: Astro la baja al compilar y la sirve desde el propio sitio. Una foto decorativa
-// (alt vacío) se pinta con `alt=""` y `aria-hidden="true"`: los lectores de pantalla la saltan.
+// La imagen viene del CDN de Sanity: Astro la baja al compilar y la sirve desde el propio sitio. Una foto sin texto
+// alternativo (alt vacío) se pinta con `alt=""` y `aria-hidden="true"`: los lectores de pantalla la saltan.
 interface Props {
   src: Imagen;
   alt: string;
@@ -33,8 +34,7 @@ const {
   src={src.src}
   width={src.width}
   height={src.height}
-  alt={alt}
-  aria-hidden={alt === '' ? 'true' : undefined}
+  {...atributosDeAlt(alt)}
   style={posicion ? `object-position: ${posicion}` : undefined}
   sizes={sizes}
   widths={widths}

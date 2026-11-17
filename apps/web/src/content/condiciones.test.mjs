@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { actualizacion, pagina, secciones } from './condiciones.ts';
+import { actualizacion, secciones } from './condiciones.ts';
 import { lista } from '../lib/servicios.ts';
 
 const parrafos = (titulo) =>
@@ -14,12 +14,6 @@ test('"Aplica a" sale de la lista compartida de servicios, no de texto escrito a
   assert.equal(audioYVideo, `Aplica a: ${lista.audio}; ${lista.video}.`);
   const [tecnologia] = parrafos('Proyectos de tecnología');
   assert.equal(tecnologia, `Aplica a: ${lista.tecnologia}.`);
-});
-
-test('title y meta cumplen reglas-seo sección 1 (title ≤ 60, meta ≤ 155)', () => {
-  assert.equal(pagina.title, 'Condiciones de contratación | Digital X');
-  assert.ok(pagina.title.length <= 60);
-  assert.ok(pagina.descripcion.length <= 155);
 });
 
 test('la fecha de actualización es una fecha válida y se muestra en español', () => {

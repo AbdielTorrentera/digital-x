@@ -10,11 +10,10 @@
     "dev": "node scripts/descargar-contenido.ts --dev && astro dev",
     "build": "node scripts/descargar-contenido.ts && astro build",
     "preview": "astro preview",
-    "check": "CONTENIDO_JSON=../../packages/sanity/muestra/contenido.json astro check",
-    "test": "CONTENIDO_JSON=../../packages/sanity/muestra/contenido.json node --test \"src/**/*.test.mjs\"",
+    "check": "CONTENIDO_JSON=src/lib/contenido/pruebas/contenido.json astro check",
+    "test": "CONTENIDO_JSON=src/lib/contenido/pruebas/contenido.json node --test \"src/**/*.test.mjs\"",
     "check:enlaces": "node scripts/revisar-enlaces.mjs",
-    "contenido:descargar": "node scripts/descargar-contenido.ts",
-    "contenido:muestra": "node scripts/descargar-contenido.ts --muestra"
+    "contenido:descargar": "node scripts/descargar-contenido.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

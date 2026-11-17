@@ -24,7 +24,3 @@ export const categoriasConDestino = (): CategoriaConDestino[] =>
         : { categoria, href, directo: false },
     ];
   });
-
-/** Los clientes que se pueden mostrar: solo los que autorizaron (`permiso: true`). Nunca se inventan clientes. */
-export const clientesConPermiso = <T extends { permiso: boolean }>(clientes: T[]): T[] =>
-  clientes.filter((cliente) => cliente.permiso === true);

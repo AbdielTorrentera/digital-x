@@ -32,7 +32,7 @@ export const distingue = {
 
 export const manifiesto = {
   titulo: doc.manifiesto.titulo,
-  /** Fondo decorativo: solo la imagen (el componente la pinta con `alt=""`). */
+  /** Fondo: solo la imagen (el componente la pinta con `alt=""`). */
   foto: aImagen(doc.fotoManifiesto),
   items: doc.manifiesto.items.map(({ titulo, texto }) => ({ titulo, texto })),
 };

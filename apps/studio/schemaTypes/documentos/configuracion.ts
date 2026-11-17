@@ -1,7 +1,6 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {esHttps} from '@digitalx/sanity/reglas'
 import {campoFoto} from '../campos'
-import {vocabulario} from '../../validaciones'
 
 export const configuracion = defineType({
   name: 'configuracion',
@@ -16,7 +15,6 @@ export const configuracion = defineType({
     {name: 'cobertura', title: 'Cobertura'},
     {name: 'fotos', title: 'Fotos generales'},
   ],
-  validation: vocabulario,
   fields: [
     defineField({
       name: 'telefono',
@@ -72,7 +70,7 @@ export const configuracion = defineType({
       group: 'whatsapp',
       description:
         'El texto que ya viene escrito cuando alguien abre el chat desde el Inicio, las categorías y los botones sin servicio. Deja huecos con __ para que el cliente los llene. Ejemplo: Hola, estoy interesado en una cotización. Servicio: __ Fecha: __ Lugar: __',
-      validation: (Rule) => Rule.required().max(300),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'redes',
@@ -82,14 +80,6 @@ export const configuracion = defineType({
       of: [defineArrayMember({type: 'red'})],
       description:
         'Agrega una por red. Solo se muestran las que estén activas y tengan su dirección. Nunca se muestran enlaces vacíos.',
-      validation: (Rule) =>
-        Rule.custom((redes?: {red?: string}[]) => {
-          const nombres = (redes ?? []).map((r) => r.red)
-          return (
-            new Set(nombres).size === nombres.length ||
-            'Hay una red repetida: deja solo una por red.'
-          )
-        }),
     }),
     defineField({
       name: 'enlaceResena',
@@ -110,8 +100,8 @@ export const configuracion = defineType({
       group: 'cobertura',
       of: [defineArrayMember({type: 'string'})],
       description:
-        'Una por línea, en el orden en que quieres que se lean. Se usan en los textos, el pie y los datos para Google. Escribe solo los lugares confirmados (máximo 6); «y alrededores» se agrega solo. Ejemplo: Atlixco',
-      validation: (Rule) => Rule.required().min(1).max(6).unique(),
+        'Una por línea, en el orden en que quieres que se lean. Se usan en los textos, el pie y los datos para Google. Escribe solo los lugares confirmados; «y alrededores» se agrega solo. Ejemplo: Atlixco',
+      validation: (Rule) => Rule.required().min(1),
     }),
     campoFoto({
       name: 'fotoCierre',

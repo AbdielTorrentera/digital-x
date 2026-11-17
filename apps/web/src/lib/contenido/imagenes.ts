@@ -30,10 +30,10 @@ const PALABRAS_VACIAS = new Set([
 
 /**
  * El nombre con el que se publica el archivo (reglas-seo §6): descriptivo, sacado del texto alternativo. Una foto
- * decorativa no tiene alt y conserva el nombre del archivo subido. Va al final de la URL del CDN (*vanity filename*).
+ * sin alt conserva el nombre del archivo subido. Va al final de la URL del CDN (*vanity filename*).
  */
 export const nombreDeArchivo = (foto: FotoDoc, nombreOriginal?: string): string => {
-  const base = foto.decorativa || !foto.alt?.trim() ? (nombreOriginal ?? '').replace(/\.[^.]+$/, '') : foto.alt;
+  const base = !foto.alt?.trim() ? (nombreOriginal ?? '').replace(/\.[^.]+$/, '') : foto.alt;
   // Se corta en una palabra completa (en el último guion antes del límite), no a media palabra, y no queda terminando
   // en una palabra vacía ("…-de-un", "…-con-codigo-en").
   const completo = slugificar(base, 200);
@@ -72,10 +72,10 @@ export const aImagen = (foto: FotoDoc): Imagen => {
   return { src: `${archivo.url}/${nombre}.${archivo.extension}${consulta}`, width, height };
 };
 
-/** Una foto de contenido: la imagen, su texto alternativo (vacío si es decorativa) y su punto de interés. */
+/** Una foto de contenido: la imagen, su texto alternativo (vacío si no se escribió) y su punto de interés. */
 export const aFoto = (foto: FotoDoc): Foto => ({
   src: aImagen(foto),
-  alt: foto.decorativa ? '' : (foto.alt ?? ''),
+  alt: foto.alt?.trim() ?? '',
   ...(foto.hotspot ? { posicion: `${Math.round(foto.hotspot.x * 100)}% ${Math.round(foto.hotspot.y * 100)}%` } : {}),
 });
 
@@ -84,3 +84,10 @@ export const aImagenCompartir = (foto: FotoDoc): string => {
   const archivo = asset(foto.asset._ref);
   return `${archivo.url}/${nombreDeArchivo(foto, archivo.originalFilename)}.${archivo.extension}?w=1200&h=630&fit=crop`;
 };
+
+/**
+ * Los atributos de alt de una foto: con texto, `alt` normal; sin texto, `alt=""` y `aria-hidden="true"` para que los
+ * lectores de pantalla la salten.
+ */
+export const atributosDeAlt = (alt: string): { alt: string; 'aria-hidden'?: 'true' } =>
+  alt.trim() === '' ? { alt: '', 'aria-hidden': 'true' } : { alt };

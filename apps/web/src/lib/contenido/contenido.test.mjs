@@ -1,6 +1,5 @@
-// Pruebas del adaptador: la muestra de Sanity (`packages/sanity/muestra/contenido.json`, la que cargan `pnpm test` y
-// `pnpm check` con CONTENIDO_JSON) se convierte en las formas que reciben los componentes. No se fijan textos: eso lo
-// revisan las reglas de `packages/sanity` en el Studio y en el build.
+// Pruebas del adaptador: la instantánea sintética (`lib/contenido/pruebas/contenido.json`, la que cargan `pnpm test` y
+// `pnpm check` con CONTENIDO_JSON) se convierte en las formas que reciben los componentes. No se fijan textos.
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -9,7 +8,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { categorias, guia } from './categorias.ts';
 import { cierre, cobertura, faq, porQue, portada, queHacemos } from './inicio.ts';
-import { aFoto, aImagen, nombreDeArchivo } from './imagenes.ts';
+import { aFoto, aImagen, atributosDeAlt, nombreDeArchivo } from './imagenes.ts';
 import { cierre as cierreNosotros, manifiesto, proyectosPagina } from './nosotros.ts';
 import { proyectos } from './proyectos.ts';
 import { faltantesDePagina, registroDeServicios, servicios, slugs } from './servicios.ts';
@@ -18,9 +17,7 @@ import { aTexto } from './texto.ts';
 import { negocio, zonas } from '../negocio.ts';
 import { destinoDeCategoria, menu, paginas, urlsSinConstruir } from '../paginas.ts';
 
-const muestra = JSON.parse(
-  readFileSync(new URL('../../../../../packages/sanity/muestra/contenido.json', import.meta.url), 'utf8'),
-);
+const muestra = JSON.parse(readFileSync(new URL('./pruebas/contenido.json', import.meta.url), 'utf8'));
 const bloque = (texto, marks = [], defs = []) => [
   { _type: 'block', markDefs: defs, children: [{ text: texto, marks }] },
 ];
@@ -46,7 +43,7 @@ test('la URL de cada servicio se deriva de su categoría y las páginas siguen a
   assert.equal(destinoDeCategoria('audio'), `/audio/${registroDeServicios.find((s) => s.categoria === 'audio').slug}/`);
   assert.equal(destinoDeCategoria('video'), '/video/');
   assert.ok(menu.some((m) => m.url === '/video/'));
-  assert.deepEqual(urlsSinConstruir, ['/proyectos/']);
+  assert.deepEqual(urlsSinConstruir, ['/tecnologia/paginas-web/', '/proyectos/']);
 });
 
 test('el texto con enlaces vuelve a la forma string | TextoConEnlaces (los servicios por su slug)', () => {
@@ -92,7 +89,7 @@ test('los marcadores del Inicio se reemplazan con las zonas y los servicios publ
   assert.ok(textos.includes(zonas.texto));
 });
 
-test('las fotos: nombre descriptivo desde el alt, decorativas con alt vacío y tamaño del CDN', () => {
+test('las fotos: nombre descriptivo desde el alt, alt vacío si no se escribió y tamaño del CDN', () => {
   const foto = fotos[slugs[0]];
   assert.ok(foto.alt.length >= 5);
   assert.match(
@@ -119,13 +116,28 @@ test('las fotos: nombre descriptivo desde el alt, decorativas con alt vacío y t
     'salon-para-eventos-con-escenario',
     'sin cortar no se toca',
   );
-  assert.equal(nombreDeArchivo({ decorativa: true, alt: 'no se usa' }, 'temporal-fondo.jpg'), 'temporal-fondo');
-  // Las fotos de fondo (decorativas) llegan como imagen suelta, sin alt.
+  assert.equal(
+    nombreDeArchivo({ alt: '  ' }, 'fondo-original.jpg'),
+    'fondo-original',
+    'sin alt conserva el nombre del archivo',
+  );
+  // Las fotos de fondo llegan como imagen suelta, sin alt.
   for (const imagen of [fotoCierre, manifiesto.foto, proyectosPagina.foto, cierreNosotros.foto]) {
     assert.equal(typeof imagen.src, 'string');
     assert.ok(imagen.width > 0);
   }
   assert.equal(aFoto(muestra.documentos.find((d) => d._id === 'nosotros').fotoManifiesto).alt, '');
+});
+
+test('un alt vacío se pinta con alt="" y aria-hidden; con texto, normal', () => {
+  const id = Object.keys(muestra.assets)[0];
+  const sinAlt = aFoto({ asset: { _ref: id } });
+  assert.equal(sinAlt.alt, '');
+  assert.deepEqual(atributosDeAlt(sinAlt.alt), { alt: '', 'aria-hidden': 'true' });
+  assert.deepEqual(atributosDeAlt('   '), { alt: '', 'aria-hidden': 'true' });
+  const conAlt = aFoto({ asset: { _ref: id }, alt: 'Pantalla en un salón' });
+  assert.deepEqual(atributosDeAlt(conAlt.alt), { alt: 'Pantalla en un salón' });
+  assert.ok(!('aria-hidden' in atributosDeAlt(conAlt.alt)));
 });
 
 test('el recorte y el ancho máximo del CDN se calculan sobre la foto original', () => {
@@ -143,7 +155,7 @@ test('el recorte y el ancho máximo del CDN se calculan sobre la foto original',
   assert.equal(aFoto({ asset: { _ref: id }, alt: 'x', hotspot: { x: 0.25, y: 0.75 } }).posicion, '25% 75%');
 });
 
-test('los proyectos traen foto, servicios por nombre y la marca de ejemplo', () => {
+test('los proyectos traen foto y servicios por nombre', () => {
   assert.ok(proyectos.length > 0);
   for (const p of proyectos) {
     assert.ok(p.titulo && p.municipio && p.texto && p.foto.src.src);
@@ -151,10 +163,6 @@ test('los proyectos traen foto, servicios por nombre y la marca de ejemplo', () 
       p.servicios.length > 0 && p.servicios.every((nombre) => registroDeServicios.some((s) => s.titulo === nombre)),
     );
   }
-  assert.ok(
-    proyectos.every((p) => p.placeholder === true && p.permiso === false),
-    'hoy todos son de ejemplo',
-  );
 });
 
 test('el negocio sale de la configuración y las secciones del Inicio traen sus datos', () => {

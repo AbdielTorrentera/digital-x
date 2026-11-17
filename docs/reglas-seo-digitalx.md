@@ -8,7 +8,7 @@ Versión: borrador de trabajo · 2026-10-23
 ## 0. Instrucciones para el agente (leer primero)
 
 1. Lee primero `estructura-sitio-digitalx.md`. Las URLs y las páginas permitidas salen de ahí.
-2. Estas reglas son **obligatorias** salvo las marcadas como *propuesta* o `[PENDIENTE]`.
+2. Estas reglas son **obligatorias para redactar**, salvo las marcadas como *propuesta* o `[PENDIENTE]`. Son guía para quien escribe: **no son validaciones** del Studio ni del build, ni se convierten en pruebas o guardas sin que el dueño lo pida.
 3. **No inventes**: marcas, cifras, clientes, reseñas, direcciones, coordenadas, certificaciones, permisos ni casos. Si falta un dato, deja `[PENDIENTE: ...]` y repórtalo.
 4. **No agregues** páginas, ciudades, palabras clave ni secciones fuera de lo definido. Si crees que falta algo, propónlo al final de tu reporte; no lo implementes.
 5. Los metadatos de cada página se definen **página por página** con el dueño. Mientras no estén en la sección 1, deja `[PENDIENTE: SEO de esta página]`.
@@ -171,7 +171,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
 ### Texto alternativo (`alt`)
 - Obligatorio en toda imagen de contenido. Describe lo que se ve, con servicio y lugar cuando aplique.
   Ejemplo: `Pantalla de circuito cerrado en conferencia en Atlixco`.
-- Imágenes decorativas: `alt=""`. En Sanity son las fotos con la casilla «Foto decorativa» (no llevan `alt` y el sitio las pinta con `alt=""` y `aria-hidden="true"`); todas las demás exigen `alt` de 5 a 125 caracteres.
+- Imágenes decorativas: `alt=""`. En Sanity el `alt` es opcional: si está vacío, el sitio pinta la foto con `alt=""` y `aria-hidden="true"`; con `alt`, la pinta normal. Al redactar, toda foto que aporte información lleva su `alt` descriptivo (guía de redacción, no validación).
 
 ### Formato y carga
 - Imágenes en **WebP o AVIF**. No usar PNG para fotos.

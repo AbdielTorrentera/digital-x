@@ -101,14 +101,14 @@ export const seccion = defineType({
       title: 'Título de la sección',
       type: 'string',
       description: 'El título grande de la sección. Ejemplo: De qué depende el precio',
-      validation: (Rule) => Rule.required().max(90),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'etiqueta',
       title: 'Nombre en el menú de la página',
       type: 'string',
       description: 'La palabra corta que aparece en el menú interno de la página. Ejemplo: Precio',
-      validation: (Rule) => Rule.required().max(30),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'id',

@@ -9,7 +9,7 @@ test('una página construida se enlaza', () => {
 
 test('una página en lanzamiento se enlaza aunque todavía no esté construida', () => {
   assert.equal(enlaceAPagina('/video/video-con-drone/'), '/video/video-con-drone/');
-  assert.equal(esPaginaPlaneada('/tecnologia/tienda-en-linea/'), true);
+  assert.equal(esPaginaPlaneada('/tecnologia/paginas-web/'), true);
 });
 
 test('una página pendiente de material nunca se enlaza, aunque esté en el registro', () => {
@@ -69,6 +69,6 @@ test('nada en src/ ni en el contenido de Sanity apunta a /servicios/: los servic
     }
   }
   assert.ok(revisados > 40, `solo se revisaron ${revisados} archivos`);
-  const datos = readFileSync(new URL('../../../../packages/sanity/muestra/contenido.json', import.meta.url), 'utf8');
+  const datos = readFileSync(new URL('./contenido/pruebas/contenido.json', import.meta.url), 'utf8');
   assert.ok(!datos.includes('/servicios/'), 'el contenido de Sanity enlaza a /servicios/');
 });

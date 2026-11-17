@@ -9,23 +9,23 @@ const GRUPOS = [
 ]
 
 // Los campos de los objetos (queHacemos, hitos…) no llevan `group`: el grupo es del campo de primer nivel.
-const texto = (name: string, title: string, description: string, max: number) =>
+const texto = (name: string, title: string, description: string) =>
   defineField({
     name,
     title,
     type: 'string',
     description,
-    validation: (Rule) => Rule.required().max(max),
+    validation: (Rule) => Rule.required(),
   })
 
-const parrafo = (name: string, title: string, description: string, max = 400) =>
+const parrafo = (name: string, title: string, description: string) =>
   defineField({
     name,
     title,
     type: 'text',
     rows: 3,
     description,
-    validation: (Rule) => Rule.required().max(max),
+    validation: (Rule) => Rule.required(),
   })
 
 export const inicio = defineType({
@@ -42,7 +42,7 @@ export const inicio = defineType({
       group: 'contenido',
       description:
         'El título grande de la portada. Es el único H1 de la página. Menciona el servicio y la ciudad. Ejemplo: Audio, video y tecnología para tus eventos y tu negocio en Puebla',
-      validation: (Rule) => Rule.required().max(90),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'queHacemos',
@@ -53,19 +53,13 @@ export const inicio = defineType({
       description:
         'La sección con foto debajo de la portada. Su texto no puede repetirse en ninguna otra página.',
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Digital X', 30),
-        texto('titulo', 'Título', 'Ejemplo: Qué hacemos', 60),
-        parrafo(
-          'texto',
-          'Texto',
-          'El texto aprobado de la sección. No lleva cifras ni precios.',
-          500,
-        ),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Digital X'),
+        texto('titulo', 'Título', 'Ejemplo: Qué hacemos'),
+        parrafo('texto', 'Texto', 'El texto aprobado de la sección. No lleva cifras ni precios.'),
         texto(
           'boton',
           'Texto del botón',
           'Baja a las tarjetas de servicios. Ejemplo: Ver servicios',
-          30,
         ),
       ],
     }),
@@ -76,8 +70,8 @@ export const inicio = defineType({
       group: 'contenido',
       validation: (Rule) => Rule.required(),
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Servicios', 30),
-        texto('titulo', 'Título', 'Ejemplo: Servicios de audio, video y tecnología en Puebla', 90),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Servicios'),
+        texto('titulo', 'Título', 'Ejemplo: Servicios de audio, video y tecnología en Puebla'),
       ],
     }),
     defineField({
@@ -86,10 +80,10 @@ export const inicio = defineType({
       type: 'object',
       group: 'contenido',
       validation: (Rule) => Rule.required(),
-      description: 'Solo se muestra cuando hay al menos 3 proyectos con foto y permiso.',
+      description: 'Solo se muestra cuando hay al menos 3 proyectos con foto.',
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Proyectos', 30),
-        texto('titulo', 'Título', 'Ejemplo: Proyectos de Digital X', 60),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Proyectos'),
+        texto('titulo', 'Título', 'Ejemplo: Proyectos de Digital X'),
       ],
     }),
     defineField({
@@ -98,10 +92,10 @@ export const inicio = defineType({
       type: 'object',
       group: 'contenido',
       description:
-        'Muestra las reseñas marcadas como «destacada». Si no hay ninguna publicada con permiso, la sección no aparece.',
+        'Muestra las reseñas marcadas como «destacada». Si no hay ninguna publicada, la sección no aparece.',
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Reseñas', 30),
-        texto('titulo', 'Título', 'Ejemplo: Lo que dicen nuestros clientes', 70),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Reseñas'),
+        texto('titulo', 'Título', 'Ejemplo: Lo que dicen nuestros clientes'),
       ],
     }),
     defineField({
@@ -113,8 +107,8 @@ export const inicio = defineType({
       description:
         'Ventajas que se pueden comprobar. No se publican topes de personas ni datos del equipo.',
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Por qué Digital X', 30),
-        texto('titulo', 'Título', 'Ejemplo: Por qué contratar a Digital X', 70),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Por qué Digital X'),
+        texto('titulo', 'Título', 'Ejemplo: Por qué contratar a Digital X'),
         defineField({
           name: 'items',
           title: 'Ventajas',
@@ -124,18 +118,17 @@ export const inicio = defineType({
               type: 'object',
               name: 'ventaja',
               fields: [
-                texto('titulo', 'Título', 'Ejemplo: Un solo proveedor', 50),
+                texto('titulo', 'Título', 'Ejemplo: Un solo proveedor'),
                 parrafo(
                   'texto',
                   'Texto',
                   'Una frase. Ejemplo: Audio, video y tecnología con un solo equipo de trabajo.',
-                  200,
                 ),
               ],
               preview: {select: {title: 'titulo', subtitle: 'texto'}},
             }),
           ],
-          validation: (Rule) => Rule.required().min(3).max(6),
+          validation: (Rule) => Rule.required().min(1),
         }),
       ],
     }),
@@ -148,8 +141,8 @@ export const inicio = defineType({
       description:
         'Sin condiciones de traslado ni cargos. Puedes escribir {zonas} para los lugares de cobertura y {servicios-audio}, {servicios-video} y {servicios-tecnologia} para los nombres de los servicios: el sitio los pone y los mantiene al día.',
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Cobertura', 30),
-        texto('titulo', 'Título', 'Ejemplo: Dónde trabajamos', 60),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Cobertura'),
+        texto('titulo', 'Título', 'Ejemplo: Dónde trabajamos'),
         parrafo(
           'texto',
           'Texto',
@@ -164,14 +157,9 @@ export const inicio = defineType({
       group: 'contenido',
       validation: (Rule) => Rule.required(),
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Preguntas frecuentes', 30),
-        texto('titulo', 'Título', 'Ejemplo: Preguntas frecuentes', 60),
-        parrafo(
-          'texto',
-          'Frase de introducción',
-          'Ejemplo: Lo que más nos preguntan al cotizar.',
-          160,
-        ),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Preguntas frecuentes'),
+        texto('titulo', 'Título', 'Ejemplo: Preguntas frecuentes'),
+        parrafo('texto', 'Frase de introducción', 'Ejemplo: Lo que más nos preguntan al cotizar.'),
         defineField({
           name: 'items',
           title: 'Preguntas',
@@ -227,14 +215,14 @@ export const nosotros = defineType({
   groups: GRUPOS,
   validation: validacionDePagina,
   fields: [
-    {...texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Nosotros', 30), group: 'contenido'},
+    {...texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Nosotros'), group: 'contenido'},
     defineField({
       name: 'h1',
       title: 'Título principal (H1)',
       type: 'string',
       group: 'contenido',
       description: 'Ejemplo: Quiénes somos: Digital X, audio, video y tecnología en Puebla',
-      validation: (Rule) => Rule.required().max(90),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'historia',
@@ -245,26 +233,26 @@ export const nosotros = defineType({
       description:
         'No se publican el nombre, la foto ni la biografía del dueño, ni el tamaño del equipo.',
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Prólogo', 30),
-        parrafo('texto', 'Texto', 'Un párrafo breve que presenta la historia.', 600),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Prólogo'),
+        parrafo('texto', 'Texto', 'Un párrafo breve que presenta la historia.'),
         defineField({
           name: 'hitos',
           title: 'Hitos',
           type: 'array',
-          description: 'Exactamente 3, en orden. Ejemplo: 2018 — Nace la idea',
+          description: 'En orden. Ejemplo: 2018 — Nace la idea',
           of: [
             defineArrayMember({
               type: 'object',
               name: 'hito',
               fields: [
-                texto('anio', 'Año o etiqueta', 'Ejemplo: 2018 (o «Hoy»)', 12),
-                texto('titulo', 'Título', 'Ejemplo: Nace la idea', 60),
-                parrafo('texto', 'Texto', 'Una o dos frases.', 400),
+                texto('anio', 'Año o etiqueta', 'Ejemplo: 2018 (o «Hoy»)'),
+                texto('titulo', 'Título', 'Ejemplo: Nace la idea'),
+                parrafo('texto', 'Texto', 'Una o dos frases.'),
               ],
               preview: {select: {title: 'anio', subtitle: 'titulo'}},
             }),
           ],
-          validation: (Rule) => Rule.required().length(3).error('Son exactamente 3 hitos.'),
+          validation: (Rule) => Rule.required().min(1),
         }),
       ],
     }),
@@ -275,24 +263,24 @@ export const nosotros = defineType({
       group: 'contenido',
       validation: (Rule) => Rule.required(),
       fields: [
-        texto('titulo', 'Título', 'Ejemplo: Qué nos distingue', 60),
+        texto('titulo', 'Título', 'Ejemplo: Qué nos distingue'),
         defineField({
           name: 'items',
           title: 'Tarjetas',
           type: 'array',
-          description: 'Exactamente 3. Ejemplo: Equipo profesional',
+          description: 'Ejemplo: Equipo profesional',
           of: [
             defineArrayMember({
               type: 'object',
               name: 'tarjeta',
               fields: [
-                texto('titulo', 'Título', 'Ejemplo: Equipo profesional', 50),
-                parrafo('texto', 'Texto', 'Una o dos frases.', 300),
+                texto('titulo', 'Título', 'Ejemplo: Equipo profesional'),
+                parrafo('texto', 'Texto', 'Una o dos frases.'),
               ],
               preview: {select: {title: 'titulo', subtitle: 'texto'}},
             }),
           ],
-          validation: (Rule) => Rule.required().length(3).error('Son exactamente 3 tarjetas.'),
+          validation: (Rule) => Rule.required().min(1),
         }),
       ],
     }),
@@ -303,24 +291,24 @@ export const nosotros = defineType({
       group: 'contenido',
       validation: (Rule) => Rule.required(),
       fields: [
-        texto('titulo', 'Título', 'Ejemplo: Lo que nos importa', 60),
+        texto('titulo', 'Título', 'Ejemplo: Lo que nos importa'),
         defineField({
           name: 'items',
           title: 'Puntos',
           type: 'array',
-          description: 'Exactamente 3. Ejemplo: Calidad, Atención y Claridad',
+          description: 'Ejemplo: Calidad, Atención y Claridad',
           of: [
             defineArrayMember({
               type: 'object',
               name: 'punto',
               fields: [
-                texto('titulo', 'Título', 'Ejemplo: Claridad', 50),
-                parrafo('texto', 'Texto', 'Una o dos frases.', 300),
+                texto('titulo', 'Título', 'Ejemplo: Claridad'),
+                parrafo('texto', 'Texto', 'Una o dos frases.'),
               ],
               preview: {select: {title: 'titulo', subtitle: 'texto'}},
             }),
           ],
-          validation: (Rule) => Rule.required().length(3).error('Son exactamente 3 puntos.'),
+          validation: (Rule) => Rule.required().min(1),
         }),
       ],
     }),
@@ -331,9 +319,9 @@ export const nosotros = defineType({
       group: 'contenido',
       validation: (Rule) => Rule.required(),
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Proyectos', 30),
-        texto('titulo', 'Título', 'Ejemplo: Proyectos de Digital X', 60),
-        texto('boton', 'Texto del botón', 'Ejemplo: Ver todos los proyectos', 40),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Proyectos'),
+        texto('titulo', 'Título', 'Ejemplo: Proyectos de Digital X'),
+        texto('boton', 'Texto del botón', 'Ejemplo: Ver todos los proyectos'),
       ],
     }),
     defineField({
@@ -343,13 +331,12 @@ export const nosotros = defineType({
       group: 'contenido',
       validation: (Rule) => Rule.required(),
       fields: [
-        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Preguntas frecuentes', 30),
-        texto('titulo', 'Título', 'Ejemplo: Preguntas frecuentes', 60),
+        texto('etiqueta', 'Etiqueta pequeña', 'Ejemplo: Preguntas frecuentes'),
+        texto('titulo', 'Título', 'Ejemplo: Preguntas frecuentes'),
         parrafo(
           'texto',
           'Frase de introducción',
           'Ejemplo: Lo que más nos preguntan sobre Digital X.',
-          160,
         ),
         defineField({
           name: 'items',
@@ -426,7 +413,7 @@ const paginaDeListado = (
         type: 'string',
         group: 'contenido',
         description: `Ejemplo: ${title}`,
-        validation: (Rule) => Rule.required().max(30),
+        validation: (Rule) => Rule.required(),
       }),
       defineField({
         name: 'h1',
@@ -434,7 +421,7 @@ const paginaDeListado = (
         type: 'string',
         group: 'contenido',
         description: `Ejemplo: ${ejemplo.h1}`,
-        validation: (Rule) => Rule.required().max(90),
+        validation: (Rule) => Rule.required(),
       }),
       defineField({
         name: 'intro',
@@ -443,7 +430,7 @@ const paginaDeListado = (
         rows: 3,
         group: 'contenido',
         description: `Un párrafo bajo el título. Ejemplo: ${ejemplo.intro}`,
-        validation: (Rule) => Rule.required().max(400),
+        validation: (Rule) => Rule.required(),
       }),
       campoFoto({
         name: 'foto',
@@ -470,7 +457,7 @@ export const paginaBlog = paginaDeListado('paginaBlog', 'Página del blog', {
 })
 export const paginaResenas = paginaDeListado('paginaResenas', 'Página de reseñas', {
   h1: 'Reseñas de clientes de Digital X',
-  intro: 'Lo que dicen quienes ya trabajaron con nosotros, publicado con su permiso.',
+  intro: 'Lo que dicen quienes ya trabajaron con nosotros, publicado.',
   title: 'Reseñas de clientes | Digital X',
   meta: 'Lee lo que dicen los clientes de Digital X sobre su evento o proyecto de audio, video y tecnología en Puebla y Atlixco.',
 })

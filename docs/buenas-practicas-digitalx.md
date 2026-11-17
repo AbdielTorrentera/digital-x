@@ -41,7 +41,7 @@ Cada tipo de cosa vive en un solo lugar:
 | Colores, espaciados, tamaños, radios, duraciones | `apps/web/src/styles/tokens.css` |
 | Consultas a Sanity (GROQ) y tipos generados | `packages/sanity/` (consultas y tipos, desde la etapa 3) |
 | Esquemas de contenido | `apps/studio/schemaTypes/` |
-| Reglas de contenido compartidas por el Studio y el build (longitudes, vocabulario, permisos, slugs) | `packages/sanity/reglas/` (con sus pruebas: `pnpm test` en esa carpeta) |
+| Reglas técnicas de contenido compartidas por el Studio y el build (slugs, enlaces, marcadores, página construida completa, validación técnica) | `packages/sanity/reglas/` (con sus pruebas: `pnpm test` en esa carpeta) |
 | Secciones visuales reutilizables | `apps/web/src/components/sections/` y `ui/` |
 | Comportamiento en el navegador | `apps/web/src/scripts/`, un módulo por comportamiento |
 | Logos e íconos fuente | `brand/` |
@@ -93,15 +93,15 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 | Compilación | `pnpm build` | Cada *pull request* |
 | Formato | `prettier --check` | Cada *pull request* |
 | Enlaces internos sin 404 | Script de revisión sobre `dist/` (acepta páginas planeadas sin construir) | Cada *pull request* |
-| Sin enlaces a páginas sin construir, fotos temporales ni `[PENDIENTE` | Protección en el build de producción (`VERCEL_ENV=production`) | Cada build de producción |
+| Sin enlaces a páginas sin construir | Protección en el build de producción (`VERCEL_ENV=production`) | Cada build de producción |
 | Registro de páginas coherente con las rutas | Protección en el build (ya existe) | Cada build |
 | Esquemas de Sanity válidos | Validaciones del esquema, `sanity schema validate` y las pruebas de `packages/sanity` | Al cambiar esquemas |
 | Pantallas a 360 y 1440 px, sin scroll horizontal | Playwright (capturas y comprobaciones básicas) | Al cambiar componentes o páginas |
 | Accesibilidad automática | axe con Playwright | Al cambiar componentes o páginas |
 | Rendimiento | Lighthouse o PageSpeed | Antes de lanzar y al agregar páginas |
 
-- **Contenido de Sanity.** Las reglas de contenido (vocabulario, SEO, permisos, fotos) se escriben **una sola vez** en `packages/sanity/reglas` y las usan el Studio (error al capturar) y el build (falla): lo que bloquea el build es error en el Studio, salvo las guardas de solo producción (fotos temporales, proyectos de ejemplo y enlaces a páginas sin construir). Al cambiar una regla se actualizan sus pruebas en ese paquete.
-- **Enlaces a páginas planeadas.** En desarrollo y en CI se permite enlazar a páginas en estado "Lanzamiento" que todavía no están construidas (llevan a la 404): `check:enlaces` las acepta y sigue fallando con cualquier URL que no esté en el registro `paginas.ts` o que esté "Pendiente de material". El build de producción falla si queda alguno, con la lista de páginas y enlaces; es el mismo mecanismo (y el mismo tipo de pruebas) que la protección de fotos temporales y de `[PENDIENTE` visibles.
+- **Contenido de Sanity.** Solo las reglas **técnicas** (lo que el sitio necesita para construirse) se escriben **una sola vez** en `packages/sanity/reglas` y las usan el Studio (error al capturar) y el build (falla): lo que bloquea el build es error en el Studio, salvo la guarda de solo producción (enlaces a páginas sin construir). Las reglas de redacción de `docs/` (vocabulario, longitudes, permisos, texto alternativo, `[PENDIENTE`) son guía para quien escribe: no se convierten en validaciones, pruebas ni guardas sin que el dueño lo pida. Al cambiar una regla técnica se actualizan sus pruebas en ese paquete; las pruebas de `apps/web` usan datos sintéticos y prueban lógica, no redacción.
+- **Enlaces a páginas planeadas.** En desarrollo y en CI se permite enlazar a páginas en estado "Lanzamiento" que todavía no están construidas (llevan a la 404): `check:enlaces` las acepta y sigue fallando con cualquier URL que no esté en el registro `paginas.ts` o que esté "Pendiente de material". El build de producción falla si queda alguno, con la lista de páginas y enlaces; es la única protección de este tipo.
 - Las funciones con lógica real (por ejemplo `waUrl`, el filtrado de páginas visibles o la validación de enlaces) llevan una **prueba unitaria pequeña**.
 - Ninguna tarea se da por terminada si alguna de sus verificaciones falla o no se pudo ejecutar; se reporta.
 
@@ -128,7 +128,7 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 - **GitHub Actions** en cada *pull request*: `pnpm install --frozen-lockfile`, `prettier --check`, `astro check`, `pnpm build` y revisión de enlaces. Debe pasar para fusionar.
 - **Vercel** despliega automáticamente: vista previa por *pull request* y por cada fusión a `main`. La **producción** sale de la rama `lanzamiento` (creada desde `main` en GitHub; nadie le hace *push* hasta el lanzamiento); ver "Proyecto de Vercel del sitio" abajo.
 - Cada proyecto de Vercel se reconstruye solo cuando cambia su carpeta (`apps/web` o `apps/studio`) o `packages/`.
-- **El build lee Sanity.** `pnpm build` baja antes el contenido publicado (sin token) y lo valida con `packages/sanity/reglas`; si Sanity no responde o algo no pasa, falla y Vercel conserva la versión anterior. El CI también lo baja de `production` (necesita red). Las pruebas y `astro check` usan una muestra fija (`packages/sanity/muestra/contenido.json`) para no depender de lo publicado.
+- **El build lee Sanity.** `pnpm build` baja antes el contenido publicado (sin token) y lo valida con `packages/sanity/reglas`; si Sanity no responde o algo no pasa, falla y Vercel conserva la versión anterior. El CI también lo baja de `production` (necesita red). Las pruebas y `astro check` usan una instantánea sintética (`apps/web/src/lib/contenido/pruebas/contenido.json`) para no depender de lo publicado.
 - Sin herramientas adicionales de orquestación (Turborepo, Nx) mientras haya dos apps.
 
 ### Proyecto de Vercel del sitio (`apps/web`)
@@ -149,8 +149,8 @@ Configuración del panel (consultada en la documentación oficial de Vercel, no 
 - **pnpm 11 y Corepack.** La documentación de Vercel lista pnpm 6 a 12, pero su detección por lockfile solo mapea `lockfileVersion: 9.0` a pnpm 9 o 10, y el issue [vercel/vercel#17434](https://github.com/vercel/vercel/issues/17434) reporta que con pnpm 11 cae a `npm install` y falla (correcciones en los PR [#17450](https://github.com/vercel/vercel/pull/17450) y #17573, abiertos al 6 de noviembre de 2026). Por eso el repo declara `packageManager: "pnpm@11.28.9"` en el `package.json` de la raíz y el proyecto usa `ENABLE_EXPERIMENTAL_COREPACK=1`: así Vercel usa esa versión y no adivina por el lockfile. `devEngines.packageManager` queda igual (lo lee el CI); **las dos versiones se cambian juntas** al actualizar pnpm.
 - **Plan B si el log dice que usa npm** o una versión de pnpm distinta de la 11.28.9: Install Command con Override `corepack enable && pnpm install --frozen-lockfile` (no está documentado por Vercel; se prueba en una vista previa).
 - **Estado.** Vercel ya está conectado y la vista previa de `main` compila.
-- **Producción y vistas previas.** Con Production Branch = `lanzamiento` (rama que existe pero no recibe *pushes*), `main` y los *pull requests* salen como *preview* (`VERCEL_ENV=preview`): compilan con fotos temporales y enlaces a páginas planeadas, y llevan `noindex` (etiqueta, `robots.txt` en `Disallow` y el encabezado `X-Robots-Tag` que Vercel añade). El **primer deployment** de un proyecto nuevo siempre es de producción, aunque venga de otra rama: con las protecciones de §5 **fallará a propósito** mientras queden fotos temporales o enlaces a páginas sin construir; es lo esperado.
-- **Lanzamiento.** Antes de cambiar la Production Branch a `main`: fotos reales, páginas construidas, sin `[PENDIENTE` visibles y la casilla de variables del sistema activada.
+- **Producción y vistas previas.** Con Production Branch = `lanzamiento` (rama que existe pero no recibe *pushes*), `main` y los *pull requests* salen como *preview* (`VERCEL_ENV=preview`): compilan con enlaces a páginas planeadas, y llevan `noindex` (etiqueta, `robots.txt` en `Disallow` y el encabezado `X-Robots-Tag` que Vercel añade). El **primer deployment** de un proyecto nuevo siempre es de producción, aunque venga de otra rama: con la protección de §5 **fallará a propósito** mientras queden enlaces a páginas sin construir; es lo esperado.
+- **Lanzamiento.** Antes de cambiar la Production Branch a `main`: fotos reales, páginas construidas, sin `[PENDIENTE` visibles (revisión manual del dueño) y la casilla de variables del sistema activada.
 - **Plan Hobby (decisión del dueño).** Se usa el plan Hobby de Vercel. Su [política de uso justo](https://vercel.com/docs/limits/fair-use-guidelines) lo limita a uso personal no comercial y define como comercial anunciar la venta de un servicio o recibir pago por crear o alojar el sitio, así que digitalx.mx cae en esa definición. **Riesgo:** Vercel puede pedir pasar a Pro o pausar el proyecto. **Alternativa gratuita:** Cloudflare Pages, que según el dueño permite uso comercial y sirve sitios estáticos de Astro (al evaluarla se revisan sus términos vigentes). No se cambia nada por ahora.
 
 ---

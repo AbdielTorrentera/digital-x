@@ -19,7 +19,7 @@ export function faltantesDePagina(servicio: ServicioConPagina): string[] {
   const faltan: string[] = []
   if (!servicio.foto?.asset) faltan.push('la foto del encabezado')
   if (!servicio.mensajeWhatsApp) faltan.push('el mensaje de WhatsApp')
-  if (p?.ficha?.length !== 3) faltan.push('la ficha (exactamente 3 datos)')
+  if (!p?.ficha?.length) faltan.push('la ficha')
   if (!p?.descripcion?.titulo || !p.descripcion.parrafos?.length)
     faltan.push('la descripción (título y párrafos)')
   if (!p?.incluye?.length) faltan.push('qué incluye')

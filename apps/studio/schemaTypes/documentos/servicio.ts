@@ -31,15 +31,7 @@ export const servicio = defineType({
       group: 'basico',
       description:
         'El nombre oficial. Es el texto de todos los enlaces al servicio. Ejemplo: Video con drone',
-      validation: (Rule) =>
-        Rule.required()
-          .max(70)
-          .custom(
-            (nombre) =>
-              !nombre ||
-              !/a la medida/i.test(nombre) ||
-              '«A la medida» nunca va en el nombre de un servicio: el servicio se llama «Desarrollo de software».',
-          ),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'categoria',
@@ -96,7 +88,7 @@ export const servicio = defineType({
       group: 'basico',
       description:
         'Una o dos frases. Se usa en las tarjetas y en los datos para Google. Ejemplo: Video y fotografía aérea con drone para eventos, empresas y espacios, en exteriores e interiores.',
-      validation: (Rule) => Rule.required().max(200),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'h1',
@@ -105,10 +97,7 @@ export const servicio = defineType({
       group: 'basico',
       description:
         'Servicio + ciudad + a quién le hablas. Ejemplo: Video y fotografía aérea con drone en Puebla',
-      validation: (Rule) =>
-        Rule.required()
-          .max(90)
-          .custom((h1) => !h1 || /Puebla/.test(h1) || 'El título principal debe mencionar Puebla.'),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'serviceType',
@@ -126,7 +115,7 @@ export const servicio = defineType({
       group: 'basico',
       description:
         'El texto que ya viene escrito cuando alguien abre el chat desde esta página. Deja huecos con __ para que el cliente los llene. Ejemplo: Hola, quiero cotizar video o fotografía aérea con drone. Fecha: __ Lugar: __ Tipo de evento o proyecto: __',
-      validation: (Rule) => Rule.required().max(300),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'pagina',
@@ -137,12 +126,11 @@ export const servicio = defineType({
       fields: [
         defineField({
           name: 'ficha',
-          title: 'Ficha de 3 datos',
+          title: 'Ficha',
           type: 'array',
           of: [defineArrayMember({type: 'filaFicha'})],
           description:
-            'Los tres datos que se ven junto al título. Exactamente 3. Ejemplo: Tomas — Video y fotografía aérea con drone / Entrega — Video editado, tomas sin editar o ambos / Para — Eventos, empresas y espacios',
-          validation: (Rule) => Rule.length(3).error('La ficha lleva exactamente 3 datos.'),
+            'Los datos que se ven junto al título. Ejemplo: Tomas — Video y fotografía aérea con drone / Entrega — Video editado, tomas sin editar o ambos / Para — Eventos, empresas y espacios',
         }),
         defineField({
           name: 'descripcion',
@@ -155,7 +143,6 @@ export const servicio = defineType({
               title: 'Título',
               type: 'string',
               description: 'Ejemplo: Tomas aéreas para tu evento, tu negocio o tu espacio',
-              validation: (Rule) => Rule.max(90),
             }),
             defineField({
               name: 'parrafos',
@@ -231,7 +218,7 @@ export const servicio = defineType({
       description:
         'Grupos de fotos reales del servicio. Si queda vacía, la galería y su botón no se muestran.',
     }),
-    campoSeo({servicio: true}),
+    campoSeo(),
   ],
   preview: {
     select: {

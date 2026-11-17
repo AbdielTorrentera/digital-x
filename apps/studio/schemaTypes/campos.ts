@@ -1,10 +1,6 @@
 // Campos que se repiten en varios documentos. Cada uno lleva su descripción con un ejemplo, pensada para el dueño.
 import {defineField} from 'sanity'
-import {problemasDeMeta, problemasDeTitle} from '@digitalx/sanity/reglas'
-import {textoSeoUnico} from '../validaciones'
-
-/** Un proyecto de ejemplo (ficticio) no necesita los datos de un trabajo real. */
-export const esEjemplo = (documento?: {[campo: string]: unknown}) => documento?.esEjemplo === true
+import {ContadorDeCaracteres} from '../componentes/ContadorDeCaracteres'
 
 interface OpcionesDeFoto {
   name: string
@@ -14,7 +10,7 @@ interface OpcionesDeFoto {
   obligatoria?: boolean
 }
 
-/** Una foto con su texto alternativo (obligatorio) y su marca de «foto temporal». */
+/** Una foto con su texto alternativo (opcional). */
 export const campoFoto = ({name, title, description, group, obligatoria = true}: OpcionesDeFoto) =>
   defineField({
     name,
@@ -26,8 +22,6 @@ export const campoFoto = ({name, title, description, group, obligatoria = true}:
   })
 
 interface OpcionesDeSeo {
-  /** `servicio`: la meta debe nombrar la zona e invitar a cotizar por WhatsApp (SEO §1). */
-  servicio?: boolean
   /** Si es opcional (proyectos y artículos), se usa el título del documento cuando se deja vacío. */
   obligatorio?: boolean
   /** Por defecto igual que `obligatorio`. En proyectos y artículos el título es opcional pero la descripción no. */
@@ -37,9 +31,8 @@ interface OpcionesDeSeo {
   ejemploMeta?: string
 }
 
-/** Cómo aparece la página en Google y al compartirla: título, descripción e imagen. */
+/** Cómo aparece la página en Google y al compartirla: título, descripción e imagen. Solo se exige que existan. */
 export const campoSeo = ({
-  servicio = false,
   obligatorio = true,
   metaObligatoria = obligatorio,
   group = 'seo',
@@ -53,47 +46,30 @@ export const campoSeo = ({
     group,
     options: {collapsible: false},
     validation: (Rule) =>
-      Rule.custom((valor, contexto) =>
-        !valor && (obligatorio || metaObligatoria) && !esEjemplo(contexto.document)
-          ? 'Falta el apartado de Google.'
-          : true,
+      Rule.custom((valor) =>
+        !valor && (obligatorio || metaObligatoria) ? 'Falta el apartado de Google.' : true,
       ),
     fields: [
       defineField({
         name: 'title',
         title: 'Título para Google',
         type: 'string',
-        description: `Es el título azul que se ve en Google. Máximo 60 caracteres y termina en « | Digital X». Cada página necesita el suyo. Ejemplo: ${ejemploTitle}${obligatorio ? '' : '. Si lo dejas vacío se usa el título de la página.'}`,
+        components: {input: ContadorDeCaracteres},
+        description: `Es el título azul que se ve en Google. Guía: unos 60 caracteres. Ejemplo: ${ejemploTitle}${obligatorio ? '' : '. Si lo dejas vacío se usa el título de la página.'}`,
         validation: (Rule) =>
-          Rule.custom(async (valor, contexto) => {
-            if (!valor) return obligatorio ? 'Escribe el título para Google.' : true
-            const problemas = problemasDeTitle(valor)
-            if (problemas.length) return problemas.join(' ')
-            return (
-              (await textoSeoUnico('seo.title', valor, contexto)) ||
-              'Otra página ya usa este título: cada página necesita el suyo.'
-            )
-          }),
+          Rule.custom((valor) => (!valor && obligatorio ? 'Escribe el título para Google.' : true)),
       }),
       defineField({
         name: 'meta',
         title: 'Descripción para Google',
         type: 'text',
         rows: 3,
-        description: `El texto gris bajo el título en Google. Máximo 155 caracteres${servicio ? ', con la zona (Puebla o Atlixco) y terminando en «Cotiza por WhatsApp.»' : ''}. Cada página necesita la suya. Ejemplo: ${ejemploMeta}`,
+        components: {input: ContadorDeCaracteres},
+        description: `El texto gris bajo el título en Google. Guía: unos 155 caracteres. Ejemplo: ${ejemploMeta}`,
         validation: (Rule) =>
-          Rule.custom(async (valor, contexto) => {
-            if (!valor)
-              return metaObligatoria && !esEjemplo(contexto.document)
-                ? 'Escribe la descripción para Google.'
-                : true
-            const problemas = problemasDeMeta(valor, servicio)
-            if (problemas.length) return problemas.join(' ')
-            return (
-              (await textoSeoUnico('seo.meta', valor, contexto)) ||
-              'Otra página ya usa esta descripción: cada página necesita la suya.'
-            )
-          }),
+          Rule.custom((valor) =>
+            !valor && metaObligatoria ? 'Escribe la descripción para Google.' : true,
+          ),
       }),
       defineField({
         name: 'imagen',

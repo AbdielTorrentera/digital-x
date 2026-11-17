@@ -8,7 +8,6 @@ import type { CategoriaDoc, ClienteDoc, Foto, GuiaDoc, ServicioDoc } from './tip
 export interface Cliente {
   nombre: string;
   logo?: Foto;
-  permiso: boolean;
 }
 
 export interface CategoriaContenido {
@@ -49,7 +48,7 @@ export const categorias: CategoriaContenido[] = docs.map((c) => ({
   ...(c.seo.imagen ? { imagen: aImagenCompartir(c.seo.imagen) } : {}),
   cierre: { titulo: c.cierre.titulo, texto: c.cierre.texto },
   faq: preguntas(c.faq),
-  // Solo clientes publicados (un cliente sin permiso se queda en borrador y su referencia débil no se resuelve).
+  // Solo clientes publicados (la referencia débil de uno sin publicar no se resuelve).
   clientes: (c.clientes ?? []).flatMap((ref) => {
     const cliente = documento<ClienteDoc>(ref._ref);
     return cliente
@@ -57,7 +56,6 @@ export const categorias: CategoriaContenido[] = docs.map((c) => ({
           {
             nombre: cliente.nombre,
             ...(cliente.logo ? { logo: aFoto(cliente.logo) } : {}),
-            permiso: cliente.permiso === true,
           },
         ]
       : [];

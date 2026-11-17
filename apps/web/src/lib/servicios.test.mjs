@@ -3,24 +3,18 @@ import assert from 'node:assert/strict';
 import { enlaceDeServicio, lista, partesDeServicios, partesDeSlugs, serviciosDe } from './servicios.ts';
 import { paginas } from './paginas.ts';
 
-test('serviciosDe lista los servicios de cada categoría con el nombre del registro, en el orden del catálogo', () => {
+test('serviciosDe lista los servicios de cada categoría con el nombre del registro, en el orden de Sanity', () => {
   assert.deepEqual(
     serviciosDe('audio').map((s) => s.titulo),
     ['Renta de audio y sonido'],
   );
   assert.deepEqual(
     serviciosDe('video').map((s) => s.titulo),
-    [
-      'Circuito cerrado para eventos',
-      'Producción de videos para eventos',
-      'Transmisión en vivo',
-      'Video con drone',
-      'Recorridos virtuales 360',
-    ],
+    ['Transmisión en vivo', 'Video con drone'],
   );
   assert.deepEqual(
     serviciosDe('tecnologia').map((s) => s.titulo),
-    ['Páginas web', 'Tienda en línea', 'Desarrollo de aplicaciones móviles', 'Desarrollo de software'],
+    ['Páginas web'],
   );
 });
 
@@ -40,41 +34,27 @@ test('enlaceDeServicio lleva a la página si está construida y, si no, no hay e
     const slug = p.url.split('/')[2];
     assert.equal(enlaceDeServicio(slug), p.construida ? p.url : null, slug);
   }
-  // Ya están los 10 servicios construidos: uno se marca como no construido solo durante la prueba.
-  const registro = paginas.find((p) => p.url === '/tecnologia/desarrollo-de-software/');
-  registro.construida = false;
-  try {
-    assert.equal(enlaceDeServicio('desarrollo-de-software'), null);
-  } finally {
-    registro.construida = true;
-  }
+  // Páginas web no está construido en los datos de prueba: sin página no hay enlace.
+  assert.equal(enlaceDeServicio('paginas-web'), null);
+  assert.equal(enlaceDeServicio('video-con-drone'), '/video/video-con-drone/');
   assert.throws(() => enlaceDeServicio('inventado'), /no es un servicio/);
 });
 
 test('lista es el texto de los servicios que salen del registro (Inicio y condiciones)', () => {
-  assert.equal(lista.audio, 'renta de audio y sonido, y sonorización');
-  assert.equal(
-    lista.video,
-    'circuito cerrado para eventos, producción de videos para eventos, transmisión en vivo, video con drone y recorridos virtuales 360',
-  );
-  assert.equal(
-    lista.tecnologia,
-    'páginas web, tienda en línea, desarrollo de aplicaciones móviles y desarrollo de software',
-  );
+  assert.equal(lista.video, 'transmisión en vivo y video con drone');
+  assert.equal(lista.tecnologia, 'páginas web');
+  assert.ok(lista.audio.startsWith('renta de audio y sonido, y '), 'la coma evita leer «audio y (sonido y …)»');
 });
 
 test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y su URL solo si está construido', () => {
   const nombres = (categoria) => partesDeServicios(categoria).filter((p) => 'nombre' in p);
-  assert.equal(nombres('video').length, 5);
-  assert.equal(nombres('tecnologia').length, 4);
-  // Audio: el servicio con página y la sonorización, que es texto sin enlace.
+  assert.equal(nombres('video').length, 2);
+  assert.equal(nombres('tecnologia').length, 1);
+  // Audio: el servicio con página y el de `sinPagina` en Sanity, que es texto sin enlace.
   const [renta, sonorizacion] = nombres('audio');
   assert.equal(renta.nombre, 'renta de audio y sonido');
-  assert.equal(
-    renta.url,
-    paginas.find((p) => p.url === '/audio/renta-de-audio/').construida ? '/audio/renta-de-audio/' : null,
-  );
-  assert.deepEqual(sonorizacion, { nombre: 'sonorización', url: null });
+  assert.equal(renta.url, '/audio/renta-de-audio/');
+  assert.equal(sonorizacion.url, null, 'un servicio sin página propia va como texto');
   // Unidos, los trozos son exactamente la frase de `lista`.
   const unido = (categoria) =>
     partesDeServicios(categoria)
@@ -84,31 +64,18 @@ test('partesDeServicios da la frase en trozos, con el nombre de cada servicio y 
 });
 
 test('partesDeSlugs une los nombres del registro y enlaza cada uno a su página; sin página, queda como texto', () => {
-  // Un servicio construido va a su página; uno sin página (se marca así solo durante la prueba), sin enlace.
-  const urlsDe = () =>
-    partesDeSlugs(['renta-de-audio', 'desarrollo-de-software'])
+  const urlsDe = (slugs) =>
+    partesDeSlugs(slugs)
       .filter((p) => 'nombre' in p)
       .map((p) => p.url);
-  assert.deepEqual(urlsDe(), ['/audio/renta-de-audio/', '/tecnologia/desarrollo-de-software/']);
-  const registro = paginas.find((p) => p.url === '/tecnologia/desarrollo-de-software/');
-  registro.construida = false;
-  try {
-    assert.deepEqual(urlsDe(), ['/audio/renta-de-audio/', null]);
-  } finally {
-    registro.construida = true;
-  }
-  const partes = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos']);
-  const texto = partes.map((p) => p.literal ?? p.nombre).join('');
-  // El primer nombre ya lleva una "y": la coma evita leerlo como "audio y (sonido y circuito cerrado)".
-  assert.equal(texto, 'Renta de audio y sonido, y Circuito cerrado para eventos');
-  assert.deepEqual(
-    partes.filter((p) => 'nombre' in p).map((p) => p.url),
-    ['/audio/renta-de-audio/', '/video/circuito-cerrado-para-eventos/'],
-  );
-  const tres = partesDeSlugs(['renta-de-audio', 'circuito-cerrado-para-eventos', 'video-para-eventos']);
+  assert.deepEqual(urlsDe(['renta-de-audio', 'paginas-web']), ['/audio/renta-de-audio/', null]);
+  const partes = partesDeSlugs(['renta-de-audio', 'video-con-drone']);
+  // El primer nombre ya lleva una "y": la coma evita leerlo como "audio y (sonido y video con drone)".
+  assert.equal(partes.map((p) => p.literal ?? p.nombre).join(''), 'Renta de audio y sonido, y Video con drone');
+  const tres = partesDeSlugs(['renta-de-audio', 'video-con-drone', 'streaming-para-eventos']);
   assert.equal(
     tres.map((p) => p.literal ?? p.nombre).join(''),
-    'Renta de audio y sonido, Circuito cerrado para eventos y Producción de videos para eventos',
+    'Renta de audio y sonido, Video con drone y Transmisión en vivo',
   );
   assert.throws(() => partesDeSlugs(['inventado']), /no es un servicio/);
 });

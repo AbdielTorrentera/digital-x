@@ -12,7 +12,7 @@ export const textoConEnlaces = defineType({
   title: 'Texto con enlaces',
   type: 'array',
   description:
-    'Un solo párrafo. Para enlazar, selecciona las palabras y pulsa el botón de enlace: elige «Enlace a un servicio» o «Enlace a una página».',
+    'Para enlazar, selecciona las palabras y pulsa el botón de enlace: elige «Enlace a un servicio» o «Enlace a una página».',
   of: [
     defineArrayMember({
       type: 'block',
@@ -57,6 +57,4 @@ export const textoConEnlaces = defineType({
       },
     }),
   ],
-  validation: (Rule) =>
-    Rule.max(1).error('Escribe un solo párrafo (sin pulsar Enter para empezar otro).'),
 })

@@ -9,7 +9,7 @@
     "check": "tsc --noEmit",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "dev": "sanity dev",
+    "dev": "SANITY_STUDIO_ESPACIOS=local sanity dev",
     "start": "sanity start"
   },
   "keywords": [

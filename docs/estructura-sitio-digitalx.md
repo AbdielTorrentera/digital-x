@@ -245,7 +245,7 @@ Los servicios se editan desde Sanity (agregar un servicio o cambiar lo que inclu
 
 1. En el Studio: **Servicios › Todos los servicios › Nuevo**. Se elige la categoría, se escribe el nombre y se llenan la descripción, el H1, el mensaje de WhatsApp, la foto, el SEO y el contenido de la página. La URL (`/{categoria}/{slug}/`), el orden en su categoría y la regla del «un solo servicio» salen solos de los datos.
 2. Se marca **«Página construida»** cuando el contenido está completo (el Studio dice qué falta: es el mismo `faltantesDePagina` que exige el build) y se publica.
-3. Un webhook de Sanity reconstruye el sitio (etapa 4 de la fase 3). No se toca código: `lib/paginas.ts` solo conserva las páginas fijas y lee los servicios y las categorías de Sanity.
+3. Un webhook de Sanity reconstruye el sitio solo (unos 3 a 5 minutos; ver `docs/buenas-practicas-digitalx.md` §7 y `docs/guia-studio-digitalx.md`). No se toca código: `lib/paginas.ts` solo conserva las páginas fijas y lee los servicios y las categorías de Sanity.
 
 *De dónde salen los datos al compilar*
 

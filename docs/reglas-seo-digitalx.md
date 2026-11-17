@@ -226,7 +226,7 @@ Si falta un campo, `[PENDIENTE: ...]`. Casos de software: anónimos si no hay pe
 - **Canonical** autorreferenciado en cada página.
 - **`sitemap.xml`** con solo las páginas publicadas (excluir las "Pendiente de material"). Declararlo en `robots.txt`.
 - **`robots.txt`**: no bloquear nada importante.
-- **`noindex`:** páginas de agradecimiento, resultados de búsqueda interna y cualquier entorno de pruebas. En Vercel, toda versión que no sea producción (`VERCEL_ENV` distinto de `production`) lleva `noindex` y `robots.txt` bloqueado. El Studio (`admin.digitalx.mx`) lleva `noindex` siempre.
+- **`noindex`:** páginas de agradecimiento, resultados de búsqueda interna y cualquier entorno de pruebas. En Vercel, toda versión que no sea producción (`VERCEL_ENV` distinto de `production`) lleva `noindex` y `robots.txt` bloqueado. El Studio (`admin-digitalx.sanity.studio`) no es indexable: su HTML trae `<meta name="robots" content="noindex">` (lo genera `sanity build`) y, además, el host responde con una redirección (302) al inicio de sesión de Sanity, así que un rastreador nunca llega a una página. No hace falta configurarlo.
 - ⚠ **Antes de lanzar:** quitar el `noindex` y el bloqueo de robots del entorno de pruebas, y verificarlo.
 - **404** con `noindex`, el texto "Al parecer lo que estás buscando se ha movido o no existe." y dos botones: "Ver servicios" (a `/#servicios`, la sección de servicios del Inicio) y "Regresar al inicio".
 - **Open Graph** y Twitter Card básicos en cada página (título, descripción, imagen).

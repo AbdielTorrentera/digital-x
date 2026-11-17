@@ -52,10 +52,10 @@ Las reglas viven en `docs/`, un archivo por tema. **Son obligatorias.** Antes de
 Monorepo con pnpm workspaces:
 
 - `apps/web`: sitio público en **Astro**, basado en la plantilla **Marby** (licencia MIT: conservar `LICENSE` y el crédito). → `digitalx.mx`
-- `apps/studio`: **Sanity Studio**, en español. → `admin.digitalx.mx`
+- `apps/studio`: **Sanity Studio**, en español. → `admin-digitalx.sanity.studio` (alojado por Sanity, solo `production`)
 - `packages/sanity`: reglas de contenido compartidas por el Studio y el build (slugs, enlaces, marcadores, página construida completa y la validación técnica) y, desde la etapa 3 de la fase 3, las consultas GROQ y los tipos generados de Sanity. → Las reglas de contenido se escriben **una sola vez** aquí.
 
-Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstruye solo cuando cambia su carpeta), **Sanity** (plan gratuito, dataset `production`), **Mux** para videos (plan gratuito, máximo 10). El sitio es estático; un webhook de Sanity dispara el rebuild en Vercel.
+Servicios externos: **Vercel** (un solo proyecto, el sitio `apps/web`; el Studio vive solo en `*.sanity.studio`), **Sanity** (plan gratuito, dataset `production`), **Mux** para videos (plan gratuito, máximo 10). El sitio es estático; un webhook de Sanity dispara un *Deploy Hook* de Vercel al publicar o borrar en `production` (ver `docs/buenas-practicas-digitalx.md` §7). Guía del dueño: `docs/guia-studio-digitalx.md`.
 
 - `brand/` es la fuente única de logos e íconos; lo copiado en `apps/web` se actualiza desde ahí, nunca al revés.
 - Mux en plan gratuito: se acepta su marca en el reproductor; no proponer quitarla.
@@ -72,7 +72,7 @@ Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstr
 
 - Gestor de paquetes: **pnpm**. Nunca usar `npm` ni `npx` (usar `pnpm dlx`).
 - Desarrollo: `pnpm dev` dentro de cada app (web en :4321, studio en :3333).
-- Contenido de Sanity: `pnpm contenido:descargar` baja la instantánea (también la bajan `pnpm build` y `pnpm dev`); `SANITY_DATASET=pruebas` baja otro dataset. Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio se conecta al dataset `pruebas` (ver `apps/studio/.env.development`); el Studio publicado y la CLI usan `production`.
+- Contenido de Sanity: `pnpm contenido:descargar` baja la instantánea (también la bajan `pnpm build` y `pnpm dev`); `SANITY_DATASET=pruebas` baja otro dataset. Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio abre dos espacios de trabajo, «Pruebas» (el predeterminado) y «Producción», con el dataset siempre visible en una franja (los activa el script `dev` de `apps/studio`); el Studio publicado solo tiene «Producción». Todo lo demás (CLI, `build`, `deploy`) ve un solo espacio, `produccion`, sin configurar nada.
 - Antes de dar por terminada una tarea en `apps/web`: `pnpm build` sin errores.
 - Verificaciones: `pnpm format` / `pnpm format:check` (raíz); `pnpm check`, `pnpm test`, `pnpm build` y `pnpm check:enlaces` (en `apps/web`); `pnpm check` (en `apps/studio`); `pnpm test` (en `packages/sanity`); `pnpm sanity schema validate` (en `apps/studio`) al cambiar esquemas.
 

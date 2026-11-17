@@ -110,6 +110,16 @@ try {
   process.exit(1);
 }
 
+// Segunda capa (seguridad §4.2): `perspective=published` sin token nunca devuelve borradores ni versiones. Si alguna
+// vez llegara uno, el build se detiene en lugar de publicarlo.
+const sinPublicar = instantanea.documentos.filter(({ _id }) => /^(drafts|versions)\./.test(_id));
+if (sinPublicar.length > 0) {
+  console.error(
+    `✖ La respuesta de Sanity (${dataset}) trae ${sinPublicar.length} documento(s) sin publicar (borradores o versiones):\n${sinPublicar.map((d) => `  - ${d._id}`).join('\n')}\n  El build se detiene para no publicarlos; la versión anterior sigue en línea.`,
+  );
+  process.exit(1);
+}
+
 const { errores } = validarContenido(instantanea);
 if (errores.length > 0) {
   console.error(

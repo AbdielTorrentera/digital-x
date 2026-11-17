@@ -127,7 +127,7 @@ No se busca cobertura total, sino detectar lo que puede romperse sin que nadie l
 
 - **GitHub Actions** en cada *pull request*: `pnpm install --frozen-lockfile`, `prettier --check`, `astro check`, `pnpm build` y revisión de enlaces. Debe pasar para fusionar.
 - **Vercel** despliega automáticamente: vista previa por *pull request* y por cada fusión a `main`. La **producción** sale de la rama `lanzamiento` (creada desde `main` en GitHub; nadie le hace *push* hasta el lanzamiento); ver "Proyecto de Vercel del sitio" abajo.
-- Cada proyecto de Vercel se reconstruye solo cuando cambia su carpeta (`apps/web` o `apps/studio`) o `packages/`.
+- Hay **un solo proyecto de Vercel** (el sitio, `apps/web`); se reconstruye solo cuando cambia su carpeta o `packages/`. El Studio vive solo en `*.sanity.studio` (no hay proyecto de Vercel del Studio): se publica en `admin-digitalx.sanity.studio` con `pnpm sanity deploy` (desde `apps/studio`; escribe en `production` un documento de sistema `_.schemas.*` con el esquema, que el sitio no lee).
 - **El build lee Sanity.** `pnpm build` baja antes el contenido publicado (sin token) y lo valida con `packages/sanity/reglas`; si Sanity no responde o algo no pasa, falla y Vercel conserva la versión anterior. El CI también lo baja de `production` (necesita red). Las pruebas y `astro check` usan una instantánea sintética (`apps/web/src/lib/contenido/pruebas/contenido.json`) para no depender de lo publicado.
 - Sin herramientas adicionales de orquestación (Turborepo, Nx) mientras haya dos apps.
 
@@ -150,14 +150,27 @@ Configuración del panel (consultada en la documentación oficial de Vercel, no 
 - **Plan B si el log dice que usa npm** o una versión de pnpm distinta de la 11.28.9: Install Command con Override `corepack enable && pnpm install --frozen-lockfile` (no está documentado por Vercel; se prueba en una vista previa).
 - **Estado.** Vercel ya está conectado y la vista previa de `main` compila.
 - **Producción y vistas previas.** Con Production Branch = `lanzamiento` (rama que existe pero no recibe *pushes*), `main` y los *pull requests* salen como *preview* (`VERCEL_ENV=preview`): compilan con enlaces a páginas planeadas, y llevan `noindex` (etiqueta, `robots.txt` en `Disallow` y el encabezado `X-Robots-Tag` que Vercel añade). El **primer deployment** de un proyecto nuevo siempre es de producción, aunque venga de otra rama: con la protección de §5 **fallará a propósito** mientras queden enlaces a páginas sin construir; es lo esperado.
-- **Lanzamiento.** Antes de cambiar la Production Branch a `main`: fotos reales, páginas construidas, sin `[PENDIENTE` visibles (revisión manual del dueño) y la casilla de variables del sistema activada.
+- **Lanzamiento.** Antes de cambiar la Production Branch a `main`: fotos reales, páginas construidas, sin `[PENDIENTE` visibles (revisión manual del dueño) y la casilla de variables del sistema activada. Al cambiarla: (1) disparar un build (publicar en el Studio, un *push* a `main` o *Redeploy*) y comprobar que el deployment dice **Production**; el *deploy hook* de `main` no se toca, porque va atado a la rama y desde ese día produce deployments de producción; (2) asignar `digitalx.mx`; (3) borrar la rama `lanzamiento`, que ya no hace falta. El deployment fallido del 6 de noviembre (el primero del proyecto, que se compiló como producción y falló a propósito) queda en el historial y no hay que arreglarlo.
+
+### Actualización automática (Sanity → Vercel)
+
+Publicar o borrar contenido en `production` reconstruye el sitio sin tocar código. La guía para el dueño está en `docs/guia-studio-digitalx.md`.
+
+- **Pieza de Vercel:** un *Deploy Hook* (Settings › Git) llamado `Sanity production → main`, atado a la rama **`main`**. **No** se ata a `lanzamiento`: esa rama tiene código anterior a Sanity (nunca mostraría los cambios) y se compila como producción, así que las protecciones lo harían fallar en cada publicación. Hasta el lanzamiento, el resultado es un deployment de *preview* de `main` (con `noindex` y protegido por el inicio de sesión de Vercel); es donde se revisan los cambios.
+- **Pieza de Sanity:** un *webhook* (sanity.io/manage › API › Webhooks) con dataset `production`, disparado en **Create, Update y Delete**, método `POST`, sin secreto ni *projection*, y con el filtro `!(_type in ["sanity.imageAsset", "sanity.fileAsset"]) && !(_id in path("_.**"))`. Con los borradores y las versiones **apagados** (*trigger when drafts/versions are modified*), solo lo publicado dispara. El filtro evita builds por una foto subida sin publicar o por un documento de sistema, y no hay que cambiarlo al agregar tipos nuevos (proyectos, reseñas, blog). Ocupa 1 de los 2 webhooks del plan Free.
+- **La URL del hook es un secreto** (seguridad §3.5): solo vive en el webhook de Sanity; nunca en el repo, el chat ni un `.env`. Si se filtra, se borra el hook y se crea otro.
+- **Agrupación.** Según la documentación de Vercel, si llegan varios disparos de la misma versión, los deployments anteriores del mismo hook se cancelan; publicar varias cosas seguidas termina en un solo build.
+- **Límites (Hobby y Sanity Free, según sus documentaciones oficiales):** 100 deployments al día (los *pull requests* también cuentan), 1 build a la vez, 5 hooks por proyecto y 60 disparos de hook por hora. Sanity Free: 2 webhooks y 250 mil peticiones a la API al mes (el build baja el contenido con una sola consulta).
+- **Posible fallo a vigilar:** «Skip unaffected projects» puede saltar un deployment cuyo último commit no tocó `apps/web`. Si un disparo sale «Skipped», desactivar *Skip deployment* en Settings › Build and Deployment › Root Directory.
+- **Build roto:** si el contenido no pasa la validación o Sanity no responde, el build falla y Vercel conserva la versión anterior (nunca asigna la URL a un deployment fallido). Vercel avisa por correo (§8).
+- **Prueba del aviso.** Se crea un hook temporal en `lanzamiento` (falla igual que el del 6 de noviembre por las protecciones de producción), se dispara una vez y se confirma el correo; después se **borra el hook**.
 - **Plan Hobby (decisión del dueño).** Se usa el plan Hobby de Vercel. Su [política de uso justo](https://vercel.com/docs/limits/fair-use-guidelines) lo limita a uso personal no comercial y define como comercial anunciar la venta de un servicio o recibir pago por crear o alojar el sitio, así que digitalx.mx cae en esa definición. **Riesgo:** Vercel puede pedir pasar a Pro o pausar el proyecto. **Alternativa gratuita:** Cloudflare Pages, que según el dueño permite uso comercial y sirve sitios estáticos de Astro (al evaluarla se revisan sus términos vigentes). No se cambia nada por ahora.
 
 ---
 
 ## 8. Monitoreo
 
-- Alertas de Vercel por correo cuando falla un build (incluidos los que dispara el webhook de Sanity).
+- Alertas de Vercel por correo cuando falla un build (incluidos los que dispara el webhook de Sanity): Settings › My Notifications › Deployment Failures, con *Email* activado. El correo trae el enlace al log, donde la línea `✖` dice qué documento y qué campo fallaron. Confirmado el 17 de noviembre de 2026: el correo llega también cuando el build lo dispara un *deploy hook*.
 - Revisión mensual de Search Console (errores de rastreo, páginas excluidas) y de PageSpeed en las páginas principales.
 - Sentry u otra herramienta de errores **no se agrega** mientras el sitio sea estático. Se reconsidera si se agregan funciones de servidor.
 

@@ -22,7 +22,7 @@ Versión: borrador de trabajo · 2026-10-30
 | Pieza | Qué es | Riesgo principal |
 | --- | --- | --- |
 | `digitalx.mx` | Sitio **estático** (Astro) en Vercel. Sin base de datos propia, sin usuarios, sin sesiones | Contenido inyectado (XSS), dependencias comprometidas, encabezados débiles |
-| `admin.digitalx.mx` | Sanity Studio. El acceso lo controla Sanity con cuentas invitadas | Cuentas robadas, permisos de más |
+| `admin-digitalx.sanity.studio` | Sanity Studio, alojado por Sanity y conectado solo a `production`. El acceso lo controla Sanity con la cuenta de GitHub del dueño (§7) | Cuentas robadas, permisos de más, editar en el dataset equivocado |
 | Sanity (dataset `production`, **público**) | Todo el contenido publicado se puede leer por la API sin contraseña | Publicar información privada por error |
 | Mux | Hosting de videos | Tokens expuestos |
 | Webhook Sanity → Vercel | Dispara la reconstrucción del sitio | URL del *deploy hook* filtrada (cualquiera podría forzar builds) |
@@ -46,7 +46,7 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
 
 1. Los secretos viven **solo** en las variables de entorno de Vercel y en `.env` local. `.env` nunca se sube a Git (ya está en `.gitignore`); `.env.example` lleva solo nombres, sin valores.
 2. **Prefijo `PUBLIC_`:** en Astro, toda variable que empieza con `PUBLIC_` termina en el código que descarga el navegador. Solo pueden llevarlo valores públicos (ID de proyecto de Sanity, nombre del dataset). **Prohibido** `PUBLIC_` en tokens.
-3. **El sitio no usa tokens de Sanity.** El dataset es público y el sitio solo lee contenido publicado. Si en el futuro hace falta un token (por ejemplo, vista previa de borradores), será de **solo lectura**, solo en el servidor y aprobado antes. El build baja el contenido **publicado** con la API pública (`perspective=published`, sin cabeceras de autenticación) y lo deja en `apps/web/.contenido/sanity.json`, que no se sube a Git (`.gitignore`). La muestra de pruebas (`packages/sanity/muestra/contenido.json`) sí se sube y solo trae datos públicos; nunca se agregan a Sanity datos privados (§4.1).
+3. **El sitio no usa tokens de Sanity.** El dataset es público y el sitio solo lee contenido publicado. Si en el futuro hace falta un token (por ejemplo, vista previa de borradores), será de **solo lectura**, solo en el servidor y aprobado antes. El build baja el contenido **publicado** con la API pública (`perspective=published`, sin cabeceras de autenticación) y lo deja en `apps/web/.contenido/sanity.json`, que no se sube a Git (`.gitignore`). La muestra de pruebas (`apps/web/src/lib/contenido/pruebas/contenido.json`) sí se sube y solo trae datos públicos; nunca se agregan a Sanity datos privados (§4.1).
 4. Ningún token de **escritura** de Sanity existe fuera de la cuenta del dueño. Si se necesita para una migración, se crea, se usa y se borra el mismo día.
 5. La URL del *deploy hook* de Vercel es un secreto: solo vive en la configuración del webhook de Sanity. Si se filtra, se regenera.
 6. Si un secreto se sube por error a Git: se **revoca y se regenera de inmediato**. Borrarlo del historial no basta.
@@ -71,7 +71,7 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
 
 ## 5. Encabezados HTTP y navegador
 
-Se configuran en `vercel.json` de **cada** proyecto (sitio y Studio).
+Se configuran en `vercel.json` del sitio (`apps/web`). El Studio vive solo en `*.sanity.studio` (no hay proyecto de Vercel del Studio), donde los encabezados los pone Sanity y no se pueden cambiar (ver «Studio» más abajo).
 
 | Encabezado | Valor |
 | --- | --- |
@@ -102,8 +102,8 @@ upgrade-insecure-requests
 - Se activa primero como `Content-Security-Policy-Report-Only`, se revisa la consola en todas las páginas y después se aplica.
 - Si hay scripts en línea, se permiten con *hash*, nunca con `'unsafe-inline'` en `script-src`. **Prohibido** `'unsafe-eval'`.
 - Cada servicio nuevo (formulario, analítica, reproductor) agrega **solo** su origen exacto a la directiva que necesita.
-- **Studio:** usa la política que Sanity documente para el Studio, con `frame-ancestors 'none'`, y siempre `noindex` (ver SEO §9).
-- **CORS en Sanity:** solo `https://digitalx.mx`, `https://admin.digitalx.mx` y `http://localhost:3333` / `http://localhost:4321`. Solo el Studio y localhost llevan "Allow credentials". Prohibido `*`.
+- **Studio** (`admin-digitalx.sanity.studio`): lo aloja Sanity y los encabezados los pone Sanity; no hay `vercel.json` ni forma de cambiarlos. **Medido con `curl -sI` tras la primera publicación (noviembre de 2026):** el host `*.sanity.studio` responde con `Strict-Transport-Security: max-age=63072000; includeSubDomains`, `X-Content-Type-Options: nosniff` y `X-Frame-Options: sameorigin`, y **redirige (302) toda ruta navegable al Dashboard de Sanity** (`www.sanity.io/@…/studio/<appId>`), que a su vez redirige al inicio de sesión si no hay sesión y envía `Content-Security-Policy: frame-ancestors 'self' https://*.sanity.io …` y HSTS. Solo los archivos de `/static/*` se sirven sin sesión (el código del Studio y el manifiesto del esquema; nada del contenido). **Riesgo aceptado por el dueño:** no hay `Referrer-Policy`, `Permissions-Policy` ni una CSP completa propias en esas respuestas, y no se pueden agregar. **Mitigación:** toda acción en el Studio exige la sesión de la cuenta de GitHub del dueño con 2FA (§7.2) y el Studio no sirve contenido sin sesión. **Cuándo revisarlo:** si Sanity cambia sus encabezados o si el Studio vuelve a alojarse fuera de Sanity.
+- **CORS en Sanity:** solo `https://digitalx.mx` y `http://localhost:3333` / `http://localhost:4321` en la lista del proyecto (`pnpm sanity cors list`). El Studio alojado en `https://admin-digitalx.sanity.studio` (y el Dashboard `https://www.sanity.io`) están permitidos con credenciales por Sanity sin figurar en esa lista; se comprobó con una petición con `Origin` y un origen ajeno no recibe `access-control-allow-origin`. Solo el Studio y localhost llevan "Allow credentials". Prohibido `*`.
 - **Métodos:** el sitio es estático (solo `GET` y `HEAD`). Si se agrega una función de servidor, acepta únicamente los métodos que usa y responde 405 al resto.
 - **Mapas de código (*source maps*)** desactivados en producción.
 
@@ -171,7 +171,8 @@ Cualquier cambio que pase una fila de "Hoy" a "Aplica" requiere un plan de segur
 
 - Página 404 propia, sin detalles técnicos (ya existe).
 - Los registros (*logs*) no contienen datos personales ni secretos.
-- Alertas de Vercel por builds fallidos activadas, para enterarse si el webhook o el contenido rompen el sitio.
+- Alertas de Vercel por builds fallidos activadas (Settings › My Notifications › Deployment Failures, por correo), para enterarse si el webhook o el contenido rompen el sitio. Según su documentación, Vercel avisa a quien creó el deployment; no estaba documentado a quién avisa cuando lo crea un *deploy hook*, así que se comprobó (17 de noviembre de 2026) con un hook temporal en `lanzamiento` que falló a propósito: el deployment terminó en Error y **el correo llegó al dueño**. El hook temporal se borró.
+- **Webhook Sanity → Vercel:** su URL es un secreto (§3.5). Está filtrado para disparar solo con documentos de contenido publicados en `production` (no con borradores, versiones, fotos sueltas ni documentos de sistema).
 - La plataforma de Vercel incluye mitigación de ataques de denegación de servicio y firewall; no se desactivan.
 
 ---

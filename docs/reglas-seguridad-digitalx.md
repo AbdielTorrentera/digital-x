@@ -99,8 +99,8 @@ object-src 'none';
 upgrade-insecure-requests
 ```
 
-- Se activa primero como `Content-Security-Policy-Report-Only`, se revisa la consola en todas las páginas y después se aplica.
-- Si hay scripts en línea, se permiten con *hash*, nunca con `'unsafe-inline'` en `script-src`. **Prohibido** `'unsafe-eval'`.
+- Se activó primero como `Content-Security-Policy-Report-Only`, se revisó la consola en todas las páginas y, con el lanzamiento (noviembre de 2026), `apps/web/vercel.json` la envía como `Content-Security-Policy` (obligatoria).
+- Si hay scripts en línea, se permiten con *hash*, nunca con `'unsafe-inline'` en `script-src`. **Prohibido** `'unsafe-eval'`. Hoy el único script en línea es el de arranque de `Base.astro` (`classList.add('js')`) y su *hash* está en `vercel.json`; **si se cambia ese script, se recalcula el hash** (`printf %s '<contenido>' | openssl dgst -sha256 -binary | base64`). Los demás scripts van como archivo propio: `vite.build.assetsInlineLimit: 0` en `astro.config.mjs` impide que Astro meta en el HTML los scripts pequeños (si se quita, el carrusel de proyectos dejaría de funcionar con la CSP obligatoria).
 - Cada servicio nuevo (formulario, analítica, reproductor) agrega **solo** su origen exacto a la directiva que necesita.
 - **Studio** (`admin-digitalx.sanity.studio`): lo aloja Sanity y los encabezados los pone Sanity; no hay `vercel.json` ni forma de cambiarlos. **Medido con `curl -sI` tras la primera publicación (noviembre de 2026):** el host `*.sanity.studio` responde con `Strict-Transport-Security: max-age=63072000; includeSubDomains`, `X-Content-Type-Options: nosniff` y `X-Frame-Options: sameorigin`, y **redirige (302) toda ruta navegable al Dashboard de Sanity** (`www.sanity.io/@…/studio/<appId>`), que a su vez redirige al inicio de sesión si no hay sesión y envía `Content-Security-Policy: frame-ancestors 'self' https://*.sanity.io …` y HSTS. Solo los archivos de `/static/*` se sirven sin sesión (el código del Studio y el manifiesto del esquema; nada del contenido). **Riesgo aceptado por el dueño:** no hay `Referrer-Policy`, `Permissions-Policy` ni una CSP completa propias en esas respuestas, y no se pueden agregar. **Mitigación:** toda acción en el Studio exige la sesión de la cuenta de GitHub del dueño con 2FA (§7.2) y el Studio no sirve contenido sin sesión. **Cuándo revisarlo:** si Sanity cambia sus encabezados o si el Studio vuelve a alojarse fuera de Sanity.
 - **CORS en Sanity:** solo `https://digitalx.mx` y `http://localhost:3333` / `http://localhost:4321` en la lista del proyecto (`pnpm sanity cors list`). El Studio alojado en `https://admin-digitalx.sanity.studio` (y el Dashboard `https://www.sanity.io`) están permitidos con credenciales por Sanity sin figurar en esa lista; se comprobó con una petición con `Origin` y un origen ajeno no recibe `access-control-allow-origin`. Solo el Studio y localhost llevan "Allow credentials". Prohibido `*`.
@@ -124,6 +124,11 @@ upgrade-insecure-requests
      - **Por qué no aplica:** el ataque exige patrones controlados por un atacante y `optimizationLevel >= 2`. Las herramientas que lo traen (ESLint del Studio y la CLI de Sanity) usan el nivel por defecto y patrones propios, solo corren en desarrollo y en CI, y `apps/web` no incluye el paquete.
      - **Por qué no se corrige:** la corrección existe solo en minimatch 11.0.1 o superior, que quita APIs (`makeRe()`, `Minimatch#regexp`, la clase `AST`), y ningún dependiente la acepta (eslint 10.14, `@eslint/config-array`, `@typescript-eslint/typescript-estree`, `eslint-plugin-jsx-a11y-x` y `@oclif/core` piden `^10`). Un override rompería herramientas que el CI no ejecuta (ESLint).
      - **Cuándo revisarlo:** cuando eslint o `@oclif/core` adopten minimatch 11, y en cada `pnpm audit` previo a un lanzamiento (punto 6).
+   - **`picomatch` (≤ 4.0.7 y 2.3.2)** — aviso [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) (denegación de servicio por expresiones regulares, *ReDoS*, con *extglobs* repetidos de una sola rama), severidad alta, aceptado por el dueño el 17 de noviembre de 2026 para el lanzamiento.
+     - **Dónde está:** en el Studio, por la CLI de Sanity (`@sanity/cli` › `@oclif/core` › `tinyglobby`, y `@sanity/codegen` › `chokidar` › `anymatch`), y también en `apps/web`, por Astro (`@astrojs/internal-helpers` y `unstorage` › `anymatch`). `pnpm audit` solo lista las rutas del Studio, pero las dos están en el árbol de dependencias.
+     - **Por qué no aplica:** el ataque exige que un atacante controle el patrón que se compila. En ambos lados los patrones son los propios de las herramientas, y solo corren al desarrollar y al compilar (en el equipo del dueño, en CI y en el build de Vercel). El sitio publicado es estático: ninguna de estas librerías corre en producción ni recibe datos de visitantes.
+     - **Por qué no se corrige:** no existe versión corregida (el aviso no trae versión parcheada).
+     - **Cuándo revisarlo:** en cada `pnpm audit` previo a un lanzamiento (punto 6) y cuando salga una versión corregida; entonces se actualiza Astro o Sanity, o se agrega un *override* si es compatible.
 
 ---
 
@@ -183,7 +188,7 @@ Cualquier cambio que pase una fila de "Hoy" a "Aplica" requiere un plan de segur
 - [ ] Proveedor del formulario y su configuración antispam (si se publica).
 - [ ] Aviso de privacidad revisado.
 - [ ] Registros SPF, DKIM y DMARC de ambos dominios.
-- [ ] Activar 2FA en todas las cuentas de §7 y confirmarlo.
+- [ ] Activar 2FA y el bloqueo de transferencia de los dominios en todas las cuentas de §7 y confirmarlo. El dueño lo activará en los días posteriores al lanzamiento (decisión del 17 de noviembre de 2026): no bloquea el lanzamiento, pero queda como riesgo abierto hasta confirmarlo.
 
 ---
 

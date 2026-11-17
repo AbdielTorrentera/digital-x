@@ -66,7 +66,7 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
         label="Cotizar por WhatsApp"
         href={waUrl()}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
       />
     </div>
@@ -80,7 +80,7 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
     {negocio.redes.length > 0 && (
       <div class="menu__socials" style="--d:0.55s">
         {negocio.redes.map((r) => (
-          <a class="menu__social t-caption2" href={r.url} target="_blank" rel="noopener">
+          <a class="menu__social t-caption2" href={r.url} target="_blank" rel="noopener noreferrer">
             {r.nombre}
             <span class="visually-hidden"> (se abre en una pestaña nueva)</span>
           </a>
@@ -92,7 +92,7 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
         label="Cotizar por WhatsApp"
         href={waUrl()}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label="Cotizar por WhatsApp (se abre en una pestaña nueva)"
       />
     </div>

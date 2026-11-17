@@ -1,5 +1,150 @@
 {
   "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/servicios",
+      "destination": "https://digitalx.mx/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/servicios/",
+      "destination": "https://digitalx.mx/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/nosotros",
+      "destination": "https://digitalx.mx/nosotros/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/nosotros/",
+      "destination": "https://digitalx.mx/nosotros/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/contacto",
+      "destination": "https://digitalx.mx/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/contacto/",
+      "destination": "https://digitalx.mx/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/politica-de-privacidad",
+      "destination": "https://digitalx.mx/politica-de-privacidad/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/politica-de-privacidad/",
+      "destination": "https://digitalx.mx/politica-de-privacidad/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/servicios-de-video",
+      "destination": "https://digitalx.mx/video/streaming-para-eventos/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/servicios-de-video/",
+      "destination": "https://digitalx.mx/video/streaming-para-eventos/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/renta-de-audio",
+      "destination": "https://digitalx.mx/audio/renta-de-audio/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/renta-de-audio/",
+      "destination": "https://digitalx.mx/audio/renta-de-audio/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://digitalx.mx/",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "host",
+          "value": "^(www\\.)?digitalequis\\.com$"
+        }
+      ]
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -25,7 +170,7 @@
           "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
         },
         {
-          "key": "Content-Security-Policy-Report-Only",
+          "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.sanity.io https://image.mux.com; media-src 'self' blob: https://stream.mux.com; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
         }
       ]

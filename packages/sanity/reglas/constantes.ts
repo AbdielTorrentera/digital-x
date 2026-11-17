@@ -19,6 +19,7 @@ export const SLUGS_RESERVADOS = [
 
 /**
  * Páginas fijas a las que puede enlazar un texto: las del registro del sitio (`lib/paginas.ts`) que se pueden enlazar.
+ * `/proyectos/` solo existe con proyectos publicados (si no, el sitio muestra el enlace como texto).
  * `/blog/` (pendiente de material) y `/resenas/` (aún no registrada) se agregan cuando se construyan sus etapas.
  */
 export const RUTAS_FIJAS = [
@@ -28,13 +29,6 @@ export const RUTAS_FIJAS = [
   {title: 'Condiciones de contratación', value: '/condiciones-de-contratacion/'},
   {title: 'Política de privacidad', value: '/politica-de-privacidad/'},
 ]
-
-/**
- * Páginas fijas planeadas que todavía no existen: un texto puede enlazarlas (llevan a la 404 en desarrollo; el Studio
- * avisa) pero el build de producción falla mientras alguno las enlace. Es la fuente única: `lib/paginas.ts` la lee.
- * Al construir una página, se quita de aquí.
- */
-export const PAGINAS_FIJAS_SIN_CONSTRUIR = ['/proyectos/']
 
 /** "También te puede servir" solo admite estas dos páginas (estructura §7). */
 export const RUTAS_TAMBIEN = RUTAS_FIJAS.filter((r) =>

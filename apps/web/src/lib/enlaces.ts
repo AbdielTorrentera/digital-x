@@ -1,4 +1,4 @@
-import { urlsPlaneadas } from './paginas.ts';
+import { paginas, urlsPlaneadas, visible } from './paginas.ts';
 
 /**
  * Enlace a una página del sitio desde el contenido (tarjetas del Inicio, por ejemplo), con o sin ancla
@@ -12,6 +12,17 @@ export const enlaceAPagina = (url: string): string => {
     throw new Error(`"${url}" no está en src/lib/paginas.ts como página en lanzamiento: no se puede enlazar.`);
   }
   return url;
+};
+
+/**
+ * Enlace a una página que puede no existir según los datos (hoy, /proyectos/: solo existe con proyectos publicados):
+ * devuelve la URL si la página está construida y `null` si no, para que el componente muestre texto sin enlace. Una URL
+ * que no está en el registro se rechaza igual que en `enlaceAPagina`. Es el mismo patrón que `enlaceDeServicio`.
+ */
+export const enlaceSiExiste = (url: string): string | null => {
+  enlaceAPagina(url);
+  const pagina = paginas.find((p) => p.url === url.split('#')[0]);
+  return pagina && visible(pagina) ? url : null;
 };
 
 /** ¿Es una página registrada en lanzamiento? La usa también check:enlaces para tolerar las aún no construidas. */

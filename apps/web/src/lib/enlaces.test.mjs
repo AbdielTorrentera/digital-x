@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { anclaDe, enlaceAPagina, esPaginaPlaneada, idsDeHtml } from './enlaces.ts';
+import { anclaDe, enlaceAPagina, enlaceSiExiste, esPaginaPlaneada, idsDeHtml } from './enlaces.ts';
 
 test('una página construida se enlaza', () => {
   assert.equal(enlaceAPagina('/'), '/');
@@ -10,6 +10,15 @@ test('una página construida se enlaza', () => {
 test('una página en lanzamiento se enlaza aunque todavía no esté construida', () => {
   assert.equal(enlaceAPagina('/video/video-con-drone/'), '/video/video-con-drone/');
   assert.equal(esPaginaPlaneada('/tecnologia/paginas-web/'), true);
+});
+
+test('enlaceSiExiste devuelve la URL de una página construida y null si está planeada pero sin construir', () => {
+  assert.equal(enlaceSiExiste('/'), '/');
+  assert.equal(enlaceSiExiste('/proyectos/'), '/proyectos/', 'los datos de prueba traen proyectos y su página');
+  assert.equal(enlaceSiExiste('/video/#que-incluye'), '/video/#que-incluye');
+  assert.equal(enlaceSiExiste('/tecnologia/paginas-web/'), null, 'servicio sin construir');
+  assert.throws(() => enlaceSiExiste('/inventada/'), /no se puede enlazar/);
+  assert.throws(() => enlaceSiExiste('/blog/'), /no se puede enlazar/);
 });
 
 test('una página pendiente de material nunca se enlaza, aunque esté en el registro', () => {

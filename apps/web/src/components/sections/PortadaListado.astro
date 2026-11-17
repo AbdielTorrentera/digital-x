@@ -1,0 +1,90 @@
+---
+import Foto from '../Foto.astro';
+import Migas from '../Migas.astro';
+import type { Foto as FotoDatos } from '../../lib/contenido/tipos';
+
+// Portada de una página de listado (la de /property de la plantilla Marby, sin filtros ni búsqueda): foto a todo el ancho
+// con el H1 centrado encima, las migas fijas (`sticky`) bajo la barra y la introducción. La usan las páginas de categoría
+// y /proyectos/, así que se ven igual. Medidas y comportamiento: docs/reglas-diseno-digitalx.md §6 (Tarjetas).
+interface Props {
+  foto: FotoDatos;
+  h1: string;
+  intro: string;
+  /** Las migas completas, de Inicio a la página actual. */
+  migas: { titulo: string; url: string }[];
+}
+const { foto, h1, intro, migas } = Astro.props;
+---
+
+<section class="phero sobre-negro">
+  <Foto class="phero__img" src={foto.src} alt={foto.alt} sizes="100vw" prioritaria />
+  <div class="container phero__inner">
+    <h1 class="t-h1 c-blanco">{h1}</h1>
+  </div>
+</section>
+<div class="barra-migas">
+  <div class="container">
+    <Migas items={migas} />
+  </div>
+</div>
+<section class="intro">
+  <div class="container">
+    <p class="t-body intro__texto">{intro}</p>
+  </div>
+</section>
+<style>
+  /* Migas debajo de la portada y fijas bajo la barra al hacer scroll (sticky, a `--nav-alto`): por debajo de la barra del
+     menú (z 5) y del menú interno, sin tapar el contenido (ocupan su lugar en el flujo). */
+  .barra-migas {
+    position: sticky;
+    top: var(--nav-alto);
+    z-index: 3;
+    background: var(--dx-blanco);
+  }
+  /* La portada de la página de listado de Marby: foto a todo el ancho con el título encima. En lugar de la franja de
+     vidrio, la foto se oscurece (--dx-brillo-sobre-foto) para que el texto blanco cumpla el contraste (marca §3). El alto
+     es mínimo, no fijo: el título crece con el zoom y la letra grande (diseño §9). */
+  .phero {
+    position: relative;
+    /* Alto: la mitad de la pantalla visible bajo la barra en móvil y 70 % desde 768 px (dvh donde exista). */
+    min-height: max(280px, calc(50vh - var(--nav-alto)));
+    min-height: max(280px, calc(50dvh - var(--nav-alto)));
+    overflow: clip;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Picture no le pone al <img> el atributo de alcance de Astro: se selecciona como global dentro de la sección. */
+  .phero :global(.phero__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--dx-brillo-sobre-foto));
+  }
+  /* El H1 va centrado sobre la foto, como en la portada del listado de Marby. */
+  .phero__inner {
+    position: relative;
+    padding-block: var(--esp-7);
+    text-align: center;
+  }
+  .phero__inner h1 {
+    max-width: 28ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .intro {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-4) 0;
+  }
+  .intro__texto {
+    max-width: 70ch;
+  }
+  @media (min-width: 768px) {
+    .phero {
+      min-height: calc(70vh - var(--nav-alto));
+      min-height: calc(70dvh - var(--nav-alto));
+    }
+  }
+</style>

@@ -65,7 +65,7 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
    - Los enlaces externos llevan `rel="noopener noreferrer"`.
 4. Los esquemas de Sanity validan los campos obligatorios y los formatos (URL, slug), para que un error de captura no rompa una página. Las longitudes y el vocabulario son guía de redacción, no validaciones.
 5. Imágenes: antes de subirlas se les quitan los **metadatos de ubicación (GPS/EXIF)**. En Sanity no se activan los metadatos `exif` ni `location`. Lo mismo para videos.
-6. **Todo lo publicado se muestra.** Como el dataset es público, un documento publicado lo puede leer cualquiera y el sitio lo muestra. Antes de publicar, el dueño confirma que tiene el permiso de quien aparece (cliente, reseña, proyecto); el sitio no lo valida y el comprobante del permiso no se guarda en Sanity.
+6. **Todo lo publicado se muestra.** Como el dataset es público, un documento publicado lo puede leer cualquiera y el sitio lo muestra. Por eso, antes de publicar, el dueño revisa que el contenido sea el que quiere hacer público.
 
 ---
 

@@ -1,0 +1,134 @@
+---
+import Foto from '../Foto.astro';
+import Icon from '../Icon.astro';
+import { enlaceSiExiste } from '../../lib/enlaces';
+import type { Proyecto } from '../../lib/contenido/proyectos';
+
+// Tarjeta de un proyecto: la tarjeta del Team de la plantilla Marby (foto, número, título, resumen, servicios como
+// etiquetas y municipio con su ícono). La usan el carrusel de proyectos (`sections/Team.astro`, variante `carrusel`: 278 px
+// de ancho, la foto aparece al pasar el cursor en pantallas grandes) y la cuadrícula de /proyectos/ (variante `cuadricula`:
+// ancho fluido y foto siempre visible, porque va sobre fondo blanco y el texto es blanco). Toda la tarjeta enlaza al
+// detalle del proyecto; si esa página no existe (sin la «Página de proyectos» publicada), es una tarjeta sin enlace.
+interface Props {
+  proyecto: Proyecto;
+  /** "01", "02"…: el lugar en la fila; decorativo. */
+  numero: string;
+  variante?: 'carrusel' | 'cuadricula';
+  /** Nivel del título: h2 cuando la tarjeta cuelga del H1 de la página; h3 bajo un encabezado de sección. */
+  nivel?: 'h2' | 'h3';
+}
+const { proyecto: p, numero, variante = 'carrusel', nivel = 'h3' } = Astro.props;
+const Titulo = nivel;
+const href = enlaceSiExiste(p.url);
+const Etiqueta = href ? 'a' : 'article';
+---
+
+<Etiqueta
+  class:list={['member', `member--${variante}`]}
+  {...(href ? { href, 'aria-label': `Ver proyecto: ${p.titulo}` } : {})}
+>
+  <Foto class="member__photo" src={p.foto.src} alt={p.foto.alt} sizes="278px" widths={[278, 556, 834]} />
+  <div class="member__blur" aria-hidden="true"></div>
+  <div class="member__body">
+    <div class="member__name">
+      <p class="t-caption c-blanco">{numero}</p>
+      <Titulo class="t-h4 c-blanco">{p.titulo}</Titulo>
+      <p class="t-caption c-blanco">{p.texto}</p>
+    </div>
+    <div class="member__meta">
+      <p class="t-caption c-blanco">{p.servicios.join(' · ')}</p>
+      <p class="t-caption c-blanco member__city">
+        <Icon name="pin" size="boton" />
+        {p.municipio}
+      </p>
+    </div>
+  </div>
+</Etiqueta>
+<style>
+  /* Fondo oscuro desde el primer momento (mientras la foto carga, el texto blanco nunca queda sobre un fondo claro). */
+  .member {
+    position: relative;
+    display: block;
+    width: 278px;
+    height: 352px;
+    flex: none;
+    border-radius: 8px;
+    overflow: clip;
+    border: 1px solid var(--dx-linea-sobre-foto);
+    background: var(--dx-negro);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    -webkit-user-drag: none;
+  }
+  /* Carrusel en pantalla grande con cursor: la foto aparece al pasar el cursor y, mientras tanto, la tarjeta es de vidrio
+     sobre la foto oscura de la sección (que también es negra de fondo, así que nunca se ve clara). */
+  @media (min-width: 1200px) and (hover: hover) {
+    .member--carrusel {
+      background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
+    }
+  }
+  .member :global(.member__photo),
+  .member__blur {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease);
+  }
+  .member :global(.member__photo) {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(var(--dx-brillo-sobre-foto));
+  }
+  .member__blur {
+    inset: auto 0 0;
+    height: 54px;
+    background: color-mix(in srgb, var(--dx-negro) 15%, transparent);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+  .member:hover :global(.member__photo),
+  .member:hover .member__blur,
+  .member:focus-visible :global(.member__photo),
+  .member:focus-visible .member__blur,
+  .member--cuadricula :global(.member__photo),
+  .member--cuadricula .member__blur {
+    opacity: 1;
+  }
+  .member__body {
+    position: absolute;
+    inset: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .member__name {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .member__meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .member__meta > :first-child {
+    flex: 1;
+  }
+  .member__city {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .member__city :global(.icon) {
+    width: 14px;
+    height: 14px;
+  }
+  /* Sin cursor que revele la foto (tablet, móvil o pantalla táctil), la foto se ve siempre. */
+  @media (max-width: 1199.98px), (hover: none) {
+    .member :global(.member__photo),
+    .member__blur {
+      opacity: 1;
+    }
+  }
+</style>

@@ -394,11 +394,14 @@ export const nosotros = defineType({
   preview: {prepare: () => ({title: 'Nosotros'})},
 })
 
-/** Las páginas de listado: Proyectos, Blog y Reseñas comparten forma (encabezado, introducción y su SEO). */
+/**
+ * Las páginas de listado: Proyectos, Blog y Reseñas comparten forma (encabezado, introducción y su SEO). La de proyectos
+ * trae además su cierre (`cierre`), que usan el listado y la página de cada proyecto.
+ */
 const paginaDeListado = (
   name: string,
   title: string,
-  ejemplo: {h1: string; intro: string; title: string; meta: string},
+  ejemplo: {h1: string; intro: string; title: string; meta: string; cierre?: string},
 ) =>
   defineType({
     name,
@@ -432,6 +435,18 @@ const paginaDeListado = (
         description: `Un párrafo bajo el título. Ejemplo: ${ejemplo.intro}`,
         validation: (Rule) => Rule.required(),
       }),
+      ...(ejemplo.cierre
+        ? [
+            defineField({
+              name: 'cierre',
+              title: 'Cierre de la página',
+              type: 'cierre',
+              group: 'contenido',
+              validation: (Rule) => Rule.required(),
+              description: `Con los botones de WhatsApp y llamada, al final del listado y de la página de cada proyecto. Sin formulario. Ejemplo: ${ejemplo.cierre}`,
+            }),
+          ]
+        : []),
       campoFoto({
         name: 'foto',
         title: 'Foto de la portada',
@@ -448,6 +463,7 @@ export const paginaProyectos = paginaDeListado('paginaProyectos', 'Página de pr
   intro: 'Trabajos reales de Digital X, con lo que se necesitaba, lo que se hizo y cómo quedó.',
   title: 'Proyectos de audio, video y tecnología | Digital X',
   meta: 'Mira proyectos reales de Digital X: audio, video y tecnología para eventos y negocios en Puebla y Atlixco. Cotiza por WhatsApp.',
+  cierre: 'Cotiza tu evento o proyecto',
 })
 export const paginaBlog = paginaDeListado('paginaBlog', 'Página del blog', {
   h1: 'Blog de Digital X',

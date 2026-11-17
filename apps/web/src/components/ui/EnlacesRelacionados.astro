@@ -1,0 +1,62 @@
+---
+// Lista de enlaces con línea, como la lista de lugares cercanos de Marby: título subrayado y una frase. La usan «También
+// te puede servir» de los servicios y «Servicios que usamos» de los proyectos. Un elemento sin `href` se omite antes de
+// llegar aquí (una página que no existe no se enlaza); uno sin página propia pero que se quiere nombrar va con `href: null`
+// y se dibuja como texto.
+interface Props {
+  items: { titulo: string; texto: string; href: string | null }[];
+}
+const { items } = Astro.props;
+---
+
+<ul class="cerca">
+  {items.map((item) => (
+    <li>
+      {item.href ? (
+        <a class="cerca__enlace" href={item.href}>
+          <span class="cerca__titulo t-h3">{item.titulo}</span>
+          <span class="t-body">{item.texto}</span>
+        </a>
+      ) : (
+        <div class="cerca__enlace">
+          <span class="t-h3">{item.titulo}</span>
+          <span class="t-body">{item.texto}</span>
+        </div>
+      )}
+    </li>
+  ))}
+</ul>
+<style>
+  .cerca {
+    display: flex;
+    flex-direction: column;
+  }
+  .cerca li {
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .cerca li:last-child {
+    box-shadow: none;
+  }
+  .cerca__enlace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    min-height: var(--tactil);
+    padding-block: var(--esp-3);
+  }
+  .cerca__titulo {
+    text-decoration: underline;
+    text-underline-offset: var(--esp-1);
+  }
+  .cerca__enlace:hover .cerca__titulo {
+    text-decoration-thickness: var(--foco);
+  }
+  @media (min-width: 768px) {
+    .cerca__enlace {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--esp-5);
+    }
+  }
+</style>

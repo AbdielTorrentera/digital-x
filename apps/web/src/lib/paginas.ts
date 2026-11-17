@@ -14,8 +14,8 @@
  * desde el contenido (en desarrollo llevan a la 404), pero el build de producción falla
  * mientras exista un enlace a una (ver astro.config.mjs). Las 'pendiente' nunca se enlazan.
  */
-import { PAGINAS_FIJAS_SIN_CONSTRUIR } from '@digitalx/sanity/reglas';
 import { categorias } from './contenido/categorias.ts';
+import { hayProyectos, proyectos } from './contenido/proyectos.ts';
 import { registroDeServicios } from './contenido/servicios.ts';
 
 /** El slug de una categoría (`audio`, `video`, `tecnologia`…): sale de las categorías de Sanity. */
@@ -30,6 +30,8 @@ export interface Pagina {
   categoria?: Categoria;
   /** Solo las páginas de categoría (/audio/, /video/ y /tecnologia/): la categoría de la que son página. */
   paginaDe?: Categoria;
+  /** Solo la página de detalle de un proyecto (/proyectos/{slug}/). */
+  proyecto?: true;
 }
 
 /** El slug de la URL de una categoría (/audio/, /video/, /tecnologia/), desde las categorías de Sanity. */
@@ -57,13 +59,9 @@ const base: Pagina[] = [
   // es texto.
   ...registroDeServicios.map((s) => servicio(s.slug, s.titulo, s.categoria, s.construida)),
 
-  // Se construye en su etapa: entonces se quita de `PAGINAS_FIJAS_SIN_CONSTRUIR` (packages/sanity/reglas/constantes.ts).
-  {
-    url: '/proyectos/',
-    titulo: 'Proyectos',
-    estado: 'lanzamiento',
-    construida: !PAGINAS_FIJAS_SIN_CONSTRUIR.includes('/proyectos/'),
-  },
+  // /proyectos/ existe solo con al menos un proyecto publicado Y la «Página de proyectos» publicada (`hayProyectos`).
+  // Sin ellos, la página no se genera y ningún enlace del sitio a ella se dibuja (ver `enlaceSiExiste`).
+  { url: '/proyectos/', titulo: 'Proyectos', estado: 'lanzamiento', construida: hayProyectos },
   // [PENDIENTE: número mínimo de artículos para publicar el blog]
   { url: '/blog/', titulo: 'Blog', estado: 'pendiente', construida: false },
   { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: true },
@@ -104,8 +102,18 @@ export const destinoDeCategoria = (id: Categoria): string | null => {
   return `/${categorias.find((c) => c.id === id)!.slug}/`;
 };
 
-/** Todas las páginas: fijas, servicios y las de categoría que existen hoy. */
-export const paginas: Pagina[] = [...base, ...paginasDeCategoria()];
+/** El detalle de cada proyecto (/proyectos/{slug}/): existe solo si existe /proyectos/. */
+const paginasDeProyectos = (): Pagina[] =>
+  proyectos.map((p) => ({
+    url: p.url,
+    titulo: p.titulo,
+    estado: 'lanzamiento',
+    construida: hayProyectos,
+    proyecto: true,
+  }));
+
+/** Todas las páginas: fijas, servicios, las de categoría y los detalles de proyecto que existen hoy. */
+export const paginas: Pagina[] = [...base, ...paginasDeCategoria(), ...paginasDeProyectos()];
 
 /** Rutas relativas a src/pages/ que debe tener una página para estar construida. */
 export const archivosDe = (url: string) => {
@@ -114,6 +122,10 @@ export const archivosDe = (url: string) => {
   // Los servicios (/{categoria}/{slug}/) salen todos de una sola ruta dinámica, y las categorías de otra.
   if (paginas.some((p) => p.categoria && p.url === url)) archivos.push('[categoria]/[slug].astro');
   if (paginas.some((p) => p.paginaDe && p.url === url)) archivos.push('[categoria].astro');
+  // /proyectos/ y los detalles (/proyectos/{slug}/) salen de una sola ruta dinámica, que solo genera algo si hay proyectos
+  // publicados y la «Página de proyectos» publicada.
+  if (url === '/proyectos/' || paginas.some((p) => p.proyecto && p.url === url))
+    archivos.push('proyectos/[...slug].astro');
   return archivos;
 };
 

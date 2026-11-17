@@ -29,6 +29,12 @@ interface OpcionesDeSeo {
   group?: string
   ejemploTitle?: string
   ejemploMeta?: string
+  /** Qué pasa si el título queda vacío (solo cuando es opcional). */
+  siVacioTitle?: string
+  /** Qué pasa si la descripción queda vacía (solo cuando es opcional). */
+  siVacioMeta?: string
+  /** Qué pasa si la imagen para compartir queda vacía. */
+  siVacioImagen?: string
 }
 
 /** Cómo aparece la página en Google y al compartirla: título, descripción e imagen. Solo se exige que existan. */
@@ -38,6 +44,9 @@ export const campoSeo = ({
   group = 'seo',
   ejemploTitle = 'Renta de audio para eventos en Puebla y Atlixco | Digital X',
   ejemploMeta = 'Renta de audio y sonido, y sonorización, con técnico durante todo tu evento en Puebla, Atlixco y alrededores. Cotiza por WhatsApp.',
+  siVacioTitle = 'Si lo dejas vacío se usa el título de la página.',
+  siVacioMeta,
+  siVacioImagen = 'Si la dejas vacía se usa la imagen de Digital X.',
 }: OpcionesDeSeo = {}) =>
   defineField({
     name: 'seo',
@@ -55,7 +64,7 @@ export const campoSeo = ({
         title: 'Título para Google',
         type: 'string',
         components: {input: ContadorDeCaracteres},
-        description: `Es el título azul que se ve en Google. Guía: unos 60 caracteres. Ejemplo: ${ejemploTitle}${obligatorio ? '' : '. Si lo dejas vacío se usa el título de la página.'}`,
+        description: `Es el título azul que se ve en Google. Guía: unos 60 caracteres. Ejemplo: ${ejemploTitle}${obligatorio ? '' : `. ${siVacioTitle}`}`,
         validation: (Rule) =>
           Rule.custom((valor) => (!valor && obligatorio ? 'Escribe el título para Google.' : true)),
       }),
@@ -65,7 +74,7 @@ export const campoSeo = ({
         type: 'text',
         rows: 3,
         components: {input: ContadorDeCaracteres},
-        description: `El texto gris bajo el título en Google. Guía: unos 155 caracteres. Ejemplo: ${ejemploMeta}`,
+        description: `El texto gris bajo el título en Google. Guía: unos 155 caracteres. Ejemplo: ${ejemploMeta}${siVacioMeta && !metaObligatoria ? ` ${siVacioMeta}` : ''}`,
         validation: (Rule) =>
           Rule.custom((valor) =>
             !valor && metaObligatoria ? 'Escribe la descripción para Google.' : true,
@@ -76,7 +85,8 @@ export const campoSeo = ({
         title: 'Imagen al compartir',
         type: 'foto',
         description:
-          'Opcional. La imagen que se ve al compartir la página por WhatsApp o redes (1200 × 630 px). Si la dejas vacía se usa la imagen de Digital X.',
+          'Opcional. La imagen que se ve al compartir la página por WhatsApp o redes (1200 × 630 px). ' +
+          siVacioImagen,
       }),
     ],
   })

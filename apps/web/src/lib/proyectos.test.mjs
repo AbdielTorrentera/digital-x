@@ -1,13 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  fechaLegible,
   MAXIMO_PROYECTOS,
+  metaSeoDeProyecto,
   MINIMO_PROYECTOS,
   proyectosDeCategoria,
   proyectosDeNosotros,
   proyectosDeServicio,
   proyectosDelInicio,
   proyectosPublicables,
+  tituloSeoDeProyecto,
 } from './proyectos.ts';
 
 const real = (n) => ({ titulo: `Proyecto ${n}`, foto: { src: `/foto-${n}.webp` } });
@@ -77,4 +80,39 @@ test('proyectosDeCategoria trae los que usaron algún servicio de la categoría 
   assert.deepEqual(proyectosDeCategoria([], nombres), []);
   // Un nombre parecido no cuenta: el nombre debe ser el exacto del registro.
   assert.deepEqual(proyectosDeCategoria([usa(real(1), 'Video')], nombres), []);
+});
+
+test('el título para Google es el del dueño y, si falta, «{título} en {municipio} | Digital X»', () => {
+  const p = { titulo: 'Conferencia empresarial', municipio: 'Puebla' };
+  assert.equal(tituloSeoDeProyecto({ ...p, seoTitle: 'Mi título | Digital X' }), 'Mi título | Digital X');
+  assert.equal(tituloSeoDeProyecto(p), 'Conferencia empresarial en Puebla | Digital X');
+  assert.equal(tituloSeoDeProyecto({ ...p, seoTitle: '   ' }), 'Conferencia empresarial en Puebla | Digital X');
+});
+
+test('el título automático no repite el municipio si el título ya lo nombra (sin acentos ni mayúsculas)', () => {
+  assert.equal(
+    tituloSeoDeProyecto({ titulo: 'Audio para evento cultural en Atlixco', municipio: 'Atlixco' }),
+    'Audio para evento cultural en Atlixco | Digital X',
+  );
+  assert.equal(
+    tituloSeoDeProyecto({ titulo: 'Sonido en IZUCAR de Matamoros', municipio: 'Izúcar de Matamoros' }),
+    'Sonido en IZUCAR de Matamoros | Digital X',
+  );
+  assert.equal(
+    tituloSeoDeProyecto({ titulo: 'Streaming', municipio: 'Izúcar de Matamoros' }),
+    'Streaming en Izúcar de Matamoros | Digital X',
+  );
+});
+
+test('la descripción para Google es la del dueño y, si falta, el resumen tal cual', () => {
+  assert.equal(metaSeoDeProyecto({ resumen: 'Resumen.', seoMeta: 'Mi meta.' }), 'Mi meta.');
+  assert.equal(metaSeoDeProyecto({ resumen: 'Resumen.' }), 'Resumen.');
+  assert.equal(metaSeoDeProyecto({ resumen: 'Resumen.', seoMeta: '' }), 'Resumen.');
+});
+
+test('fechaLegible da mes y año en español sin mover el mes por la zona horaria', () => {
+  assert.equal(fechaLegible('2026-03-14'), 'marzo de 2026');
+  assert.equal(fechaLegible('2026-01-01'), 'enero de 2026');
+  assert.equal(fechaLegible('2025-12-31'), 'diciembre de 2025');
+  assert.equal(fechaLegible('rara'), 'rara');
 });

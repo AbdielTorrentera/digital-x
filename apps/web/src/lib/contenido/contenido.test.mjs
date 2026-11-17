@@ -10,7 +10,7 @@ import { categorias, guia } from './categorias.ts';
 import { cierre, cobertura, faq, porQue, portada, queHacemos } from './inicio.ts';
 import { aFoto, aImagen, atributosDeAlt, nombreDeArchivo } from './imagenes.ts';
 import { cierre as cierreNosotros, manifiesto, proyectosPagina } from './nosotros.ts';
-import { proyectos } from './proyectos.ts';
+import { hayProyectos, paginaProyectos, proyectos } from './proyectos.ts';
 import { faltantesDePagina, registroDeServicios, servicios, slugs } from './servicios.ts';
 import { fotoCierre, fotos } from './servicios-fotos.ts';
 import { aTexto } from './texto.ts';
@@ -43,7 +43,7 @@ test('la URL de cada servicio se deriva de su categoría y las páginas siguen a
   assert.equal(destinoDeCategoria('audio'), `/audio/${registroDeServicios.find((s) => s.categoria === 'audio').slug}/`);
   assert.equal(destinoDeCategoria('video'), '/video/');
   assert.ok(menu.some((m) => m.url === '/video/'));
-  assert.deepEqual(urlsSinConstruir, ['/tecnologia/paginas-web/', '/proyectos/']);
+  assert.deepEqual(urlsSinConstruir, ['/tecnologia/paginas-web/']);
 });
 
 test('el texto con enlaces vuelve a la forma string | TextoConEnlaces (los servicios por su slug)', () => {
@@ -155,14 +155,45 @@ test('el recorte y el ancho máximo del CDN se calculan sobre la foto original',
   assert.equal(aFoto({ asset: { _ref: id }, alt: 'x', hotspot: { x: 0.25, y: 0.75 } }).posicion, '25% 75%');
 });
 
-test('los proyectos traen foto y servicios por nombre', () => {
+test('los proyectos traen foto, servicios por nombre y slug, su URL y su SEO', () => {
   assert.ok(proyectos.length > 0);
   for (const p of proyectos) {
-    assert.ok(p.titulo && p.municipio && p.texto && p.foto.src.src);
+    assert.ok(p.titulo && p.municipio && p.texto && p.foto.src.src && p.fotos.length > 0);
+    assert.equal(p.url, `/proyectos/${p.slug}/`);
     assert.ok(
       p.servicios.length > 0 && p.servicios.every((nombre) => registroDeServicios.some((s) => s.titulo === nombre)),
     );
+    assert.deepEqual(
+      p.slugsServicios,
+      p.servicios.map((nombre) => registroDeServicios.find((s) => s.titulo === nombre).slug),
+    );
+    assert.ok(p.title && p.meta && p.imagen.startsWith('https://cdn.sanity.io/'));
   }
+});
+
+test('los proyectos van por «orden» y los campos opcionales solo existen si se capturaron', () => {
+  assert.deepEqual(
+    proyectos.map((p) => p.slug),
+    ['proyecto-con-todos-los-campos', 'proyecto-de-prueba'],
+  );
+  const [completo, simple] = proyectos;
+  assert.ok(completo.reto && completo.solucion && completo.resultado);
+  assert.deepEqual(completo.fecha, { iso: '2026-03-14', texto: 'marzo de 2026' });
+  assert.equal(completo.fotos.length, 3);
+  // Con SEO propio se usa tal cual; sin él, título y descripción salen solos.
+  assert.equal(completo.title, 'Título propio del proyecto | Digital X');
+  assert.equal(simple.title, 'Proyecto de prueba en Ciudad Uno | Digital X');
+  assert.equal(simple.meta, simple.texto);
+  for (const campo of ['reto', 'solucion', 'resultado', 'fecha']) assert.ok(!(campo in simple), `sin ${campo}`);
+});
+
+test('la «Página de proyectos» publicada trae su cierre y su SEO; con ella y con proyectos, la sección existe', () => {
+  assert.ok(paginaProyectos);
+  assert.ok(
+    paginaProyectos.h1 && paginaProyectos.intro && paginaProyectos.cierre.titulo && paginaProyectos.cierre.texto,
+  );
+  assert.ok(paginaProyectos.title && paginaProyectos.meta);
+  assert.equal(hayProyectos, true);
 });
 
 test('el negocio sale de la configuración y las secciones del Inicio traen sus datos', () => {

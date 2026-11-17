@@ -125,7 +125,7 @@ Tipografías del sitio:
 
 ## 6. Fotografía y video
 
-- **Solo material propio y real** de trabajos de Digital X, con permiso cuando aparezcan personas, logos o lugares de clientes (ver `reglas-seo-digitalx.md`, sección 5).
+- **Solo material propio y real** de trabajos de Digital X (ver `reglas-seo-digitalx.md`, sección 5).
 - Estilo *(propuesta)*: fotos con luz de evento, contrastadas, mostrando equipo en uso y público; que se vea el ambiente y el trabajo técnico, no fotos de catálogo.
 - **PROHIBIDO** usar fotos de bancos de imágenes como si fueran trabajos propios, y las fotos de demo de la plantilla.
 - Formatos, nombres de archivo y `alt`: ver `reglas-seo-digitalx.md`, sección 6.

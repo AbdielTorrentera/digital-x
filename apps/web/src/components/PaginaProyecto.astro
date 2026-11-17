@@ -1,0 +1,200 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from './Foto.astro';
+import CierreContacto from './sections/CierreContacto.astro';
+import EncabezadoDividido from './sections/EncabezadoDividido.astro';
+import Team from './sections/Team.astro';
+import EnlacesRelacionados from './ui/EnlacesRelacionados.astro';
+import { proyectosPagina } from '../lib/contenido/nosotros';
+import { paginaProyectos, proyectos, type Proyecto } from '../lib/contenido/proyectos';
+import { servicios } from '../lib/contenido/servicios';
+import { fotoCierre } from '../lib/contenido/servicios-fotos';
+import { proyectoJsonLd, serializarJsonLd } from '../lib/jsonld';
+import { idNegocio, mensajesWhatsApp, negocio, telUrl, waUrl } from '../lib/negocio';
+import { enlaceDeServicio } from '../lib/servicios';
+
+// El detalle de un proyecto (/proyectos/{slug}/): encabezado dividido de los servicios (foto, migas, H1 y una ficha con
+// municipio, servicios y fecha), el resumen, el reto, la solución y el resultado (cada uno solo si tiene texto), los
+// servicios usados con enlace a su página, las demás fotos, los otros proyectos (el carrusel de Nosotros) y el cierre con
+// WhatsApp y llamada. Los campos opcionales que están vacíos no se dibujan. Estructura: docs/estructura-sitio-digitalx.md §5.
+interface Props {
+  proyecto: Proyecto;
+}
+const { proyecto: p } = Astro.props;
+const pagina = paginaProyectos!;
+const url = new URL(p.url, negocio.url).href;
+
+// Un texto largo de Sanity puede traer saltos de línea: cada línea es un párrafo.
+const parrafos = (texto: string) => texto.split(/\n+/).filter((linea) => linea.trim() !== '');
+const secciones = [
+  { id: 'reto', titulo: 'Reto', texto: p.reto },
+  { id: 'solucion', titulo: 'Solución', texto: p.solucion },
+  { id: 'resultado', titulo: 'Resultado', texto: p.resultado },
+].flatMap(({ id, titulo, texto }) => (texto ? [{ id, titulo, parrafos: parrafos(texto) }] : []));
+
+const ficha = [
+  { etiqueta: 'Municipio', valor: p.municipio },
+  { etiqueta: 'Servicios', valor: p.servicios.join(', ') },
+  ...(p.fecha ? [{ etiqueta: 'Fecha', valor: p.fecha.texto, iso: p.fecha.iso }] : []),
+];
+
+// Los servicios usados: su nombre y su descripción, con enlace solo si su página está construida (si no, texto).
+const usados = p.slugsServicios.map((slug, i) => ({
+  titulo: p.servicios[i],
+  texto: servicios[slug].descripcion,
+  href: enlaceDeServicio(slug),
+}));
+const otros = proyectos.filter((otro) => otro.slug !== p.slug);
+const masFotos = p.fotos.slice(1);
+
+const datosEstructurados = proyectoJsonLd({
+  url,
+  nombre: p.titulo,
+  descripcion: p.texto,
+  imagen: p.imagen,
+  fecha: p.fecha?.iso,
+  municipio: p.municipio,
+  idNegocio,
+  serviciosUrl: usados.flatMap((s) => (s.href ? [new URL(s.href, negocio.url).href] : [])),
+});
+---
+
+<Base title={p.title} description={p.meta} image={p.imagen} whatsapp={mensajesWhatsApp.general}>
+  <EncabezadoDividido
+    foto={p.foto}
+    migas={[
+      { titulo: 'Inicio', url: '/' },
+      { titulo: pagina.etiqueta, url: '/proyectos/' },
+      { titulo: p.titulo, url: p.url },
+    ]}
+    etiqueta="Proyecto"
+    h1={p.titulo}
+    ficha={ficha}
+  />
+  <section class="prj">
+    <div class="container prj__inner">
+      <div class="prj__columna">
+        <p class="t-body prj__resumen" data-appear>
+          {p.texto}
+        </p>
+        {secciones.map((seccion) => (
+          <div class="prose prj__bloque" id={seccion.id} data-appear>
+            <h2>{seccion.titulo}</h2>
+            {seccion.parrafos.map((parrafo) => (
+              <p>{parrafo}</p>
+            ))}
+          </div>
+        ))}
+      </div>
+      {masFotos.length > 0 && (
+        <div class="prj__bloque" id="fotos" data-appear>
+          <h2 class="t-h2">Fotos del proyecto</h2>
+          <ul class="prj__fotos">
+            {masFotos.map((foto) => (
+              <li>
+                <Foto
+                  class="prj__foto"
+                  src={foto.src}
+                  alt={foto.alt}
+                  posicion={foto.posicion}
+                  sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+  {otros.length > 0 && (
+    <Team
+      etiqueta={proyectosPagina.etiqueta}
+      titulo="Otros proyectos"
+      foto={{ src: proyectosPagina.foto, alt: '' }}
+      items={otros}
+      boton={proyectosPagina.boton}
+    />
+  )}
+  {/* Los servicios usados van después del carrusel (oscuro) y antes del cierre (oscuro): así las secciones se alternan
+      claras y oscuras (diseño §5.7). Sin otros proyectos, siguen a la sección anterior sin repetir su relleno. */}
+  <section class:list={['prj', 'prj--servicios', { 'prj--seguida': otros.length === 0 }]}>
+    <div class="container prj__inner">
+      <div class="prj__bloque prj__angosto" id="servicios-usados" data-appear>
+        <h2 class="t-h2">Servicios que usamos</h2>
+        <EnlacesRelacionados items={usados} />
+      </div>
+    </div>
+  </section>
+  <CierreContacto
+    foto={fotoCierre}
+    titulo={pagina.cierre.titulo}
+    texto={pagina.cierre.texto}
+    whatsapp={{ etiqueta: 'Cotizar por WhatsApp', href: waUrl(mensajesWhatsApp.general) }}
+    llamar={{ etiqueta: 'Llamar', href: telUrl, numero: negocio.telefono.pantalla }}
+  />
+  <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
+</Base>
+<style>
+  .prj {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-6) var(--esp-8);
+  }
+  .prj__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  /* Columna de lectura: unos 70 caracteres, alineada a la izquierda del contenedor. */
+  .prj__angosto {
+    max-width: 70ch;
+  }
+  .prj__columna {
+    max-width: 70ch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-7);
+  }
+  /* Sin carrusel entre las dos secciones claras, la segunda sigue a la primera sin duplicar el relleno entre ellas. */
+  .prj.prj--seguida {
+    padding-top: 0;
+  }
+  .prj__bloque > :global(h2),
+  .prj__bloque > .t-h2 {
+    margin-bottom: var(--esp-5);
+  }
+  .prj__bloque.prose > :global(h2) {
+    margin-bottom: 0;
+  }
+  /* Las demás fotos: cuadrícula 4:3 (1 columna en móvil, 2 desde 768 px y 3 desde 1024 px), recortadas sin deformarse. */
+  .prj__fotos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-4);
+  }
+  .prj__fotos :global(picture) {
+    display: contents;
+  }
+  .prj__fotos :global(.prj__foto) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radio);
+  }
+  @media (min-width: 768px) {
+    .prj__fotos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--esp-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .prj {
+      padding-block: var(--esp-8) var(--esp-9);
+    }
+    .prj.prj--seguida {
+      padding-top: 0;
+    }
+    .prj__fotos {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import CierreContacto from './sections/CierreContacto.astro';
+import PortadaListado from './sections/PortadaListado.astro';
+import TarjetaProyecto from './ui/TarjetaProyecto.astro';
+import { paginaProyectos, proyectos } from '../lib/contenido/proyectos';
+import { fotoCierre } from '../lib/contenido/servicios-fotos';
+import { collectionPageJsonLd, serializarJsonLd } from '../lib/jsonld';
+import { idNegocio, mensajesWhatsApp, negocio, telUrl, waUrl } from '../lib/negocio';
+
+// El listado /proyectos/: la portada del listado de Marby (la misma de las categorías), una cuadrícula con la tarjeta del
+// carrusel de proyectos (1 columna en móvil, 2 desde 768 px y 3 desde 1024 px, en el orden del campo «orden») y el cierre
+// con WhatsApp y llamada. Solo se genera con proyectos publicados y la «Página de proyectos» publicada
+// (pages/proyectos/[...slug].astro). Estructura: docs/estructura-sitio-digitalx.md sección 5.
+const pagina = paginaProyectos!;
+const url = new URL('/proyectos/', negocio.url).href;
+const datosEstructurados = collectionPageJsonLd({
+  url,
+  nombre: pagina.title,
+  descripcion: pagina.meta,
+  idNegocio,
+  elementos: proyectos.map((p) => ({ name: p.titulo, url: new URL(p.url, negocio.url).href })),
+});
+---
+
+<Base title={pagina.title} description={pagina.meta} image={pagina.imagen} whatsapp={mensajesWhatsApp.general}>
+  <PortadaListado
+    foto={pagina.foto}
+    h1={pagina.h1}
+    intro={pagina.intro}
+    migas={[
+      { titulo: 'Inicio', url: '/' },
+      { titulo: pagina.etiqueta, url: '/proyectos/' },
+    ]}
+  />
+  <section class="plist">
+    <div class="container">
+      <ul class="plist__grid">
+        {proyectos.map((proyecto, i) => (
+          <li data-appear>
+            <TarjetaProyecto
+              proyecto={proyecto}
+              numero={String(i + 1).padStart(2, '0')}
+              variante="cuadricula"
+              nivel="h2"
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+  <CierreContacto
+    foto={fotoCierre}
+    titulo={pagina.cierre.titulo}
+    texto={pagina.cierre.texto}
+    whatsapp={{ etiqueta: 'Cotizar por WhatsApp', href: waUrl(mensajesWhatsApp.general) }}
+    llamar={{ etiqueta: 'Llamar', href: telUrl, numero: negocio.telefono.pantalla }}
+  />
+  <script type="application/ld+json" set:html={serializarJsonLd(datosEstructurados)} />
+</Base>
+<style>
+  .plist {
+    background: var(--dx-blanco);
+    padding-block: var(--esp-7) var(--esp-8);
+  }
+  .plist__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--esp-6);
+  }
+  @media (min-width: 768px) {
+    .plist__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--esp-6) var(--medianil);
+    }
+  }
+  @media (min-width: 1024px) {
+    .plist {
+      padding-block: var(--esp-8) var(--esp-9);
+    }
+    .plist__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import Foto from '../Foto.astro';
+import Migas from '../Migas.astro';
+import type { Foto as FotoDatos } from '../../lib/contenido/tipos';
+
+// Encabezado dividido de las páginas de detalle (un servicio y un proyecto), inspirado en la sección de videoclips de
+// mandmfilmsmx.com: foto a la mitad izquierda, a todo lo alto, y a la derecha las migas, la etiqueta, el H1 grande y una
+// ficha de datos, sobre un fondo claro de la paleta. En móvil, la foto arriba y el texto abajo. El alto es mínimo: el texto
+// crece con el zoom y la letra grande (diseño §9). Sin botones propios: el slot `foto` recibe lo que va sobre la foto
+// (en un servicio, «Ver todas las fotos»). <picture> no pinta caja.
+interface Props {
+  foto: FotoDatos;
+  migas: { titulo: string; url: string }[];
+  etiqueta: string;
+  h1: string;
+  /** Los renglones de la ficha; `iso` convierte el valor en una fecha con `<time>`. */
+  ficha: { etiqueta: string; valor: string; iso?: string }[];
+}
+const { foto, migas, etiqueta, h1, ficha } = Astro.props;
+---
+
+<header class="enc">
+  <div class="enc__foto">
+    <Foto class="enc__img" src={foto.src} alt={foto.alt} sizes="(min-width: 1024px) 50vw, 100vw" prioritaria />
+    <slot name="foto" />
+  </div>
+  <div class="enc__texto">
+    <div class="enc__interior">
+      <Migas items={migas} />
+      <p class="enc__etiqueta t-caption2">{etiqueta}</p>
+      <h1 class="t-h1">{h1}</h1>
+      <dl class="enc__ficha">
+        {ficha.map((fila) => (
+          <div class="enc__fila">
+            <dt class="t-caption2">{fila.etiqueta}</dt>
+            <dd class="t-body">{fila.iso ? <time datetime={fila.iso}>{fila.valor}</time> : fila.valor}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</header>
+<style>
+  .enc {
+    background: var(--dx-gris-tarjeta);
+    display: flex;
+    flex-direction: column;
+  }
+  .enc__foto {
+    position: relative;
+    min-width: 0;
+  }
+  .enc__foto :global(picture) {
+    display: contents;
+  }
+  .enc__foto :global(.enc__img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .enc__texto {
+    min-width: 0;
+    padding: var(--esp-5) var(--margen) var(--esp-7);
+  }
+  .enc__interior {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+  .enc__etiqueta {
+    margin-top: var(--esp-3);
+  }
+  .enc__ficha {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .enc__fila {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    padding-block: var(--esp-3);
+    box-shadow: inset 0 calc(-1 * var(--linea)) 0 var(--dx-gris-medio);
+  }
+  .enc__fila:last-child {
+    box-shadow: none;
+  }
+  .enc__fila dd {
+    margin: 0;
+  }
+  @media (min-width: 1024px) {
+    /* Escritorio: dos mitades; la foto ocupa toda la mitad izquierda, de borde a borde y a todo lo alto. */
+    .enc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      min-height: clamp(520px, calc(100dvh - var(--nav-alto)), 720px);
+    }
+    .enc__foto :global(.enc__img) {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      aspect-ratio: auto;
+    }
+    .enc__texto {
+      display: flex;
+      align-items: center;
+      padding: var(--esp-7);
+    }
+  }
+</style>

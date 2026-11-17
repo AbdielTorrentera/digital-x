@@ -8,7 +8,7 @@ Versión: borrador de trabajo · 2026-10-23
 ## 0. Instrucciones para el agente (leer primero)
 
 1. Lee primero `estructura-sitio-digitalx.md`. Las URLs y las páginas permitidas salen de ahí.
-2. Estas reglas son **obligatorias** salvo las marcadas como *propuesta* o `[PENDIENTE]`.
+2. Estas reglas son **obligatorias para redactar**, salvo las marcadas como *propuesta* o `[PENDIENTE]`. Son guía para quien escribe: **no son validaciones** del Studio ni del build, ni se convierten en pruebas o guardas sin que el dueño lo pida.
 3. **No inventes**: marcas, cifras, clientes, reseñas, direcciones, coordenadas, certificaciones, permisos ni casos. Si falta un dato, deja `[PENDIENTE: ...]` y repórtalo.
 4. **No agregues** páginas, ciudades, palabras clave ni secciones fuera de lo definido. Si crees que falta algo, propónlo al final de tu reporte; no lo implementes.
 5. Los metadatos de cada página se definen **página por página** con el dueño. Mientras no estén en la sección 1, deja `[PENDIENTE: SEO de esta página]`.
@@ -85,9 +85,9 @@ Meta de Política de privacidad (132 caracteres): `Qué datos personales recibe 
 
 ### Metadatos de las categorías y los servicios
 
-- **No hay página `/servicios/`**: los servicios viven en `/{categoria}/{slug}/`. Las categorías con dos o más servicios construidos tienen su página (`/video/`, `/tecnologia/`, y `/audio/` cuando corresponda) con el patrón `Servicios de {área} en Puebla y Atlixco | Digital X`; los textos viven en `apps/web/src/content/categorias.ts`. Sus metas, H1 e introducciones están aprobados por el dueño, y no repiten oraciones de las páginas de servicio.
+- **No hay página `/servicios/`**: los servicios viven en `/{categoria}/{slug}/`. Las categorías con dos o más servicios construidos tienen su página (`/video/`, `/tecnologia/`, y `/audio/` cuando corresponda) con el patrón `Servicios de {área} en Puebla y Atlixco | Digital X`; los textos viven en el documento `categoria` de Sanity. Sus metas, H1 e introducciones están aprobados por el dueño, y no repiten oraciones de las páginas de servicio.
 
-- Los 10 servicios tienen su página en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`); la categoría con un solo servicio construido no tiene página propia. Sus **titles** y **descripciones cortas** (las de las tarjetas y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en `apps/web/src/content/servicios.ts`.
+- Los 10 servicios tienen su página en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`); la categoría con un solo servicio construido no tiene página propia. Sus **titles** y **descripciones cortas** (las de las tarjetas y del JSON-LD `Service`) los confirmó el dueño; las descripciones están en el documento `servicio` de Sanity.
 - La **meta** de cada servicio se redacta aparte de su descripción: servicio + zona (Puebla, Atlixco o alrededores) + "Cotiza por WhatsApp", sin datos nuevos y de 155 caracteres como máximo. Las metas y los H1 de arriba están aprobados por el dueño.
 - En renta de audio se usan juntas las palabras "audio" y "sonido" (incluye sonorización), también en el H1.
 - Falta definir por servicio, al aprobar cada página: palabra clave principal, secciones, FAQ propias y enlaces internos.
@@ -133,7 +133,7 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - En texto plano, **sin enlaces por ciudad** (no existen páginas por ciudad).
   - Máximo 6 zonas (las confirmadas) y sin repetir el mismo nombre varias veces.
   - Mantener actualizado con las zonas realmente confirmadas.
-- **Enlaces del pie** (todos desde `paginas.ts` y `content/categorias.ts`): las 3 categorías de servicios, escritas "Audio", "Video" y "Tecnología" bajo el título de columna "Servicios", cada una a su destino (su página de categoría o su único servicio construido), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil). El pie **solo muestra páginas construidas** (se genera desde `paginas.ts`): Proyectos y Blog aparecen solos cuando existan, y nunca se enlaza una página sin construir. Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
+- **Enlaces del pie** (todos desde `paginas.ts` y las categorías de Sanity): las 3 categorías de servicios, escritas "Audio", "Video" y "Tecnología" bajo el título de columna "Servicios", cada una a su destino (su página de categoría o su único servicio construido), un grupo "Digital X" con Proyectos y Nosotros, y en la línea inferior, junto al ©, Condiciones de contratación y Política de privacidad como enlaces pequeños (48 px de área táctil). El pie **solo muestra páginas construidas** (se genera desde `paginas.ts`): Proyectos y Blog aparecen solos cuando existan, y nunca se enlaza una página sin construir. Las redes (Facebook, Instagram, TikTok y perfil de Google) solo aparecen si tienen URL real; nunca enlaces vacíos ni con `#`.
 
 ---
 
@@ -166,12 +166,12 @@ Los H1 anteriores son ejemplos de formato. En renta de audio se usan juntas las 
   - `circuito-cerrado-pantallas-conferencia-atlixco.webp`
   - `produccion-video-evento-cultural-atlixco.webp`
 - No nombrar archivos con servicios que Digital X no ofrece (por ejemplo, cámaras de seguridad o redes de voz y datos).
-- **Imágenes servidas desde Sanity:** el CDN de Sanity renombra los archivos con un identificador. Para cumplir esta regla, las URLs públicas usan el nombre descriptivo como sufijo (*vanity filename*), generado a partir del nombre original del archivo o de un campo del documento, y se piden en WebP/AVIF con `auto=format`.
+- **Imágenes servidas desde Sanity:** el CDN de Sanity renombra los archivos con un identificador. Para cumplir esta regla, la URL de cada foto lleva al final un nombre descriptivo (*vanity filename*) que sale de su **texto alternativo** (en minúsculas, sin acentos, de hasta 60 caracteres y cortado en una palabra completa); una foto decorativa, que no tiene `alt`, conserva el nombre del archivo subido. Astro baja la foto al compilar y la sirve en AVIF y WebP desde el propio sitio (`/_astro/{nombre}_{hash}.avif`), así que el nombre público es ese.
 
 ### Texto alternativo (`alt`)
 - Obligatorio en toda imagen de contenido. Describe lo que se ve, con servicio y lugar cuando aplique.
   Ejemplo: `Pantalla de circuito cerrado en conferencia en Atlixco`.
-- Imágenes decorativas: `alt=""`. En Sanity son las fotos con la casilla «Foto decorativa» (no llevan `alt` y el sitio las pinta con `alt=""` y `aria-hidden="true"`); todas las demás exigen `alt` de 5 a 125 caracteres.
+- Imágenes decorativas: `alt=""`. En Sanity el `alt` es opcional: si está vacío, el sitio pinta la foto con `alt=""` y `aria-hidden="true"`; con `alt`, la pinta normal. Al redactar, toda foto que aporte información lleva su `alt` descriptivo (guía de redacción, no validación).
 
 ### Formato y carga
 - Imágenes en **WebP o AVIF**. No usar PNG para fotos.
@@ -253,7 +253,7 @@ La mayoría de las búsquedas urgentes (renta de audio, soporte) vienen desde ce
   - `aria-label` `Cotizar por WhatsApp (se abre en una pestaña nueva)`.
   - En el Inicio, WhatsApp aparece en este botón y en el llamado final; la portada, Cobertura y Preguntas frecuentes no llevan botón de WhatsApp.
 - Enlace de WhatsApp: `https://wa.me/522441244913?text={mensaje codificado}`.
-- **Cada página usa su propio mensaje prellenado** *(propuesta; confirmar con el dueño)*:
+- **Cada página usa su propio mensaje prellenado** *(propuesta; confirmar con el dueño)*. El mensaje general vive en «Configuración del sitio» y el de cada servicio, en su documento `servicio` de Sanity (campo «Mensaje de WhatsApp»); la tabla es la propuesta de redacción:
 
 | Página | Mensaje |
 | --- | --- |

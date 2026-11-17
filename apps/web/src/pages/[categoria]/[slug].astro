@@ -1,7 +1,7 @@
 ---
 import PaginaServicio from '../../components/PaginaServicio.astro';
-import { faltantesDePagina, slugs, type Slug } from '../../content/servicios';
-import { fotos } from '../../content/servicios-fotos';
+import { faltantesDePagina, slugs, type Slug } from '../../lib/contenido/servicios';
+import { fotos } from '../../lib/contenido/servicios-fotos';
 import { paginas, slugDe, visible } from '../../lib/paginas';
 
 // Una página por servicio (/{categoria}/{slug}/), generada SOLO si su página está construida en lib/paginas.ts (nunca

@@ -11,14 +11,14 @@ export const guiaDeServicios = defineType({
       name: 'etiqueta',
       title: 'Etiqueta pequeña',
       type: 'string',
-      validation: (Rule) => Rule.required().max(30),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'titulo',
       title: 'Título',
       type: 'string',
       description: 'Ejemplo: ¿Qué servicios necesito para mi evento?',
-      validation: (Rule) => Rule.required().max(90),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'items',
@@ -34,7 +34,7 @@ export const guiaDeServicios = defineType({
               title: 'Si tu evento es…',
               type: 'string',
               description: 'Ejemplo: Una conferencia con público numeroso',
-              validation: (Rule) => Rule.required().max(120),
+              validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'servicios',

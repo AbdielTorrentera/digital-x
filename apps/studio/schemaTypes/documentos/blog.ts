@@ -1,7 +1,6 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
-import {MAX_EXTRACTO, slugificar} from '@digitalx/sanity/reglas'
+import {slugificar} from '@digitalx/sanity/reglas'
 import {campoFoto, campoSeo} from '../campos'
-import {algunServicioConPagina, vocabulario} from '../../validaciones'
 
 export const articulo = defineType({
   name: 'articulo',
@@ -14,7 +13,6 @@ export const articulo = defineType({
     {name: 'publicacion', title: 'Publicación'},
     {name: 'seo', title: 'Google'},
   ],
-  validation: vocabulario,
   orderings: [
     {
       title: 'Más recientes primero',
@@ -30,7 +28,7 @@ export const articulo = defineType({
       group: 'contenido',
       description:
         'Una pregunta o intención de búsqueda concreta. Ejemplo: ¿Cuánto audio necesito para una fiesta?',
-      validation: (Rule) => Rule.required().max(90),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -48,8 +46,8 @@ export const articulo = defineType({
       type: 'text',
       rows: 3,
       group: 'contenido',
-      description: `Dos frases que resumen el artículo. Se ven en el listado. Máximo ${MAX_EXTRACTO} caracteres.`,
-      validation: (Rule) => Rule.required().max(MAX_EXTRACTO),
+      description: `Dos frases que resumen el artículo. Se ven en el listado.`,
+      validation: (Rule) => Rule.required(),
     }),
     campoFoto({
       name: 'portada',
@@ -64,8 +62,7 @@ export const articulo = defineType({
       group: 'contenido',
       description:
         'Empieza con un párrafo y usa «Subtítulo» para dividirlo. Las imágenes llevan texto alternativo y, si quieres, pie de foto. Termina invitando a cotizar.',
-      validation: (Rule) =>
-        Rule.required().min(3).error('Un artículo necesita al menos 3 bloques de texto.'),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'categoria',
@@ -117,9 +114,8 @@ export const articulo = defineType({
       type: 'array',
       group: 'publicacion',
       of: [defineArrayMember({type: 'reference', to: [{type: 'servicio'}]})],
-      description:
-        'Elige al menos uno con su página construida: el artículo enlaza a él con texto descriptivo.',
-      validation: (Rule) => Rule.required().min(1).unique().custom(algunServicioConPagina),
+      description: 'Opcional. El artículo enlaza a cada uno con texto descriptivo.',
+      validation: (Rule) => Rule.unique(),
     }),
     campoSeo({
       obligatorio: false,
@@ -147,7 +143,7 @@ export const categoriaBlog = defineType({
       title: 'Nombre',
       type: 'string',
       description: 'Ejemplo: Consejos para eventos',
-      validation: (Rule) => Rule.required().max(40),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -179,7 +175,7 @@ export const autor = defineType({
       title: 'Nombre',
       type: 'string',
       description: 'Ejemplo: Equipo Digital X',
-      validation: (Rule) => Rule.required().max(60),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'esOrganizacion',

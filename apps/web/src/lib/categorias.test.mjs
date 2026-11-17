@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { categoriasConDestino, clientesConPermiso } from './categorias.ts';
+import { categoriasConDestino } from './categorias.ts';
 import {
   construirCategoriasDelPie,
   construirMenu,
@@ -12,7 +12,7 @@ import {
   urlsPublicadas,
 } from './paginas.ts';
 import { parrafoDeCategoria } from './servicios.ts';
-import { categorias } from '../content/categorias.ts';
+import { categorias } from './contenido/categorias.ts';
 
 // Deja construidos solo `cuantos` servicios de la categoría (los primeros del registro) mientras corre `prueba`, y los
 // restaura al terminar. Así se prueba la regla de las categorías con 0, 1 y 2 o más servicios.
@@ -27,10 +27,10 @@ const conConstruidos = (id, cuantos, prueba) => {
   }
 };
 
-test('hoy Audio tiene un servicio construido, Video 5 y Tecnología 4', () => {
+test('serviciosConstruidos cuenta solo los servicios con «Página construida» de cada categoría', () => {
   assert.equal(serviciosConstruidos('audio').length, 1);
-  assert.equal(serviciosConstruidos('video').length, 5);
-  assert.equal(serviciosConstruidos('tecnologia').length, 4);
+  assert.equal(serviciosConstruidos('video').length, 2);
+  assert.equal(serviciosConstruidos('tecnologia').length, 0);
   assert.equal(MINIMO_PARA_PAGINA, 2);
 });
 
@@ -41,17 +41,14 @@ test('con un solo servicio construido la categoría no tiene página y lleva dir
   assert.ok(!urlsPublicadas.includes('/audio/'));
 });
 
-test('con dos o más servicios construidos la categoría tiene su página en /{slug}/', () => {
+test('con dos o más servicios construidos la categoría tiene su página en /{slug}/; sin ninguno, no hay ni destino', () => {
   assert.equal(destinoDeCategoria('video'), '/video/');
-  assert.equal(destinoDeCategoria('tecnologia'), '/tecnologia/');
+  assert.equal(destinoDeCategoria('tecnologia'), null);
   assert.deepEqual(
     paginasDeCategoria().map((p) => [p.url, p.paginaDe, p.construida]),
-    [
-      ['/video/', 'video', true],
-      ['/tecnologia/', 'tecnologia', true],
-    ],
+    [['/video/', 'video', true]],
   );
-  for (const url of ['/video/', '/tecnologia/']) assert.ok(urlsPublicadas.includes(url), url);
+  assert.ok(urlsPublicadas.includes('/video/'));
 });
 
 test('la regla sigue a los servicios: con 0, 1 y 2 construidos cambia el destino, la página, el menú y el pie', () => {
@@ -86,7 +83,7 @@ test('la regla sigue a los servicios: con 0, 1 y 2 construidos cambia el destino
 test('el menú se genera de los datos: Inicio, una entrada por categoría con destino y Nosotros; Proyectos y Blog solo si están construidas', () => {
   assert.deepEqual(
     construirMenu().map((i) => i.titulo),
-    ['Inicio', 'Audio', 'Video', 'Tecnología', 'Nosotros'],
+    ['Inicio', 'Audio', 'Video', 'Nosotros'],
   );
   const proyectos = paginas.find((p) => p.url === '/proyectos/');
   assert.ok(proyectos && !proyectos.construida, 'Proyectos aún no está construida');
@@ -94,20 +91,19 @@ test('el menú se genera de los datos: Inicio, una entrada por categoría con de
   try {
     assert.deepEqual(
       construirMenu().map((i) => i.titulo),
-      ['Inicio', 'Audio', 'Video', 'Tecnología', 'Proyectos', 'Nosotros'],
+      ['Inicio', 'Audio', 'Video', 'Proyectos', 'Nosotros'],
     );
   } finally {
     proyectos.construida = false;
   }
 });
 
-test('categoriasConDestino sigue el orden de los datos y marca Audio como directo', () => {
+test('categoriasConDestino sigue el orden de los datos, marca Audio como directo y omite la categoría sin servicios construidos', () => {
   assert.deepEqual(
     categoriasConDestino().map((c) => [c.categoria.id, c.href, c.directo]),
     [
       ['audio', '/audio/renta-de-audio/', true],
       ['video', '/video/', false],
-      ['tecnologia', '/tecnologia/', false],
     ],
   );
   assert.deepEqual(
@@ -117,25 +113,13 @@ test('categoriasConDestino sigue el orden de los datos y marca Audio como direct
 });
 
 test('parrafoDeCategoria une para quién es y los nombres de sus servicios, el primero con mayúscula y enlazado solo si está construido', () => {
-  const partes = parrafoDeCategoria(categorias.find((c) => c.id === 'audio'));
+  const categoria = categorias.find((c) => c.id === 'audio');
+  const partes = parrafoDeCategoria(categoria);
   const texto = partes.map((p) => p.literal ?? p.nombre).join('');
-  assert.match(texto, /^Para quienes organizan fiestas.* Renta de audio y sonido, y sonorización\.$/);
+  assert.ok(texto.startsWith(`${categoria.para} Renta de audio y sonido, `));
+  assert.ok(texto.endsWith('.'));
   assert.deepEqual(
     partes.filter((p) => 'nombre' in p).map((p) => p.url),
     ['/audio/renta-de-audio/', null],
   );
-});
-
-test('clientesConPermiso solo deja a los clientes que autorizaron: nunca se inventan ni se muestran sin permiso', () => {
-  assert.deepEqual(clientesConPermiso([]), []);
-  const clientes = [
-    { nombre: 'Con permiso', permiso: true },
-    { nombre: 'Sin permiso', permiso: false },
-  ];
-  assert.deepEqual(
-    clientesConPermiso(clientes).map((c) => c.nombre),
-    ['Con permiso'],
-  );
-  // Hoy no hay clientes con permiso en ninguna categoría: la sección no se dibuja.
-  for (const categoria of categorias) assert.deepEqual(clientesConPermiso(categoria.clientes), [], categoria.id);
 });

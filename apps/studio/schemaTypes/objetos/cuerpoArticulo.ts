@@ -62,8 +62,7 @@ export const cuerpoArticulo = defineType({
           title: 'Texto alternativo (qué se ve en la foto)',
           type: 'string',
           description:
-            'Obligatorio. Ejemplo: Técnico de audio ajustando la consola en un evento en Atlixco',
-          validation: (Rule) => Rule.required().min(5).max(125),
+            'Opcional. Ejemplo: Técnico de audio ajustando la consola en un evento en Atlixco',
         }),
         defineField({
           name: 'pie',

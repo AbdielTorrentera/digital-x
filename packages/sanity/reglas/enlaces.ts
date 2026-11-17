@@ -19,19 +19,3 @@ export function esHttps(valor: string): boolean {
     return false
   }
 }
-
-/** Dominios por red: una red con la URL de otro sitio es un error de captura. */
-export const DOMINIOS_DE_RED: Record<string, RegExp> = {
-  facebook: /(^|\.)(facebook\.com|fb\.com|fb\.me)$/i,
-  instagram: /(^|\.)instagram\.com$/i,
-  tiktok: /(^|\.)tiktok\.com$/i,
-  youtube: /(^|\.)(youtube\.com|youtu\.be)$/i,
-  linkedin: /(^|\.)linkedin\.com$/i,
-  google: /(^|\.)(google\.com|g\.page|goo\.gl|maps\.app\.goo\.gl|business\.google\.com)$/i,
-}
-
-export function urlDeRedValida(red: string, valor: string): boolean {
-  if (!esHttps(valor)) return false
-  const patron = DOMINIOS_DE_RED[red]
-  return patron ? patron.test(new URL(valor).hostname) : true
-}

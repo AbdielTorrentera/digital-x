@@ -4,3 +4,6 @@ CLAUDE.md
 
 pnpm-lock.yaml
 apps/web/public/
+
+# Muestra fija del contenido de Sanity para las pruebas (JSON generado)
+packages/sanity/muestra/

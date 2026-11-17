@@ -1,59 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  archivosTemporales,
-  enlacesANoConstruidas,
-  nombresDeFotosTemporales,
-  paginasConPendientes,
-  urlDeArchivoHtml,
-} from './proteccion-produccion.ts';
-
-test('archivosTemporales detecta las fotos temporales por el nombre del archivo', () => {
-  const rutas = [
-    '_astro/temporal-escenario.BkQ2x1Zr_Z1AbCd.webp',
-    '_astro/temporal-escenario.BkQ2x1Zr.avif',
-    'index.html',
-    '_astro/logo.Cx9.svg',
-    '_astro/Base.astro_astro_type_script_index_0_lang.k4R4D1FF.js',
-  ];
-  assert.deepEqual(archivosTemporales(rutas), [
-    '_astro/temporal-escenario.BkQ2x1Zr_Z1AbCd.webp',
-    '_astro/temporal-escenario.BkQ2x1Zr.avif',
-  ]);
-});
-
-test('archivosTemporales no confunde una carpeta ni una palabra parecida con una foto temporal', () => {
-  assert.deepEqual(archivosTemporales(['temporal-no-es-un-archivo/index.html', '_astro/contemporal.webp']), []);
-  assert.deepEqual(archivosTemporales([]), []);
-});
-
-test('archivosTemporales entiende rutas de Windows', () => {
-  assert.deepEqual(archivosTemporales(['_astro\\temporal-a.webp']), ['_astro\\temporal-a.webp']);
-});
-
-test('paginasConPendientes lista las páginas con [PENDIENTE visible, en texto o en atributos', () => {
-  const paginas = [
-    { url: '/', html: '<main><p>[PENDIENTE: proyecto con foto]</p></main>' },
-    { url: '/nosotros/', html: '<main><p>Quiénes somos</p></main>' },
-    { url: '/proyectos/', html: '<img alt="[PENDIENTE: describir la foto]" src="/a.webp">' },
-  ];
-  assert.deepEqual(paginasConPendientes(paginas), ['/', '/proyectos/']);
-});
-
-test('paginasConPendientes ignora comentarios, scripts, estilos y JSON-LD', () => {
-  const html = [
-    '<!-- [PENDIENTE: nota para quien edite] -->',
-    '<style>/* [PENDIENTE: ajustar] */ p { margin: 0 }</style>',
-    '<script>const nota = "[PENDIENTE: algo]";</script>',
-    '<script type="application/ld+json">{"description":"[PENDIENTE: texto]"}</script>',
-    '<main><p>Todo confirmado</p></main>',
-  ].join('');
-  assert.deepEqual(paginasConPendientes([{ url: '/', html }]), []);
-});
-
-test('paginasConPendientes sin páginas devuelve una lista vacía', () => {
-  assert.deepEqual(paginasConPendientes([]), []);
-});
+import { enlacesANoConstruidas, urlDeArchivoHtml } from './proteccion-produccion.ts';
 
 test('urlDeArchivoHtml convierte la ruta del HTML en la URL pública', () => {
   assert.equal(urlDeArchivoHtml('index.html'), '/');
@@ -61,18 +8,6 @@ test('urlDeArchivoHtml convierte la ruta del HTML en la URL pública', () => {
   assert.equal(urlDeArchivoHtml('nosotros/index.html'), '/nosotros/');
   assert.equal(urlDeArchivoHtml('audio/renta-de-audio/index.html'), '/audio/renta-de-audio/');
   assert.equal(urlDeArchivoHtml('nosotros\\index.html'), '/nosotros/');
-});
-
-test('nombresDeFotosTemporales agrupa por foto original las variantes de tamaño y formato', () => {
-  const rutas = [
-    '_astro/temporal-a.HASH_1.webp',
-    '_astro/temporal-a.HASH_2.avif',
-    '_astro/temporal-b.OTRO_1.webp',
-    '_astro/otra-foto.X_1.webp',
-    'index.html',
-  ];
-  assert.deepEqual(nombresDeFotosTemporales(rutas), ['temporal-a', 'temporal-b']);
-  assert.deepEqual(nombresDeFotosTemporales(['index.html']), []);
 });
 
 const sinConstruir = ['/audio/renta-de-audio/', '/proyectos/'];

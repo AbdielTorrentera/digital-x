@@ -46,7 +46,7 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
 
 1. Los secretos viven **solo** en las variables de entorno de Vercel y en `.env` local. `.env` nunca se sube a Git (ya está en `.gitignore`); `.env.example` lleva solo nombres, sin valores.
 2. **Prefijo `PUBLIC_`:** en Astro, toda variable que empieza con `PUBLIC_` termina en el código que descarga el navegador. Solo pueden llevarlo valores públicos (ID de proyecto de Sanity, nombre del dataset). **Prohibido** `PUBLIC_` en tokens.
-3. **El sitio no usa tokens de Sanity.** El dataset es público y el sitio solo lee contenido publicado. Si en el futuro hace falta un token (por ejemplo, vista previa de borradores), será de **solo lectura**, solo en el servidor y aprobado antes.
+3. **El sitio no usa tokens de Sanity.** El dataset es público y el sitio solo lee contenido publicado. Si en el futuro hace falta un token (por ejemplo, vista previa de borradores), será de **solo lectura**, solo en el servidor y aprobado antes. El build baja el contenido **publicado** con la API pública (`perspective=published`, sin cabeceras de autenticación) y lo deja en `apps/web/.contenido/sanity.json`, que no se sube a Git (`.gitignore`). La muestra de pruebas (`packages/sanity/muestra/contenido.json`) sí se sube y solo trae datos públicos; nunca se agregan a Sanity datos privados (§4.1).
 4. Ningún token de **escritura** de Sanity existe fuera de la cuenta del dueño. Si se necesita para una migración, se crea, se usa y se borra el mismo día.
 5. La URL del *deploy hook* de Vercel es un secreto: solo vive en la configuración del webhook de Sanity. Si se filtra, se regenera.
 6. Si un secreto se sube por error a Git: se **revoca y se regenera de inmediato**. Borrarlo del historial no basta.
@@ -63,10 +63,9 @@ Como el sitio es estático, varias reglas generales (inyección SQL, contraseña
    - **Prohibido** `set:html` (o equivalentes) con contenido que venga de Sanity o de cualquier fuente externa.
    - Los enlaces que vienen del contenido solo aceptan `https:`, `mailto:`, `tel:` y rutas internas. Cualquier otro protocolo (`javascript:`, `data:`) se descarta. Se valida en el esquema de Sanity **y** al mostrarlo.
    - Los enlaces externos llevan `rel="noopener noreferrer"`.
-4. Los esquemas de Sanity validan campos obligatorios, longitudes máximas y formatos (URL, slug), para que un error de captura no rompa una página.
+4. Los esquemas de Sanity validan los campos obligatorios y los formatos (URL, slug), para que un error de captura no rompa una página. Las longitudes y el vocabulario son guía de redacción, no validaciones.
 5. Imágenes: antes de subirlas se les quitan los **metadatos de ubicación (GPS/EXIF)**. En Sanity no se activan los metadatos `exif` ni `location`. Lo mismo para videos.
-6. **Permiso obligatorio para publicar.** Como el dataset es público, un documento publicado lo puede leer cualquiera. Por eso reseñas, clientes y proyectos reales **no se pueden publicar sin `permiso: true`**: el esquema lo valida como error (no como aviso) y, sin permiso, el documento se queda en borrador, que no es público. La única excepción son los proyectos marcados `esEjemplo` (ficticios). El comprobante del permiso no se guarda en Sanity. El build repite la comprobación y falla si le llega un documento publicado sin permiso, y antes de cada lanzamiento se consulta el dataset **sin token** y estas consultas deben dar 0: `*[_type=="resena" && permiso!=true]`, `*[_type=="cliente" && permiso!=true]` y `*[_type=="proyecto" && permiso!=true && esEjemplo!=true]`.
-7. **Vocabulario y datos.** Los esquemas rechazan, al capturar, las palabras que el sitio no puede decir (vigilancia, proyector, precios sin confirmar, marcas, etc.; ver estructura §7) con las reglas de `packages/sanity/reglas/`, las mismas que repite el build.
+6. **Todo lo publicado se muestra.** Como el dataset es público, un documento publicado lo puede leer cualquiera y el sitio lo muestra. Antes de publicar, el dueño confirma que tiene el permiso de quien aparece (cliente, reseña, proyecto); el sitio no lo valida y el comprobante del permiso no se guarda en Sanity.
 
 ---
 

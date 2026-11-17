@@ -2,8 +2,8 @@
 import Btn from '../Btn.astro';
 import Foto from '../Foto.astro';
 import Icon from '../Icon.astro';
-import type { Foto as FotoDatos } from '../../content/inicio';
-import type { Proyecto } from '../../content/proyectos';
+import type { Foto as FotoDatos } from '../../lib/contenido/inicio';
+import type { Proyecto } from '../../lib/contenido/proyectos';
 
 // Fila de tarjetas de proyectos: el Team de la plantilla Marby, con proyectos en lugar de personas (foto, número,
 // título, servicios como etiquetas, municipio con su ícono y un texto corto). Cada tarjeta enlaza a /proyectos/. Es el
@@ -70,7 +70,6 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
                   </p>
                 </div>
               </div>
-              {p.placeholder && <span class="member__ejemplo">EJEMPLO</span>}
             </a>
           ))}
         </div>
@@ -372,20 +371,6 @@ const { etiqueta, titulo, foto, items, boton } = Astro.props;
   .member__city :global(.icon) {
     width: 14px;
     height: 14px;
-  }
-  /* Etiqueta visible mientras el proyecto sea un ejemplo: amarillo sobre negro, el contraste de la marca. */
-  .member__ejemplo {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--dx-amarillo);
-    color: var(--dx-negro);
-    font-family: var(--font-texto);
-    font-size: var(--txt-chico);
-    font-weight: 600;
-    line-height: var(--lh-etiqueta);
   }
   /* Sin cursor que revele la foto (tablet, móvil o pantalla táctil), la foto se ve siempre. */
   @media (max-width: 1199.98px), (hover: none) {

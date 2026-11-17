@@ -1,5 +1,6 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 import {RUTAS_FIJAS} from '@digitalx/sanity/reglas'
+import {avisoDePaginaSinConstruir} from '../../validaciones'
 
 /**
  * Un párrafo en el que se pueden enlazar palabras a un servicio o a una página del sitio. Es Portable Text
@@ -11,7 +12,7 @@ export const textoConEnlaces = defineType({
   title: 'Texto con enlaces',
   type: 'array',
   description:
-    'Un solo párrafo. Para enlazar, selecciona las palabras y pulsa el botón de enlace: elige «Enlace a un servicio» o «Enlace a una página».',
+    'Para enlazar, selecciona las palabras y pulsa el botón de enlace: elige «Enlace a un servicio» o «Enlace a una página».',
   of: [
     defineArrayMember({
       type: 'block',
@@ -45,8 +46,10 @@ export const textoConEnlaces = defineType({
                 title: 'Página',
                 type: 'string',
                 options: {list: RUTAS_FIJAS, layout: 'radio'},
-                validation: (Rule) =>
+                validation: (Rule) => [
                   Rule.required().error('Elige la página a la que lleva el enlace.'),
+                  Rule.custom(avisoDePaginaSinConstruir).warning(),
+                ],
               }),
             ],
           }),
@@ -54,6 +57,4 @@ export const textoConEnlaces = defineType({
       },
     }),
   ],
-  validation: (Rule) =>
-    Rule.max(1).error('Escribe un solo párrafo (sin pulsar Enter para empezar otro).'),
 })

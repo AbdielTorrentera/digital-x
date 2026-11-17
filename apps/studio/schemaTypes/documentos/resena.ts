@@ -1,11 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
-import {
-  MAX_RESENA,
-  MIN_RESENA,
-  problemaDePermiso,
-  slugificar,
-  urlDeRedValida,
-} from '@digitalx/sanity/reglas'
+import {esHttps, slugificar} from '@digitalx/sanity/reglas'
 import {campoFoto} from '../campos'
 
 const ORIGENES = [
@@ -21,11 +15,10 @@ export const resena = defineType({
   title: 'Reseña de un cliente',
   type: 'document',
   description:
-    'Solo reseñas REALES de clientes y solo con su permiso. No hay reseñas de ejemplo ni de relleno, ni calificaciones con estrellas. Las de Google o Facebook se capturan a mano, con permiso. Si no hay ninguna publicada, la sección no aparece en el sitio.',
+    'Solo reseñas REALES de clientes. No hay reseñas de ejemplo ni de relleno, ni calificaciones con estrellas. Las de Google o Facebook se capturan a mano. Todo lo publicado aquí se muestra; si no hay ninguna, la sección no aparece en el sitio.',
   groups: [
     {name: 'resena', title: 'La reseña', default: true},
     {name: 'donde', title: 'Dónde se muestra'},
-    {name: 'permiso', title: 'Permiso'},
   ],
   validation: (Rule) =>
     Rule.custom((doc) => {
@@ -44,8 +37,9 @@ export const resena = defineType({
       type: 'text',
       rows: 5,
       group: 'resena',
-      description: `Las palabras del cliente, tal como las escribió o dijo. Entre ${MIN_RESENA} y ${MAX_RESENA} caracteres. No la corrijas ni la mejores: si es muy larga, elige un fragmento fiel.`,
-      validation: (Rule) => Rule.required().min(MIN_RESENA).max(MAX_RESENA),
+      description:
+        'Las palabras del cliente, tal como las escribió o dijo. No la corrijas ni la mejores: si es muy larga, elige un fragmento fiel.',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'nombre',
@@ -53,7 +47,7 @@ export const resena = defineType({
       type: 'string',
       group: 'resena',
       description: 'Como la persona autorizó que se publique. Ejemplo: María López',
-      validation: (Rule) => Rule.required().max(80),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'cargo',
@@ -61,7 +55,6 @@ export const resena = defineType({
       type: 'string',
       group: 'resena',
       description: 'Opcional. Ejemplo: Coordinadora de eventos',
-      validation: (Rule) => Rule.max(80),
     }),
     defineField({
       name: 'empresa',
@@ -69,7 +62,6 @@ export const resena = defineType({
       type: 'string',
       group: 'resena',
       description: 'Opcional. Ejemplo: Casa de la Cultura de Atlixco',
-      validation: (Rule) => Rule.max(80),
     }),
     campoFoto({
       name: 'foto',
@@ -77,7 +69,7 @@ export const resena = defineType({
       group: 'resena',
       obligatoria: false,
       description:
-        'Opcional, y solo con permiso. Con su texto alternativo. Ejemplo: Foto de María López / Logo de Casa de la Cultura',
+        'Opcional. Con su texto alternativo. Ejemplo: Foto de María López / Logo de Casa de la Cultura',
     }),
     defineField({
       name: 'fecha',
@@ -116,16 +108,9 @@ export const resena = defineType({
       description:
         'Opcional. Solo si la reseña es pública (Google o Facebook). Debe empezar con https://',
       validation: (Rule) =>
-        Rule.uri({scheme: ['https']}).custom((url, {parent}) => {
-          const origen = (parent as {origen?: string} | undefined)?.origen
-          if (!url) return true
-          if (origen !== 'google' && origen !== 'facebook')
-            return 'Solo las reseñas de Google o Facebook llevan enlace al original.'
-          return (
-            urlDeRedValida(origen, url) ||
-            `Este enlace no es de ${origen === 'google' ? 'Google' : 'Facebook'}.`
-          )
-        }),
+        Rule.uri({scheme: ['https']}).custom(
+          (url?: string) => !url || esHttps(url) || 'Debe empezar con https://',
+        ),
     }),
     defineField({
       name: 'servicios',
@@ -154,25 +139,11 @@ export const resena = defineType({
       initialValue: false,
       description: 'Las destacadas son las que salen en el Inicio. Elige pocas y las mejores.',
     }),
-    defineField({
-      name: 'permiso',
-      title: 'La persona me dio permiso para publicar su reseña',
-      type: 'boolean',
-      group: 'permiso',
-      initialValue: false,
-      description:
-        'Obligatorio para publicar: sin permiso la reseña se queda en borrador. Lo publicado aquí lo puede leer cualquiera. El comprobante del permiso (el mensaje o correo) no se guarda en Sanity: guárdalo aparte.',
-      validation: (Rule) =>
-        Rule.custom(
-          (permiso, {document}) =>
-            problemaDePermiso({...(document as object), permiso, _type: 'resena'}) ?? true,
-        ),
-    }),
   ],
   preview: {
-    select: {title: 'nombre', subtitle: 'texto', media: 'foto', permiso: 'permiso'},
-    prepare: ({title, subtitle, media, permiso}) => ({
-      title: `${title ?? 'Sin nombre'}${permiso ? '' : ' (sin permiso)'}`,
+    select: {title: 'nombre', subtitle: 'texto', media: 'foto'},
+    prepare: ({title, subtitle, media}) => ({
+      title: title ?? 'Sin nombre',
       subtitle: subtitle?.slice(0, 80),
       media,
     }),

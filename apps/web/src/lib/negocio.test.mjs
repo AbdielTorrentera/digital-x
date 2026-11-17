@@ -20,54 +20,29 @@ test('telUrl usa el teléfono en formato internacional', () => {
   assert.match(telUrl, /^tel:\+\d+$/);
 });
 
-test('cada uno de los 10 servicios tiene su mensaje de WhatsApp', () => {
-  const claves = [
-    'rentaDeAudio',
-    'circuitoCerrado',
-    'produccionDeVideos',
-    'streaming',
-    'drone',
-    'recorridos360',
-    'paginasWeb',
-    'aplicacionesMoviles',
-    'desarrolloDeSoftware',
-    'tiendaEnLinea',
-  ];
-  for (const clave of claves) {
-    assert.equal(typeof mensajesWhatsApp[clave], 'string', `falta el mensaje de ${clave}`);
-    assert.ok(mensajesWhatsApp[clave].length > 0);
-  }
-  assert.equal(Object.keys(mensajesWhatsApp).length, claves.length + 1, 'solo los 10 servicios y el general');
+test('el mensaje general de WhatsApp sale de la configuración y el de cada servicio, del propio servicio', () => {
+  assert.equal(typeof mensajesWhatsApp.general, 'string');
+  assert.ok(mensajesWhatsApp.general.length > 0);
+  assert.deepEqual(Object.keys(mensajesWhatsApp), ['general']);
 });
 
-test('los mensajes de los servicios eliminados ya no existen', () => {
-  for (const clave of ['rentaDeSonido', 'instalacionDeAudio', 'videoParaRedes', 'softwareALaMedida', 'sitiosWeb']) {
-    assert.ok(!(clave in mensajesWhatsApp), `${clave} debería haberse eliminado`);
-  }
-});
-
-test('las zonas son 6, sin repetirse, y los dos grupos quedan como dato interno', () => {
-  assert.deepEqual([...zonas.trasladoIncluido], ['Puebla', 'Atlixco', 'Izúcar de Matamoros']);
-  assert.deepEqual([...zonas.cargoAdicional], ['Tepeaca', 'San Martín Texmelucan', 'Amozoc']);
-  assert.equal(zonas.todas.length, 6);
-  assert.equal(new Set(zonas.todas).size, 6, 'ninguna zona repetida');
+test('las zonas salen de la configuración, sin repetirse, y los grupos de traslado no existen en el código (dato interno)', () => {
+  assert.ok(!('trasladoIncluido' in zonas) && !('cargoAdicional' in zonas));
+  assert.equal(zonas.todas.length, 2);
+  assert.equal(new Set(zonas.todas).size, zonas.todas.length, 'ninguna zona repetida');
 });
 
 test('la lista pública de lugares es una sola, en español y termina en "y alrededores"', () => {
-  assert.equal(
-    zonas.texto,
-    'Puebla, Atlixco, Izúcar de Matamoros, Tepeaca, San Martín Texmelucan, Amozoc y alrededores',
-  );
+  assert.equal(zonas.texto, 'Ciudad Uno, Ciudad Dos y alrededores');
 });
 
-test('el texto del pie nombra las 6 zonas y no muestra condiciones de traslado ni cargos ni un radio', () => {
+test('el texto del pie nombra las zonas de la configuración y no muestra condiciones de traslado ni cargos ni un radio', () => {
   for (const zona of zonas.todas) assert.ok(negocio.textoCobertura.includes(zona), `falta ${zona}`);
   assert.equal(
     negocio.textoCobertura,
-    'Servicios de audio, video y tecnología en Puebla, Atlixco, Izúcar de Matamoros, Tepeaca, San Martín Texmelucan, Amozoc y alrededores.',
+    'Servicios de audio, video y tecnología en Ciudad Uno, Ciudad Dos y alrededores.',
   );
   assert.ok(!/traslado|cargo|km|radio/i.test(negocio.textoCobertura));
-  assert.ok(!/Atlixco, Puebla/.test(negocio.textoCobertura), '"Puebla" sola es la ciudad, no el estado');
 });
 
 test('redesConUrl deja fuera las redes sin URL y conserva las que ya la tienen', () => {
@@ -79,6 +54,6 @@ test('redesConUrl deja fuera las redes sin URL y conserva las que ya la tienen',
   assert.deepEqual(redesConUrl([{ nombre: 'TikTok', url: null }]), []);
 });
 
-test('mientras las URLs de las redes sean pendientes, negocio.redes queda vacía (no se pintan enlaces vacíos)', () => {
+test('negocio.redes solo trae redes activas con dirección https (no se pintan enlaces vacíos)', () => {
   assert.ok(negocio.redes.every((red) => typeof red.url === 'string' && red.url.startsWith('https://')));
 });

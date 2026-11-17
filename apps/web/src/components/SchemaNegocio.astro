@@ -1,6 +1,6 @@
 ---
 import { idNegocio, negocio, zonas } from '../lib/negocio';
-import { sameAsDeRedes } from '../lib/jsonld';
+import { sameAsDeRedes, serializarJsonLd } from '../lib/jsonld';
 
 // JSON-LD del negocio (reglas-seo sección 12).
 // PROHIBIDO: address, streetAddress y geo. El negocio opera sin dirección pública.
@@ -20,4 +20,4 @@ const sameAs = sameAsDeRedes(negocio.redes);
 if (sameAs) datos.sameAs = sameAs;
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(datos)} />
+<script type="application/ld+json" set:html={serializarJsonLd(datos)} />

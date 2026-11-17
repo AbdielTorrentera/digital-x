@@ -1,4 +1,4 @@
-import { categorias, type CategoriaContenido } from '../content/categorias.ts';
+import { categorias, type CategoriaContenido } from './contenido/categorias.ts';
 import { destinoDeCategoria, serviciosConstruidos, type Pagina } from './paginas.ts';
 
 /** Una categoría con su destino en el menú, el Inicio y el pie: su página, o su único servicio construido. */
@@ -24,7 +24,3 @@ export const categoriasConDestino = (): CategoriaConDestino[] =>
         : { categoria, href, directo: false },
     ];
   });
-
-/** Los clientes que se pueden mostrar: solo los que autorizaron (`permiso: true`). Nunca se inventan clientes. */
-export const clientesConPermiso = <T extends { permiso: boolean }>(clientes: T[]): T[] =>
-  clientes.filter((cliente) => cliente.permiso === true);

@@ -38,11 +38,11 @@ test('urlsPublicadas solo tiene páginas en lanzamiento y construidas', () => {
   assert.ok(urlsPublicadas.every((url) => urlsConstruidas.includes(url)));
 });
 
-test('el pie enlaza las 3 categorías como "Audio", "Video" y "Tecnología" (sin "Servicios de"), cada una a su destino', () => {
+test('el pie enlaza cada categoría con servicios construidos como "Audio" o "Video" (sin "Servicios de"), a su destino', () => {
+  // Tecnología no tiene ningún servicio construido en los datos de prueba: no aparece.
   assert.deepEqual(categoriasDeServicios, [
     { titulo: 'Audio', url: '/audio/renta-de-audio/' },
     { titulo: 'Video', url: '/video/' },
-    { titulo: 'Tecnología', url: '/tecnologia/' },
   ]);
   // Todo lo que el pie enlaza está en lanzamiento y construido: ya no hay catálogo ni anclas a /servicios/.
   for (const { url } of categoriasDeServicios) {
@@ -89,14 +89,13 @@ test('Proyectos y Blog aparecen en el pie solos cuando se construyen', () => {
   );
 });
 
-test('el menú es Inicio · Audio · Video · Tecnología · Nosotros, generado de los datos, sin "Servicios" ni páginas sin construir', () => {
+test('el menú se genera de los datos: Inicio · una entrada por categoría con servicios construidos · Nosotros, sin "Servicios" ni páginas sin construir', () => {
   assert.deepEqual(
     menu.map((i) => [i.titulo, i.url]),
     [
       ['Inicio', '/'],
       ['Audio', '/audio/renta-de-audio/'],
       ['Video', '/video/'],
-      ['Tecnología', '/tecnologia/'],
       ['Nosotros', '/nosotros/'],
     ],
   );
@@ -126,56 +125,17 @@ test('archivosDe da las rutas posibles del archivo de cada página', () => {
 
 const servicios = paginas.filter((p) => p.categoria);
 
-test('hay 10 servicios, todos en "lanzamiento", y todos están construidos', () => {
-  assert.equal(servicios.length, 10);
+test('los servicios del registro salen de Sanity, todos en "lanzamiento"; solo los marcados como construidos lo están', () => {
+  assert.equal(servicios.length, 4);
   for (const p of servicios) assert.equal(p.estado, 'lanzamiento', p.url);
   assert.deepEqual(
     servicios.filter((p) => p.construida).map((p) => p.url),
-    [
-      '/audio/renta-de-audio/',
-      '/video/circuito-cerrado-para-eventos/',
-      '/video/video-para-eventos/',
-      '/video/streaming-para-eventos/',
-      '/video/video-con-drone/',
-      '/video/recorridos-virtuales-360/',
-      '/tecnologia/paginas-web/',
-      '/tecnologia/tienda-en-linea/',
-      '/tecnologia/aplicaciones-moviles/',
-      '/tecnologia/desarrollo-de-software/',
-    ],
+    ['/audio/renta-de-audio/', '/video/streaming-para-eventos/', '/video/video-con-drone/'],
   );
-});
-
-test('los servicios son los oficiales: ni uno más ni uno menos', () => {
-  assert.deepEqual(servicios.map((p) => p.url).sort(), [
-    '/audio/renta-de-audio/',
-    '/tecnologia/aplicaciones-moviles/',
-    '/tecnologia/desarrollo-de-software/',
-    '/tecnologia/paginas-web/',
-    '/tecnologia/tienda-en-linea/',
-    '/video/circuito-cerrado-para-eventos/',
-    '/video/recorridos-virtuales-360/',
-    '/video/streaming-para-eventos/',
-    '/video/video-con-drone/',
-    '/video/video-para-eventos/',
-  ]);
-});
-
-test('los servicios eliminados ya no están en el registro', () => {
-  const urls = paginas.map((p) => p.url);
-  for (const url of [
-    '/servicios-de-audio/',
-    '/servicios-de-video/',
-    '/servicios-de-tecnologia/',
-    '/servicios-de-audio/renta-de-audio/',
-    '/servicios-de-audio/renta-de-sonido/',
-    '/servicios-de-audio/instalacion-de-audio/',
-    '/servicios-de-video/video-para-redes/',
-    '/servicios-de-tecnologia/software-a-la-medida/',
-    '/servicios-de-tecnologia/sitios-web/',
-  ]) {
-    assert.ok(!urls.includes(url), `${url} debería haberse eliminado`);
-  }
+  assert.deepEqual(
+    servicios.filter((p) => !p.construida).map((p) => p.url),
+    ['/tecnologia/paginas-web/'],
+  );
 });
 
 test('no hay página de contacto: /contacto/ no está en el registro, el menú ni el pie', () => {

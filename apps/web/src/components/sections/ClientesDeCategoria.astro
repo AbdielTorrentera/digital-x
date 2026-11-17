@@ -1,9 +1,8 @@
 ---
 import Foto from '../Foto.astro';
-import type { Cliente } from '../../content/categorias';
-import { clientesConPermiso } from '../../lib/categorias';
+import type { Cliente } from '../../lib/contenido/categorias';
 
-// "Con quiénes hemos trabajado" de una categoría. Solo dibuja los clientes con permiso (`permiso: true`); sin ninguno, no
+// "Con quiénes hemos trabajado" de una categoría. Dibuja los clientes publicados; sin ninguno, no
 // se dibuja nada (ni un título vacío ni un [PENDIENTE]). Con logo, el logo con su `alt`; sin logo, el nombre en texto.
 // Nunca se inventan clientes: los datos salen de content/categorias.ts (en la fase 3, de Sanity).
 interface Props {
@@ -12,10 +11,9 @@ interface Props {
   clientes: Cliente[];
 }
 const { etiqueta, titulo, clientes } = Astro.props;
-const visibles = clientesConPermiso(clientes);
 ---
 
-{visibles.length > 0 && (
+{clientes.length > 0 && (
   <section class="clientes">
     <div class="container clientes__inner">
       <div class="clientes__head">
@@ -23,7 +21,7 @@ const visibles = clientesConPermiso(clientes);
         <h2 class="t-h2">{titulo}</h2>
       </div>
       <ul class="clientes__lista">
-        {visibles.map((cliente) => (
+        {clientes.map((cliente) => (
           <li class="clientes__item">
             {cliente.logo ? (
               <Foto class="clientes__logo" src={cliente.logo.src} alt={cliente.logo.alt} sizes="160px" />

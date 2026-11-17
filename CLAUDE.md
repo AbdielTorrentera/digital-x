@@ -53,22 +53,26 @@ Monorepo con pnpm workspaces:
 
 - `apps/web`: sitio público en **Astro**, basado en la plantilla **Marby** (licencia MIT: conservar `LICENSE` y el crédito). → `digitalx.mx`
 - `apps/studio`: **Sanity Studio**, en español. → `admin.digitalx.mx`
-- `packages/sanity`: reglas de contenido compartidas por el Studio y el build (longitudes de SEO, vocabulario, permisos, slugs) y, desde la etapa 3 de la fase 3, las consultas GROQ y los tipos generados de Sanity. → Las reglas de contenido se escriben **una sola vez** aquí.
+- `packages/sanity`: reglas de contenido compartidas por el Studio y el build (slugs, enlaces, marcadores, página construida completa y la validación técnica) y, desde la etapa 3 de la fase 3, las consultas GROQ y los tipos generados de Sanity. → Las reglas de contenido se escriben **una sola vez** aquí.
 
 Servicios externos: **Vercel** (dos proyectos, uno por app; cada uno se reconstruye solo cuando cambia su carpeta), **Sanity** (plan gratuito, dataset `production`), **Mux** para videos (plan gratuito, máximo 10). El sitio es estático; un webhook de Sanity dispara el rebuild en Vercel.
 
 - `brand/` es la fuente única de logos e íconos; lo copiado en `apps/web` se actualiza desde ahí, nunca al revés.
 - Mux en plan gratuito: se acepta su marca en el reproductor; no proponer quitarla.
 
-**Qué va en Sanity:** proyectos, artículos del blog, preguntas frecuentes, testimonios (solo con permiso), servicios, categorías de servicios (Audio, Video y Tecnología, con su SEO, preguntas y clientes con permiso), datos de contacto y SEO de proyectos y artículos. **URLs de servicio:** cada servicio vive en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`), derivada de su categoría; la página `/{categoria}/` solo existe con dos o más servicios construidos y con uno solo los enlaces van directo al servicio. No existe `/servicios/` (ver `docs/estructura-sitio-digitalx.md` §2).
+**Qué va en Sanity:** configuración del sitio (teléfono, WhatsApp, correo, redes, zonas, mensaje general, foto de cierre), textos y fotos del Inicio y de Nosotros, categorías de servicios (Audio, Video y Tecnología, con su SEO, preguntas y clientes), servicios (todo su contenido, fotos, mensaje de WhatsApp y si su página está construida), proyectos, clientes y reseñas (solo con permiso), y artículos del blog. Reglas completas en `docs/estructura-sitio-digitalx.md` §7. **URLs de servicio:** cada servicio vive en `/{categoria}/{slug}/` (por ejemplo, `/video/video-con-drone/`), derivada de su categoría; la página `/{categoria}/` solo existe con dos o más servicios construidos y con uno solo los enlaces van directo al servicio. No existe `/servicios/` (ver `docs/estructura-sitio-digitalx.md` §2).
 
-**Qué va en código:** diseño, layout, navegación, páginas legales y SEO de las páginas fijas.
+**Cómo llega el contenido al sitio:** `pnpm build` y `pnpm dev` bajan antes el contenido publicado de Sanity (sin token) a `apps/web/.contenido/sanity.json` y lo validan con `packages/sanity/reglas`; si Sanity no responde o algo no pasa la validación técnica, el build se detiene (nunca se publica a medias). La validación es solo técnica (lo que el sitio necesita para construirse: documentos fijos, campos que la página dibuja, referencias, slugs, formatos, marcadores, página construida completa, foto con su archivo) y es la misma que aplica el Studio al publicar. La única guarda que falla solo en producción (`VERCEL_ENV=production`) es el enlace a una página que aún no existe (hoy `/proyectos/`). Las pruebas leen una instantánea sintética (`apps/web/src/lib/contenido/pruebas/contenido.json`), no el contenido de producción.
+
+**Las reglas de redacción de `docs/` son guía para quien escribe; no se convierten en validaciones, pruebas ni guardas sin que el dueño lo pida.** Todo lo publicado en Sanity se muestra; el texto alternativo es opcional (una foto sin alt se pinta con `alt=""` y `aria-hidden`).
+
+**Qué va en código:** diseño, layout, navegación, páginas legales (`content/condiciones.ts` y `privacidad.ts`), etiquetas de los botones de contacto y SEO de las páginas fijas que no están en Sanity.
 
 ## Comandos
 
 - Gestor de paquetes: **pnpm**. Nunca usar `npm` ni `npx` (usar `pnpm dlx`).
 - Desarrollo: `pnpm dev` dentro de cada app (web en :4321, studio en :3333).
-- Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio se conecta al dataset `pruebas` (ver `apps/studio/.env.development`); el Studio publicado y la CLI usan `production`.
+- Contenido de Sanity: `pnpm contenido:descargar` baja la instantánea (también la bajan `pnpm build` y `pnpm dev`); `SANITY_DATASET=pruebas` baja otro dataset. Comandos de Sanity: `pnpm sanity ...` desde `apps/studio`. El acceso es con la cuenta de GitHub del dueño (`pnpm sanity login --provider github`). `pnpm dev` en el Studio se conecta al dataset `pruebas` (ver `apps/studio/.env.development`); el Studio publicado y la CLI usan `production`.
 - Antes de dar por terminada una tarea en `apps/web`: `pnpm build` sin errores.
 - Verificaciones: `pnpm format` / `pnpm format:check` (raíz); `pnpm check`, `pnpm test`, `pnpm build` y `pnpm check:enlaces` (en `apps/web`); `pnpm check` (en `apps/studio`); `pnpm test` (en `packages/sanity`); `pnpm sanity schema validate` (en `apps/studio`) al cambiar esquemas.
 

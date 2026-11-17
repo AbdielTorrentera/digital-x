@@ -5,18 +5,21 @@
  * Una página solo aparece en menú, pie y sitemap si su estado es 'lanzamiento' Y está
  * construida. Marcar `construida: true` al crear su archivo en src/pages/ (el build falla
  * si se marca sin que el archivo exista). Los servicios no tienen archivo propio: los genera
- * pages/[categoria]/[slug].astro, y el build también falla si uno construido no trae su contenido completo
- * en content/servicios.ts. Las páginas de categoría (/audio/, /video/ y /tecnologia/) tampoco: las genera
- * pages/[categoria].astro desde content/categorias.ts, y solo existen cuando la categoría tiene dos o más servicios
- * construidos (ver `destinoDeCategoria`).
+ * pages/[categoria]/[slug].astro desde los servicios publicados en Sanity («Página construida»), y el build también falla
+ * si uno construido no trae su contenido completo. Las páginas de categoría (/audio/, /video/ y /tecnologia/) tampoco: las
+ * genera pages/[categoria].astro desde las categorías de Sanity, y solo existen cuando la categoría tiene dos o más
+ * servicios construidos (ver `destinoDeCategoria`).
  *
  * Páginas planeadas: las de estado 'lanzamiento' que aún no se construyen. Se pueden enlazar
  * desde el contenido (en desarrollo llevan a la 404), pero el build de producción falla
  * mientras exista un enlace a una (ver astro.config.mjs). Las 'pendiente' nunca se enlazan.
  */
-import { categorias } from '../content/categorias.ts';
+import { PAGINAS_FIJAS_SIN_CONSTRUIR } from '@digitalx/sanity/reglas';
+import { categorias } from './contenido/categorias.ts';
+import { registroDeServicios } from './contenido/servicios.ts';
 
-export type Categoria = 'audio' | 'video' | 'tecnologia';
+/** El slug de una categoría (`audio`, `video`, `tecnologia`…): sale de las categorías de Sanity. */
+export type Categoria = string;
 
 export interface Pagina {
   url: string;
@@ -29,7 +32,7 @@ export interface Pagina {
   paginaDe?: Categoria;
 }
 
-/** El slug de la URL de una categoría (/audio/, /video/, /tecnologia/), desde content/categorias.ts. */
+/** El slug de la URL de una categoría (/audio/, /video/, /tecnologia/), desde las categorías de Sanity. */
 const slugDeCategoria = (id: Categoria) => categorias.find((c) => c.id === id)!.slug;
 
 /**
@@ -44,28 +47,23 @@ const servicio = (slug: string, titulo: string, categoria: Categoria, construida
   categoria,
 });
 
-/** Páginas fijas y servicios. Las páginas de categoría se derivan de estos y de content/categorias.ts (abajo). */
+/** Páginas fijas y servicios. Las páginas de categoría se derivan de estos y de las categorías de Sanity (abajo). */
 const base: Pagina[] = [
   { url: '/', titulo: 'Inicio', estado: 'lanzamiento', construida: true },
 
-  // Los 10 servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3). Una página por
-  // servicio (/{categoria}/{slug}/), generada por pages/[categoria]/[slug].astro solo cuando `construida` es true. Cada
-  // una se publica cuando el dueño apruebe sus fotos y videos: hasta entonces no se enlaza y su nombre es texto. El orden
-  // de aquí es el de las categorías y el de los textos del Inicio.
-  servicio('renta-de-audio', 'Renta de audio y sonido', 'audio', true),
+  // Los servicios son los oficiales del Perfil de Negocio de Google (estructura-sitio sección 3) y salen de Sanity, por
+  // orden de categoría y luego por su orden. Una página por servicio (/{categoria}/{slug}/), generada por
+  // pages/[categoria]/[slug].astro solo cuando «Página construida» está marcada: hasta entonces no se enlaza y su nombre
+  // es texto.
+  ...registroDeServicios.map((s) => servicio(s.slug, s.titulo, s.categoria, s.construida)),
 
-  servicio('circuito-cerrado-para-eventos', 'Circuito cerrado para eventos', 'video', true),
-  servicio('video-para-eventos', 'Producción de videos para eventos', 'video', true),
-  servicio('streaming-para-eventos', 'Transmisión en vivo', 'video', true),
-  servicio('video-con-drone', 'Video con drone', 'video', true),
-  servicio('recorridos-virtuales-360', 'Recorridos virtuales 360', 'video', true),
-
-  servicio('paginas-web', 'Páginas web', 'tecnologia', true),
-  servicio('tienda-en-linea', 'Tienda en línea', 'tecnologia', true),
-  servicio('aplicaciones-moviles', 'Desarrollo de aplicaciones móviles', 'tecnologia', true),
-  servicio('desarrollo-de-software', 'Desarrollo de software', 'tecnologia', true),
-
-  { url: '/proyectos/', titulo: 'Proyectos', estado: 'lanzamiento', construida: false },
+  // Se construye en su etapa: entonces se quita de `PAGINAS_FIJAS_SIN_CONSTRUIR` (packages/sanity/reglas/constantes.ts).
+  {
+    url: '/proyectos/',
+    titulo: 'Proyectos',
+    estado: 'lanzamiento',
+    construida: !PAGINAS_FIJAS_SIN_CONSTRUIR.includes('/proyectos/'),
+  },
   // [PENDIENTE: número mínimo de artículos para publicar el blog]
   { url: '/blog/', titulo: 'Blog', estado: 'pendiente', construida: false },
   { url: '/nosotros/', titulo: 'Nosotros', estado: 'lanzamiento', construida: true },

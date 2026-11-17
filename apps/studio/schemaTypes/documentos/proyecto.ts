@@ -120,8 +120,9 @@ export const proyecto = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     campoSeo({
+      // Opcional: hoy no existe ninguna página de proyecto; se decide de nuevo en la etapa 5.
       obligatorio: false,
-      metaObligatoria: true,
+      metaObligatoria: false,
       ejemploTitle: 'Audio para evento cultural en Atlixco | Digital X',
       ejemploMeta:
         'Sonido y pantallas para un evento cultural en Atlixco: el reto, lo que hicimos y cómo quedó. Cotiza por WhatsApp.',

@@ -227,6 +227,14 @@ test('una referencia fuerte a algo no publicado falla; una débil se omite', () 
   assert.deepEqual(con(n, /cliente-sin-publicar/), [])
 })
 
+test('un proyecto sin título ni descripción para Google pasa (el apartado de Google es opcional en proyectos)', () => {
+  const m = copia()
+  m.documentos.push({_id: 'p2', _type: 'proyecto', titulo: 'Proyecto sin SEO'})
+  assert.deepEqual(errores(m), [])
+  m.documentos.at(-1).seo = {}
+  assert.deepEqual(errores(m), [])
+})
+
 test('permiso, proyecto de ejemplo y reseñas cortas ya no se validan', () => {
   const m = copia()
   m.documentos.push(

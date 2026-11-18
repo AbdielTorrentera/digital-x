@@ -62,10 +62,9 @@ export const negocio = {
   textoCobertura: `Servicios de audio, video y tecnología en ${zonas.texto}.`,
   // Imagen de marca (1200x630) para compartir enlaces; cada página puede pasar la suya. Una imagen para compartir
   // capturada en «Configuración del sitio» tiene prioridad.
-  imagenOg: (config.imagenCompartir ? aImagenCompartir(config.imagenCompartir) : '/og-digitalx-1200x630.png') as
-    string | null,
-  // Logo para los datos estructurados: copia de brand/png/digitalx-logo-negro-1200.png (brand/ es la fuente).
-  logo: '/logo-digitalx-negro-1200.png',
+  imagenOg: (config.imagenCompartir ? aImagenCompartir(config.imagenCompartir) : '/og-image.png') as string | null,
+  // Logo para los datos estructurados: el ícono cuadrado, copia de brand/favicon/icon-512.png (brand/ es la fuente).
+  logo: '/icon-512.png',
 } as const;
 
 /** @id del ProfessionalService: las demás páginas (por ejemplo, AboutPage) lo referencian en vez de duplicarlo. */

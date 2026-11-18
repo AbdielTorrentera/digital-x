@@ -224,15 +224,15 @@
   /* medidas que fijan las reglas */
   --tactil: 48px; /* alto y área táctil mínima (diseño §6, SEO §10) */
   --alto-header: 64px; /* máximo del header fijo en móvil (diseño §7) */
-  /* Barra del menú, fija: logo + 20 px arriba y abajo (diseño §7). Sale de la barra real (81 px con el logo de 128 px), no
-     de un número a mano: de aquí cuelgan la portada, la navegación interna y los saltos. */
-  --nav-alto: calc(var(--logo-ancho) * 515 / 1609 + 2 * 20px);
+  /* Barra del menú, fija: logo + 20 px arriba y abajo (diseño §7). Sale de la barra real (81 px con el logo de 41 px de
+     alto), no de un número a mano: de aquí cuelgan la portada, la navegación interna y los saltos. */
+  --nav-alto: calc(var(--logo-alto) + 2 * 20px);
   --salto-alto: calc(var(--tactil) + 2 * var(--esp-1)); /* barra de navegación interna: 48 px + su relleno */
   --boton-flotante: 60px; /* círculo de los botones flotantes de WhatsApp y de llamada (SEO §11); 64 px desde 768 px */
   --icono-flotante: 34px; /* ícono dentro de los flotantes (≈ 57 % del círculo); 36 px desde 768 px */
   --icono: 24px;
   --icono-boton: 20px; /* íconos dentro de botones (diseño §6) */
-  --logo-ancho: 128px; /* ≥ 120 px (identidad §1) */
+  --logo-alto: 41px; /* alto del logo en la barra y el pie; su ancho (≈ 152 px) sale de la proporción y es ≥ 120 px (identidad §1) */
   --foco: 2px; /* grosor y separación del contorno de foco (diseño §9) */
 
   /* retícula (diseño §1): móvil 16/16, tableta y escritorio 32/24, ancho 32/32 */

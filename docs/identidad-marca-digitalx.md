@@ -16,38 +16,37 @@ Versión: borrador de trabajo · 2026-10-23
 
 ## 1. Logo
 
-El logo es un logotipo de texto: **"DIGITAL"** en letras gruesas y una **"X"** grande que sobresale arriba y abajo de la palabra.
+El logo es un logotipo de texto: **«Digital X»** en mayúsculas, con la tipografía del diseñador convertida a trazos (sin fuentes externas), y una **«X» grande en amarillo** (`--dx-amarillo`) que sobresale arriba y abajo de la palabra. Lo aprobó el dueño en noviembre de 2026 y **sustituye al logo anterior** (letras más gruesas y la X en el mismo color que el texto).
 
 ### Versiones y archivos
 
-Los archivos fuente están en `brand/` (raíz del repo). En el sitio se usan **siempre los SVG**; los PNG son solo para usos fuera de la web (documentos, correos, redes).
+Los archivos fuente están en `brand/` (raíz del repo). En el sitio se usan **siempre los SVG**; los PNG son solo para usos fuera de la web (documentos, correos, redes). Se usan **tal cual los entregó el diseñador**: no se cambian colores ni formas.
 
 | Archivo | Uso |
 | --- | --- |
-| `svg/digitalx-logo-negro.svg` | Logo sobre fondos claros (blanco, gris claro, amarillo) |
-| `svg/digitalx-logo-blanco.svg` | Logo sobre fondos oscuros (negro, fotos oscuras) |
-| `svg/digitalx-logo.svg` | Logo con `fill="currentColor"`: toma el color del texto donde se inserte (útil en código) |
-| `svg/digitalx-isotipo-negro.svg` / `-blanco.svg` | Solo la X, transparente |
-| `favicon/favicon.svg`, `favicon.ico`, `favicon-16/32/48.png` | Favicon del navegador |
+| `svg/logo-digitalx.svg` | **Logo principal:** texto blanco y X amarilla. Sobre fondos oscuros (negro, fotos oscuras con velo) |
+| `svg/logo-digitalx-blanco.svg` | Monocromo blanco. Sobre fondos oscuros, cuando no debe haber color |
+| `svg/logo-digitalx-negro.svg` | Monocromo negro. **Sobre fondos claros** (blanco, gris claro, amarillo) |
+| `svg/icono.svg` | La X amarilla sobre un cuadrado negro de esquinas redondeadas: ícono de la pestaña, de la app y avatar |
+| `favicon/favicon.ico` (16, 32 y 48 px) | Favicon del navegador |
 | `favicon/apple-touch-icon.png` (180 px) | Ícono al guardar el sitio en iPhone |
-| `favicon/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | Íconos para Android y el `site.webmanifest` |
-| `favicon/site.webmanifest` | Manifiesto con nombre e íconos |
-| `png/digitalx-logo-{negro,blanco}-{600,1200,2400}.png` | Logo en PNG transparente para documentos y correos |
-| `png/digitalx-isotipo-{negro,blanco}-512.png` | X en PNG transparente |
-| `social/digitalx-perfil-1080.png` | Foto de perfil para Facebook, Instagram, WhatsApp Business y Google |
-| `social/og-digitalx-1200x630.png` | Imagen genérica para compartir enlaces (Open Graph) |
+| `favicon/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | Íconos para Android, el `site.webmanifest` y el `logo` de los datos estructurados (`icon-512.png`) |
+| `favicon/site.webmanifest` | Manifiesto con nombre, íconos y colores (`theme_color` y `background_color` negros) |
+| `png/logo-digitalx-{600,1200,2400}.png`, `logo-digitalx-blanco-…`, `logo-digitalx-negro-…` | Logo en PNG transparente (principal, blanco y negro) para documentos y correos. Se generan de los SVG con el mismo ancho de siempre; el alto sale de la proporción |
+| `png/icono-512.png` | El ícono en PNG |
+| `social/digitalx-perfil-1080.png` | Foto de perfil (1080 × 1080: la X amarilla sobre negro) para Facebook, Instagram, WhatsApp Business y Google |
+| `social/og-image.png` (1200 × 630) | Imagen genérica para compartir enlaces (Open Graph y Twitter). El sitio la usa en las páginas que no traen la suya |
 
-- Los vectores se **reconstruyeron a partir del PNG** original (coincidencia del 99.6 %; la X es un polígono exacto). Si aparece el archivo vectorial original del diseñador, se reemplazan.
-- El isotipo (la X sola) se usa para favicon, ícono de app y avatar: X negra sobre fondo `--dx-amarillo`.
-- *Propuesta:* versión del logo en amarillo (`--dx-amarillo`) sobre negro para usos especiales. `[PENDIENTE: aprobación del dueño]`. Mientras no se apruebe, solo existen negro y blanco.
+- **Qué variante va dónde:** sobre **fondo oscuro**, el principal (o el blanco); sobre **fondo claro**, el negro. En el sitio: barra, portada del Inicio y pie llevan el principal; el panel claro del menú móvil lleva el negro. **Nunca el amarillo sobre un fondo claro** (contraste 1.3:1, ver §3): sobre claro, siempre el negro.
+- Los PNG se regeneran de los SVG; nunca se editan a mano. Si cambia un SVG, se regeneran y se vuelven a copiar a `apps/web` (`brand/` manda).
 
 ### Reglas de uso
 
-- **Espacio de respeto:** alrededor del logo, como mínimo la altura de la palabra "DIGITAL". Nada (texto, bordes, otros logos) entra en ese espacio.
-- **Tamaño mínimo:** 120 px de ancho en pantalla para el logo completo. Por debajo de eso se usa el isotipo.
+- **Espacio de respeto:** alrededor del logo, como mínimo la altura de las letras de «Digital X». Nada (texto, bordes, otros logos) entra en ese espacio.
+- **Tamaño mínimo:** 120 px de ancho en pantalla para el logo completo. Por debajo de eso se usa el ícono (la X).
 - **Sobre fotos:** solo si el fondo detrás del logo es lo bastante oscuro o claro para leerlo; si no, se pone sobre una franja sólida.
-- **PROHIBIDO:** deformarlo (estirarlo o achatarlo), rotarlo, cambiar la proporción entre "DIGITAL" y la X, separar o mover la X, agregarle sombras, contornos, brillos o degradados, ponerlo en colores fuera de la sección 2, o redibujarlo con otra tipografía.
-- En el sitio, el logo lleva `alt="Digital X"` y enlaza al Inicio.
+- **PROHIBIDO:** deformarlo (estirarlo o achatarlo), rotarlo, cambiar la proporción entre «Digital X» y la X, separar o mover la X, agregarle sombras, contornos, brillos o degradados, ponerlo en colores fuera de los de estos archivos, o redibujarlo con otra tipografía.
+- En el sitio, el logo lleva el texto accesible «Digital X» (`aria-label` en el SVG; el enlace de la barra y del menú dice «Digital X, inicio») y enlaza al Inicio. El de la portada es decorativo (`aria-hidden`).
 
 ---
 
@@ -134,7 +133,6 @@ Tipografías del sitio:
 
 ## 7. Pendientes
 
-- [ ] Archivo vectorial original del diseñador, si existe (reemplazaría los reconstruidos).
-- [ ] Aprobar o descartar la versión del logo en amarillo.
+- [x] Archivo vectorial del diseñador: entregado y aprobado por el dueño en noviembre de 2026 (reemplazó a los vectores reconstruidos del PNG). Incluye la versión con la X amarilla, que es ahora el logo principal.
 - [ ] Nombres oficiales de los colores.
 - [ ] Colores de estado para formularios, si se publica el formulario.

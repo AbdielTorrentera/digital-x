@@ -38,3 +38,6 @@ const bloquear = noindex || !esProduccion;
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 {ogImage && <meta name="twitter:image" content={ogImage} />}
+{ogImage && image === negocio.imagenOg && (
+  <meta name="twitter:image:alt" content="Digital X: audio, video y tecnología en Puebla" />
+)}

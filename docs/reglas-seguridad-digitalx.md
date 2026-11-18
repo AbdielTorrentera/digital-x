@@ -138,8 +138,8 @@ upgrade-insecure-requests
 2. **Sanity:** el acceso al Studio y al proyecto es **con la cuenta de GitHub del dueño, con 2FA activa**; no se usa cuenta de correo y contraseña. En el plan gratuito solo existen los roles *Administrator* y *Viewer* (*Editor* exige un plan de pago y no se usa). Hoy hay **un solo usuario**, que es dueño y desarrollador, como *Administrator*. Si alguien más necesita acceso, entra como *Viewer* (solo lectura) y se le quita ese día cuando deje de colaborar; antes de dar a alguien más acceso de escritura se revisa este punto.
 3. **GitHub:** repositorio público (permite proteger ramas y Actions sin costo). Por eso nunca se suben secretos, datos personales de clientes ni información privada del negocio, ni siquiera en `docs/`. Rama `main` protegida: sin *force push*, solo con pull request y con las verificaciones en verde.
 4. **Vercel:** las versiones de prueba (*preview*) con protección de acceso activada, además del `noindex`.
-5. **Dominios:** `digitalx.mx` y `digitalequis.com` con bloqueo de transferencia activado, renovación automática y datos de contacto vigentes en el registrador.
-6. **Correo y suplantación:** cuando se configure el correo de `digitalx.mx`, publicar SPF, DKIM y DMARC. Para `digitalequis.com`, que no envía correo, publicar `v=spf1 -all` y DMARC `p=reject` para que nadie pueda enviar correos haciéndose pasar por el dominio.
+5. **Dominios:** `digitalx.mx` (Akky, vence el 23 de octubre de 2027) con bloqueo de transferencia activado, renovación automática y datos de contacto vigentes en el registrador. `digitalequis.com` (GoDaddy) **no se renueva** por decisión del dueño y vence el 1 de mayo de 2027 (ver SEO §14.6); mientras exista, con el bloqueo de transferencia activado.
+6. **Correo y suplantación:** ninguno de los dos dominios envía ni recibe correo, así que **ambos publican SPF nulo `v=spf1 -all` y DMARC `v=DMARC1; p=reject;`** (en Vercel DNS, puestos y verificados con `dig` el 18 de noviembre de 2026) para que nadie pueda enviar correos haciéndose pasar por el dominio. Un nombre solo puede tener **un** registro SPF y el valor se escribe sin comillas y sin texto extra (una vez quedó con la palabra «Value» delante y fue inválido hasta corregirlo). El día que se configure el correo de `digitalx.mx`, esos registros se reemplazan por los del proveedor (SPF, DKIM y DMARC).
 7. Las contraseñas de todas estas cuentas son únicas y viven en un gestor de contraseñas.
 
 ---
@@ -187,22 +187,24 @@ Cualquier cambio que pase una fila de "Hoy" a "Aplica" requiere un plan de segur
 - [ ] Valor de `minimumReleaseAge` en pnpm.
 - [ ] Proveedor del formulario y su configuración antispam (si se publica).
 - [ ] Aviso de privacidad revisado.
-- [ ] Registros SPF, DKIM y DMARC de ambos dominios.
+- [x] SPF y DMARC nulos de ambos dominios (18 de noviembre de 2026). Pendiente solo cuando se configure correo: DKIM y los registros reales de `digitalx.mx`.
 - [ ] Activar 2FA y el bloqueo de transferencia de los dominios en todas las cuentas de §7 y confirmarlo. El dueño lo activará en los días posteriores al lanzamiento (decisión del 17 de noviembre de 2026): no bloquea el lanzamiento, pero queda como riesgo abierto hasta confirmarlo.
 
 ---
 
 ## 12. Criterios de aceptación (antes de lanzar)
 
-- [ ] Ningún secreto en Git ni en el código que descarga el navegador (búsqueda de tokens en `dist/` vacía).
-- [ ] Encabezados de §5 presentes en el sitio y en el Studio (verificado con una herramienta de análisis de encabezados).
-- [ ] CSP aplicada (no solo en modo *Report-Only*) y sin errores en consola en ninguna página.
+Revisados en el lanzamiento (18 de noviembre de 2026). Lo que no está marcado no se comprobó en esa revisión.
+
+- [x] Ningún secreto en Git ni en el código que descarga el navegador (búsqueda de tokens, URLs de *deploy hook* y `secrets.mux` en `dist/` vacía; sin archivos `.map`).
+- [x] Encabezados de §5 presentes en el sitio, medidos con `curl` en `digitalx.mx`: HSTS, `nosniff`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy` y CSP. Los del Studio los pone Sanity (riesgo aceptado en §5).
+- [x] CSP aplicada (no solo *Report-Only*): las 20 páginas y la 404 la envían; auditoría estática de `dist/` sin scripts en línea fuera del *hash* permitido, sin atributos `on*`, sin iframes y sin orígenes externos cargados; consola sin violaciones en la revisión en Chrome del Inicio y Nosotros, con el menú y las preguntas funcionando. El único aviso fue `vercel.live`, propio de las previews.
 - [ ] CORS de Sanity limitado a los orígenes de §5.
 - [ ] Ningún `set:html` con contenido externo; enlaces del contenido con protocolos permitidos.
 - [ ] Documento de secretos de Mux no legible sin autenticación.
-- [ ] `pnpm audit` sin vulnerabilidades altas ni críticas.
-- [ ] 2FA activa en todas las cuentas y bloqueo de transferencia en ambos dominios.
-- [ ] Studio y versiones de prueba con `noindex` y protección de acceso.
+- [ ] `pnpm audit` sin vulnerabilidades altas ni críticas. **Excepción aceptada por el dueño:** `picomatch` (alta, sin versión corregida; §6.9) y `minimatch` (moderada; §6.9). Astro ya está en 7.4.7.
+- [ ] 2FA activa en todas las cuentas y bloqueo de transferencia en ambos dominios (pendiente; §11).
+- [x] Studio y versiones de prueba con `noindex` y protección de acceso: las previews llevan `X-Robots-Tag: noindex` y exigen el inicio de sesión de Vercel (Standard Protection); el Studio ya estaba cubierto (§5).
 
 ---
 

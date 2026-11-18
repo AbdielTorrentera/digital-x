@@ -35,8 +35,7 @@ Si publicas varias cosas seguidas no pasa nada: el sitio se reconstruye con todo
 
 **Dónde se ve el cambio:**
 
-- **Hoy** (antes del lanzamiento): en la versión de prueba del sitio. Entra a Vercel, abre tu proyecto, ve a **Deployments** y abre el más reciente que diga `main` (botón **Visit**). Necesitas tu sesión de Vercel.
-- **Después del lanzamiento:** en `digitalx.mx`.
+- **En `digitalx.mx`**, unos 5 minutos después de publicar. Si quieres confirmar que el sitio ya se reconstruyó: entra a Vercel, abre tu proyecto y ve a **Deployments**; el más reciente debe decir **Production** y **Ready**. Si dice **Error**, el sitio sigue mostrando la versión anterior y Vercel te avisa por correo.
 
 ---
 

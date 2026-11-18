@@ -234,7 +234,7 @@ Reto, solución, resultado y fecha son opcionales: si un campo no tiene texto, l
 - **`sitemap.xml`** con solo las páginas publicadas (excluir las "Pendiente de material"). Declararlo en `robots.txt`.
 - **`robots.txt`**: no bloquear nada importante.
 - **`noindex`:** páginas de agradecimiento, resultados de búsqueda interna y cualquier entorno de pruebas. En Vercel, toda versión que no sea producción (`VERCEL_ENV` distinto de `production`) lleva `noindex` y `robots.txt` bloqueado. El Studio (`admin-digitalx.sanity.studio`) no es indexable: su HTML trae `<meta name="robots" content="noindex">` (lo genera `sanity build`) y, además, el host responde con una redirección (302) al inicio de sesión de Sanity, así que un rastreador nunca llega a una página. No hace falta configurarlo.
-- ⚠ **Antes de lanzar:** quitar el `noindex` y el bloqueo de robots del entorno de pruebas, y verificarlo.
+- ✔ **Verificado en el lanzamiento (18 de noviembre de 2026):** producción sin `noindex` ni bloqueo de robots. Con `curl` sobre `digitalx.mx`: sin `<meta name="robots">` (salvo la 404), sin `X-Robots-Tag`, `robots.txt` con `Allow: /` y el sitemap, y canonical `https://digitalx.mx/…` en cada página. Si se cambia `VERCEL_ENV` o la casilla de variables del sistema de Vercel, repetirlo.
 - **404** con `noindex`, el texto "Al parecer lo que estás buscando se ha movido o no existe." y dos botones: "Ver servicios" (a `/#servicios`, la sección de servicios del Inicio) y "Regresar al inicio".
 - **Open Graph** y Twitter Card básicos en cada página (título, descripción, imagen).
 - **Un solo sistema de SEO** (un solo plugin o módulo; no duplicar etiquetas).
@@ -327,10 +327,10 @@ Como no hay dirección pública, la consistencia se aplica a **nombre y teléfon
    - Se puede sugerir que cuenten qué servicio recibieron y dónde.
    - **PROHIBIDO** escribirles el texto, ofrecer descuentos o pagos por reseña, o pedirlas solo a clientes satisfechos.
    - Responder todas las reseñas.
-3. **Search Console:** verificar `digitalx.mx` y `digitalequis.com`; usar la herramienta de cambio de dirección; enviar el sitemap.
+3. **Search Console:** verificar `digitalx.mx` y `digitalequis.com`; usar la herramienta de cambio de dirección; enviar el sitemap. **Hecho el 18 de noviembre de 2026 (según el dueño):** ambas propiedades verificadas, sitemap enviado, indexación del inicio solicitada y cambio de dirección de `digitalequis.com` a `digitalx.mx` confirmado. Queda vigilar el informe de páginas y el posicionamiento de «streaming para eventos puebla» (la página vieja `/servicios-de-video/` ahora redirige a `/video/`).
 4. **Analítica:** configurar GA4 con los eventos de la sección 11. ⚠ Activar GA4 o Vercel Analytics requiere antes actualizar `/politica-de-privacidad/` (cookies y analítica).
 5. **Directorios y redes:** mismos nombre y teléfono en Facebook, Instagram y directorios locales.
-6. **Dominio anterior:** renovarlo por varios años. Hoy sus servidores de nombres apuntan a un estacionamiento de Hostinger y no responde: regresarlos a GoDaddy (o al DNS que se elija) **antes** de lanzar, o las redirecciones 301 no funcionarán. Para no perder correos a las direcciones viejas, configurar reenvío de `@digitalequis.com` al correo nuevo.
+6. **Dominio anterior:** **el dueño decidió no renovarlo** (decisión del 17 de noviembre de 2026; por la regla de cero costos): vence el 1 de mayo de 2027, unos 164 días después del lanzamiento, menos de los 180 que Google recomienda para un cambio de dirección. Sus servidores de nombres ya son los de Vercel (puestos en GoDaddy) y sus 301 funcionan desde el 18 de noviembre de 2026 (estructura §6). Al vencer, las 301 dejan de funcionar y cualquiera podría registrar el dominio; si más adelante se decide renovarlo, se hace en GoDaddy sin cambiar nada más. No hay correo en ningún dominio, así que no hay reenvío que configurar.
 
 ---
 

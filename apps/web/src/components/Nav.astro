@@ -58,7 +58,7 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
         <Icon name="close" size="boton" />
       </button>
       <a class="menu__logo" href="/" aria-label="Digital X, inicio">
-        <Logo />
+        <Logo variante="negro" />
       </a>
     </div>
     <div class="menu__top-cta">
@@ -119,7 +119,6 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
   .nav__logo {
     position: relative;
     display: inline-flex;
-    color: var(--dx-blanco);
   }
   /* Zona de toque del logo de al menos 48 px de alto, sin cambiar su tamaño visible. */
   .nav__logo::after {
@@ -246,7 +245,6 @@ const estado = (url: string) => (actual === url ? 'page' : destinoActual === url
   .menu__logo {
     position: relative;
     display: inline-flex;
-    color: var(--dx-negro);
   }
   .menu__logo::after {
     content: '';

@@ -244,7 +244,7 @@ Los servicios se editan desde Sanity (agregar un servicio o cambiar lo que inclu
 - **Pendientes de las categorías:** (a) FAQ de Audio, hasta que la categoría tenga página (Video y Tecnología ya tienen las suyas, aprobadas por el dueño, y no repiten las de los servicios); (b) clientes, vacíos: solo se agregan con autorización del cliente; (c) fotos de cada categoría (hoy provisionales); (d) activar la guía cuando el dueño lo decida.
 
 - **Datos del Inicio (documento único `inicio`):** la sección **"Qué hacemos"** (etiqueta, título, texto, `foto` con `alt` y botón; sin cifras) y el título y el texto del cierre salen del documento `inicio` de Sanity. El texto de "Qué hacemos" no debe repetirse en otra parte del sitio (guía de redacción). Foto de "Qué hacemos" provisional. **Marcadores:** las partes del Inicio que hoy se arman con datos (la cobertura y dos respuestas de las preguntas frecuentes) se guardan con marcadores —`{zonas}`, `{servicios-audio}`, `{servicios-video}` y `{servicios-tecnologia}`— que el adaptador del sitio reemplaza con las zonas de la configuración y con los nombres de los servicios publicados (`lib/servicios.lista`); un marcador desconocido es error del esquema (`packages/sanity/reglas/marcadores.ts`, `marcadoresDesconocidos`).
-- **Alto de la barra:** `--nav-alto` se calcula del logo y el relleno de la barra (81 px), no es un número a mano; la portada y la navegación interna cuelgan de él.
+- **Alto de la barra:** `--nav-alto` se calcula del logo (41 px de alto) y el relleno de la barra (81 px), no es un número a mano; la portada y la navegación interna cuelgan de él.
 
 *Cómo se agrega un servicio*
 

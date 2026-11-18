@@ -56,9 +56,8 @@ const { titulo, foto } = Astro.props;
     padding-block: var(--esp-8);
   }
   .hero__logo {
-    --logo-ancho: 200px;
+    --logo-alto: 64px;
     order: -1;
-    color: var(--dx-blanco);
   }
   .hero__title {
     font-family: var(--font-titulos);
@@ -80,15 +79,16 @@ const { titulo, foto } = Astro.props;
     .hero__title {
       max-width: 18ch;
     }
+    /* 76 px de alto ≈ 282 px de ancho (como el logo anterior): con más, el H1 real queda en 6 renglones entre 768 y 1023 px. */
     .hero__logo {
-      --logo-ancho: 280px;
+      --logo-alto: 76px;
       order: 0;
       flex: none;
     }
   }
   @media (min-width: 1024px) {
     .hero__logo {
-      --logo-ancho: 380px;
+      --logo-alto: 122px;
     }
   }
 </style>

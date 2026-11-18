@@ -47,7 +47,7 @@
     },
     {
       "source": "/servicios-de-video/",
-      "destination": "https://digitalx.mx/video/streaming-para-eventos/",
+      "destination": "https://digitalx.mx/video/",
       "statusCode": 301,
       "has": [
         {

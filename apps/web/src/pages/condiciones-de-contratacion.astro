@@ -47,7 +47,9 @@ import { mensajesWhatsApp } from '../lib/negocio';
         <h2>{dudas.titulo}</h2>
         <p>
           {dudas.antes}
-          <a href={dudas.whatsapp.href}>{dudas.whatsapp.texto}</a>
+          <a href={dudas.whatsapp.href} rel="noopener noreferrer">
+            {dudas.whatsapp.texto}
+          </a>
           {dudas.medio}
           <a href={dudas.llamar.href}>{dudas.llamar.texto}</a>
           {dudas.despues}

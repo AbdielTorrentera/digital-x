@@ -61,6 +61,9 @@ export default defineConfig({
   integrations: [sitemap({ filter: (page) => publicadas.has(page) }), proteccionProduccion],
   // The stylesheets are small, so they go inside the page instead of blocking the first paint as separate requests.
   build: { inlineStylesheets: 'always' },
+  // Los scripts van siempre como archivo propio (nunca en línea): la CSP solo permite `script-src 'self'` y el hash del
+  // script de arranque de Base.astro. Con el límite por defecto, Astro metía en el HTML los scripts de menos de 4 kB.
+  vite: { build: { assetsInlineLimit: 0 } },
   // Las fotos vienen del CDN de Sanity; solo las de nuestro proyecto. Astro las baja al compilar y las sirve desde el
   // propio sitio (la CSP no necesita cdn.sanity.io para las imágenes de las páginas).
   image: { remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io', pathname: `/images/${projectId}/**` }] },

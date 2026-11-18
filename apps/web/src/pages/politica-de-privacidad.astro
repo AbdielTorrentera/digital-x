@@ -31,7 +31,9 @@ import { mensajesWhatsApp } from '../lib/negocio';
         <h2>{derechos.titulo}</h2>
         <p>
           {derechos.antes}
-          <a href={derechos.whatsapp.href}>{derechos.whatsapp.texto}</a>
+          <a href={derechos.whatsapp.href} rel="noopener noreferrer">
+            {derechos.whatsapp.texto}
+          </a>
           {derechos.medio}
           <a href={derechos.llamar.href}>{derechos.llamar.texto}</a>
           {derechos.despues}

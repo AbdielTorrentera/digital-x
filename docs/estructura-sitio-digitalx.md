@@ -164,6 +164,8 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 
 - Redirigir cualquier otra URL del dominio viejo a `/`, **nunca** a una página sin relación.
 - El dominio viejo debe seguir respondiendo para que el 301 funcione.
+- **Dónde viven las reglas:** `apps/web/vercel.json`, con la condición de host `digitalequis.com` o `www.digitalequis.com` (no afectan a `digitalx.mx`). Primero las rutas de la tabla (escritas con barra final, que es como las publicaba WordPress) y al final el comodín `/(.*)` hacia `https://digitalx.mx/`, que cubre `/`, las rutas con query (`/?p=12`) y todo lo demás.
+- **URLs sin barra final (decisión del dueño, aceptada):** `trailingSlash: true` hace que Vercel responda primero un 308 a la misma URL con barra y después aplique el 301. Esas URLs dan **dos saltos** (308 → 301). Las URLs `http://` dan un salto más (http → https). No se puede evitar con `vercel.json` y no afecta al cambio de dirección en Search Console.
 
 ---
 

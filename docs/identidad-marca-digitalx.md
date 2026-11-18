@@ -134,5 +134,6 @@ Tipografías del sitio:
 ## 7. Pendientes
 
 - [x] Archivo vectorial del diseñador: entregado y aprobado por el dueño en noviembre de 2026 (reemplazó a los vectores reconstruidos del PNG). Incluye la versión con la X amarilla, que es ahora el logo principal.
+- [ ] Subir la foto de perfil nueva (`social/digitalx-perfil-1080.png`) al Perfil de Negocio de Google, Facebook, Instagram, WhatsApp Business y TikTok, para que coincida con el logo nuevo del sitio (en línea desde el 18 de noviembre de 2026). Lo hace el dueño.
 - [ ] Nombres oficiales de los colores.
 - [ ] Colores de estado para formularios, si se publica el formulario.

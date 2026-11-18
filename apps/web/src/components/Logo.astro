@@ -1,15 +1,23 @@
 ---
-import logo from '../brand/digitalx-logo.svg?raw';
+import principal from '../brand/logo-digitalx.svg?raw';
+import blanco from '../brand/logo-digitalx-blanco.svg?raw';
+import negro from '../brand/logo-digitalx-negro.svg?raw';
 
-// Logo de Digital X (identidad sección 1): SVG en línea con fill="currentColor", así toma el color del
-// contexto (negro sobre claro, blanco sobre negro). El ancho sale de --logo-ancho (≥ 120 px) y la proporción
-// 1609:515 es fija.
+// Logo de Digital X (identidad sección 1): el SVG del diseñador, tal cual y en línea (sin una petición más). Los
+// colores y las formas son fijos (nada de currentColor), así que la variante se elige por el fondo donde va:
+// `principal` (texto blanco y X amarilla) o `blanco` sobre fondos oscuros; `negro` sobre fondos claros. Nunca el
+// amarillo sobre un fondo claro.
+// El alto sale de --logo-alto y la proporción 6380:1721 es fija; el ancho sigue solo (≥ 120 px, identidad §1).
 // role="img" + aria-label="Digital X" hace de alt. El <title> interno se quita para no duplicar el nombre.
+type Variante = 'principal' | 'blanco' | 'negro';
 interface Props {
+  variante?: Variante;
   class?: string;
 }
-const { class: cls } = Astro.props;
-const svg = logo.replace(/<title>.*?<\/title>/, '').replace(/ width="\d+" height="\d+"/, ' focusable="false"');
+const { variante = 'principal', class: cls } = Astro.props;
+const svg = { principal, blanco, negro }[variante]
+  .replace(/<title>.*?<\/title>/, '')
+  .replace('<svg ', '<svg focusable="false" ');
 ---
 
 <span class:list={['logo', cls]} set:html={svg} />
@@ -17,8 +25,8 @@ const svg = logo.replace(/<title>.*?<\/title>/, '').replace(/ width="\d+" height
   .logo {
     display: inline-block;
     flex: none;
-    width: var(--logo-ancho);
-    aspect-ratio: 1609 / 515;
+    height: var(--logo-alto);
+    aspect-ratio: 6380 / 1721;
     line-height: 0;
   }
   .logo :global(svg) {

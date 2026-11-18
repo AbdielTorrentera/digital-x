@@ -159,7 +159,7 @@ Los textos del sitio anterior se pueden reutilizar **corrigiendo** estas erratas
 | `/nosotros/` | `/nosotros/` |
 | `/contacto/` | `/` (el sitio nuevo no tiene página de contacto, decisión del dueño) |
 | `/politica-de-privacidad/` | `/politica-de-privacidad/` |
-| `/servicios-de-video/` | `/video/streaming-para-eventos/` (un solo salto; la categoría ya no es una página. La página vieja aparece en tercer lugar en Google para "streaming para eventos puebla" y "streaming profesional puebla"; revisar con Search Console) |
+| `/servicios-de-video/` | `/video/` (la categoría; decisión del dueño, 18 de noviembre de 2026: antes iba a `/video/streaming-para-eventos/`. La página vieja aparece en tercer lugar en Google para "streaming para eventos puebla" y "streaming profesional puebla"; revisar con Search Console cómo se mueve ese posicionamiento) |
 | `/renta-de-audio/` | `/audio/renta-de-audio/` |
 
 - Redirigir cualquier otra URL del dominio viejo a `/`, **nunca** a una página sin relación.

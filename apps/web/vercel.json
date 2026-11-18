@@ -2,30 +2,8 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/servicios",
-      "destination": "https://digitalx.mx/",
-      "statusCode": 301,
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?digitalequis\\.com$"
-        }
-      ]
-    },
-    {
       "source": "/servicios/",
       "destination": "https://digitalx.mx/",
-      "statusCode": 301,
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?digitalequis\\.com$"
-        }
-      ]
-    },
-    {
-      "source": "/nosotros",
-      "destination": "https://digitalx.mx/nosotros/",
       "statusCode": 301,
       "has": [
         {
@@ -46,30 +24,8 @@
       ]
     },
     {
-      "source": "/contacto",
-      "destination": "https://digitalx.mx/",
-      "statusCode": 301,
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?digitalequis\\.com$"
-        }
-      ]
-    },
-    {
       "source": "/contacto/",
       "destination": "https://digitalx.mx/",
-      "statusCode": 301,
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?digitalequis\\.com$"
-        }
-      ]
-    },
-    {
-      "source": "/politica-de-privacidad",
-      "destination": "https://digitalx.mx/politica-de-privacidad/",
       "statusCode": 301,
       "has": [
         {
@@ -90,30 +46,8 @@
       ]
     },
     {
-      "source": "/servicios-de-video",
-      "destination": "https://digitalx.mx/video/streaming-para-eventos/",
-      "statusCode": 301,
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?digitalequis\\.com$"
-        }
-      ]
-    },
-    {
       "source": "/servicios-de-video/",
       "destination": "https://digitalx.mx/video/streaming-para-eventos/",
-      "statusCode": 301,
-      "has": [
-        {
-          "type": "host",
-          "value": "^(www\\.)?digitalequis\\.com$"
-        }
-      ]
-    },
-    {
-      "source": "/renta-de-audio",
-      "destination": "https://digitalx.mx/audio/renta-de-audio/",
       "statusCode": 301,
       "has": [
         {
@@ -134,7 +68,7 @@
       ]
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": "https://digitalx.mx/",
       "statusCode": 301,
       "has": [
